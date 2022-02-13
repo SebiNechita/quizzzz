@@ -1,3 +1,11 @@
+##Team roles
+Kristof: Plant, coordinator, shaper
+Kim: Team-worker, specialist, implementer
+Alexandru: Specialist, coordinator, monitor
+Sander: Implementer, monitor, team-worker
+Kaushik: Specialist, team-worker, complete finishe
+Ilia: Implementer, coordinator, specialist
+
 # Starting template
 
 This README will need to contain a description of your project, how to run it, how to set up the development environment, and who worked on it.
