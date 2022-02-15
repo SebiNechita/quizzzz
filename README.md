@@ -8,7 +8,7 @@ Alexandru: Specialist, coordinator, monitor
 
 Sander: Implementer, monitor, team-worker
 
-Kaushik: Specialist, team-worker, complete finishe
+Kaushik: Specialist, team-worker, complete finisher
 
 Ilia: Implementer, coordinator, specialist
 
