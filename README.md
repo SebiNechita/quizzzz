@@ -29,7 +29,7 @@ Add your own name (do not add the names for others!) to the section below.
 | ![](https://eu.ui-avatars.com/api/?name=OOPP&length=4&size=50&color=DDD&background=777&font-size=0.325) | Ilia Tomov | I.D.Tomov@student.tudelft.nl |
 | ![](https://eu.ui-avatars.com/api/?name=OOPP&length=4&size=50&color=DDD&background=777&font-size=0.325) | Mingyi Jin | M.Jin-1@student.tudelft.nl |
 | ![](https://eu.ui-avatars.com/api/?name=OOPP&length=4&size=50&color=DDD&background=777&font-size=0.325) | Sander Vermeulen | S.R.Vermeulen@student.tudelft.nl |
-| ![](https://eu.ui-avatars.com/api/?name=OOPP&length=4&size=50&color=DDD&background=777&font-size=0.325) | Kaushik Karthikeyan | K.Karthikeyan-1@student.tudelft.nl |
+| <img src="https://secure.gravatar.com/avatar/00af0c344a43ab9a1fd540603804d5f7?s=800&d=identicon" width="50 px"> | Kaushik Karthikeyan | K.Karthikeyan-1@student.tudelft.nl |
 <!-- Instructions (remove once assignment has been completed -->
 <!-- - Add (only!) your own name to the table above (use Markdown formatting) -->
 <!-- - Mention your *student* email address -->
