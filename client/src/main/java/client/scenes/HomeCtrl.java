@@ -6,10 +6,10 @@ import javax.inject.Inject;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class StartCtrl extends SceneCtrl {
+public class HomeCtrl extends SceneCtrl {
 
     @Inject
-    public StartCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
+    public HomeCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
         super(mainCtrl, serverUtils);
     }
 

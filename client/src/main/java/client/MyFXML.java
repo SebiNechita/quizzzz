@@ -15,18 +15,19 @@
  */
 package client;
 
+import client.scenes.SceneCtrl;
 import com.google.inject.Injector;
+import commons.utils.LoggerUtil;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.util.Builder;
 import javafx.util.BuilderFactory;
 import javafx.util.Callback;
-import javafx.util.Pair;
+import org.apache.commons.lang3.tuple.ImmutableTriple;
+import org.apache.commons.lang3.tuple.Triple;
 
 import java.io.IOException;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
 
 public class MyFXML {
 
@@ -36,20 +37,22 @@ public class MyFXML {
         this.injector = injector;
     }
 
-    public <T> Pair<T, Parent> load(Class<T> c, String... parts) {
-        try {
-            var loader = new FXMLLoader(getLocation(parts), null, null, new MyFactory(), StandardCharsets.UTF_8);
-            Parent parent = loader.load();
-            T ctrl = loader.getController();
-            return new Pair<>(ctrl, parent);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public <T extends SceneCtrl> Triple<T, Parent, String> load(Class<T> c, String path) {
+        String title = c.getSimpleName();
+        return load(c, path, title.substring(0, title.length() - 4));
     }
 
-    private URL getLocation(String... parts) {
-        var path = Path.of("", parts).toString();
-        return MyFXML.class.getClassLoader().getResource(path);
+    public <T extends SceneCtrl> Triple<T, Parent, String> load(Class<T> c, String path, String title) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(path), null, null, new MyFactory(), StandardCharsets.UTF_8);
+            Parent parent = loader.load();
+            T ctrl = loader.getController();
+            LoggerUtil.log(ctrl);
+            return new ImmutableTriple<>(ctrl, parent, title);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 
     private class MyFactory implements BuilderFactory, Callback<Class<?>, Object> {
