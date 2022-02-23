@@ -6,12 +6,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@RequestMapping("/")
+@RequestMapping("/ping")
 public class SomeController {
 
-    @GetMapping("/")
+    @GetMapping
     @ResponseBody
     public String index() {
-        return "Hello world!";
+        return "Pong";
     }
 }
