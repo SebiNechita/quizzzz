@@ -30,6 +30,11 @@ subprojects {
 		useJUnitPlatform()
 		finalizedBy jacocoTestReport 
 	}
+
+	jacaco {
+		toolVersion = "0.8.7"
+	}
+
 	jacocoTestReport {
 		reports {
 			xml.required = false
