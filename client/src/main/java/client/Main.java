@@ -15,13 +15,13 @@
  */
 package client;
 
+import client.scenes.HomeCtrl;
 import client.scenes.MainCtrl;
-import client.scenes.StartCtrl;
 import com.google.inject.Injector;
 import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
-import javafx.util.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 
 import static com.google.inject.Guice.createInjector;
 
@@ -38,9 +38,9 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        Pair<StartCtrl, Parent> start = FXML.load(StartCtrl.class, "client", "scenes", "start.fxml");
+        Triple<HomeCtrl, Parent, String> home = FXML.load(HomeCtrl.class, "client/scenes/Home.fxml", "Main Menu");
 
         MainCtrl mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, start);
+        mainCtrl.initialize(primaryStage, home);
     }
 }

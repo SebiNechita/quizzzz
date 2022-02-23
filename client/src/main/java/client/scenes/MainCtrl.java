@@ -15,30 +15,45 @@
  */
 package client.scenes;
 
+import commons.utils.LoggerUtil;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+import org.apache.commons.lang3.tuple.Triple;
+
+import java.util.Arrays;
+import java.util.HashMap;
 
 public class MainCtrl {
 
     private Stage primaryStage;
 
-    private StartCtrl startCtrl;
-    private Scene start;
+    private final HashMap<Class<?>, Object> ctrlClasses = new HashMap<>();
+    private final HashMap<Class<?>, Pair<Scene, String>> scenes = new HashMap<>();
 
-    public final void initialize(Stage primaryStage, Pair<StartCtrl, Parent> start) {
+    @SafeVarargs
+    public final void initialize(Stage primaryStage, Triple<?, Parent, String>... page) {
         this.primaryStage = primaryStage;
 
-        this.startCtrl = start.getKey();
-        this.start = new Scene(start.getValue());
+        LoggerUtil.log(Arrays.toString(page));
 
-        showStart();
+        for (Triple<?, Parent, String> triple : page) {
+            ctrlClasses.put(triple.getLeft().getClass(), triple.getLeft());
+            scenes.put(triple.getLeft().getClass(), new Pair<>(new Scene(triple.getMiddle()), triple.getRight()));
+        }
+
+        showScene(HomeCtrl.class);
         primaryStage.show();
     }
 
-    public void showStart() {
-        primaryStage.setTitle("Main Menu");
-        primaryStage.setScene(start);
+    public <T> T getCtrl(Class<T> c) {
+        return c.cast(ctrlClasses.get(c));
+    }
+
+    public <T> void showScene(Class<T> c) {
+        Pair<Scene, String> pair = scenes.get(c);
+        primaryStage.setScene(pair.getKey());
+        primaryStage.setTitle(pair.getValue());
     }
 }
