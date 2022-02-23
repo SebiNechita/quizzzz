@@ -7,7 +7,7 @@ build/
 
 **/*.mv.db
 **/*.trace.db
-
+**/.DS_Store
 **/*.swp
 
 ### STS ###
