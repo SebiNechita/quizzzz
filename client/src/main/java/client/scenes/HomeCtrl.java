@@ -1,6 +1,8 @@
 package client.scenes;
 
 import client.utils.ServerUtils;
+import commons.utils.LoggerUtil;
+import javafx.fxml.FXML;
 
 import javax.inject.Inject;
 import java.net.URL;
@@ -16,5 +18,10 @@ public class HomeCtrl extends SceneCtrl {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+    }
+
+    @FXML
+    public void pingButtonClicked() {
+        LoggerUtil.raw(server.pingServer());
     }
 }

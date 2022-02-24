@@ -15,6 +15,40 @@
  */
 package client.utils;
 
+import client.Main;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+
+import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
+
 public class ServerUtils {
 
+    private void initClient() {
+        client = ClientBuilder.newBuilder()
+                .hostnameVerifier((hostname, session) -> true)
+                .sslContext(HTTPSUtil.getSSLContext())
+                .build();
+    }
+
+    private Client client;
+    private Client getClient() {
+        if (client == null) {
+            initClient();
+        }
+
+        return client;
+    }
+
+    /**
+     * Example request which checks if the server is online
+     *
+     * @return The response of the server
+     */
+    public String pingServer() {
+        return getClient().target(Main.URL)
+                .path("ping")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(String.class);
+    }
 }
