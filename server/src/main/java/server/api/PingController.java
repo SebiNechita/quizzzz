@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/ping")
-public class SomeController {
+public class PingController {
 
     /**
      * Temporary endpoint. Will probably be removed later.
