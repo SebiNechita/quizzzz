@@ -22,7 +22,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .requiresChannel(channel -> channel.anyRequest().requiresSecure())
                 .authorizeRequests()
-                .antMatchers("/ping")
+                .antMatchers("/ping", "/api/client", "/api/help")
                 .permitAll()
                 .anyRequest()
                 .authenticated().and()
