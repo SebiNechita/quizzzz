@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = "/api/help")
 public class HelpController {
 
-    @GetMapping(path = "")
+    @GetMapping
     public String sendHelp() {
         return "How the game is played?<br>" +
                "-Singleplayer<br>" +
