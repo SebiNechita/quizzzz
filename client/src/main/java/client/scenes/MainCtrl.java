@@ -15,43 +15,45 @@
  */
 package client.scenes;
 
+import commons.utils.LoggerUtil;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+import org.apache.commons.lang3.tuple.Triple;
+
+import java.util.Arrays;
+import java.util.HashMap;
 
 public class MainCtrl {
 
     private Stage primaryStage;
 
-    private QuoteOverviewCtrl overviewCtrl;
-    private Scene overview;
+    private final HashMap<Class<?>, Object> ctrlClasses = new HashMap<>();
+    private final HashMap<Class<?>, Pair<Scene, String>> scenes = new HashMap<>();
 
-    private AddQuoteCtrl addCtrl;
-    private Scene add;
-
-    public void initialize(Stage primaryStage, Pair<QuoteOverviewCtrl, Parent> overview,
-            Pair<AddQuoteCtrl, Parent> add) {
+    @SafeVarargs
+    public final void initialize(Stage primaryStage, Triple<?, Parent, String>... page) {
         this.primaryStage = primaryStage;
-        this.overviewCtrl = overview.getKey();
-        this.overview = new Scene(overview.getValue());
 
-        this.addCtrl = add.getKey();
-        this.add = new Scene(add.getValue());
+        LoggerUtil.log(Arrays.toString(page));
 
-        showOverview();
+        for (Triple<?, Parent, String> triple : page) {
+            ctrlClasses.put(triple.getLeft().getClass(), triple.getLeft());
+            scenes.put(triple.getLeft().getClass(), new Pair<>(new Scene(triple.getMiddle()), triple.getRight()));
+        }
+
+        showScene(HomeCtrl.class);
         primaryStage.show();
     }
 
-    public void showOverview() {
-        primaryStage.setTitle("Quotes: Overview");
-        primaryStage.setScene(overview);
-        overviewCtrl.refresh();
+    public <T> T getCtrl(Class<T> c) {
+        return c.cast(ctrlClasses.get(c));
     }
 
-    public void showAdd() {
-        primaryStage.setTitle("Quotes: Adding Quote");
-        primaryStage.setScene(add);
-        add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
+    public <T> void showScene(Class<T> c) {
+        Pair<Scene, String> pair = scenes.get(c);
+        primaryStage.setScene(pair.getKey());
+        primaryStage.setTitle(pair.getValue());
     }
 }
