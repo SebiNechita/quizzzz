@@ -29,17 +29,17 @@ public class MainCtrl {
 
     private Stage primaryStage;
 
-    private final HashMap<Class<?>, Object> ctrlClasses = new HashMap<>();
+    private final HashMap<Class<?>, SceneCtrl> ctrlClasses = new HashMap<>();
     private final HashMap<Class<?>, Pair<Scene, String>> scenes = new HashMap<>();
 
     @SafeVarargs
-    public final void initialize(Stage primaryStage, Triple<?, Parent, String>... page) {
+    public final void initialize(Stage primaryStage, Triple<? extends SceneCtrl, Parent, String>... page) {
         this.primaryStage = primaryStage;
 
         LoggerUtil.log(Arrays.toString(page));
 
         for (Triple<?, Parent, String> triple : page) {
-            ctrlClasses.put(triple.getLeft().getClass(), triple.getLeft());
+            ctrlClasses.put(triple.getLeft().getClass(), (SceneCtrl) triple.getLeft());
             scenes.put(triple.getLeft().getClass(), new Pair<>(new Scene(triple.getMiddle()), triple.getRight()));
         }
 
@@ -47,11 +47,11 @@ public class MainCtrl {
         primaryStage.show();
     }
 
-    public <T> T getCtrl(Class<T> c) {
+    public <T extends SceneCtrl> T getCtrl(Class<T> c) {
         return c.cast(ctrlClasses.get(c));
     }
 
-    public <T> void showScene(Class<T> c) {
+    public <T extends SceneCtrl> void showScene(Class<T> c) {
         Pair<Scene, String> pair = scenes.get(c);
         primaryStage.setScene(pair.getKey());
         primaryStage.setTitle(pair.getValue());

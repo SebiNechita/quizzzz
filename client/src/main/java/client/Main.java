@@ -38,7 +38,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        Triple<HomeCtrl, Parent, String> home = FXML.load(HomeCtrl.class, "client/scenes/Home.fxml", "Main Menu");
+        Triple<HomeCtrl, Parent, String> home = FXML.load("client/scenes/Home.fxml", "Main Menu");
 
         MainCtrl mainCtrl = INJECTOR.getInstance(MainCtrl.class);
         mainCtrl.initialize(primaryStage, home);
