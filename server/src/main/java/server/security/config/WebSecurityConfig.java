@@ -41,7 +41,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // Force all other traffic to use HTTPS
                 .requiresChannel(channel -> channel.anyRequest().requiresSecure())
                 .authorizeRequests()
-                .antMatchers("/api/registration")
+                .antMatchers("/api/registration/**")
                 .permitAll()
                 .and()
                 .sessionManagement()

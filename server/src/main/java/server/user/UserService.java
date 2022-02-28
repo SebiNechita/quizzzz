@@ -28,6 +28,10 @@ public class UserService implements UserDetailsService {
         return appUserRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User with username '" + username + "' can not be found."));
     }
 
+    public boolean userExists(String username) {
+        return appUserRepository.findByUsername(username).isPresent();
+    }
+
     public RegisterResponsePacket signUpUser(User appUser) throws UserAlreadyExistsException {
         if (appUserRepository.findByUsername(appUser.getUsername()).isPresent()) {
             throw new UserAlreadyExistsException("User already exists");
