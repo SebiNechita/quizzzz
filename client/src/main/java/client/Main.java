@@ -31,6 +31,7 @@ public class Main extends Application {
     private static final MyFXML FXML = new MyFXML(INJECTOR);
 
     public static String URL = "https://localhost:8080/";
+    public static String TOKEN = "";
 
     public static void main(String[] args) {
         launch();
