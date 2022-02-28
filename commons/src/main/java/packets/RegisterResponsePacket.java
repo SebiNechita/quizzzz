@@ -1,5 +1,7 @@
 package packets;
 
+import commons.utils.HttpStatus;
+
 import java.util.Objects;
 
 public class RegisterResponsePacket {
@@ -13,8 +15,19 @@ public class RegisterResponsePacket {
         this.returnCode = returnCode;
         this.message = "";
     }
+
+    public RegisterResponsePacket(HttpStatus status) {
+        this.returnCode = status.getCode();
+        this.message = "";
+    }
+
     public RegisterResponsePacket(int returnCode, String message) {
         this.returnCode = returnCode;
+        this.message = message;
+    }
+
+    public RegisterResponsePacket(HttpStatus status, String message) {
+        this.returnCode = status.getCode();
         this.message = message;
     }
 
@@ -22,8 +35,16 @@ public class RegisterResponsePacket {
         return returnCode;
     }
 
+    public HttpStatus getReturnStatus() {
+        return HttpStatus.getByCode(returnCode);
+    }
+
     public void setReturnCode(int returnCode) {
         this.returnCode = returnCode;
+    }
+
+    public void setReturnStatus(HttpStatus status) {
+        returnCode = status.getCode();
     }
 
     public String getMessage() {

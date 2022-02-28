@@ -1,5 +1,6 @@
 package server.user;
 
+import commons.utils.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -36,7 +37,7 @@ public class UserService implements UserDetailsService {
 
         appUserRepository.save(appUser);
 
-        return new RegisterResponsePacket();
+        return new RegisterResponsePacket(HttpStatus.Created);
     }
 
     public boolean validUser(User appUser) {

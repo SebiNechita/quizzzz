@@ -1,6 +1,5 @@
 package server.api.registration;
 
-import commons.utils.LoggerUtil;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +19,6 @@ public class UserRegistrationController {
 
     @PostMapping
     public RegisterResponsePacket register(@RequestBody RegisterRequestPacket request) {
-        LoggerUtil.log(request);
         return registrationService.register(request);
     }
 }
