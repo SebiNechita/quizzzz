@@ -43,7 +43,7 @@ public class MainCtrl {
             scenes.put(triple.getLeft().getClass(), new Pair<>(new Scene(triple.getMiddle()), triple.getRight()));
         }
 
-        showScene(HomeCtrl.class);
+        showScene(GameCtrl.class);
         primaryStage.show();
     }
 
