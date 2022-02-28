@@ -22,8 +22,7 @@ public class HTTPSUtil {
         HttpsURLConnection.setDefaultHostnameVerifier((hostname, sslSession) -> hostname.equals("localhost"));
 
         try {
-            File crtFile = new File("src/main/resources/servercert.crt");
-            Certificate certificate = CertificateFactory.getInstance("X.509").generateCertificate(new FileInputStream(crtFile));
+            Certificate certificate = CertificateFactory.getInstance("X.509").generateCertificate(HTTPSUtil.class.getResourceAsStream("/servercert.crt"));
 
             KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
             keyStore.load(null, null);
