@@ -42,5 +42,6 @@ public class Main extends Application {
 
         MainCtrl mainCtrl = INJECTOR.getInstance(MainCtrl.class);
         mainCtrl.initialize(primaryStage, home);
+        mainCtrl.showScene(HomeCtrl.class);
     }
 }

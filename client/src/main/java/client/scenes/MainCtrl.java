@@ -15,14 +15,12 @@
  */
 package client.scenes;
 
-import commons.utils.LoggerUtil;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 
-import java.util.Arrays;
 import java.util.HashMap;
 
 public class MainCtrl {
@@ -36,14 +34,11 @@ public class MainCtrl {
     public final void initialize(Stage primaryStage, Triple<? extends SceneCtrl, Parent, String>... page) {
         this.primaryStage = primaryStage;
 
-        LoggerUtil.log(Arrays.toString(page));
-
-        for (Triple<?, Parent, String> triple : page) {
-            ctrlClasses.put(triple.getLeft().getClass(), (SceneCtrl) triple.getLeft());
+        for (Triple<? extends SceneCtrl, Parent, String> triple : page) {
+            ctrlClasses.put(triple.getLeft().getClass(), triple.getLeft());
             scenes.put(triple.getLeft().getClass(), new Pair<>(new Scene(triple.getMiddle()), triple.getRight()));
         }
 
-        showScene(HomeCtrl.class);
         primaryStage.show();
     }
 
