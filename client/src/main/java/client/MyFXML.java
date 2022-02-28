@@ -17,7 +17,6 @@ package client;
 
 import client.scenes.SceneCtrl;
 import com.google.inject.Injector;
-import commons.utils.LoggerUtil;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.util.Builder;
@@ -42,7 +41,6 @@ public class MyFXML {
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(path), null, null, new MyFactory(), StandardCharsets.UTF_8);
             Parent parent = loader.load();
             T ctrl = loader.getController();
-            LoggerUtil.log(ctrl);
             return new ImmutableTriple<>(ctrl, parent, title);
         } catch (IOException e) {
             e.printStackTrace();

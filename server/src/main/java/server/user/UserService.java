@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import packets.RegisterResponsePacket;
-import server.database.AppUserRepository;
+import server.database.UserRepository;
 import server.exceptions.UserAlreadyExistsException;
 
 import java.util.Optional;
@@ -15,10 +15,10 @@ import java.util.Optional;
 @Service
 public class UserService implements UserDetailsService {
 
-    private final AppUserRepository appUserRepository;
+    private final UserRepository appUserRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public UserService(AppUserRepository appUserRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public UserService(UserRepository appUserRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.appUserRepository = appUserRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
