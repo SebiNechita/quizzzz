@@ -18,6 +18,9 @@ package client.utils;
 import client.Main;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.client.Invocation;
+import packets.RegisterRequestPacket;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
@@ -39,16 +42,27 @@ public class ServerUtils {
         return client;
     }
 
+    private Invocation.Builder requestTemplate(String path) {
+        return getClient().target(Main.URL)
+                .path(path)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .header("Authorization", Main.TOKEN);
+    }
+
+    public String getToken(String username, String password) {
+        return (String) getClient().target(Main.URL).path("login")
+                .request(APPLICATION_JSON).accept(APPLICATION_JSON)
+                .post(Entity.entity(new RegisterRequestPacket(username, password), APPLICATION_JSON))
+                .getHeaders().get("Authorization").get(0);
+    }
+
     /**
      * Example request which checks if the server is online
      *
      * @return The response of the server
      */
     public String pingServer() {
-        return getClient().target(Main.URL)
-                .path("ping")
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .get(String.class);
+        return requestTemplate("ping").get(String.class);
     }
 }
