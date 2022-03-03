@@ -135,7 +135,7 @@ public class LoggerUtil {
         public static final String INV_ITALIC = "\u001B[23m";
 
         private static final Pattern HIGHLIGHT_START = Pattern.compile("\\$HL");
-        private static final Pattern HIGHLIGHT_END = Pattern.compile("\\$EHL");
+        private static final Pattern HIGHLIGHT_END = Pattern.compile("\\$");
 
         @Override
         public String format(LogRecord record) {
@@ -165,7 +165,7 @@ public class LoggerUtil {
         }
 
         private String messageLayout(LogRecord record) {
-            return (!((boolean) record.getParameters()[0]) && record.getLevel().intValue() >= Level.INFO.intValue()) ? " (Thread: " + record.getLongThreadID() + ")\n\t" : " >> ";
+            return (!((boolean) record.getParameters()[0]) && record.getLevel().intValue() >= Level.INFO.intValue()) ? " (Thread: " + record.getLongThreadID() + ")\n" : " >> ";
         }
 
         private String highlight(Level level, boolean inverse) {
