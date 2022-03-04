@@ -1,9 +1,7 @@
 package server.jwt;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
+import commons.utils.LoggerUtil;
+import io.jsonwebtoken.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -39,7 +37,6 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
 
         // Removes the "Bearer " part of the header (or whatever else it might be set to in the config)
         String token = authorizationHeader.substring(jwtConfig.getTokenPrefix().length() + 1);
-
         try {
             Jws<Claims> claimsJws = Jwts.parserBuilder()
                     .setSigningKey(jwtConfig.getSecretKey())
@@ -56,8 +53,12 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             filterChain.doFilter(request, response);
+        } catch (ExpiredJwtException e) {
+            String username = e.getClaims().getSubject();
+            LoggerUtil.logInline("The user $HL" + username + "$ tried to send a request with an expired token. " + LoggerUtil.LogFormatter.LIGHT_GRAY + e.getMessage());
         } catch (JwtException e) {
-            e.printStackTrace();
+            LoggerUtil.warnInline("$HL" + e.getClass().getSimpleName() + "$: " + e.getMessage());
+//            e.printStackTrace();
         }
     }
 }
