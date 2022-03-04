@@ -6,10 +6,11 @@ import server.database.UserRepository;
 import server.user.User;
 
 @RestController
-@RequestMapping(path = "/api/update")
+@RequestMapping(path = "/api/users/update")
 public class SamplePutController {
-    private UserRepository userRepository;
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public SamplePutController(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepository = userRepository;
@@ -19,7 +20,7 @@ public class SamplePutController {
     /**
      * Creates a new user if a user with the given name is not found. Updates the password if it already exists.
      *
-     * @param newUser
+     * @param newUser An instance of User of an already existing or new user
      * @return returns the updated user
      */
     @PutMapping()
