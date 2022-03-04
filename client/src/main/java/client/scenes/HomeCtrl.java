@@ -18,7 +18,7 @@ public class HomeCtrl extends SceneCtrl {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Main.TOKEN = server.getToken("Geof", "password");
+        Main.TOKEN = server.getToken("Geoff", "password");
         LoggerUtil.raw(server.pingServer());
     }
 

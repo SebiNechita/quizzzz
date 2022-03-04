@@ -15,7 +15,7 @@
  */
 package client;
 
-import client.scenes.GameCtrl;
+import client.scenes.GameMultiChoiceCtrl;
 import client.scenes.HomeCtrl;
 import client.scenes.MainCtrl;
 import com.google.inject.Injector;
@@ -41,10 +41,10 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         Triple<HomeCtrl, Parent, String> home = FXML.load("client/scenes/Home.fxml", "Main Menu");
-        Triple<GameCtrl, Parent, String> game = FXML.load(GameCtrl.class, "client/scenes/Game.fxml", "Game Screen");
+        Triple<GameMultiChoiceCtrl, Parent, String> game = FXML.load("client/scenes/GameMultiChoice.fxml", "Game Screen");
 
         MainCtrl mainCtrl = INJECTOR.getInstance(MainCtrl.class);
         mainCtrl.initialize(primaryStage, home, game);
-        mainCtrl.showScene(HomeCtrl.class);
+        mainCtrl.showScene(GameMultiChoiceCtrl.class);
     }
 }
