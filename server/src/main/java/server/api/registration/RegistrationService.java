@@ -28,9 +28,9 @@ public class RegistrationService {
 
     public GeneralResponsePacket userAvailable(String username) {
         if (!appUserService.userExists(username)) {
-            return new GeneralResponsePacket(HttpStatus.OK);
+            return new GeneralResponsePacket(HttpStatus.Conflict);
         } else {
-            return new GeneralResponsePacket(HttpStatus.NotFound);
+            return new GeneralResponsePacket(HttpStatus.OK);
         }
     }
 }

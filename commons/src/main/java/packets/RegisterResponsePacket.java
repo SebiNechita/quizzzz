@@ -6,45 +6,37 @@ import java.util.Objects;
 
 public class RegisterResponsePacket {
 
-    private int returnCode;
+    private int code;
     private String message;
 
     public RegisterResponsePacket() {}
 
-    public RegisterResponsePacket(int returnCode) {
-        this.returnCode = returnCode;
+    public RegisterResponsePacket(int code) {
+        this.code = code;
         this.message = "";
     }
 
     public RegisterResponsePacket(HttpStatus status) {
-        this.returnCode = status.getCode();
+        this.code = status.getCode();
         this.message = "";
     }
 
-    public RegisterResponsePacket(int returnCode, String message) {
-        this.returnCode = returnCode;
+    public RegisterResponsePacket(int code, String message) {
+        this.code = code;
         this.message = message;
     }
 
     public RegisterResponsePacket(HttpStatus status, String message) {
-        this.returnCode = status.getCode();
+        this.code = status.getCode();
         this.message = message;
     }
 
-    public int getReturnCode() {
-        return returnCode;
+    public int getCode() {
+        return code;
     }
 
-    public HttpStatus getReturnStatus() {
-        return HttpStatus.getByCode(returnCode);
-    }
-
-    public void setReturnCode(int returnCode) {
-        this.returnCode = returnCode;
-    }
-
-    public void setReturnStatus(HttpStatus status) {
-        returnCode = status.getCode();
+    public void setCode(int code) {
+        this.code = code;
     }
 
     public String getMessage() {
@@ -59,18 +51,18 @@ public class RegisterResponsePacket {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof RegisterResponsePacket that)) return false;
-        return returnCode == that.returnCode && Objects.equals(message, that.message);
+        return code == that.code && Objects.equals(message, that.message);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(returnCode, message);
+        return Objects.hash(code, message);
     }
 
     @Override
     public String toString() {
         return "RegisterResponsePacket{" +
-               "returnCode=" + returnCode +
+               "returnCode=" + code +
                ", message='" + message + '\'' +
                '}';
     }
