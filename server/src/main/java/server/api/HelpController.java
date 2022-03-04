@@ -2,6 +2,7 @@ package server.api;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class HelpController {
 
     @GetMapping
+    @ResponseBody
     public String sendHelp() {
         return "How the game is played?<br>" +
                "-Singleplayer<br>" +

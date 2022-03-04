@@ -17,7 +17,6 @@ package client;
 
 import client.scenes.SceneCtrl;
 import com.google.inject.Injector;
-import commons.utils.LoggerUtil;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.util.Builder;
@@ -31,23 +30,17 @@ import java.nio.charset.StandardCharsets;
 
 public class MyFXML {
 
-    private Injector injector;
+    private final Injector injector;
 
     public MyFXML(Injector injector) {
         this.injector = injector;
     }
 
-    public <T extends SceneCtrl> Triple<T, Parent, String> load(Class<T> c, String path) {
-        String title = c.getSimpleName();
-        return load(c, path, title.substring(0, title.length() - 4));
-    }
-
-    public <T extends SceneCtrl> Triple<T, Parent, String> load(Class<T> c, String path, String title) {
+    public <T extends SceneCtrl> Triple<T, Parent, String> load(String path, String title) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(path), null, null, new MyFactory(), StandardCharsets.UTF_8);
             Parent parent = loader.load();
             T ctrl = loader.getController();
-            LoggerUtil.log(ctrl);
             return new ImmutableTriple<>(ctrl, parent, title);
         } catch (IOException e) {
             e.printStackTrace();
@@ -60,12 +53,7 @@ public class MyFXML {
         @Override
         @SuppressWarnings("rawtypes")
         public Builder<?> getBuilder(Class<?> type) {
-            return new Builder() {
-                @Override
-                public Object build() {
-                    return injector.getInstance(type);
-                }
-            };
+            return (Builder) () -> injector.getInstance(type);
         }
 
         @Override
