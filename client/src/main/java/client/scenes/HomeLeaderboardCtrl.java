@@ -16,6 +16,7 @@
 package client.scenes;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import client.utils.ServerUtils;
@@ -55,8 +56,8 @@ public class HomeLeaderboardCtrl extends SceneCtrl {
      * Reload the leaderboard.
      */
     public void refresh() {
-        var quotes = server.getLeaderboard();
-        data = FXCollections.observableList(quotes);
+        List<LeaderboardEntry> leaderboardEntries = server.getLeaderboard();
+        data = FXCollections.observableList(leaderboardEntries);
         table.setItems(data);
     }
 
