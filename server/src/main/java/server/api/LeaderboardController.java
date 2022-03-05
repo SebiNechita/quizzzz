@@ -24,7 +24,7 @@ public class LeaderboardController {
 
     @GetMapping(path = { "/leaderboard/{username}" })
     public LeaderboardEntry getScoreForUser(@PathVariable("username") String username) {
-        return repo.findByUsernameEquals(username);
+        return repo.findByUsername(username);
     }
 
     @PostMapping(path = { "/leaderboard" })
