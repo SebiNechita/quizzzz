@@ -6,10 +6,12 @@ import javafx.animation.Interpolator;
 import javafx.animation.Transition;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+import javafx.util.Pair;
 
 import javax.inject.Inject;
 import java.net.URL;
@@ -27,11 +29,27 @@ public class GameMultiChoiceCtrl extends GameCtrl {
     private Text question;
 
     @FXML
+    private Text pointsGainedText;
+    @FXML
+    private Text answerBonusText;
+    @FXML
+    private Text timeBonusText;
+
+    @FXML
+    protected Button nextQuestion;
+
+    @FXML
+    protected Text timeLeftText;
+    @FXML
+    protected AnchorPane timeLeftBar;
+
+    @FXML
     private HBox optionsContainer;
     private AnchorPane[] options = new AnchorPane[3];
-    private AnchorPane selected = null;
+    private Pair<Integer, AnchorPane> selected = null;
 
-    private boolean locked[] = {false, false, false};
+    private boolean[] locked = {false, false, false};
+    private AnchorPane removedAnswer = null;
 
     @Inject
     public GameMultiChoiceCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
@@ -40,6 +58,15 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         super.progressBar = progressBar;
         super.score = score;
         super.question = question;
+
+        super.pointsGainedText = pointsGainedText;
+        super.answerBonusText = answerBonusText;
+        super.timeBonusText = timeBonusText;
+
+        super.nextQuestion = nextQuestion;
+
+        super.timeLeftText = timeLeftText;
+        super.timeLeftBar = timeLeftBar;
     }
 
     @Override
@@ -53,19 +80,13 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         generateProgressDots();
         enableListeners();
 
+        //----- TODO: Everything below this is temporary and for testing/displaying purposes -----
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
                 removeAnswer(0);
             }
         }, 3000);
-
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                showCorrectAnswer(1);
-            }
-        }, 6000);
     }
 
     private void enableListeners() {
@@ -73,14 +94,14 @@ public class GameMultiChoiceCtrl extends GameCtrl {
             AnchorPane option = options[i];
             final int index = i;
             option.setOnMouseEntered(event -> {
-                if (locked[index] || selected == option)
+                if (locked[index] || (selected != null && selected.getValue() == option))
                     return;
 
                 hoverAnim(option, false).play();
             });
 
             option.setOnMouseExited(event -> {
-                if (locked[index] || selected == option)
+                if (locked[index] || (selected != null && selected.getValue() == option))
                     return;
 
                 hoverAnim(option, true).play();
@@ -90,17 +111,19 @@ public class GameMultiChoiceCtrl extends GameCtrl {
                 if (locked[index])
                     return;
 
-                if (selected != null) {
-                    selectedAnim(selected, false).play();
+                if (selected != null && !locked[selected.getKey()]) {
+                    selectedAnim(selected.getValue(), false).play();
                 }
 
-                selected = option;
-                selectedAnim(selected, true).play();
+                selected = new Pair<>(index, option);
+                selectedAnim(option, true).play();
+
+                lastAnswerChange = timeLeft;
             });
         }
     }
 
-    private void showCorrectAnswer(int answer) {
+    protected void showCorrectAnswer(int answer) {
         locked = new boolean[]{true, true, true};
 
         AnchorPane correct = options[answer];
@@ -111,19 +134,21 @@ public class GameMultiChoiceCtrl extends GameCtrl {
             if (option == correct)
                 continue;
 
-            if (option == selected) {
+            if (selected != null && selected.getValue() != removedAnswer && option == selected.getValue()) {
                 fadeOption(option, (Color) option.getBackground().getFills().get(0).getFill(), new Color(0.949, 0.423, 0.392, 1)).play();
             } else {
                 fadeOption(option, (Color) option.getBackground().getFills().get(0).getFill(), new Color(0.478, 0.478, 0.478, 1)).play();
             }
         }
+
+        showPointsGained(selected.getKey() == answer ? 100 : 0);
     }
 
     private void removeAnswer(int answer) {
         locked[answer] = true;
 
-        AnchorPane option = options[answer];
-        fadeOption(option, (Color) option.getBackground().getFills().get(0).getFill(), new Color(0.478, 0.478, 0.478, 1)).play();
+        removedAnswer = options[answer];
+        fadeOption(removedAnswer, (Color) removedAnswer.getBackground().getFills().get(0).getFill(), new Color(0.478, 0.478, 0.478, 1)).play();
     }
 
     private Animation hoverAnim(AnchorPane anchorPane, boolean inverted) {
@@ -172,34 +197,4 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         };
     }
 
-    /**
-     * Lerps color from white to the given color
-     *
-     * @param r    The normalized red to go to
-     * @param g    The normalized green to go to
-     * @param b    The normalized blue to go to
-     * @param frac The time of the lerp
-     * @return An interpolated color
-     */
-    private Color lerp(double r, double g, double b, double frac) {
-        frac = 1 - frac;
-        return new Color(r + ((1 - r) * frac), g + ((1 - g) * frac), b + ((1 - b) * frac), 1);
-    }
-
-    /**
-     * Lerps color from a given color to a given color
-     *
-     * @param r1   The normalized start color's red to go to
-     * @param g1   The normalized start color's green to go to
-     * @param b1   The normalized start color's blue to go to
-     * @param r2   The normalized end color's red to go to
-     * @param g2   The normalized end color's green to go to
-     * @param b2   The normalized end color's blue to go to
-     * @param frac The time of the lerp
-     * @return An interpolated color
-     */
-    private Color lerp(double r1, double g1, double b1, double r2, double g2, double b2, double frac) {
-        frac = 1 - frac;
-        return new Color(r2 + ((r1 - r2) * frac), g2 + ((g1 - g2) * frac), b2 + ((b1 - b2) * frac), 1);
-    }
 }

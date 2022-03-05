@@ -1,0 +1,25 @@
+package client.skins;
+
+import javafx.animation.FadeTransition;
+import javafx.scene.control.Button;
+import javafx.scene.control.skin.ButtonSkin;
+import javafx.util.Duration;
+
+public class MinimalButtonSkin extends ButtonSkin {
+    public MinimalButtonSkin(Button control) {
+        super(control);
+
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(100));
+        fadeIn.setNode(control);
+        fadeIn.setToValue(1);
+        control.setOnMouseEntered(event -> fadeIn.playFromStart());
+
+
+        FadeTransition fadeOut = new FadeTransition(Duration.millis(100));
+        fadeOut.setNode(control);
+        fadeOut.setToValue(0.8);
+        control.setOnMouseExited(event -> fadeOut.playFromStart());
+
+        control.setOpacity(0.8);
+    }
+}
