@@ -36,7 +36,10 @@ public class GameMultiChoiceCtrl extends GameCtrl {
     private Text timeBonusText;
 
     @FXML
-    protected Button nextQuestion;
+    private Button nextQuestion;
+
+    @FXML
+    private VBox jokers;
 
     @FXML
     protected Text timeLeftText;
@@ -64,6 +67,8 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         super.timeBonusText = timeBonusText;
 
         super.nextQuestion = nextQuestion;
+
+        super.jokers = jokers;
 
         super.timeLeftText = timeLeftText;
         super.timeLeftBar = timeLeftBar;
@@ -97,14 +102,14 @@ public class GameMultiChoiceCtrl extends GameCtrl {
                 if (locked[index] || (selected != null && selected.getValue() == option))
                     return;
 
-                hoverAnim(option, false).play();
+                hoverAnim(option, new Color(0.698, 0.792, 0.921, 1), false).play();
             });
 
             option.setOnMouseExited(event -> {
                 if (locked[index] || (selected != null && selected.getValue() == option))
                     return;
 
-                hoverAnim(option, true).play();
+                hoverAnim(option, new Color(0.698, 0.792, 0.921, 1), true).play();
             });
 
             option.setOnMouseClicked(event -> {
@@ -141,7 +146,7 @@ public class GameMultiChoiceCtrl extends GameCtrl {
             }
         }
 
-        showPointsGained(selected.getKey() == answer ? 100 : 0);
+        showPointsGained((selected != null && selected.getKey() == answer) ? 100 : 0);
     }
 
     private void removeAnswer(int answer) {
@@ -149,20 +154,6 @@ public class GameMultiChoiceCtrl extends GameCtrl {
 
         removedAnswer = options[answer];
         fadeOption(removedAnswer, (Color) removedAnswer.getBackground().getFills().get(0).getFill(), new Color(0.478, 0.478, 0.478, 1)).play();
-    }
-
-    private Animation hoverAnim(AnchorPane anchorPane, boolean inverted) {
-        return new Transition() {
-            {
-                setCycleDuration(Duration.millis(200));
-                setInterpolator(Interpolator.EASE_BOTH);
-            }
-
-            @Override
-            protected void interpolate(double frac) {
-                anchorPane.setBackground(new Background(new BackgroundFill(lerp(0.698, 0.792, 0.921, inverted ? 1 - frac : frac), new CornerRadii(10), Insets.EMPTY)));
-            }
-        };
     }
 
     private Animation selectedAnim(AnchorPane anchorPane, boolean inverted) {
@@ -197,4 +188,8 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         };
     }
 
+    @FXML
+    private void onNextButton() {
+        super.goToNextQuestion();
+    }
 }

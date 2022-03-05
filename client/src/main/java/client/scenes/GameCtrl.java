@@ -1,6 +1,7 @@
 package client.scenes;
 
 import client.utils.ServerUtils;
+import commons.utils.LoggerUtil;
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.Transition;
@@ -47,6 +48,9 @@ public abstract class GameCtrl extends SceneCtrl {
     protected Button nextQuestion;
 
     @FXML
+    protected VBox jokers;
+
+    @FXML
     protected Text timeLeftText;
     @FXML
     protected AnchorPane timeLeftBar;
@@ -69,8 +73,12 @@ public abstract class GameCtrl extends SceneCtrl {
 
         nextQuestion.setVisible(false);
 
+        jokers.setVisible(false);
+
+        enableListeners();
+
         //----- TODO: Everything below this is temporary and for testing/displaying purposes -----
-        gameMode = GameMode.SINGLEPLAYER;
+        gameMode = GameMode.MULTIPLAYER;
         Random random = new Random();
         for (int i = 0; i < 10; i++) {
             questionHistory.add(random.nextBoolean());
@@ -89,6 +97,33 @@ public abstract class GameCtrl extends SceneCtrl {
                 reduceTimer(0.5d);
             }
         }, 4000);
+    }
+
+    private void enableListeners() {
+        for (Node node : jokers.getChildren()) {
+            AnchorPane joker = (AnchorPane) node;
+            joker.setOnMouseEntered(event -> {
+                hoverAnim(joker, new Color(0.266, 0.266, 0.266, 1), new Color(1, 1, 1, 1)).play();
+            });
+
+            joker.setOnMouseExited(event -> {
+                hoverAnim(joker, new Color(1, 1, 1, 1), new Color(0.266, 0.266, 0.266, 1)).play();
+            });
+
+            joker.setOnMouseClicked(event -> {
+                jokerUsed(joker.getId());
+            });
+        }
+    }
+
+    private enum JokerType {
+        DOUBLE_POINTS,
+        HALF_TIME,
+        REMOVE_ANSWER
+    }
+    private void jokerUsed(String type) {
+        JokerType jokerType = JokerType.valueOf(type.toUpperCase());
+        LoggerUtil.infoInline("Clicked on the " + jokerType + " joker.");
     }
 
     protected LinkedList<Boolean> questionHistory = new LinkedList<>();
@@ -118,6 +153,10 @@ public abstract class GameCtrl extends SceneCtrl {
         }
     }
 
+    protected void goToNextQuestion() {
+
+    }
+
     private Circle generateCircle(Paint color, Effect effect) {
         Circle circle = new Circle();
         circle.setEffect(effect);
@@ -139,6 +178,8 @@ public abstract class GameCtrl extends SceneCtrl {
 
     Animation timer = null;
     protected void startTimer() {
+        jokers.setVisible(gameMode == GameMode.MULTIPLAYER);
+
         timer = timerAnim(timeLeftSlider);
 
         timeLeftSlider.setBackground(new Background(new BackgroundFill(new Color(0.160, 0.729, 0.901, 1), new CornerRadii(6), Insets.EMPTY)));
@@ -172,22 +213,6 @@ public abstract class GameCtrl extends SceneCtrl {
         });
     }
 
-    private Animation timerAnim(AnchorPane anchorPane) {
-        return new Transition() {
-            {
-                setCycleDuration(Duration.millis(10000 * timeMultiplier));
-                setInterpolator(Interpolator.LINEAR);
-            }
-
-            @Override
-            protected void interpolate(double frac) {
-                anchorPane.setPrefWidth(25 + 475 * frac);
-                timeLeft = timeMultiplier * (1 - frac);
-                timeLeftText.setText("Time left: " + (Math.round(100 * timeLeft) / 10d) + "s");
-            }
-        };
-    }
-
     protected abstract void showCorrectAnswer(int answer);
 
     protected void showPointsGained(int answerPoints) {
@@ -217,6 +242,66 @@ public abstract class GameCtrl extends SceneCtrl {
 
         Animation pointsAnim = pointsAnim(total, answerPoints, timeBonus);
         pointsAnim.playFromStart();
+    }
+
+    /**
+     * Transitions from white to the target color
+     *
+     * @param anchorPane The pane which to change the color of
+     * @param target The color to go to
+     * @param inverted If the transition needs to be inverted or not
+     * @return The animation object which can be played
+     */
+    protected Animation hoverAnim(AnchorPane anchorPane, Color target, boolean inverted) {
+        return new Transition() {
+            {
+                setCycleDuration(Duration.millis(200));
+                setInterpolator(Interpolator.EASE_BOTH);
+            }
+
+            @Override
+            protected void interpolate(double frac) {
+                anchorPane.setBackground(new Background(new BackgroundFill(lerp(target.getRed(), target.getGreen(), target.getBlue(), inverted ? 1 - frac : frac), new CornerRadii(10), Insets.EMPTY)));
+            }
+        };
+    }
+
+    /**
+     * Transitions from a specified start color to a specified end color
+     *
+     * @param anchorPane The pane which to change the color of
+     * @param start The color to start from
+     * @param end The color to go to
+     * @return The animation object which can be played
+     */
+    protected Animation hoverAnim(AnchorPane anchorPane, Color start, Color end) {
+        return new Transition() {
+            {
+                setCycleDuration(Duration.millis(200));
+                setInterpolator(Interpolator.EASE_BOTH);
+            }
+
+            @Override
+            protected void interpolate(double frac) {
+                anchorPane.setBackground(new Background(new BackgroundFill(lerp(start.getRed(), start.getGreen(), start.getBlue(), end.getRed(), end.getGreen(), end.getBlue(), frac), new CornerRadii(10), Insets.EMPTY)));
+            }
+        };
+    }
+
+    private Animation timerAnim(AnchorPane anchorPane) {
+        return new Transition() {
+            {
+                setCycleDuration(Duration.millis(10000 * timeMultiplier));
+                setInterpolator(Interpolator.LINEAR);
+            }
+
+            @Override
+            protected void interpolate(double frac) {
+                anchorPane.setPrefWidth(25 + 475 * frac);
+                timeLeft = timeMultiplier * (1 - frac);
+                timeLeftText.setText("Time left: " + (Math.round(100 * timeLeft) / 10d) + "s");
+            }
+        };
     }
 
     private Animation pointsAnim(int totalPoints, int answerPoints, int timePoints) {

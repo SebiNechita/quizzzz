@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.effect.InnerShadow?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
@@ -42,7 +44,7 @@
                 <Font name="Comic Sans MS" size="36.0" />
             </font>
         </Text>
-        <HBox fx:id="optionsContainer" alignment="CENTER" layoutY="235.0" prefHeight="250.0" prefWidth="1280.0" spacing="30.0">
+        <HBox fx:id="optionsContainer" alignment="CENTER" layoutX="221.0" layoutY="235.0" prefHeight="250.0" prefWidth="860.0" spacing="30.0">
             <children>
                 <AnchorPane prefHeight="250.0" prefWidth="250.0" style="-fx-background-color: #fff; -fx-background-radius: 10;">
                     <children>
@@ -103,7 +105,7 @@
                 <Font name="Comic Sans MS Bold" size="24.0" />
             </font>
         </Text>
-        <Button fx:id="nextQuestion" alignment="CENTER" layoutX="1099.0" layoutY="650.0" mnemonicParsing="false" prefHeight="56.0" prefWidth="166.0" style="-fx-background-color: #616161; -fx-skin: 'client.skins.MinimalButtonSkin'; -fx-background-radius: 10;" text="Next" textFill="WHITE">
+        <Button fx:id="nextQuestion" alignment="CENTER" layoutX="1099.0" layoutY="650.0" mnemonicParsing="false" onAction="#onNextButton" prefHeight="56.0" prefWidth="166.0" style="-fx-background-color: #616161; -fx-skin: 'client.skins.MinimalButtonSkin'; -fx-background-radius: 10;" text="Next" textFill="WHITE">
             <font>
                 <Font name="Comic Sans MS Bold" size="26.0" />
             </font>
@@ -130,5 +132,54 @@
             <Font name="Comic Sans MS" size="17.0" />
          </font>
       </Text>
+      <AnchorPane layoutY="160.0" prefHeight="400.0" prefWidth="150.0" style="-fx-background-color: #666; -fx-background-radius: 0 10 10 0;">
+         <children>
+            <Text fill="WHITE" layoutX="30.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Jokers" textAlignment="CENTER">
+               <font>
+                  <Font name="Comic Sans MS" size="28.0" />
+               </font>
+            </Text>
+            <VBox fx:id="jokers" alignment="CENTER" fillWidth="false" layoutY="38.0" prefHeight="362.0" prefWidth="150.0" spacing="10.0">
+               <children>
+                  <AnchorPane fx:id="double_points" prefHeight="100.0" prefWidth="100.0" style="-fx-background-color: #444444; -fx-background-radius: 10;">
+                     <children>
+                        <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="6.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../img/double_points.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                     <padding>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                     </padding>
+                  </AnchorPane>
+                  <AnchorPane fx:id="half_time" prefHeight="100.0" prefWidth="100.0" style="-fx-background-color: #444444; -fx-background-radius: 10;">
+                     <children>
+                        <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="6.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../img/half_time.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                     <padding>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                     </padding>
+                  </AnchorPane>
+                  <AnchorPane fx:id="remove_answer" prefHeight="100.0" prefWidth="100.0" style="-fx-background-color: #444444; -fx-background-radius: 10;">
+                     <children>
+                        <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="6.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../img/remove_answer.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                     <padding>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                     </padding>
+                  </AnchorPane>
+               </children>
+            </VBox>
+         </children>
+      </AnchorPane>
     </children>
 </AnchorPane>
