@@ -47,12 +47,23 @@ public class HomeLeaderboardCtrl extends SceneCtrl {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         colUsername.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().username));
-        colPoints.setCellValueFactory(q -> new SimpleStringProperty("3"));
+        colPoints.setCellValueFactory(q -> new SimpleStringProperty(Integer.toString(q.getValue().points)));
+        refresh();
     }
 
+    /**
+     * Reload the leaderboard.
+     */
     public void refresh() {
         var quotes = server.getLeaderboard();
         data = FXCollections.observableList(quotes);
         table.setItems(data);
+    }
+
+    /**
+     * Show the home screen.
+     */
+    public void showHome(){
+        main.showScene(HomeCtrl.class);
     }
 }

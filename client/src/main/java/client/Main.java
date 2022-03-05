@@ -44,7 +44,7 @@ public class Main extends Application {
         Triple<HomeLeaderboardCtrl, Parent, String> homeLeaderboard = FXML.load("client/scenes/HomeLeaderboard.fxml", "Main Menu");
 
         MainCtrl mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, homeLeaderboard);
-        mainCtrl.showScene(HomeLeaderboardCtrl.class);
+        mainCtrl.initialize(primaryStage, home, homeLeaderboard);
+        mainCtrl.showScene(HomeCtrl.class);
     }
 }

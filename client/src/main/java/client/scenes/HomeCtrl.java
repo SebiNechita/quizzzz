@@ -26,4 +26,11 @@ public class HomeCtrl extends SceneCtrl {
     public void pingButtonClicked() {
         LoggerUtil.raw(server.pingServer());
     }
+
+    /**
+     * Show the leaderboard.
+     */
+    public void showHomeLeaderboard(){
+        main.showScene(HomeLeaderboardCtrl.class);
+    }
 }

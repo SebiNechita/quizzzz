@@ -313,6 +313,6 @@ public class ServerUtils {
      * @return the leaderboard.
      */
     public List<LeaderboardEntry> getLeaderboard() {
-        return requestTemplate("ping").get(new GenericType<List<LeaderboardEntry>>() {});
+        return requestTemplate("api/leaderboard").get(new GenericType<>() {});
     }
 }
