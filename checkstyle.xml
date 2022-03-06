@@ -8,6 +8,7 @@
   <module name="TreeWalker">
     <module name="CyclomaticComplexity">
       <property name="max" value="15"/>
+      <property name="severity" value="warning"/>
     </module>
     <module name="DefaultComesLast"/>
     <module name="IllegalThrows"/>
@@ -19,7 +20,9 @@
     <module name="JavadocMethod"/>
     <!-- <module name="JavadocVariable"/> -->
     <module name="LeftCurly"/>
-    <module name="LocalVariableName"/>
+    <module name="LocalVariableName">
+      <property name="severity" value="warning"/>
+    </module>
     <module name="MemberName"/>
     <module name="MethodLength">
       <property name="max" value="200" />
@@ -27,6 +30,7 @@
     <module name="MultipleStringLiterals"/>
     <module name="NestedIfDepth">
       <property name="max" value="3"/>
+      <property name="severity" value="warning"/>
     </module>
     <module name="NoWhitespaceAfter"/>
     <module name="NoWhitespaceBefore"/>
@@ -36,6 +40,9 @@
     <module name="UnusedImports"/>
     <module name="UnnecessaryParentheses"/>
   </module>
-  <module name="LineLength"/>
+  <module name="LineLength">
+    <property name="max" value=120>
+    <property name="severity" value="warning"/>
+  </module>
   <module name="NewlineAtEndOfFile"/>
 </module>
