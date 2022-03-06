@@ -28,4 +28,8 @@ public class RegisterCtrl extends SceneCtrl{
     public void showLogin(){
         main.showScene(LoginCtrl.class);
     }
+
+    public void registerButtonClicked(){
+        server.register(userName.getText(), password.getText());
+    }
 }

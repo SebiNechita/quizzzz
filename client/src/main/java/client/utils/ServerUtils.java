@@ -305,4 +305,22 @@ public class ServerUtils {
     public String pingServer() {
         return requestTemplate("ping").get(String.class);
     }
+
+    /**
+     * Register a new user on server
+     * @param username the name of the user
+     * @param password the password of the user
+     */
+    public void register(String username, String password){
+        Response response = getClient().target(Main.URL).path("api/registration")
+                .request(APPLICATION_JSON).accept(APPLICATION_JSON)
+                .post(Entity.entity(new RegisterRequestPacket(username, password), APPLICATION_JSON));
+
+        if (response.getStatus() != 200) {
+            LoggerUtil.warn("Could not create user");
+        }
+        else{
+            LoggerUtil.warn("Created user");
+        }
+    }
 }
