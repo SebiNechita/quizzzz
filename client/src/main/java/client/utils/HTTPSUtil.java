@@ -5,8 +5,6 @@ import client.Main;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
-import java.io.File;
-import java.io.FileInputStream;
 import java.security.KeyStore;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
@@ -22,8 +20,7 @@ public class HTTPSUtil {
         HttpsURLConnection.setDefaultHostnameVerifier((hostname, sslSession) -> hostname.equals("localhost"));
 
         try {
-            File crtFile = new File("src/main/resources/servercert.crt");
-            Certificate certificate = CertificateFactory.getInstance("X.509").generateCertificate(new FileInputStream(crtFile));
+            Certificate certificate = CertificateFactory.getInstance("X.509").generateCertificate(HTTPSUtil.class.getResourceAsStream("/servercert.crt"));
 
             KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
             keyStore.load(null, null);
