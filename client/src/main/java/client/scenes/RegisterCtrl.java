@@ -3,6 +3,7 @@ package client.scenes;
 import client.Main;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import commons.utils.LoggerUtil;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 
@@ -20,6 +21,9 @@ public class RegisterCtrl extends SceneCtrl{
     @FXML
     private TextField password;
 
+    @FXML
+    private TextField confirmPassword;
+
     @Inject
     public RegisterCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
         super(mainCtrl, serverUtils);
@@ -30,6 +34,11 @@ public class RegisterCtrl extends SceneCtrl{
     }
 
     public void registerButtonClicked(){
-        server.register(userName.getText(), password.getText());
+        if (!password.getText().equals(confirmPassword.getText())){
+            LoggerUtil.warn("Passwords are not matching.");
+        }
+        else{
+            server.register(userName.getText(), password.getText());
+        }
     }
 }
