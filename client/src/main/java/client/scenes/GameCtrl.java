@@ -313,6 +313,12 @@ public abstract class GameCtrl extends SceneCtrl {
         };
     }
 
+    /**
+     * Animates the timer to fill up its bar
+     *
+     * @param anchorPane The pane which to scroll
+     * @return The animation object which can be played
+     */
     private Animation timerAnim(AnchorPane anchorPane) {
         return new Transition() {
             {
@@ -329,6 +335,14 @@ public abstract class GameCtrl extends SceneCtrl {
         };
     }
 
+    /**
+     * Animates the text to count up when the player is displayed their points
+     *
+     * @param totalPoints The amount of points to show for the total text
+     * @param answerPoints The amount of points to show for the answer text
+     * @param timePoints The amount of points to show for the timer text
+     * @return The animation object which can be played
+     */
     private Animation pointsAnim(int totalPoints, int answerPoints, int timePoints) {
         return new Transition() {
             {

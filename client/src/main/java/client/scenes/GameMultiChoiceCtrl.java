@@ -161,6 +161,13 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         fadeOption(removedAnswer, (Color) removedAnswer.getBackground().getFills().get(0).getFill(), new Color(0.478, 0.478, 0.478, 1)).play();
     }
 
+    /**
+     * Animates the option the user chose
+     8
+     * @param anchorPane The pane to animate
+     * @param inverted If the animation needs to be reversed or not
+     * @return The animation object which can be played
+     */
     private Animation selectedAnim(AnchorPane anchorPane, boolean inverted) {
         return new Transition() {
             {
@@ -179,6 +186,14 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         };
     }
 
+    /**
+     * Animates the options the user gets
+     *
+     * @param anchorPane The pane to animate
+     * @param start The color to start from
+     * @param target The color to end with
+     * @return The animation object which can be played
+     */
     private Animation fadeOption(AnchorPane anchorPane, Color start, Color target) {
         return new Transition() {
             {
