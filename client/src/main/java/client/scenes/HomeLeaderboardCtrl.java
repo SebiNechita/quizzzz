@@ -49,7 +49,6 @@ public class HomeLeaderboardCtrl extends SceneCtrl {
     public void initialize(URL location, ResourceBundle resources) {
         colUsername.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().username));
         colPoints.setCellValueFactory(q -> new SimpleStringProperty(Integer.toString(q.getValue().points)));
-        refresh();
     }
 
     /**
@@ -57,8 +56,12 @@ public class HomeLeaderboardCtrl extends SceneCtrl {
      */
     public void refresh() {
         List<LeaderboardEntry> leaderboardEntries = server.getLeaderboard();
-        data = FXCollections.observableList(leaderboardEntries);
-        table.setItems(data);
+        //If the request is unsuccessful, the list is null.
+        if (leaderboardEntries != null){
+            data = FXCollections.observableList(leaderboardEntries);
+            table.setItems(data);
+        }
+
     }
 
     /**
