@@ -13,8 +13,12 @@
     <module name="DefaultComesLast"/>
     <module name="IllegalThrows"/>
     <module name="IllegalImport"/>
-    <module name="IllegalIdentifierName"/>
-    <module name="IllegalCatch"/>
+    <module name="IllegalIdentifierName">
+      <property name="severity" value="warning"/>
+    </module>
+    <module name="IllegalCatch">
+      <property name="severity" value="warning"/>
+    </module>
     <!-- <module name="ImportOrder"/> -->
     <module name="Indentation"/>
     <module name="JavadocMethod"/>
@@ -26,14 +30,21 @@
     <module name="MemberName"/>
     <module name="MethodLength">
       <property name="max" value="200" />
+      <property name="severity" value="warning"/>
     </module>
-    <module name="MultipleStringLiterals"/>
+    <module name="MultipleStringLiterals">
+      <property name="severity" value="warning"/>
+    </module>
     <module name="NestedIfDepth">
       <property name="max" value="3"/>
       <property name="severity" value="warning"/>
     </module>
-    <module name="NoWhitespaceAfter"/>
-    <module name="NoWhitespaceBefore"/>
+    <module name="NoWhitespaceAfter">
+      <property name="severity" value="warning"/>
+    </module>
+    <module name="NoWhitespaceBefore">
+      <property name="severity" value="warning"/>
+    </module>
     <module name="PackageDeclaration"/>
     <module name="PackageName"/>
     <module name="RedundantImport"/>
@@ -41,7 +52,7 @@
     <module name="UnnecessaryParentheses"/>
   </module>
   <module name="LineLength">
-    <property name="max" value="120">
+    <property name="max" value="120"/>
     <property name="severity" value="warning"/>
   </module>
   <module name="NewlineAtEndOfFile"/>
