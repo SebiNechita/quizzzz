@@ -54,6 +54,9 @@ public class GameMultiChoiceCtrl extends GameCtrl {
     private boolean[] locked = {false, false, false};
     private AnchorPane removedAnswer = null;
 
+    @FXML
+    private VBox notificationContainer;
+
     @Inject
     public GameMultiChoiceCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
         super(mainCtrl, serverUtils);
@@ -72,6 +75,8 @@ public class GameMultiChoiceCtrl extends GameCtrl {
 
         super.timeLeftText = timeLeftText;
         super.timeLeftBar = timeLeftBar;
+
+        super.notificationContainer = notificationContainer;
     }
 
     @Override

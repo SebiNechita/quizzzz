@@ -5,6 +5,7 @@ import commons.utils.LoggerUtil;
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.Transition;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -16,6 +17,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
@@ -29,6 +31,10 @@ public abstract class GameCtrl extends SceneCtrl {
         MULTIPLAYER
     }
     private GameMode gameMode;
+
+    private enum Emote {
+
+    }
 
     @FXML
     protected HBox progressBar;
@@ -59,12 +65,18 @@ public abstract class GameCtrl extends SceneCtrl {
     protected double timeLeft = 0;
     protected double lastAnswerChange = 0;
 
+    @FXML
+    protected VBox notificationContainer;
+    private NotificationRenderer notificationRenderer;
+
     @Inject
     public GameCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
         super(mainCtrl, serverUtils);
     }
 
     protected void initialize() {
+        notificationRenderer = new NotificationRenderer();
+
         timeLeftSlider = (AnchorPane) timeLeftBar.getChildren().get(0);
 
         pointsGainedText.setVisible(false);
@@ -74,6 +86,8 @@ public abstract class GameCtrl extends SceneCtrl {
         nextQuestion.setVisible(false);
 
         jokers.setVisible(false);
+
+        notificationContainer.setVisible(gameMode == GameMode.MULTIPLAYER);
 
         enableListeners();
 
@@ -97,11 +111,25 @@ public abstract class GameCtrl extends SceneCtrl {
                 reduceTimer(0.5d);
             }
         }, 4000);
+
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> {
+                    if (random.nextBoolean()) {
+                        notificationRenderer.addNotification(String.valueOf(random.nextInt()), null);
+                    } else {
+                        notificationRenderer.addDisconnectNotification(String.valueOf(random.nextInt()));
+                    }
+                });
+            }
+        }, 1000, 400);
     }
 
     private void enableListeners() {
         for (Node node : jokers.getChildren()) {
             AnchorPane joker = (AnchorPane) node;
+
             joker.setOnMouseEntered(event -> {
                 hoverAnim(joker, new Color(0.266, 0.266, 0.266, 1), new Color(1, 1, 1, 1)).play();
             });
@@ -179,6 +207,7 @@ public abstract class GameCtrl extends SceneCtrl {
     Animation timer = null;
     protected void startTimer() {
         jokers.setVisible(gameMode == GameMode.MULTIPLAYER);
+        notificationContainer.setVisible(gameMode == GameMode.MULTIPLAYER);
 
         timer = timerAnim(timeLeftSlider);
 
@@ -205,11 +234,7 @@ public abstract class GameCtrl extends SceneCtrl {
         timer.setOnFinished(event -> {
             showCorrectAnswer(1);
 
-            if (gameMode == GameMode.SINGLEPLAYER) {
-                nextQuestion.setVisible(true);
-            } else {
-
-            }
+            nextQuestion.setVisible(gameMode == GameMode.SINGLEPLAYER);
         });
     }
 
@@ -365,5 +390,80 @@ public abstract class GameCtrl extends SceneCtrl {
      */
     private int lerp(int start, int end, double time) {
         return (int) Math.round(start + (end - start) * time);
+    }
+
+    private class NotificationRenderer {
+        private Queue<AnchorPane> notifications = new LinkedList<>();
+
+        private NotificationRenderer() {
+            notificationContainer.getChildren().clear();
+        }
+
+        private void addNotification(String username, Emote emote) {
+            renderNotification(generateNotification(username + " reacted with:", new Color(1, 1, 1, 1), emote));
+        }
+
+        private void addDisconnectNotification(String username) {
+            renderNotification(generateNotification(username + " has disconnected", new Color(0.949, 0.423, 0.392, 1), null));
+        }
+
+        private AnchorPane generateNotification(String text, Paint textColor, Emote emote) {
+            AnchorPane anchorPane = new AnchorPane();
+            anchorPane.setPrefWidth(200);
+            anchorPane.setPrefHeight(80);
+            anchorPane.setBackground(new Background(new BackgroundFill(new Color(0.231, 0.231, 0.231, 0.8), new CornerRadii(8), Insets.EMPTY)));
+
+            Text title = new Text();
+            title.setLayoutX(6);
+            title.setLayoutY(22);
+            title.setWrappingWidth(200);
+
+            title.setText(text);
+            title.setFill(textColor);
+
+            title.setFont(new Font("Comic Sans MS", 18));
+
+            anchorPane.getChildren().add(title);
+            return anchorPane;
+        }
+
+        private Animation fadingOut = null;
+        private void renderNotification(AnchorPane notification) {
+            ObservableList<Node> children = notificationContainer.getChildren();
+            children.add(notification);
+            notifications.add(notification);
+
+            if (notifications.size() > 3) {
+                if (fadingOut != null) {
+                    fadingOut.jumpTo(Duration.millis(600));
+                }
+
+                AnchorPane target = notifications.poll();
+                fadingOut = fadeOut(target);
+                fadingOut.setOnFinished(event -> {
+                    children.remove(target);
+                });
+                fadingOut.playFromStart();
+            }
+        }
+
+        private Animation fadeOut(AnchorPane anchorPane) {
+            return new Transition() {
+                {
+                    setCycleDuration(Duration.millis(600));
+                    setInterpolator(Interpolator.EASE_BOTH);
+                }
+
+                final Color color = (Color) anchorPane.getBackground().getFills().get(0).getFill();
+                final Text text = (Text) anchorPane.getChildren().get(0);
+                final Color textColor = (Color) text.getFill();
+
+                @Override
+                protected void interpolate(double frac) {
+                    anchorPane.setBackground(new Background(new BackgroundFill(new Color(color.getRed(), color.getGreen(), color.getBlue(), 1 - frac), new CornerRadii(10), Insets.EMPTY)));
+                    text.setFill(new Color(textColor.getRed(), textColor.getGreen(), textColor.getBlue(), 1 - frac));
+                }
+            };
+        }
     }
 }
