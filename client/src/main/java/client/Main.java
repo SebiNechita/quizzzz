@@ -42,9 +42,10 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         Triple<HomeCtrl, Parent, String> home = FXML.load("client/scenes/Home.fxml", "Main Menu");
         Triple<HomeCtrl, Parent, String> login = FXML.load("client/scenes/Login.fxml", "Main Menu");
+        Triple<HomeCtrl, Parent, String> register = FXML.load("client/scenes/Register.fxml", "Main Menu");
 
         MainCtrl mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, login, home);
+        mainCtrl.initialize(primaryStage, home, login, register);
         mainCtrl.showScene(LoginCtrl.class);
     }
 }
