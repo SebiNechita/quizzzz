@@ -15,6 +15,7 @@
  */
 package client;
 
+import client.scenes.HelpCtrl;
 import client.scenes.HomeCtrl;
 import client.scenes.HomeLeaderboardCtrl;
 import client.scenes.MainCtrl;
@@ -42,9 +43,11 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         Triple<HomeCtrl, Parent, String> home = FXML.load("client/scenes/Home.fxml", "Main Menu");
         Triple<HomeLeaderboardCtrl, Parent, String> homeLeaderboard = FXML.load("client/scenes/HomeLeaderboard.fxml", "Main Menu");
+        Triple<HelpCtrl, Parent, String> help = FXML.load("client/scenes/HelpScreen.fxml", "Main Menu");
 
         MainCtrl mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, home, homeLeaderboard);
+
+        mainCtrl.initialize(primaryStage, home, homeLeaderboard,help);
         mainCtrl.showScene(HomeCtrl.class);
     }
 }

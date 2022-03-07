@@ -33,4 +33,8 @@ public class HomeCtrl extends SceneCtrl {
     public void showHomeLeaderboard(){
         main.showScene(HomeLeaderboardCtrl.class);
     }
+
+    public void showHelp(){
+        main.showScene(HelpCtrl.class);
+    }
 }

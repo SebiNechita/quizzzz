@@ -13,4 +13,5 @@
       </Text>
       <Button layoutX="614.0" layoutY="403.0" mnemonicParsing="false" onAction="#pingButtonClicked" text="Ping" />
       <Button layoutX="587.0" layoutY="466.0" mnemonicParsing="false" onAction="#showHomeLeaderboard" text="Leaderboard" />
+   <Button layoutX="1083.0" layoutY="584.0" mnemonicParsing="false" style="-fx-border-radius: 11;" onAction="#showHelp" text="Help" />
 </AnchorPane>
