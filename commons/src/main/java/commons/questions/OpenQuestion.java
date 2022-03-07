@@ -1,9 +1,9 @@
-import java.io.File;
-import java.io.IOException;
+package commons.questions;
+
 import java.util.List;
 import java.util.Random;
 
-public class OpenQuestion extends Question{
+public class OpenQuestion extends Question {
 
     private long answerInWH;
 
@@ -21,9 +21,9 @@ public class OpenQuestion extends Question{
     }
 
     /**
-     * Randomly picks an activity from the list of activities and uses that to create an OpenQuestion
+     * Randomly picks an activity from the list of activities and uses that to create an commons.questions.OpenQuestion
      * @param unusedActivities A list that contains all the activities that hasn't been used yet
-     * @return OpenQuestion created using the randomly picked activity
+     * @return commons.questions.OpenQuestion created using the randomly picked activity
      */
     private static OpenQuestion generateOpenQuestion(List<Activity> unusedActivities) {
         Random randomGen = new Random();
@@ -49,7 +49,7 @@ public class OpenQuestion extends Question{
 
     @Override
     public String toString() {
-        return "OpenQuestion{" +
+        return "commons.questions.OpenQuestion{" +
                 "question=" + getQuestion() +
                 "answerInWH=" + answerInWH +
                 '}';

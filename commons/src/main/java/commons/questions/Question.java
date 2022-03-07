@@ -1,3 +1,5 @@
+package commons.questions;
+
 public abstract class Question {
 
     private String question;
@@ -16,7 +18,7 @@ public abstract class Question {
 
     @Override
     public String toString() {
-        return "Question{" +
+        return "commons.questions.Question{" +
                 "question='" + question + '\'' +
                 '}';
     }

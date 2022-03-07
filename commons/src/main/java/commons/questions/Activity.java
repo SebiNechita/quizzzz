@@ -1,3 +1,5 @@
+package commons.questions;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -79,7 +81,7 @@ public class Activity {
 
     @Override
     public String toString() {
-        return "Activity{" +
+        return "commons.questions.Activity{" +
                 "title='" + title + '\'' +
                 ", id=" + id +
                 ", imagePath='" + image_path + '\'' +

@@ -1,5 +1,5 @@
-import java.io.File;
-import java.io.IOException;
+package commons.questions;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
