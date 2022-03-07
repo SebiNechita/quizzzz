@@ -108,7 +108,7 @@ public class LoggerUtil {
 
 
 
-    private static class LogFormatter extends Formatter {
+    public static class LogFormatter extends Formatter {
         private static final DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
         // ANSI Escape codes
@@ -126,7 +126,7 @@ public class LoggerUtil {
         public static final String BLUE = "\u001B[34m";
         public static final String PURPLE = "\u001B[35m";
         public static final String CYAN = "\u001B[36m";
-        public static final String LIGHTGRAY = "\u001B[38;5;250m";
+        public static final String LIGHT_GRAY = "\u001B[38;5;250m";
         public static final String WHITE = "\u001B[97m";
 
         public static final String BOLD = "\u001B[1m";
@@ -135,13 +135,13 @@ public class LoggerUtil {
         public static final String INV_ITALIC = "\u001B[23m";
 
         private static final Pattern HIGHLIGHT_START = Pattern.compile("\\$HL");
-        private static final Pattern HIGHLIGHT_END = Pattern.compile("\\$EHL");
+        private static final Pattern HIGHLIGHT_END = Pattern.compile("\\$");
 
         @Override
         public String format(LogRecord logRecord) {
             StringBuilder builder = new StringBuilder();
-            builder.append(LIGHTGRAY).append(df.format(new Date(logRecord.getMillis()))).append(" - ");
-            builder.append(logRecord.getLevel().intValue() >= Level.INFO.intValue() ? WHITE : LIGHTGRAY)
+            builder.append(LIGHT_GRAY).append(df.format(new Date(logRecord.getMillis()))).append(" - ");
+            builder.append(logRecord.getLevel().intValue() >= Level.INFO.intValue() ? WHITE : LIGHT_GRAY)
                     .append("[").append(Thread.currentThread().getStackTrace()[8].getClassName()).append(".").append(Thread.currentThread().getStackTrace()[8].getMethodName())
                     .append("(").append(Thread.currentThread().getStackTrace()[8].getFileName()).append(":")
                     .append(Thread.currentThread().getStackTrace()[8].getLineNumber()).append(")]");
@@ -165,12 +165,12 @@ public class LoggerUtil {
         }
 
         private String messageLayout(LogRecord logRecord) {
-            return (!((boolean) logRecord.getParameters()[0]) && logRecord.getLevel().intValue() >= Level.INFO.intValue()) ? " (Thread: " + logRecord.getLongThreadID() + ")\n\t" : " >> ";
+            return (!((boolean) logRecord.getParameters()[0]) && logRecord.getLevel().intValue() >= Level.INFO.intValue()) ? " (Thread: " + logRecord.getLongThreadID() + ")\n" : " >> ";
         }
 
         private String highlight(Level level, boolean inverse) {
             if (inverse) {
-                return level.intValue() >= Level.FINE.intValue() ? INV_BOLD + highlightColor(level) : highlightColor(level);
+                return level.intValue() >= Level.FINE.intValue() ? INV_BOLD + levelColor(level) : levelColor(level);
             } else {
                 return level.intValue() >= Level.FINE.intValue() ? BOLD + highlightColor(level) : highlightColor(level);
             }
@@ -178,7 +178,7 @@ public class LoggerUtil {
 
         private String levelColor(Level level) {
             if (level == Level.FINER || level == Level.FINEST) {
-                return LIGHTGRAY;
+                return LIGHT_GRAY;
             } else if (level == Level.INFO) {
                 return DARK_GREEN;
             } else if (level == Level.WARNING) {
