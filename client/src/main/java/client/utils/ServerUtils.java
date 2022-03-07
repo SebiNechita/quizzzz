@@ -16,11 +16,13 @@
 package client.utils;
 
 import client.Main;
+import commons.LeaderboardEntry;
 import commons.utils.LoggerUtil;
 import jakarta.ws.rs.client.*;
 import jakarta.ws.rs.core.*;
 import packets.RegisterRequestPacket;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -304,5 +306,13 @@ public class ServerUtils {
      */
     public String pingServer() {
         return requestTemplate("ping").get(String.class);
+    }
+
+    /**
+     * Gets the leaderboard from server.
+     * @return the leaderboard.
+     */
+    public List<LeaderboardEntry> getLeaderboard() {
+        return requestTemplate("api/leaderboard").get(new GenericType<>() {});
     }
 }
