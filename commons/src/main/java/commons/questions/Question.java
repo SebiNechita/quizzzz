@@ -18,7 +18,7 @@ public abstract class Question {
 
     @Override
     public String toString() {
-        return "commons.questions.Question{" +
+        return "Question{" +
                 "question='" + question + '\'' +
                 '}';
     }

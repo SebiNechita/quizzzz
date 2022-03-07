@@ -81,7 +81,7 @@ public class Activity {
 
     @Override
     public String toString() {
-        return "commons.questions.Activity{" +
+        return "Activity{" +
                 "title='" + title + '\'' +
                 ", id=" + id +
                 ", imagePath='" + image_path + '\'' +

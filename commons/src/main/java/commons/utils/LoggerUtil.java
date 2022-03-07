@@ -138,23 +138,23 @@ public class LoggerUtil {
         private static final Pattern HIGHLIGHT_END = Pattern.compile("\\$EHL");
 
         @Override
-        public String format(LogRecord record) {
+        public String format(LogRecord logRecord) {
             StringBuilder builder = new StringBuilder();
-            builder.append(LIGHTGRAY).append(df.format(new Date(record.getMillis()))).append(" - ");
-            builder.append(record.getLevel().intValue() >= Level.INFO.intValue() ? WHITE : LIGHTGRAY)
+            builder.append(LIGHTGRAY).append(df.format(new Date(logRecord.getMillis()))).append(" - ");
+            builder.append(logRecord.getLevel().intValue() >= Level.INFO.intValue() ? WHITE : LIGHTGRAY)
                     .append("[").append(Thread.currentThread().getStackTrace()[8].getClassName()).append(".").append(Thread.currentThread().getStackTrace()[8].getMethodName())
                     .append("(").append(Thread.currentThread().getStackTrace()[8].getFileName()).append(":")
                     .append(Thread.currentThread().getStackTrace()[8].getLineNumber()).append(")]");
-            builder.append(WHITE).append(messageLayout(record));
+            builder.append(WHITE).append(messageLayout(logRecord));
 
-            String color = levelColor(record.getLevel());
+            String color = levelColor(logRecord.getLevel());
 
-            String message = formatMessage(record);
-            message = HIGHLIGHT_START.matcher(message).replaceAll(highlight(record.getLevel(), false));
-            message = HIGHLIGHT_END.matcher(message).replaceAll(highlight(record.getLevel(), true));
+            String message = formatMessage(logRecord);
+            message = HIGHLIGHT_START.matcher(message).replaceAll(highlight(logRecord.getLevel(), false));
+            message = HIGHLIGHT_END.matcher(message).replaceAll(highlight(logRecord.getLevel(), true));
 
-            String level = (record.getParameters() != null && record.getParameters().length >= 2) ? (String) record.getParameters()[1] : record.getLevel().getLocalizedName();
-            if (record.getLevel() == Level.SEVERE) {
+            String level = (logRecord.getParameters() != null && logRecord.getParameters().length >= 2) ? (String) logRecord.getParameters()[1] : logRecord.getLevel().getLocalizedName();
+            if (logRecord.getLevel() == Level.SEVERE) {
                 builder.append(BG_BRIGHT_RED + BOLD + BLACK).append(level).append(RESET_BG + INV_BOLD).append(color).append(Objects.equals(level, "") ? "" : ": ");
             } else {
                 builder.append(color).append(level).append(Objects.equals(level, "") ? "" : ": ");
@@ -164,8 +164,8 @@ public class LoggerUtil {
             return builder.toString();
         }
 
-        private String messageLayout(LogRecord record) {
-            return (!((boolean) record.getParameters()[0]) && record.getLevel().intValue() >= Level.INFO.intValue()) ? " (Thread: " + record.getLongThreadID() + ")\n\t" : " >> ";
+        private String messageLayout(LogRecord logRecord) {
+            return (!((boolean) logRecord.getParameters()[0]) && logRecord.getLevel().intValue() >= Level.INFO.intValue()) ? " (Thread: " + logRecord.getLongThreadID() + ")\n\t" : " >> ";
         }
 
         private String highlight(Level level, boolean inverse) {

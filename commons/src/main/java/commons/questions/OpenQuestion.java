@@ -21,9 +21,9 @@ public class OpenQuestion extends Question {
     }
 
     /**
-     * Randomly picks an activity from the list of activities and uses that to create an commons.questions.OpenQuestion
+     * Randomly picks an activity from the list of activities and uses that to create an OpenQuestion
      * @param unusedActivities A list that contains all the activities that hasn't been used yet
-     * @return commons.questions.OpenQuestion created using the randomly picked activity
+     * @return OpenQuestion created using the randomly picked activity
      */
     private static OpenQuestion generateOpenQuestion(List<Activity> unusedActivities) {
         Random randomGen = new Random();
@@ -31,7 +31,9 @@ public class OpenQuestion extends Question {
                 randomGen.nextInt(unusedActivities.size())
         );
 
-        String question = "How much energy in WH does " + activity.getTitle() + " consume?";
+        String question = "How much energy in WH does " +
+                activity.getTitle() +
+                " consume?";
         long answer = activity.getConsumption_in_wh();
 
         return new OpenQuestion(question, answer);
@@ -49,7 +51,7 @@ public class OpenQuestion extends Question {
 
     @Override
     public String toString() {
-        return "commons.questions.OpenQuestion{" +
+        return "OpenQuestion{" +
                 "question=" + getQuestion() +
                 "answerInWH=" + answerInWH +
                 '}';
