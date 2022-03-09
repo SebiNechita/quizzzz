@@ -31,7 +31,8 @@ public class HelpCtrl extends SceneCtrl {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-   }
+  
+    }
 
     /**
      * Show the home screen.
