@@ -14,6 +14,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
 import javafx.scene.image.ImageView;
@@ -77,7 +78,7 @@ public abstract class GameCtrl extends SceneCtrl {
     /**
      * Constructor for this Ctrl
      *
-     * @param mainCtrl The parent class, which keeps track of all scenes
+     * @param mainCtrl    The parent class, which keeps track of all scenes
      * @param serverUtils The server utils, for communicating with the server
      */
     @Inject
@@ -160,7 +161,23 @@ public abstract class GameCtrl extends SceneCtrl {
             });
 
             joker.setOnMouseClicked(event -> {
-                jokerUsed(joker.getId());
+                jokerUsed(JokerType.valueOf(joker.getId()));
+            });
+        }
+
+        for (Node node : emoteContainer.getChildren()) {
+            ImageView emote = (ImageView) node;
+
+            emote.setOnMouseEntered(event -> {
+                emoteHoverAnim(emote, false).play();
+            });
+
+            emote.setOnMouseExited(event -> {
+                emoteHoverAnim(emote, true).play();
+            });
+
+            emote.setOnMouseClicked(event -> {
+                emoteUsed(Emote.valueOf(emote.getId()));
             });
         }
     }
@@ -170,9 +187,17 @@ public abstract class GameCtrl extends SceneCtrl {
      *
      * @param type What type of joker has been used
      */
-    private void jokerUsed(String type) {
-        JokerType jokerType = JokerType.valueOf(type.toUpperCase());
-        LoggerUtil.infoInline("Clicked on the " + jokerType + " joker.");
+    private void jokerUsed(JokerType type) {
+        LoggerUtil.infoInline("Clicked on the " + type + " joker.");
+    }
+
+    /**
+     * Gets called when an emote is used
+     *
+     * @param emote What emote has been used
+     */
+    private void emoteUsed(Emote emote) {
+        LoggerUtil.infoInline("Clicked on the " + emote.name() + " emote.");
     }
 
     /**
@@ -207,7 +232,7 @@ public abstract class GameCtrl extends SceneCtrl {
     /**
      * Helper method for {@link #generateProgressDots}, which generates the dots itself
      *
-     * @param color The color for the circle
+     * @param color  The color for the circle
      * @param effect The effect which the circle must have
      * @return The generated circle
      */
@@ -375,6 +400,30 @@ public abstract class GameCtrl extends SceneCtrl {
         };
     }
 
+
+    /**
+     * Transitions the brightness of the given ImageView
+     *
+     * @param imageView The element to affect
+     * @param inverted  If the animation needs to be reversed or not
+     * @return The animation object which can be played
+     */
+    protected Animation emoteHoverAnim(ImageView imageView, boolean inverted) {
+        return new Transition() {
+            {
+                setCycleDuration(Duration.millis(150));
+                setInterpolator(Interpolator.EASE_BOTH);
+            }
+
+            @Override
+            protected void interpolate(double frac) {
+                ColorAdjust colorAdjust = new ColorAdjust();
+                colorAdjust.setBrightness(-0.3 * (inverted ? frac : 1 - frac));
+                imageView.setEffect(colorAdjust);
+            }
+        };
+    }
+
     /**
      * Animates the timer to fill up its bar
      *
@@ -515,6 +564,10 @@ public abstract class GameCtrl extends SceneCtrl {
                 image.setFitWidth(45);
                 image.setLayoutX(140);
                 image.setLayoutY(30);
+
+                ColorAdjust colorAdjust = new ColorAdjust();
+                colorAdjust.setBrightness(0);
+                image.setEffect(colorAdjust);
 
                 anchorPane.getChildren().add(image);
             }
