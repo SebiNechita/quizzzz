@@ -40,6 +40,8 @@ public class GameMultiChoiceCtrl extends GameCtrl {
 
     @FXML
     private VBox jokers;
+    @FXML
+    private AnchorPane jokerTooltip;
 
     @FXML
     protected Text timeLeftText;
@@ -81,6 +83,7 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         super.nextQuestion = nextQuestion;
 
         super.jokers = jokers;
+        super.jokerTooltip = jokerTooltip;
 
         super.timeLeftText = timeLeftText;
         super.timeLeftBar = timeLeftBar;

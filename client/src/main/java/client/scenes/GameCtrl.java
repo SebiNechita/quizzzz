@@ -6,6 +6,7 @@ import commons.utils.GameMode;
 import commons.utils.JokerType;
 import commons.utils.LoggerUtil;
 import javafx.animation.Animation;
+import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.Transition;
 import javafx.application.Platform;
@@ -53,6 +54,8 @@ public abstract class GameCtrl extends SceneCtrl {
 
     @FXML
     protected VBox jokers;
+    @FXML
+    protected AnchorPane jokerTooltip;
 
     @FXML
     protected Text timeLeftText;
@@ -150,14 +153,18 @@ public abstract class GameCtrl extends SceneCtrl {
      */
     private void enableListeners() {
         for (Node node : jokers.getChildren()) {
-            AnchorPane joker = (AnchorPane) node;
+            AnchorPane jokerContainer = (AnchorPane) node;
+            ImageView joker = (ImageView) jokerContainer.getChildren().get(0);
+            AnchorPane tooltip = (AnchorPane) jokerContainer.getChildren().get(1);
 
             joker.setOnMouseEntered(event -> {
-                hoverAnim(joker, new Color(0.266, 0.266, 0.266, 1), new Color(1, 1, 1, 1)).play();
+                hoverAnim(jokerContainer, new Color(0.266, 0.266, 0.266, 1), new Color(1, 1, 1, 1)).play();
+                showJokerTooltip(tooltip);
             });
 
             joker.setOnMouseExited(event -> {
-                hoverAnim(joker, new Color(1, 1, 1, 1), new Color(0.266, 0.266, 0.266, 1)).play();
+                hoverAnim(jokerContainer, new Color(1, 1, 1, 1), new Color(0.266, 0.266, 0.266, 1)).play();
+                hideJokerTooltip(tooltip);
             });
 
             joker.setOnMouseClicked(event -> {
@@ -189,6 +196,32 @@ public abstract class GameCtrl extends SceneCtrl {
      */
     private void jokerUsed(JokerType type) {
         LoggerUtil.infoInline("Clicked on the " + type + " joker.");
+    }
+
+    /**
+     * Shows a tooltip for the give joker
+     *
+     * @param joker The joker to show the tooltip for
+     */
+    private void showJokerTooltip(AnchorPane tooltip) {
+        FadeTransition transition = new FadeTransition();
+        transition.setNode(tooltip);
+        transition.setFromValue(0);
+        transition.setToValue(1);
+        transition.setDuration(Duration.millis(400));
+        transition.playFromStart();
+    }
+
+    /**
+     * Hides the joker tooltip
+     */
+    private void hideJokerTooltip(AnchorPane tooltip) {
+        FadeTransition transition = new FadeTransition();
+        transition.setNode(tooltip);
+        transition.setFromValue(1);
+        transition.setToValue(0);
+        transition.setDuration(Duration.millis(400));
+        transition.playFromStart();
     }
 
     /**
@@ -536,7 +569,7 @@ public abstract class GameCtrl extends SceneCtrl {
          * Adds a notification for when a user uses an emote
          *
          * @param username The username who sent the emote
-         * @param emote The emote which was sent
+         * @param emote    The emote which was sent
          */
         private void addEmoteNotification(String username, Emote emote) {
             renderNotification(generateNotification(username + " reacted with:", new Color(1, 1, 1, 1), false, emote));
@@ -555,7 +588,7 @@ public abstract class GameCtrl extends SceneCtrl {
          * Adds a notification for when a user uses a joker
          *
          * @param username The username who used the joker
-         * @param type The type of joker used
+         * @param type     The type of joker used
          */
         private void addJokerNotification(String username, JokerType type) {
             renderNotification(generateNotification(username + " has used a " + type.getName() + " joker!", new Color(0.541, 0.929, 1, 1), true));
@@ -564,9 +597,9 @@ public abstract class GameCtrl extends SceneCtrl {
         /**
          * Generates a notification
          *
-         * @param text The text to show in the notification
+         * @param text      The text to show in the notification
          * @param textColor The color which the text should be
-         * @param bold If the text should be bold or not
+         * @param bold      If the text should be bold or not
          * @return The generated AnchorPane which contains the notification
          */
         private AnchorPane generateNotification(String text, Paint textColor, boolean bold) {
@@ -576,10 +609,10 @@ public abstract class GameCtrl extends SceneCtrl {
         /**
          * Generates a notification
          *
-         * @param text The text to show in the notification
+         * @param text      The text to show in the notification
          * @param textColor The color which the text should be
-         * @param bold If the text should be bold or not
-         * @param emote The emote that can be shown
+         * @param bold      If the text should be bold or not
+         * @param emote     The emote that can be shown
          * @return The generated AnchorPane which contains the notification
          */
         private AnchorPane generateNotification(String text, Paint textColor, boolean bold, Emote emote) {
