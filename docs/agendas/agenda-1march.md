@@ -23,36 +23,3 @@ Attendees: Kaushik, Kim, Kristof, Sebastian, Ilia, Kristof
 | 14:34 - 14:36 | Feedback Round |  |
 | 14:36 - 14:38 | Question Round |  |
 | 14:38 - 14:40 | Closure |  |
-
-
-**TA Points**
-
-- The file for the last meeting minutes seems fine, add purposes and description(e.g why do you need smth).
-- TA agrees with the fact that the Secretary checks the goals from Code of Conduct and suggests looking at the progress.
-- Put in the docs folder the reports from Kristof.
-- More contribution from everybody
-- Recommended to have a demo till next meeting
-- TA suggest that Sander could help others to have more contribution
-
-
-
-
-
-Feedback for Chairman
-
-Kim - Top:  Good job by sticking to the agenda points.\
-Sander - Top: For the situation, we compromised well and respected the agenda.\
-Ilia - Top: Meeting well conducted.\
-Kaushik - Top: We finished all the required agenda points.\
-Jegor - Tip: More confident, suggesting that the chairman needs to be the main character. 
-
-Feedback for Meeting 
-
-Kim - Top: Good way to keep up with.\
-Sander -  Top: Try to be consistent with uploading with agendas.\ 
-Kristof - Top: Finish all the tasks.\
-        - Tip: Sander could give tasks to others instead of doing.\
-Ilia - Top: Good organization.\
-Sebastian - Top: We achieved all we wanted.\
-Kaushik - Tip: Work more in the coding part.
-

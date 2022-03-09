@@ -1,59 +1,35 @@
 package packets;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import commons.utils.HttpStatus;
 
 import java.util.Objects;
 
-@JsonTypeInfo(include=JsonTypeInfo.As.WRAPPER_OBJECT, use=JsonTypeInfo.Id.NAME)
-public class GeneralResponsePacket extends ResponsePacket {
+public class ResponsePacket {
     protected int code;
-    protected String message;
 
     /**
      * Required for object mappers
      */
-    protected GeneralResponsePacket() {}
+    protected ResponsePacket() {}
 
     /**
      * Constructor for this packet
      *
      * @param httpCode The HTTP code to send to the receiver of this packet
      */
-    public GeneralResponsePacket(int httpCode) {
+    public ResponsePacket(int httpCode) {
         this.code = httpCode;
     }
+
 
     /**
      * Constructor for this packet
      *
      * @param status The HTTP status to send to the receiver of this packet
      */
-    public GeneralResponsePacket(HttpStatus status) {
+    public ResponsePacket(HttpStatus status) {
         this.code = status.getCode();
-    }
-
-    /**
-     * Constructor for this packet
-     *
-     * @param httpCode The HTTP code to send to the receiver of this packet
-     * @param message The message to send to the receiver of this packet
-     */
-    public GeneralResponsePacket(int httpCode, String message) {
-        this.code = httpCode;
-        this.message = message;
-    }
-
-    /**
-     * Constructor for this packet
-     *
-     * @param status The HTTP status to send to the receiver of this packet
-     * @param message The message to send to the receiver of this packet
-     */
-    public GeneralResponsePacket(HttpStatus status, String message) {
-        this.code = status.getCode();
-        this.message = message;
     }
 
     /**
@@ -84,8 +60,8 @@ public class GeneralResponsePacket extends ResponsePacket {
     @Override
     public boolean equals(Object other) {
         if (this == other) return true;
-        if (!(other instanceof GeneralResponsePacket that)) return false;
-        return code == that.code && Objects.equals(message, that.message);
+        if (!(other instanceof ResponsePacket that)) return false;
+        return code == that.code;
     }
 
     /**
@@ -95,7 +71,7 @@ public class GeneralResponsePacket extends ResponsePacket {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(code, message);
+        return Objects.hash(code);
     }
 
     /**
@@ -105,9 +81,8 @@ public class GeneralResponsePacket extends ResponsePacket {
      */
     @Override
     public String toString() {
-        return "GeneralResponsePacket{" +
+        return "ResponsePacket{" +
                "code=" + code + "(" + getResponseStatus() + ")" +
-               ", message='" + message + '\'' +
                '}';
     }
 }
