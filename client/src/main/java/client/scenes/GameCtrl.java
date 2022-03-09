@@ -1,6 +1,9 @@
 package client.scenes;
 
 import client.utils.ServerUtils;
+import commons.utils.Emote;
+import commons.utils.GameMode;
+import commons.utils.JokerType;
 import commons.utils.LoggerUtil;
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
@@ -13,11 +16,13 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
@@ -26,15 +31,7 @@ import java.util.*;
 
 public abstract class GameCtrl extends SceneCtrl {
 
-    private enum GameMode {
-        SINGLEPLAYER,
-        MULTIPLAYER
-    }
     private GameMode gameMode;
-
-    private enum Emote {
-
-    }
 
     @FXML
     protected HBox progressBar;
@@ -62,18 +59,35 @@ public abstract class GameCtrl extends SceneCtrl {
     protected AnchorPane timeLeftBar;
     private AnchorPane timeLeftSlider;
 
-    protected double timeLeft = 0;
-    protected double lastAnswerChange = 0;
-
     @FXML
     protected VBox notificationContainer;
     private NotificationRenderer notificationRenderer;
 
+    @FXML
+    protected HBox emoteContainer;
+
+    protected double timeLeft = 0;
+    protected double lastAnswerChange = 0;
+    protected double timeMultiplier = 1d;
+
+    protected LinkedList<Boolean> questionHistory = new LinkedList<>();
+
+    Animation timer = null;
+
+    /**
+     * Constructor for this Ctrl
+     *
+     * @param mainCtrl The parent class, which keeps track of all scenes
+     * @param serverUtils The server utils, for communicating with the server
+     */
     @Inject
     public GameCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
         super(mainCtrl, serverUtils);
     }
 
+    /**
+     * Gets called after scene has finished loading
+     */
     protected void initialize() {
         notificationRenderer = new NotificationRenderer();
 
@@ -117,15 +131,22 @@ public abstract class GameCtrl extends SceneCtrl {
             public void run() {
                 Platform.runLater(() -> {
                     if (random.nextBoolean()) {
-                        notificationRenderer.addNotification(String.valueOf(random.nextInt()), null);
+                        notificationRenderer.addNotification(String.valueOf(random.nextInt()), Emote.values()[random.nextInt(5)]);
                     } else {
-                        notificationRenderer.addDisconnectNotification(String.valueOf(random.nextInt()));
+                        if (random.nextBoolean()) {
+                            notificationRenderer.addDisconnectNotification(String.valueOf(random.nextInt()));
+                        } else {
+                            notificationRenderer.addJokerNotification(String.valueOf(random.nextInt()), JokerType.values()[random.nextInt(3)]);
+                        }
                     }
                 });
             }
         }, 1000, 400);
     }
 
+    /**
+     * Sets up all the listeners
+     */
     private void enableListeners() {
         for (Node node : jokers.getChildren()) {
             AnchorPane joker = (AnchorPane) node;
@@ -144,17 +165,19 @@ public abstract class GameCtrl extends SceneCtrl {
         }
     }
 
-    private enum JokerType {
-        DOUBLE_POINTS,
-        HALF_TIME,
-        REMOVE_ANSWER
-    }
+    /**
+     * Gets called when a joker is used
+     *
+     * @param type What type of joker has been used
+     */
     private void jokerUsed(String type) {
         JokerType jokerType = JokerType.valueOf(type.toUpperCase());
         LoggerUtil.infoInline("Clicked on the " + jokerType + " joker.");
     }
 
-    protected LinkedList<Boolean> questionHistory = new LinkedList<>();
+    /**
+     * Generates the colors (or lack thereof) of the progress dots at the top of the screen
+     */
     protected void generateProgressDots() {
         ObservableList<Node> children = progressBar.getChildren();
         children.clear();
@@ -181,10 +204,13 @@ public abstract class GameCtrl extends SceneCtrl {
         }
     }
 
-    protected void goToNextQuestion() {
-
-    }
-
+    /**
+     * Helper method for {@link #generateProgressDots}, which generates the dots itself
+     *
+     * @param color The color for the circle
+     * @param effect The effect which the circle must have
+     * @return The generated circle
+     */
     private Circle generateCircle(Paint color, Effect effect) {
         Circle circle = new Circle();
         circle.setEffect(effect);
@@ -196,15 +222,34 @@ public abstract class GameCtrl extends SceneCtrl {
         return circle;
     }
 
+    /**
+     * Resets everything and loads the next question
+     */
+    protected void goToNextQuestion() {
+        //TODO: implement
+    }
+
+    /**
+     * Sets the score shown to the user in the top right of the screen
+     *
+     * @param score The score to set
+     */
     protected void setScore(int score) {
         this.score.setText("Score: " + score);
     }
 
+    /**
+     * Sets the question that is shown to the user
+     *
+     * @param question The question to show
+     */
     protected void setQuestion(String question) {
         this.question.setText(question);
     }
 
-    Animation timer = null;
+    /**
+     * The timer which counts down the amount of time left and also shows the correct answer after the time limit has run out
+     */
     protected void startTimer() {
         jokers.setVisible(gameMode == GameMode.MULTIPLAYER);
         notificationContainer.setVisible(gameMode == GameMode.MULTIPLAYER);
@@ -217,7 +262,11 @@ public abstract class GameCtrl extends SceneCtrl {
         onTimerEnd();
     }
 
-    protected double timeMultiplier = 1d;
+    /**
+     * Reduces the total amount of time left of the timer
+     *
+     * @param multiplier The multiplier to reduce with
+     */
     protected void reduceTimer(double multiplier) {
         timeMultiplier *= multiplier;
         double timeLeft = timer.getCurrentTime().toMillis();
@@ -230,6 +279,9 @@ public abstract class GameCtrl extends SceneCtrl {
         onTimerEnd();
     }
 
+    /**
+     * Sets up the events for when the timer runs out
+     */
     private void onTimerEnd() {
         timer.setOnFinished(event -> {
             showCorrectAnswer(1);
@@ -238,8 +290,18 @@ public abstract class GameCtrl extends SceneCtrl {
         });
     }
 
+    /**
+     * Shows the correct answer to the user
+     *
+     * @param answer The correct answer (in case of multi-choice, the index of which of the options that is)
+     */
     protected abstract void showCorrectAnswer(int answer);
 
+    /**
+     * Shows the amount of points a player has gained after answering
+     *
+     * @param answerPoints The amount of points the player got for answering <p>0 <b>or</b> 100 for multi-choice, number between 0-100 for open</p>
+     */
     protected void showPointsGained(int answerPoints) {
         int timeBonus = (int) Math.round(lastAnswerChange * 100 * (answerPoints / 100d));
         int total = (int) (answerPoints + timeBonus * (answerPoints / 100d));
@@ -273,8 +335,8 @@ public abstract class GameCtrl extends SceneCtrl {
      * Transitions from white to the target color
      *
      * @param anchorPane The pane which to change the color of
-     * @param target The color to go to
-     * @param inverted If the transition needs to be inverted or not
+     * @param target     The color to go to
+     * @param inverted   If the transition needs to be inverted or not
      * @return The animation object which can be played
      */
     protected Animation hoverAnim(AnchorPane anchorPane, Color target, boolean inverted) {
@@ -295,8 +357,8 @@ public abstract class GameCtrl extends SceneCtrl {
      * Transitions from a specified start color to a specified end color
      *
      * @param anchorPane The pane which to change the color of
-     * @param start The color to start from
-     * @param end The color to go to
+     * @param start      The color to start from
+     * @param end        The color to go to
      * @return The animation object which can be played
      */
     protected Animation hoverAnim(AnchorPane anchorPane, Color start, Color end) {
@@ -338,9 +400,9 @@ public abstract class GameCtrl extends SceneCtrl {
     /**
      * Animates the text to count up when the player is displayed their points
      *
-     * @param totalPoints The amount of points to show for the total text
+     * @param totalPoints  The amount of points to show for the total text
      * @param answerPoints The amount of points to show for the answer text
-     * @param timePoints The amount of points to show for the timer text
+     * @param timePoints   The amount of points to show for the timer text
      * @return The animation object which can be played
      */
     private Animation pointsAnim(int totalPoints, int answerPoints, int timePoints) {
@@ -397,31 +459,39 @@ public abstract class GameCtrl extends SceneCtrl {
 
     /**
      * Lerps an integer from a given value to a given value
+     *
      * @param start The integer to start form
-     * @param end The integer to end at
-     * @param time The time of the lerp
+     * @param end   The integer to end at
+     * @param time  The time of the lerp
      * @return An interpolated integer
      */
     private int lerp(int start, int end, double time) {
         return (int) Math.round(start + (end - start) * time);
     }
 
+    /**
+     * Utility class for rendering the notifications during the game.
+     */
     private class NotificationRenderer {
-        private Queue<AnchorPane> notifications = new LinkedList<>();
+        private final Queue<AnchorPane> notifications = new LinkedList<>();
 
         private NotificationRenderer() {
             notificationContainer.getChildren().clear();
         }
 
         private void addNotification(String username, Emote emote) {
-            renderNotification(generateNotification(username + " reacted with:", new Color(1, 1, 1, 1), emote));
+            renderNotification(generateNotification(username + " reacted with:", new Color(1, 1, 1, 1), false, emote));
         }
 
         private void addDisconnectNotification(String username) {
-            renderNotification(generateNotification(username + " has disconnected", new Color(0.949, 0.423, 0.392, 1), null));
+            renderNotification(generateNotification(username + " has disconnected", new Color(0.949, 0.423, 0.392, 1), false, null));
         }
 
-        private AnchorPane generateNotification(String text, Paint textColor, Emote emote) {
+        private void addJokerNotification(String username, JokerType type) {
+            renderNotification(generateNotification(username + " has used a " + type.getName() + " joker!", new Color(0.541, 0.929, 1, 1), true, null));
+        }
+
+        private AnchorPane generateNotification(String text, Paint textColor, boolean bold, Emote emote) {
             AnchorPane anchorPane = new AnchorPane();
             anchorPane.setPrefWidth(200);
             anchorPane.setPrefHeight(80);
@@ -435,13 +505,25 @@ public abstract class GameCtrl extends SceneCtrl {
             title.setText(text);
             title.setFill(textColor);
 
-            title.setFont(new Font("Comic Sans MS", 18));
+            title.setFont(Font.font("Comic Sans MS", bold ? FontWeight.BOLD : FontWeight.NORMAL, 18));
 
             anchorPane.getChildren().add(title);
+
+            if (emote != null) {
+                ImageView image = new ImageView("@../../img/emojis/" + emote.toString().toLowerCase() + ".png");
+                image.setFitHeight(45);
+                image.setFitWidth(45);
+                image.setLayoutX(140);
+                image.setLayoutY(30);
+
+                anchorPane.getChildren().add(image);
+            }
+
             return anchorPane;
         }
 
         private Animation fadingOut = null;
+
         private void renderNotification(AnchorPane notification) {
             ObservableList<Node> children = notificationContainer.getChildren();
             children.add(notification);
@@ -453,11 +535,13 @@ public abstract class GameCtrl extends SceneCtrl {
                 }
 
                 AnchorPane target = notifications.poll();
-                fadingOut = fadeOut(target);
-                fadingOut.setOnFinished(event -> {
-                    children.remove(target);
-                });
-                fadingOut.playFromStart();
+                if (target != null) {
+                    fadingOut = fadeOut(target);
+                    fadingOut.setOnFinished(event -> {
+                        children.remove(target);
+                    });
+                    fadingOut.playFromStart();
+                }
             }
         }
 

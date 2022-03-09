@@ -145,7 +145,7 @@
                      <children>
                         <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="6.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../img/double_points.png" />
+                              <Image url="@../../img/jokers/double_points.png" />
                            </image>
                         </ImageView>
                      </children>
@@ -157,7 +157,7 @@
                      <children>
                         <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="6.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../img/half_time.png" />
+                              <Image url="@../../img/jokers/half_time.png" />
                            </image>
                         </ImageView>
                      </children>
@@ -169,7 +169,7 @@
                      <children>
                         <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="6.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../img/remove_answer.png" />
+                              <Image url="@../../img/jokers/remove_answer.png" />
                            </image>
                         </ImageView>
                      </children>
@@ -208,9 +208,46 @@
                         <Font name="Comic Sans MS" size="18.0" />
                      </font>
                   </Text>
+                  <ImageView fitHeight="45.0" fitWidth="45.0" layoutX="140.0" layoutY="30.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../img/emojis/heart_eyes.png" />
+                     </image>
+                  </ImageView>
                </children>
             </AnchorPane>
          </children>
       </VBox>
+      <HBox fx:id="emoteContainer" alignment="CENTER_RIGHT" layoutX="978.0" layoutY="649.0" prefHeight="59.0" prefWidth="297.0" spacing="15.0" style="-fx-background-color: #666; -fx-background-radius: 10;">
+         <children>
+            <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../img/emojis/joy.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../img/emojis/heart_eyes.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../img/emojis/thinking.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../img/emojis/crying.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../img/emojis/exhaling.png" />
+               </image>
+            </ImageView>
+         </children>
+         <padding>
+            <Insets right="15.0" />
+         </padding>
+      </HBox>
     </children>
 </AnchorPane>

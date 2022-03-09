@@ -48,7 +48,7 @@ public class GameMultiChoiceCtrl extends GameCtrl {
 
     @FXML
     private HBox optionsContainer;
-    private AnchorPane[] options = new AnchorPane[3];
+    private final AnchorPane[] options = new AnchorPane[3];
     private Pair<Integer, AnchorPane> selected = null;
 
     private boolean[] locked = {false, false, false};
@@ -57,6 +57,15 @@ public class GameMultiChoiceCtrl extends GameCtrl {
     @FXML
     private VBox notificationContainer;
 
+    @FXML
+    private HBox emoteContainer;
+
+    /**
+     * Constructor for this Ctrl
+     *
+     * @param mainCtrl The parent class, which keeps track of all scenes
+     * @param serverUtils The server utils, for communicating with the server
+     */
     @Inject
     public GameMultiChoiceCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
         super(mainCtrl, serverUtils);
@@ -77,8 +86,22 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         super.timeLeftBar = timeLeftBar;
 
         super.notificationContainer = notificationContainer;
+
+        super.emoteContainer = emoteContainer;
     }
 
+    /**
+     * Called to initialize a controller after its root element has been
+     * completely processed.
+     *
+     * @param location
+     * The location used to resolve relative paths for the root object, or
+     * {@code null} if the location is not known.
+     *
+     * @param resources
+     * The resources used to localize the root object, or {@code null} if
+     * the root object was not localized.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         super.initialize();
@@ -99,6 +122,9 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         }, 3000);
     }
 
+    /**
+     * Sets up all the listeners
+     */
     private void enableListeners() {
         for (int i = 0; i < options.length; i++) {
             AnchorPane option = options[i];
@@ -133,6 +159,11 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         }
     }
 
+    /**
+     * Shows the correct answer to the user
+     *
+     * @param answer The correct answer (in case of multi-choice, the index of which of the options that is)
+     */
     protected void showCorrectAnswer(int answer) {
         locked = new boolean[]{true, true, true};
 
@@ -154,6 +185,11 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         showPointsGained((selected != null && selected.getKey() == answer) ? 100 : 0);
     }
 
+    /**
+     * Removes a certain answer by graying it out and making it non-clickable
+     *
+     * @param answer The index of the answer to remove
+     */
     private void removeAnswer(int answer) {
         locked[answer] = true;
 
@@ -208,6 +244,9 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         };
     }
 
+    /**
+     * Detects when the "Next Question" button has been pressed
+     */
     @FXML
     private void onNextButton() {
         super.goToNextQuestion();
