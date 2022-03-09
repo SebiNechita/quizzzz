@@ -68,6 +68,6 @@ public class HomeLeaderboardCtrl extends SceneCtrl {
      * Show the home screen.
      */
     public void showHome(){
-        main.showScene(HomeCtrl.class);
+        main.showScene(StartScreenCtrl.class);
     }
 }
