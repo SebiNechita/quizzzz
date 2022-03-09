@@ -132,7 +132,7 @@ public abstract class GameCtrl extends SceneCtrl {
             public void run() {
                 Platform.runLater(() -> {
                     if (random.nextBoolean()) {
-                        notificationRenderer.addNotification(String.valueOf(random.nextInt()), Emote.values()[random.nextInt(5)]);
+                        notificationRenderer.addEmoteNotification(String.valueOf(random.nextInt()), Emote.values()[random.nextInt(5)]);
                     } else {
                         if (random.nextBoolean()) {
                             notificationRenderer.addDisconnectNotification(String.valueOf(random.nextInt()));
@@ -523,23 +523,65 @@ public abstract class GameCtrl extends SceneCtrl {
      */
     private class NotificationRenderer {
         private final Queue<AnchorPane> notifications = new LinkedList<>();
+        private Animation fadingOut = null;
 
+        /**
+         * Constructs an object and automatically clears out the notification panel.
+         */
         private NotificationRenderer() {
             notificationContainer.getChildren().clear();
         }
 
-        private void addNotification(String username, Emote emote) {
+        /**
+         * Adds a notification for when a user uses an emote
+         *
+         * @param username The username who sent the emote
+         * @param emote The emote which was sent
+         */
+        private void addEmoteNotification(String username, Emote emote) {
             renderNotification(generateNotification(username + " reacted with:", new Color(1, 1, 1, 1), false, emote));
         }
 
+        /**
+         * Adds a notification for when a user disconnects
+         *
+         * @param username The username who disconnected
+         */
         private void addDisconnectNotification(String username) {
-            renderNotification(generateNotification(username + " has disconnected", new Color(0.949, 0.423, 0.392, 1), false, null));
+            renderNotification(generateNotification(username + " has disconnected", new Color(0.949, 0.423, 0.392, 1), false));
         }
 
+        /**
+         * Adds a notification for when a user uses a joker
+         *
+         * @param username The username who used the joker
+         * @param type The type of joker used
+         */
         private void addJokerNotification(String username, JokerType type) {
-            renderNotification(generateNotification(username + " has used a " + type.getName() + " joker!", new Color(0.541, 0.929, 1, 1), true, null));
+            renderNotification(generateNotification(username + " has used a " + type.getName() + " joker!", new Color(0.541, 0.929, 1, 1), true));
         }
 
+        /**
+         * Generates a notification
+         *
+         * @param text The text to show in the notification
+         * @param textColor The color which the text should be
+         * @param bold If the text should be bold or not
+         * @return The generated AnchorPane which contains the notification
+         */
+        private AnchorPane generateNotification(String text, Paint textColor, boolean bold) {
+            return generateNotification(text, textColor, bold, null);
+        }
+
+        /**
+         * Generates a notification
+         *
+         * @param text The text to show in the notification
+         * @param textColor The color which the text should be
+         * @param bold If the text should be bold or not
+         * @param emote The emote that can be shown
+         * @return The generated AnchorPane which contains the notification
+         */
         private AnchorPane generateNotification(String text, Paint textColor, boolean bold, Emote emote) {
             AnchorPane anchorPane = new AnchorPane();
             anchorPane.setPrefWidth(200);
@@ -575,8 +617,11 @@ public abstract class GameCtrl extends SceneCtrl {
             return anchorPane;
         }
 
-        private Animation fadingOut = null;
-
+        /**
+         * Renders a given notification in the form of an AnchorPane
+         *
+         * @param notification The AnchorPane to render
+         */
         private void renderNotification(AnchorPane notification) {
             ObservableList<Node> children = notificationContainer.getChildren();
             children.add(notification);
@@ -598,6 +643,12 @@ public abstract class GameCtrl extends SceneCtrl {
             }
         }
 
+        /**
+         * Animates the notification to fade out
+         *
+         * @param anchorPane The AnchorPane to apply the animation to
+         * @return The animation object which can be played
+         */
         private Animation fadeOut(AnchorPane anchorPane) {
             return new Transition() {
                 {
