@@ -199,9 +199,9 @@ public abstract class GameCtrl extends SceneCtrl {
     }
 
     /**
-     * Shows a tooltip for the give joker
+     * Shows the given tooltip
      *
-     * @param joker The joker to show the tooltip for
+     * @param tooltip The tooltip to show
      */
     private void showJokerTooltip(AnchorPane tooltip) {
         FadeTransition transition = new FadeTransition();
@@ -213,7 +213,9 @@ public abstract class GameCtrl extends SceneCtrl {
     }
 
     /**
-     * Hides the joker tooltip
+     * Hides the given tooltip
+     *
+     * @param tooltip The tooltip to hide
      */
     private void hideJokerTooltip(AnchorPane tooltip) {
         FadeTransition transition = new FadeTransition();

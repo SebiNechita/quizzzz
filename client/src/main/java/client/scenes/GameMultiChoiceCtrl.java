@@ -133,14 +133,14 @@ public class GameMultiChoiceCtrl extends GameCtrl {
             AnchorPane option = options[i];
             final int index = i;
             option.setOnMouseEntered(event -> {
-                if (locked[index] || (selected != null && selected.getValue() == option))
+                if (locked[index] || selected != null && selected.getValue() == option)
                     return;
 
                 hoverAnim(option, new Color(0.698, 0.792, 0.921, 1), false).play();
             });
 
             option.setOnMouseExited(event -> {
-                if (locked[index] || (selected != null && selected.getValue() == option))
+                if (locked[index] || selected != null && selected.getValue() == option)
                     return;
 
                 hoverAnim(option, new Color(0.698, 0.792, 0.921, 1), true).play();
