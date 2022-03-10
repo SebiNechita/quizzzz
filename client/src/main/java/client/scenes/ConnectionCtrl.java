@@ -1,22 +1,13 @@
 package client.scenes;
 
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 
-import client.Main;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
-import commons.LeaderboardEntry;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Background;
 import javafx.scene.text.Text;
 
 public  class ConnectionCtrl extends SceneCtrl {

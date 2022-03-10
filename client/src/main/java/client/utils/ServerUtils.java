@@ -322,7 +322,7 @@ public class ServerUtils {
     /**
      * test the connection with the given url
      * @param url
-     * @return
+     * @return returns true if given url is valid
      */
     public boolean testConnection(String url) {
         Client client = getClient();
