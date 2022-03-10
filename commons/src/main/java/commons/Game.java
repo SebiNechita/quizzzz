@@ -57,7 +57,7 @@ public class Game {
         List<Question> questions = new ArrayList<>();
 
         for (int i = 0; i < noOfQuestions; i++) {
-            if (i <= (noOfQuestions * 4) / 5) {
+            if (i%4 == 0) {
                 questions.add(
                         MultipleChoiceQuestion.
                                 generateMultipleChoiceQuestion(
