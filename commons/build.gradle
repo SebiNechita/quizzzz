@@ -1,5 +1,5 @@
-
 dependencies {
+	implementation group: 'jakarta.persistence', name: 'jakarta.persistence-api', version: '2.2.3'
 
-    implementation group: 'jakarta.persistence', name: 'jakarta.persistence-api', version: '2.2.3'
+	implementation 'org.springframework.boot:spring-boot-starter-web:2.6.3'
 }

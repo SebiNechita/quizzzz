@@ -8,22 +8,20 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
-<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.HomeLeaderboardCtrl">
-   <children>
-      <Rectangle arcHeight="10.0" arcWidth="10.0" fill="#e1e1e1" height="199.0" layoutX="45.0" layoutY="109.0" stroke="BLACK" strokeLineCap="ROUND" strokeType="INSIDE" strokeWidth="0.0" width="510.0" />
-      <Rectangle arcHeight="10.0" arcWidth="10.0" fill="#e1e1e1" height="56.0" layoutX="45.0" layoutY="37.0" stroke="BLACK" strokeLineCap="ROUND" strokeType="INSIDE" strokeWidth="0.0" width="510.0" />
-      <TableView layoutX="78.0" layoutY="126.0" prefHeight="165.0" prefWidth="443.0">
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.HomeLeaderboardCtrl">
+      <Rectangle arcHeight="20.0" arcWidth="20.0" fill="#e1e1e1" height="462.0" layoutX="139.0" layoutY="141.0" stroke="BLACK" strokeLineCap="ROUND" strokeType="INSIDE" strokeWidth="0.0" width="1013.0" />
+      <Rectangle arcHeight="20.0" arcWidth="20.0" fill="#e1e1e1" height="79.0" layoutX="139.0" layoutY="37.0" stroke="BLACK" strokeLineCap="ROUND" strokeType="INSIDE" strokeWidth="0.0" width="1015.0" />
+      <TableView fx:id="table" layoutX="186.0" layoutY="184.0" prefHeight="389.0" prefWidth="930.0">
         <columns>
-          <TableColumn fx:id="userName" prefWidth="267.0" text="Name" />
-          <TableColumn fx:id="userScore" prefWidth="175.0" text="Score" />
+          <TableColumn fx:id="colUsername" prefWidth="660.3333435058594" text="Name" />
+          <TableColumn fx:id="colPoints" prefWidth="257.6666564941406" text="Score" />
         </columns>
       </TableView>
-      <Text layoutX="151.0" layoutY="72.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Single player leaderboard">
+      <Text layoutX="503.0" layoutY="81.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Single player leaderboard">
          <font>
             <Font size="23.0" />
          </font>
       </Text>
-      <Button layoutX="275.0" layoutY="325.0" mnemonicParsing="false" text="Back" />
-   </children>
+      <Button layoutX="536.0" layoutY="649.0" mnemonicParsing="false" onAction="#showHome" text="Back" />
+      <Button layoutX="701.0" layoutY="648.0" mnemonicParsing="false" onAction="#refresh" text="Refresh" />
 </AnchorPane>

@@ -16,6 +16,7 @@
 package client;
 
 import client.scenes.HomeCtrl;
+import client.scenes.HomeLeaderboardCtrl;
 import client.scenes.MainCtrl;
 import com.google.inject.Injector;
 import javafx.application.Application;
@@ -40,9 +41,10 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         Triple<HomeCtrl, Parent, String> home = FXML.load("client/scenes/Home.fxml", "Main Menu");
+        Triple<HomeLeaderboardCtrl, Parent, String> homeLeaderboard = FXML.load("client/scenes/HomeLeaderboard.fxml", "Main Menu");
 
         MainCtrl mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, home);
+        mainCtrl.initialize(primaryStage, home, homeLeaderboard);
         mainCtrl.showScene(HomeCtrl.class);
     }
 }

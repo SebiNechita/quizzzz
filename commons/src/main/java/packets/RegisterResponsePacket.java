@@ -2,68 +2,72 @@ package packets;
 
 import commons.utils.HttpStatus;
 
-import java.util.Objects;
-
-public class RegisterResponsePacket {
-
-    private int code;
-    private String message;
-
-    public RegisterResponsePacket() {}
-
-    public RegisterResponsePacket(int code) {
-        this.code = code;
-        this.message = "";
+public class RegisterResponsePacket extends GeneralResponsePacket {
+    /**
+     * Required for object mappers
+     */
+    protected RegisterResponsePacket() {
     }
 
+    /**
+     * Constructor for this packet
+     *
+     * @param httpCode The HTTP code to send to the receiver of this packet
+     */
+    public RegisterResponsePacket(int httpCode) {
+        super(httpCode);
+    }
+
+    /**
+     * Constructor for this packet
+     *
+     * @param status The HTTP status to send to the receiver of this packet
+     */
     public RegisterResponsePacket(HttpStatus status) {
-        this.code = status.getCode();
-        this.message = "";
+        super(status);
     }
 
-    public RegisterResponsePacket(int code, String message) {
-        this.code = code;
-        this.message = message;
+    /**
+     * Constructor for this packet
+     *
+     * @param httpCode The HTTP code to send to the receiver of this packet
+     * @param message  The message to send to the receiver of this packet
+     */
+    public RegisterResponsePacket(int httpCode, String message) {
+        super(httpCode, message);
     }
 
+    /**
+     * Constructor for this packet
+     *
+     * @param status  The HTTP status to send to the receiver of this packet
+     * @param message The message to send to the receiver of this packet
+     */
     public RegisterResponsePacket(HttpStatus status, String message) {
-        this.code = status.getCode();
-        this.message = message;
+        super(status, message);
     }
 
-    public int getCode() {
-        return code;
-    }
-
-    public void setCode(int code) {
-        this.code = code;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
+    /**
+     * Checks if this packet is equal to the object specified as a parameter
+     *
+     * @param other The other object to compare this with
+     * @return If they are equal or not
+     */
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof RegisterResponsePacket that)) return false;
-        return code == that.code && Objects.equals(message, that.message);
+    public boolean equals(Object other) {
+        return super.equals(other) && other instanceof RegisterResponsePacket;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(code, message);
-    }
-
+    /**
+     * Translates the data of this packet into a readable format
+     *
+     * @return A formatted string
+     */
     @Override
     public String toString() {
         return "RegisterResponsePacket{" +
-               "returnCode=" + code +
-               ", message='" + message + '\'' +
+               "responseCode=" + getResponseStatus() + " (" + code + ")" +
+               "message=" + message +
                '}';
     }
 }

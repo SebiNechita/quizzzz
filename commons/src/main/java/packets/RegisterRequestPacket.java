@@ -2,10 +2,10 @@ package packets;
 
 import java.util.Objects;
 
-public class RegisterRequestPacket {
+public class RegisterRequestPacket extends RequestPacket {
 
-    private String username;
-    private String password;
+    protected String username;
+    protected String password;
 
     protected RegisterRequestPacket() {}
 
