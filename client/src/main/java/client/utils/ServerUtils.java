@@ -24,7 +24,6 @@ import packets.RegisterRequestPacket;
 import packets.RequestPacket;
 import packets.ResponsePacket;
 
-import java.util.Locale;
 import java.util.Objects;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
