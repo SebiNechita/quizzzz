@@ -16,17 +16,17 @@
         </Text>
         <Text fill="WHITE" layoutX="279.0" layoutY="381.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter URL of your server:" wrappingWidth="418.1366882324219">
             <font>
-                <Font name="Ink Free" size="37.0" />
+                <Font name="Comic Sans MS" size="37.0" />
             </font>
         </Text>
         <Button layoutX="558.0" layoutY="511.0" mnemonicParsing="false" onAction="#connectClicked" prefHeight="79.0" prefWidth="278.0" style="-fx-background-radius: 11;" text="Connect" textAlignment="CENTER">
             <font>
-                <Font name="Ink Free" size="39.0" />
+                <Font name="Comic Sans MS" size="39.0" />
             </font>
         </Button>
         <TextField id="url" fx:id="url" alignment="TOP_CENTER" layoutX="719.0" layoutY="341.0" onAction="#connectClicked" prefHeight="58.0" prefWidth="312.0" promptText="enter URL" style="-fx-background-radius: 11;">
             <font>
-                <Font name="Ink Free" size="25.0" />
+                <Font name="Comic Sans MS" size="25.0" />
             </font>
             <opaqueInsets>
                 <Insets />
