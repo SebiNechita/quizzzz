@@ -38,6 +38,7 @@ public class ServerUtils {
     }
 
     private Client client;
+
     private Client getClient() {
         if (client == null) {
             initClient();
@@ -310,9 +311,35 @@ public class ServerUtils {
 
     /**
      * Gets the leaderboard from server.
+     *
      * @return the leaderboard.
      */
     public List<LeaderboardEntry> getLeaderboard() {
-        return requestTemplate("api/leaderboard").get(new GenericType<>() {});
+        return requestTemplate("api/leaderboard").get(new GenericType<>() {
+        });
     }
+
+    /**
+     * test the connection with the given url
+     * @param url
+     * @return
+     */
+    public boolean testConnection(String url) {
+        Client client = getClient();
+        WebTarget resourceTarget = client.target(url + "/ping");
+
+        Invocation invocation = resourceTarget.request("text/plain")
+                .buildGet();
+
+        // Invoke the request
+        String response;
+        try {
+            response = invocation.invoke(String.class);
+        } catch (Exception e) {
+            return false;
+        }
+
+        return response.equals("Pong");
+    }
+
 }
