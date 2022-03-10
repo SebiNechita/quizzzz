@@ -4,6 +4,7 @@ import client.Main;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 import java.net.URL;
@@ -20,6 +21,9 @@ public class LoginCtrl extends SceneCtrl{
     @FXML
     private TextField password;
 
+    @FXML
+    private Label errorLabel;
+
     @Inject
     public LoginCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
         super(mainCtrl, serverUtils);
@@ -34,6 +38,9 @@ public class LoginCtrl extends SceneCtrl{
         if (!result.isEmpty()){
             Main.TOKEN = result;
             main.showScene(HomeCtrl.class);
+        }
+        else{
+            errorLabel.setText("Could not log in.");
         }
     }
 
