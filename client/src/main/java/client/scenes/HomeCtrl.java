@@ -20,7 +20,7 @@ public class HomeCtrl extends SceneCtrl {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Main.TOKEN = server.getToken("Geoff", "password");
+
     }
 
     @FXML
