@@ -45,7 +45,7 @@ public class OpenQuestion extends Question {
      * @param unusedActivities A list that contains all the activities that hasn't been used yet
      * @return OpenQuestion created using the randomly picked activity
      */
-    private static OpenQuestion generateOpenQuestion(List<Activity> unusedActivities) {
+    public static OpenQuestion generateOpenQuestion(List<Activity> unusedActivities) {
         Random randomGen = new Random();
         Activity activity = unusedActivities.remove(
                 randomGen.nextInt(unusedActivities.size())
