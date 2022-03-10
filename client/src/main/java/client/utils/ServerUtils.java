@@ -16,10 +16,12 @@
 package client.utils;
 
 import client.Main;
+import commons.utils.HttpStatus;
 import commons.utils.LoggerUtil;
 import jakarta.ws.rs.client.*;
 import jakarta.ws.rs.core.*;
 import packets.RegisterRequestPacket;
+import packets.ResponsePacket;
 
 import java.util.Locale;
 import java.util.Objects;
