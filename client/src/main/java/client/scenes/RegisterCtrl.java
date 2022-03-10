@@ -29,16 +29,31 @@ public class RegisterCtrl extends SceneCtrl{
         super(mainCtrl, serverUtils);
     }
 
+    /**
+     * Shows the login screen.
+     */
     public void showLogin(){
         main.showScene(LoginCtrl.class);
     }
 
+    /**
+     * Checks if the registration form is filled with correct values and if so, sends a request.
+     */
     public void registerButtonClicked(){
         if (!password.getText().equals(confirmPassword.getText())){
             LoggerUtil.warn("Passwords are not matching.");
         }
+        else if (password.getText().isBlank() || userName.getText().isBlank()){
+            //the username or password is empty or only consists of whitespaces.
+            LoggerUtil.warn("Password or username is empty.");
+        }
         else{
-            server.register(userName.getText(), password.getText());
+            //the username and password are sent without any leading or trailing whitespaces.
+            //If successful, returns to login.
+            //the logger is used by the register method.
+            if (server.register(userName.getText().trim(), password.getText().trim())){
+                showLogin();
+            }
         }
     }
 }

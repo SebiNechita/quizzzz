@@ -307,20 +307,24 @@ public class ServerUtils {
     }
 
     /**
+     *
+     */
+    /**
      * Register a new user on server
      * @param username the name of the user
      * @param password the password of the user
+     * @return whether the registration was successful
      */
-    public void register(String username, String password){
+    public boolean register(String username, String password){
         Response response = getClient().target(Main.URL).path("api/registration")
                 .request(APPLICATION_JSON).accept(APPLICATION_JSON)
                 .post(Entity.entity(new RegisterRequestPacket(username, password), APPLICATION_JSON));
 
-        if (response.getStatus() != 200) {
-            LoggerUtil.warn("Could not create user");
+        if (response.getStatus() == 200) {
+            LoggerUtil.info("Created user " + username);
+            return true;
         }
-        else{
-            LoggerUtil.warn("Created user");
-        }
+        LoggerUtil.warn("Could not create user");
+        return false;
     }
 }
