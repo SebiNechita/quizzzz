@@ -306,6 +306,15 @@ public class ServerUtils {
         return requestTemplate("ping").get(String.class);
     }
 
+    public <T extends ResponsePacket> T getRequest(String path, Class<T> response) {
+        Invocation.Builder template = requestTemplate(path);
+        if (template == null) {
+            return (T) new ResponsePacket(HttpStatus.NotFound);
+        }
+
+        return template.get(response);
+    }
+
     /**
      *
      */
