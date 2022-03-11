@@ -47,7 +47,7 @@ public  class ConnectionCtrl extends SceneCtrl {
             // should jump to 'login' page, but we don't have one yet. So I set it to Home.
             main.showScene(HomeCtrl.class);
         } else {
-            message.setText("That URL is invalid");
+            message.setText("This URL is invalid");
             url.setStyle("-fx-background-color: #fc6363");
         }
     }
