@@ -2,8 +2,12 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Text;
 
 import java.net.URL;
@@ -25,6 +29,9 @@ public class RegisterCtrl extends SceneCtrl{
 
     @FXML
     private Text error;
+
+    @FXML
+    private Scene scene;
 
     @Inject
     public RegisterCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
@@ -56,6 +63,17 @@ public class RegisterCtrl extends SceneCtrl{
             if (server.register(userName.getText().trim(), password.getText().trim())){
                 showLogin();
             }
+        }
+    }
+
+    /**
+     * Controller for keypress events on Scene.
+     * @param e the keypress event
+     */
+    public void onKeyPressed(KeyEvent e) {
+        //treat Enter as clicking register button
+        if (e.getCode() == KeyCode.ENTER) {
+            registerButtonClicked();
         }
     }
 }
