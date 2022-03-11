@@ -16,7 +16,7 @@
                 <Font name="Comic Sans MS" size="120.0" />
             </font>
         </Text>
-        <Text fill="WHITE" layoutX="360.0" layoutY="372.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username" wrappingWidth="235.13668823242188">
+        <Text fill="WHITE" layoutX="360.0" layoutY="372.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username" textAlignment="RIGHT" wrappingWidth="200.0">
             <font>
                 <Font name="Comic Sans MS" size="26.0" />
             </font>
@@ -34,7 +34,7 @@
                 <Insets />
             </opaqueInsets>
         </TextField>
-      <Text fill="WHITE" layoutX="360.0" layoutY="455.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password" wrappingWidth="215.13668823242188">
+      <Text fill="WHITE" layoutX="360.0" layoutY="455.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password" textAlignment="RIGHT" wrappingWidth="200.0">
          <font>
             <Font name="Comic Sans MS" size="26.0" />
          </font>
