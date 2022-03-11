@@ -34,7 +34,7 @@
         </TextField>
       <Text fx:id="message" fill="#fc6363" layoutX="719.0" layoutY="435.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="312.0">
          <font>
-            <Font size="28.0" />
+            <Font name="Comic Sans MS" size="28.0" />
          </font>
       </Text>
     </children>
