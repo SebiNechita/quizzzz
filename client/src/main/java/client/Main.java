@@ -16,7 +16,6 @@
 package client;
 
 import client.scenes.HelpCtrl;
-import client.scenes.StartScreenCtrl;
 import client.scenes.ConnectionCtrl;
 import client.scenes.HomeCtrl;
 import client.scenes.HomeLeaderboardCtrl;

@@ -2,7 +2,7 @@ package client.scenes;
 
 import client.Main;
 import client.utils.ServerUtils;
-import commons.utils.LoggerUtil;
+//import commons.utils.LoggerUtil;
 import javax.inject.Inject;
 import java.net.URL;
 import java.util.ResourceBundle;
