@@ -38,11 +38,6 @@ public class StartScreenCtrl extends SceneCtrl {
         LoggerUtil.raw(server.pingServer());
     }
 
-//    @FXML
-//    public void pingButtonClicked() {
-//        LoggerUtil.raw(server.pingServer());
-//    }
-
     /**
      * Show the leaderboard.
      */
