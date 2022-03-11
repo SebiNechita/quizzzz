@@ -6,6 +6,7 @@ import com.google.inject.Inject;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -22,7 +23,7 @@ public class LoginCtrl extends SceneCtrl{
     private TextField password;
 
     @FXML
-    private Label errorLabel;
+    private Text error;
 
     @Inject
     public LoginCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
@@ -40,7 +41,7 @@ public class LoginCtrl extends SceneCtrl{
             main.showScene(HomeCtrl.class);
         }
         else{
-            errorLabel.setText("Could not log in.");
+            error.setText("Could not log in.");
         }
     }
 
