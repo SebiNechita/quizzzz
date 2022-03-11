@@ -49,7 +49,7 @@ public class Main extends Application {
         Triple<ConnectionCtrl, Parent, String> connection = FXML.load("client/scenes/Connection.fxml", "Connection Page");
 
         MainCtrl mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, home, homeLeaderboard);
-        mainCtrl.showScene(HomeCtrl.class);
+        mainCtrl.initialize(primaryStage, home, homeLeaderboard, connection, login, register);
+        mainCtrl.showScene(ConnectionCtrl.class);
     }
 }
