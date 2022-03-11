@@ -3,8 +3,8 @@ package client.scenes;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -24,7 +24,7 @@ public class RegisterCtrl extends SceneCtrl{
     private TextField confirmPassword;
 
     @FXML
-    private Label errorLabel;
+    private Text error;
 
     @Inject
     public RegisterCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
@@ -43,11 +43,11 @@ public class RegisterCtrl extends SceneCtrl{
      */
     public void registerButtonClicked(){
         if (!password.getText().equals(confirmPassword.getText())){
-            errorLabel.setText("Passwords are not matching.");
+            error.setText("Passwords are not matching.");
         }
         else if (password.getText().isBlank() || userName.getText().isBlank()){
             //the username or password is empty or only consists of whitespaces.
-            errorLabel.setText("Password or username is empty.");
+            error.setText("Password or username is empty.");
         }
         else{
             //the username and password are sent without any leading or trailing whitespaces.

@@ -2,7 +2,6 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -16,45 +15,45 @@
                 <Font name="Comic Sans MS" size="120.0" />
             </font>
         </Text>
-        <Text fill="WHITE" layoutX="279.0" layoutY="252.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username" wrappingWidth="418.1366882324219">
+        <Text fill="WHITE" layoutX="360.0" layoutY="251.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username" textAlignment="RIGHT" wrappingWidth="198.13668823242188">
             <font>
-                <Font name="Ink Free" size="37.0" />
+                <Font name="Comic Sans MS" size="26.0" />
             </font>
         </Text>
         <Button layoutX="501.0" layoutY="485.0" mnemonicParsing="false" onAction="#registerButtonClicked" prefHeight="79.0" prefWidth="278.0" style="-fx-background-radius: 11;" text="Register" textAlignment="CENTER">
             <font>
-                <Font name="Ink Free" size="39.0" />
+                <Font name="Comic Sans MS" size="39.0" />
             </font>
         </Button>
-        <TextField fx:id="userName" alignment="TOP_CENTER" layoutX="719.0" layoutY="212.0" prefHeight="58.0" prefWidth="312.0" promptText="enter name" style="-fx-background-radius: 11;">
+        <TextField fx:id="userName" alignment="TOP_CENTER" layoutX="600.0" layoutY="212.0" prefHeight="58.0" prefWidth="312.0" promptText="enter name" style="-fx-background-radius: 11;">
             <font>
-                <Font name="Ink Free" size="25.0" />
+                <Font name="Comic Sans MS" size="26.0" />
             </font>
             <opaqueInsets>
                 <Insets />
             </opaqueInsets>
         </TextField>
-        <Text fill="WHITE" layoutX="279.0" layoutY="326.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password" wrappingWidth="418.1366882324219">
+        <Text fill="WHITE" layoutX="360.0" layoutY="325.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password" textAlignment="RIGHT" wrappingWidth="198.13668823242188">
             <font>
-                <Font name="Ink Free" size="37.0" />
+                <Font name="Comic Sans MS" size="26.0" />
             </font>
         </Text>
-        <PasswordField fx:id="password" alignment="TOP_CENTER" layoutX="719.0" layoutY="286.0" prefHeight="58.0" prefWidth="312.0" promptText="enter password" style="-fx-background-radius: 11;">
+        <PasswordField fx:id="password" alignment="TOP_CENTER" layoutX="600.0" layoutY="286.0" prefHeight="58.0" prefWidth="312.0" promptText="enter password" style="-fx-background-radius: 11;">
             <font>
-                <Font name="Ink Free" size="25.0" />
+                <Font name="Comic Sans MS" size="26.0" />
             </font>
             <opaqueInsets>
                 <Insets />
             </opaqueInsets>
         </PasswordField>
-        <Text fill="WHITE" layoutX="279.0" layoutY="409.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Confirm password" wrappingWidth="418.1366882324219">
+        <Text fill="WHITE" layoutX="326.0" layoutY="399.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Confirm password" textAlignment="RIGHT" wrappingWidth="231.13668823242188">
             <font>
-                <Font name="Ink Free" size="37.0" />
+                <Font name="Comic Sans MS" size="26.0" />
             </font>
         </Text>
-        <PasswordField fx:id="confirmPassword" alignment="TOP_CENTER" layoutX="719.0" layoutY="369.0" prefHeight="58.0" prefWidth="312.0" promptText="confirm password" style="-fx-background-radius: 11;">
+        <PasswordField fx:id="confirmPassword" alignment="TOP_CENTER" layoutX="600.0" layoutY="360.0" prefHeight="58.0" prefWidth="312.0" promptText="confirm password" style="-fx-background-radius: 11;">
             <font>
-                <Font name="Ink Free" size="25.0" />
+                <Font name="Comic Sans MS" size="26.0" />
             </font>
             <opaqueInsets>
                 <Insets />
@@ -62,9 +61,9 @@
         </PasswordField>
         <Button layoutX="501.0" layoutY="589.0" mnemonicParsing="false" onAction="#showLogin" prefHeight="79.0" prefWidth="278.0" style="-fx-background-radius: 11;" text="Back" textAlignment="CENTER">
             <font>
-                <Font name="Ink Free" size="39.0" />
+                <Font name="Comic Sans MS" size="39.0" />
             </font>
         </Button>
-      <Label fx:id="errorLabel" layoutX="622.0" layoutY="173.0" textAlignment="CENTER" />
+      <Text fx:id="error" fill="RED" layoutX="435.0" layoutY="200.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="429.95068359375" />
     </children>
 </AnchorPane>
