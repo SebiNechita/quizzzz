@@ -15,10 +15,6 @@
  */
 package client.scenes;
 
-import java.net.URL;
-import java.util.List;
-import java.util.ResourceBundle;
-
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.LeaderboardEntry;
@@ -28,6 +24,11 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import packets.LeaderboardResponsePacket;
+
+import java.net.URL;
+import java.util.List;
+import java.util.ResourceBundle;
 
 public class HomeLeaderboardCtrl extends SceneCtrl {
 
@@ -73,13 +74,13 @@ public class HomeLeaderboardCtrl extends SceneCtrl {
      * Reload the leaderboard.
      */
     public void refresh() {
-        List<LeaderboardEntry> leaderboardEntries = server.getLeaderboard();
-        //If the request is unsuccessful, the list is null.
-        if (leaderboardEntries != null){
+        LeaderboardResponsePacket packet = server.getRequest("api/leaderboard", LeaderboardResponsePacket.class);
+        //If the request is unsuccessful, the response is null.
+        if (packet != null && packet.getLeaderboard() != null) {
+            List<LeaderboardEntry> leaderboardEntries = packet.getLeaderboard();
             data = FXCollections.observableList(leaderboardEntries);
             table.setItems(data);
         }
-
     }
 
     /**

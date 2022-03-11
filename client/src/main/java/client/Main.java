@@ -15,7 +15,12 @@
  */
 package client;
 
-import client.scenes.*;
+import client.scenes.HelpCtrl;
+import client.scenes.StartScreenCtrl;
+import client.scenes.ConnectionCtrl;
+import client.scenes.HomeCtrl;
+import client.scenes.HomeLeaderboardCtrl;
+import client.scenes.MainCtrl;
 import com.google.inject.Injector;
 import javafx.application.Application;
 import javafx.scene.Parent;
@@ -38,13 +43,16 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+
         Triple<HomeCtrl, Parent, String> home = FXML.load("client/scenes/StartScreen.fxml", "Main Menu");
+        Triple<HomeCtrl, Parent, String> login = FXML.load("client/scenes/Login.fxml", "Main Menu");
+        Triple<HomeCtrl, Parent, String> register = FXML.load("client/scenes/Register.fxml", "Main Menu");
         Triple<HomeLeaderboardCtrl, Parent, String> homeLeaderboard = FXML.load("client/scenes/HomeLeaderboard.fxml", "Main Menu");
+        Triple<ConnectionCtrl, Parent, String> connection = FXML.load("client/scenes/Connection.fxml", "Connection Page");
         Triple<HelpCtrl, Parent, String> help = FXML.load("client/scenes/HelpScreen.fxml", "Main Menu");
 
         MainCtrl mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-
-        mainCtrl.initialize(primaryStage, home, homeLeaderboard,help);
-        mainCtrl.showScene(StartScreenCtrl.class);
+        mainCtrl.initialize(primaryStage, home, homeLeaderboard, help connection, login, register);
+        mainCtrl.showScene(ConnectionCtrl.class);
     }
 }

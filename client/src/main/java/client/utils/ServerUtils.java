@@ -16,14 +16,14 @@
 package client.utils;
 
 import client.Main;
-import commons.LeaderboardEntry;
+import commons.utils.HttpStatus;
 import commons.utils.LoggerUtil;
 import jakarta.ws.rs.client.*;
-import jakarta.ws.rs.core.*;
+import jakarta.ws.rs.core.Response;
 import packets.RegisterRequestPacket;
+import packets.RequestPacket;
+import packets.ResponsePacket;
 
-import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -38,6 +38,7 @@ public class ServerUtils {
     }
 
     private Client client;
+
     private Client getClient() {
         if (client == null) {
             initClient();
@@ -49,232 +50,7 @@ public class ServerUtils {
     private Invocation.Builder requestTemplate(String path) {
         if (Objects.equals(Main.TOKEN, "")) {
             LoggerUtil.warnInline("No token set, cancelling request to $HL" + Main.URL + path + "$");
-            return new Invocation.Builder() {
-                @Override
-                public Invocation build(String method) {
-                    return null;
-                }
-
-                @Override
-                public Invocation build(String method, Entity<?> entity) {
-                    return null;
-                }
-
-                @Override
-                public Invocation buildGet() {
-                    return null;
-                }
-
-                @Override
-                public Invocation buildDelete() {
-                    return null;
-                }
-
-                @Override
-                public Invocation buildPost(Entity<?> entity) {
-                    return null;
-                }
-
-                @Override
-                public Invocation buildPut(Entity<?> entity) {
-                    return null;
-                }
-
-                @Override
-                public AsyncInvoker async() {
-                    return null;
-                }
-
-                @Override
-                public Invocation.Builder accept(String... mediaTypes) {
-                    return null;
-                }
-
-                @Override
-                public Invocation.Builder accept(MediaType... mediaTypes) {
-                    return null;
-                }
-
-                @Override
-                public Invocation.Builder acceptLanguage(Locale... locales) {
-                    return null;
-                }
-
-                @Override
-                public Invocation.Builder acceptLanguage(String... locales) {
-                    return null;
-                }
-
-                @Override
-                public Invocation.Builder acceptEncoding(String... encodings) {
-                    return null;
-                }
-
-                @Override
-                public Invocation.Builder cookie(Cookie cookie) {
-                    return null;
-                }
-
-                @Override
-                public Invocation.Builder cookie(String name, String value) {
-                    return null;
-                }
-
-                @Override
-                public Invocation.Builder cacheControl(CacheControl cacheControl) {
-                    return null;
-                }
-
-                @Override
-                public Invocation.Builder header(String name, Object value) {
-                    return null;
-                }
-
-                @Override
-                public Invocation.Builder headers(MultivaluedMap<String, Object> headers) {
-                    return null;
-                }
-
-                @Override
-                public Invocation.Builder property(String name, Object value) {
-                    return null;
-                }
-
-                @Override
-                public CompletionStageRxInvoker rx() {
-                    return null;
-                }
-
-                @Override
-                public <T extends RxInvoker> T rx(Class<T> clazz) {
-                    return null;
-                }
-
-                @Override
-                public Response get() {
-                    return null;
-                }
-
-                @Override
-                public <T> T get(Class<T> responseType) {
-                    return null;
-                }
-
-                @Override
-                public <T> T get(GenericType<T> responseType) {
-                    return null;
-                }
-
-                @Override
-                public Response put(Entity<?> entity) {
-                    return null;
-                }
-
-                @Override
-                public <T> T put(Entity<?> entity, Class<T> responseType) {
-                    return null;
-                }
-
-                @Override
-                public <T> T put(Entity<?> entity, GenericType<T> responseType) {
-                    return null;
-                }
-
-                @Override
-                public Response post(Entity<?> entity) {
-                    return null;
-                }
-
-                @Override
-                public <T> T post(Entity<?> entity, Class<T> responseType) {
-                    return null;
-                }
-
-                @Override
-                public <T> T post(Entity<?> entity, GenericType<T> responseType) {
-                    return null;
-                }
-
-                @Override
-                public Response delete() {
-                    return null;
-                }
-
-                @Override
-                public <T> T delete(Class<T> responseType) {
-                    return null;
-                }
-
-                @Override
-                public <T> T delete(GenericType<T> responseType) {
-                    return null;
-                }
-
-                @Override
-                public Response head() {
-                    return null;
-                }
-
-                @Override
-                public Response options() {
-                    return null;
-                }
-
-                @Override
-                public <T> T options(Class<T> responseType) {
-                    return null;
-                }
-
-                @Override
-                public <T> T options(GenericType<T> responseType) {
-                    return null;
-                }
-
-                @Override
-                public Response trace() {
-                    return null;
-                }
-
-                @Override
-                public <T> T trace(Class<T> responseType) {
-                    return null;
-                }
-
-                @Override
-                public <T> T trace(GenericType<T> responseType) {
-                    return null;
-                }
-
-                @Override
-                public Response method(String name) {
-                    return null;
-                }
-
-                @Override
-                public <T> T method(String name, Class<T> responseType) {
-                    return null;
-                }
-
-                @Override
-                public <T> T method(String name, GenericType<T> responseType) {
-                    return null;
-                }
-
-                @Override
-                public Response method(String name, Entity<?> entity) {
-                    return null;
-                }
-
-                @Override
-                public <T> T method(String name, Entity<?> entity, Class<T> responseType) {
-                    return null;
-                }
-
-                @Override
-                public <T> T method(String name, Entity<?> entity, GenericType<T> responseType) {
-                    return null;
-                }
-            };
+            return null;
         }
 
         return getClient().target(Main.URL)
@@ -285,7 +61,7 @@ public class ServerUtils {
     }
 
     public String getToken(String username, String password) {
-        Response response = getClient().target(Main.URL).path("login")
+        Response response = getClient().target(Main.URL).path("/api/user/login")
                 .request(APPLICATION_JSON).accept(APPLICATION_JSON)
                 .post(Entity.entity(new RegisterRequestPacket(username, password), APPLICATION_JSON));
 
@@ -299,20 +75,64 @@ public class ServerUtils {
         return "";
     }
 
-    /**
-     * Example request which checks if the server is online
-     *
-     * @return The response of the server
-     */
-    public String pingServer() {
-        return requestTemplate("ping").get(String.class);
+    public <T extends ResponsePacket, S extends RequestPacket> T postRequest(String path, S request, Class<T> response) {
+        Invocation.Builder template = requestTemplate(path);
+        if (template == null) {
+            return (T) new ResponsePacket(HttpStatus.NotFound);
+        }
+
+        return template.post(Entity.entity(request, APPLICATION_JSON), response);
+    }
+
+    public <T extends ResponsePacket> T getRequest(String path, Class<T> response) {
+        Invocation.Builder template = requestTemplate(path);
+        if (template == null) {
+            return (T) new ResponsePacket(HttpStatus.NotFound);
+        }
+
+        return template.get(response);
     }
 
     /**
-     * Gets the leaderboard from server.
-     * @return the leaderboard.
+     * test the connection with the given url
+     * @param url
+     * @return returns true if given url is valid
      */
-    public List<LeaderboardEntry> getLeaderboard() {
-        return requestTemplate("api/leaderboard").get(new GenericType<>() {});
+    public boolean testConnection(String url) {
+        Client client = getClient();
+        WebTarget resourceTarget = client.target(url + "/ping");
+
+        Invocation invocation = resourceTarget.request("text/plain")
+                .buildGet();
+
+        // Invoke the request
+        String response;
+        try {
+            response = invocation.invoke(String.class);
+        } catch (Exception e) {
+            return false;
+        }
+
+        return response.equals("Pong");
+    }
+
+
+    /**
+     * Register a new user on server
+     * @param username the name of the user
+     * @param password the password of the user
+     * @return whether the registration was successful
+     */
+    public boolean register(String username, String password){
+        Response response = getClient().target(Main.URL).path("api/user/register")
+                .request(APPLICATION_JSON).accept(APPLICATION_JSON)
+                .post(Entity.entity(new RegisterRequestPacket(username, password), APPLICATION_JSON));
+
+        if (response.getStatus() == 200) {
+            LoggerUtil.info("Created user " + username);
+            return true;
+        }
+        LoggerUtil.warn("Could not create user");
+        return false;
     }
 }
