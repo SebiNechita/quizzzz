@@ -35,7 +35,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .requiresChannel(channel -> channel.anyRequest().requiresSecure())
                 .authorizeRequests()
-                .antMatchers("/api/user/register", "/api/user/available")
+                .antMatchers("/api/user/register", "/api/user/available", "/ping")
                 .permitAll()
                 .and()
                 .sessionManagement()

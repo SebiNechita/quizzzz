@@ -15,6 +15,7 @@
  */
 package client;
 
+import client.scenes.ConnectionCtrl;
 import client.scenes.HomeCtrl;
 import client.scenes.HomeLeaderboardCtrl;
 import client.scenes.LoginCtrl;
@@ -45,9 +46,10 @@ public class Main extends Application {
         Triple<HomeCtrl, Parent, String> login = FXML.load("client/scenes/Login.fxml", "Main Menu");
         Triple<HomeCtrl, Parent, String> register = FXML.load("client/scenes/Register.fxml", "Main Menu");
         Triple<HomeLeaderboardCtrl, Parent, String> homeLeaderboard = FXML.load("client/scenes/HomeLeaderboard.fxml", "Main Menu");
+        Triple<ConnectionCtrl, Parent, String> connection = FXML.load("client/scenes/Connection.fxml", "Connection Page");
 
         MainCtrl mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, home, login, register, homeLeaderboard);
-        mainCtrl.showScene(LoginCtrl.class);
+        mainCtrl.initialize(primaryStage, home, homeLeaderboard);
+        mainCtrl.showScene(HomeCtrl.class);
     }
 }

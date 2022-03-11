@@ -19,6 +19,8 @@ import client.Main;
 import commons.utils.HttpStatus;
 import commons.utils.LoggerUtil;
 import jakarta.ws.rs.client.*;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.client.*;
 import jakarta.ws.rs.core.*;
 import packets.RegisterRequestPacket;
 import packets.RequestPacket;
@@ -92,6 +94,30 @@ public class ServerUtils {
 
         return template.get(response);
     }
+
+    /**
+     * test the connection with the given url
+     * @param url
+     * @return returns true if given url is valid
+     */
+    public boolean testConnection(String url) {
+        Client client = getClient();
+        WebTarget resourceTarget = client.target(url + "/ping");
+
+        Invocation invocation = resourceTarget.request("text/plain")
+                .buildGet();
+
+        // Invoke the request
+        String response;
+        try {
+            response = invocation.invoke(String.class);
+        } catch (Exception e) {
+            return false;
+        }
+
+        return response.equals("Pong");
+    }
+
 
     /**
      * Register a new user on server
