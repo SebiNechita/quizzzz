@@ -1,16 +1,28 @@
+/*
+ * Copyright 2021 Delft University of Technology
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package client.scenes;
 
-import client.utils.ServerUtils;
-import commons.utils.LoggerUtil;
-import javafx.fxml.FXML;
-import packets.GeneralResponsePacket;
-import packets.UsernameAvailableRequestPacket;
-
-import javax.inject.Inject;
 import java.net.URL;
-import java.util.ResourceBundle;
 
-public class HomeCtrl extends SceneCtrl {
+import java.util.ResourceBundle;
+import client.utils.ServerUtils;
+import com.google.inject.Inject;
+
+
+public class HelpCtrl extends SceneCtrl {
 
     /**
      * Constructor for this Ctrl
@@ -19,7 +31,7 @@ public class HomeCtrl extends SceneCtrl {
      * @param serverUtils The server utils, for communicating with the server
      */
     @Inject
-    public HomeCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
+    public HelpCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
         super(mainCtrl, serverUtils);
     }
 
@@ -37,28 +49,13 @@ public class HomeCtrl extends SceneCtrl {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
-    }
-
-    /**
-     * Server communication
-     */
-    @FXML
-    public void pingButtonClicked() {
-        LoggerUtil.raw(server.postRequest("/api/user/available", new UsernameAvailableRequestPacket("Geoff"), GeneralResponsePacket.class));
-    }
-
-    /**
-     * Show the leaderboard.
-     */
-    public void showHomeLeaderboard(){
-        main.showScene(HomeLeaderboardCtrl.class);
+  
     }
 
     /**
      * Show the home screen.
      */
-    public void showHelp(){
-        main.showScene(HelpCtrl.class);
+    public void showHome(){
+        main.showScene(StartScreenCtrl.class);
     }
 }
