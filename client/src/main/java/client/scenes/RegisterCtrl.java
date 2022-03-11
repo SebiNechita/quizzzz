@@ -1,7 +1,9 @@
 package client.scenes;
 
+import client.Main;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import commons.utils.LoggerUtil;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
@@ -9,6 +11,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Text;
+import packets.GeneralResponsePacket;
+import packets.RegisterRequestPacket;
+import packets.UsernameAvailableRequestPacket;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -46,6 +51,22 @@ public class RegisterCtrl extends SceneCtrl{
     }
 
     /**
+     * DUPLICATE FROM LoginCtrl!!!!!
+     * Logs in and redirects to the Home screen if the login credentials are valid.
+     */
+    public void login(){
+        String result = server.getToken(userName.getText(), password.getText());
+        //the return string is "" if the login is unsuccessful.
+        if (!result.isEmpty()){
+            Main.TOKEN = result;
+            main.showScene(HomeCtrl.class);
+        }
+        else{
+            error.setText("Could not log in.");
+        }
+    }
+
+    /**
      * Checks if the registration form is filled with correct values and if so, sends a request.
      */
     public void registerButtonClicked(){
@@ -58,10 +79,10 @@ public class RegisterCtrl extends SceneCtrl{
         }
         else{
             //the username and password are sent without any leading or trailing whitespaces.
-            //If successful, returns to login.
+            //If successful, logs the newly created user in.
             //the logger is used by the register method.
             if (server.register(userName.getText().trim(), password.getText().trim())){
-                showLogin();
+                login();
             }
         }
     }
