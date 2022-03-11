@@ -20,11 +20,6 @@ public class StartScreenCtrl extends SceneCtrl {
         LoggerUtil.raw(server.pingServer());
     }
 
-//    @FXML
-//    public void pingButtonClicked() {
-//        LoggerUtil.raw(server.pingServer());
-//    }
-
     /**
      * Show the leaderboard.
      */
@@ -32,6 +27,9 @@ public class StartScreenCtrl extends SceneCtrl {
         main.showScene(HomeLeaderboardCtrl.class);
     }
 
+    /**
+     * Show the help screen
+     */
     public void showHelp(){
         main.showScene(HelpCtrl.class);
     }
