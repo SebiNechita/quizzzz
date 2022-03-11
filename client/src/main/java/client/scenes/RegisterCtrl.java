@@ -7,7 +7,6 @@ import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Text;
 
 import java.net.URL;
@@ -16,6 +15,22 @@ import java.util.ResourceBundle;
 public class RegisterCtrl extends SceneCtrl{
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        //treat Enter as clicking register button
+        userName.setOnKeyPressed(e->{
+            if (e.getCode() == KeyCode.ENTER) {
+                registerButtonClicked();
+            }
+        });
+        password.setOnKeyPressed(e->{
+            if (e.getCode() == KeyCode.ENTER) {
+                registerButtonClicked();
+            }
+        });
+        confirmPassword.setOnKeyPressed(e->{
+            if (e.getCode() == KeyCode.ENTER) {
+                registerButtonClicked();
+            }
+        });
     }
 
     @FXML
@@ -79,17 +94,6 @@ public class RegisterCtrl extends SceneCtrl{
             if (server.register(userName.getText().trim(), password.getText().trim())){
                 login();
             }
-        }
-    }
-
-    /**
-     * Controller for keypress events on Scene.
-     * @param e the keypress event
-     */
-    public void onKeyPressed(KeyEvent e) {
-        //treat Enter as clicking register button
-        if (e.getCode() == KeyCode.ENTER) {
-            registerButtonClicked();
         }
     }
 }
