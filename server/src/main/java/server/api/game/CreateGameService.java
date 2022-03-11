@@ -4,8 +4,7 @@ import commons.Game;
 import commons.questions.Activity;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
 import java.util.Objects;
 

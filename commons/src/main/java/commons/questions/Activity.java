@@ -159,6 +159,26 @@ public class Activity {
         return source;
     }
 
+
+    /**
+     * Setter for image_path
+     *
+     * @param image_path path of the image
+     */
+    public void setImage_path(String image_path) {
+        this.image_path = image_path;
+    }
+
+    /**
+     * Setter for energy in wh
+     *
+     * @param consumption_in_wh energy used by that activity in wh
+     */
+    public void setConsumption_in_wh(long consumption_in_wh) {
+        this.consumption_in_wh = consumption_in_wh;
+    }
+
+
     /**
      * String representation of Activity
      *
