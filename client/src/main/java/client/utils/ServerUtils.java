@@ -116,4 +116,23 @@ public class ServerUtils {
         return response.equals("Pong");
     }
 
+
+    /**
+     * Register a new user on server
+     * @param username the name of the user
+     * @param password the password of the user
+     * @return whether the registration was successful
+     */
+    public boolean register(String username, String password){
+        Response response = getClient().target(Main.URL).path("api/user/register")
+                .request(APPLICATION_JSON).accept(APPLICATION_JSON)
+                .post(Entity.entity(new RegisterRequestPacket(username, password), APPLICATION_JSON));
+
+        if (response.getStatus() == 200) {
+            LoggerUtil.info("Created user " + username);
+            return true;
+        }
+        LoggerUtil.warn("Could not create user");
+        return false;
+    }
 }

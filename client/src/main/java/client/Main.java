@@ -42,11 +42,13 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         Triple<HomeCtrl, Parent, String> home = FXML.load("client/scenes/Home.fxml", "Main Menu");
+        Triple<HomeCtrl, Parent, String> login = FXML.load("client/scenes/Login.fxml", "Main Menu");
+        Triple<HomeCtrl, Parent, String> register = FXML.load("client/scenes/Register.fxml", "Main Menu");
         Triple<HomeLeaderboardCtrl, Parent, String> homeLeaderboard = FXML.load("client/scenes/HomeLeaderboard.fxml", "Main Menu");
         Triple<ConnectionCtrl, Parent, String> connection = FXML.load("client/scenes/Connection.fxml", "Connection Page");
 
         MainCtrl mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, home, homeLeaderboard, connection);
+        mainCtrl.initialize(primaryStage, home, homeLeaderboard, connection, login, register);
         mainCtrl.showScene(ConnectionCtrl.class);
     }
 }

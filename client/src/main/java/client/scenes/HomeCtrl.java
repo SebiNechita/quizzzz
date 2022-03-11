@@ -1,6 +1,5 @@
 package client.scenes;
 
-import client.Main;
 import client.utils.ServerUtils;
 import commons.utils.LoggerUtil;
 import javafx.fxml.FXML;
@@ -20,7 +19,7 @@ public class HomeCtrl extends SceneCtrl {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Main.TOKEN = server.getToken("Geoff", "password");
+
     }
 
     @FXML
