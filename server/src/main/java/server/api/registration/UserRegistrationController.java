@@ -27,7 +27,7 @@ public class UserRegistrationController {
     }
 
     @PostMapping(path = "/available")
-    public GeneralResponsePacket available(@RequestBody UsernameAvailableRequestPacket request) {
+    public ResponsePacket available(@RequestBody UsernameAvailableRequestPacket request) {
         return registrationService.userAvailable(request.getUsername());
     }
 }
