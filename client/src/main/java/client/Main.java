@@ -18,7 +18,6 @@ package client;
 import client.scenes.ConnectionCtrl;
 import client.scenes.HomeCtrl;
 import client.scenes.HomeLeaderboardCtrl;
-import client.scenes.LoginCtrl;
 import client.scenes.MainCtrl;
 import com.google.inject.Injector;
 import javafx.application.Application;

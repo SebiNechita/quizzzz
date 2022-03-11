@@ -20,8 +20,6 @@ import commons.utils.HttpStatus;
 import commons.utils.LoggerUtil;
 import jakarta.ws.rs.client.*;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.client.*;
-import jakarta.ws.rs.core.*;
 import packets.RegisterRequestPacket;
 import packets.RequestPacket;
 import packets.ResponsePacket;
