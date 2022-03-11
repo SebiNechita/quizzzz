@@ -18,17 +18,17 @@
         </Text>
         <Text fill="WHITE" layoutX="360.0" layoutY="372.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username" wrappingWidth="235.13668823242188">
             <font>
-                <Font name="Ink Free" size="37.0" />
+                <Font name="Comic Sans MS" size="26.0" />
             </font>
         </Text>
         <Button layoutX="501.0" layoutY="522.0" mnemonicParsing="false" onAction="#login" prefHeight="79.0" prefWidth="278.0" style="-fx-background-radius: 11;" text="Login" textAlignment="CENTER">
             <font>
-                <Font name="Ink Free" size="39.0" />
+                <Font name="Comic Sans MS" size="39.0" />
             </font>
         </Button>
         <TextField fx:id="userName" alignment="TOP_CENTER" layoutX="610.0" layoutY="327.0" prefHeight="58.0" prefWidth="312.0" promptText="enter name" style="-fx-background-radius: 11;">
             <font>
-                <Font name="Ink Free" size="25.0" />
+                <Font name="Comic Sans MS" size="26.0" />
             </font>
             <opaqueInsets>
                 <Insets />
@@ -36,21 +36,24 @@
         </TextField>
       <Text fill="WHITE" layoutX="360.0" layoutY="455.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password" wrappingWidth="215.13668823242188">
          <font>
-            <Font name="Ink Free" size="37.0" />
+            <Font name="Comic Sans MS" size="26.0" />
          </font>
       </Text>
       <PasswordField fx:id="password" alignment="TOP_CENTER" layoutX="610.0" layoutY="414.0" prefHeight="58.0" prefWidth="312.0" promptText="enter password" style="-fx-background-radius: 11;">
          <font>
-            <Font name="Ink Free" size="25.0" />
+            <Font name="Comic Sans MS" size="26.0" />
          </font>
          <opaqueInsets>
             <Insets />
          </opaqueInsets>
       </PasswordField>
-      <Text fx:id="error" fill="RED" layoutX="425.0" layoutY="293.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="429.95068359375" />
-      <Text fill="#02a9fc" layoutX="499.0" layoutY="662.0" onMouseClicked="#showRegister" strokeType="OUTSIDE" strokeWidth="0.0" text="Register a new account">
+      <Text fx:id="error" fill="RED" layoutX="425.0" layoutY="293.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="429.95068359375">
          <font>
-            <Font size="24.0" />
+            <Font name="Comic Sans MS" size="13.0" />
+         </font></Text>
+      <Text fill="#02a9fc" layoutX="504.0" layoutY="654.0" onMouseClicked="#showRegister" strokeType="OUTSIDE" strokeWidth="0.0" text="Register a new account">
+         <font>
+            <Font name="Comic Sans MS Bold" size="24.0" />
          </font>
          <cursor>
             <Cursor fx:constant="HAND" />
