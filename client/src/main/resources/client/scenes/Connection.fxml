@@ -16,7 +16,7 @@
         </Text>
         <Text fill="WHITE" layoutX="279.0" layoutY="381.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter URL of your server:" wrappingWidth="418.1366882324219">
             <font>
-                <Font name="Comic Sans MS" size="37.0" />
+                <Font name="Comic Sans MS" size="30.0" />
             </font>
         </Text>
         <Button layoutX="558.0" layoutY="511.0" mnemonicParsing="false" onAction="#connectClicked" prefHeight="79.0" prefWidth="278.0" style="-fx-background-radius: 11;" text="Connect" textAlignment="CENTER">
