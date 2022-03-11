@@ -4,6 +4,8 @@ import client.Main;
 import client.utils.ServerUtils;
 import commons.utils.LoggerUtil;
 import javafx.fxml.FXML;
+import packets.GeneralResponsePacket;
+import packets.UsernameAvailableRequestPacket;
 
 import javax.inject.Inject;
 import java.net.URL;
@@ -18,13 +20,12 @@ public class HomeCtrl extends SceneCtrl {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Main.TOKEN = server.getToken("Geof", "password");
-        LoggerUtil.raw(server.pingServer());
+        Main.TOKEN = server.getToken("Geoff", "password");
     }
 
     @FXML
     public void pingButtonClicked() {
-        LoggerUtil.raw(server.pingServer());
+        LoggerUtil.raw(server.postRequest("/api/user/available", new UsernameAvailableRequestPacket("Geoff"), GeneralResponsePacket.class));
     }
 
     /**

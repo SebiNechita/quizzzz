@@ -44,12 +44,15 @@ public class UserService implements UserDetailsService {
         return new RegisterResponsePacket(HttpStatus.Created);
     }
 
-    public boolean validUser(User appUser) {
-        Optional<User> user = appUserRepository.findByUsername(appUser.getUsername());
+    public boolean validUser(String username, String password) {
+        Optional<User> user = appUserRepository.findByUsername(username);
 
         if (user.isEmpty()) return false;
 
-        return bCryptPasswordEncoder.matches(appUser.getPassword(), user.get().getPassword());
+        return bCryptPasswordEncoder.matches(password, user.get().getPassword());
     }
 
+    public void deleteUser(User user) {
+        appUserRepository.delete(user);
+    }
 }

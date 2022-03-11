@@ -1,11 +1,11 @@
 package server.api;
 
 import commons.LeaderboardEntry;
+import commons.utils.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import packets.LeaderboardResponsePacket;
 import server.database.LeaderboardRepository;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(path = "/api")
@@ -18,8 +18,8 @@ public class LeaderboardController {
     }
 
     @GetMapping(path = { "/leaderboard" })
-    public List<LeaderboardEntry> getAll() {
-        return repo.findAll();
+    public LeaderboardResponsePacket getAll() {
+        return new LeaderboardResponsePacket(HttpStatus.OK, repo.findAll());
     }
 
     @GetMapping(path = { "/leaderboard/{username}" })
