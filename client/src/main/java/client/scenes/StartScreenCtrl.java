@@ -35,7 +35,7 @@ public class StartScreenCtrl extends SceneCtrl {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Main.TOKEN = server.getToken("Geof", "password");
-        LoggerUtil.raw(server.pingServer());
+        //LoggerUtil.raw(server.pingServer());
     }
 
     /**

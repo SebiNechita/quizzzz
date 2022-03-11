@@ -52,7 +52,7 @@ public class Main extends Application {
         Triple<HelpCtrl, Parent, String> help = FXML.load("client/scenes/HelpScreen.fxml", "Main Menu");
 
         MainCtrl mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, home, homeLeaderboard, help connection, login, register);
+        mainCtrl.initialize(primaryStage, home, homeLeaderboard, help, connection, login, register);
         mainCtrl.showScene(ConnectionCtrl.class);
     }
 }
