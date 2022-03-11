@@ -3,17 +3,12 @@ package client.scenes;
 import client.Main;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
-import commons.utils.LoggerUtil;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Text;
-import packets.GeneralResponsePacket;
-import packets.RegisterRequestPacket;
-import packets.UsernameAvailableRequestPacket;
 
 import java.net.URL;
 import java.util.ResourceBundle;
