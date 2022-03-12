@@ -1,6 +1,7 @@
 package client.scenes;
 
 import client.Main;
+import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import javafx.fxml.FXML;
 import javafx.scene.text.Text;
@@ -40,6 +41,7 @@ public class MainMenuCtrl extends SceneCtrl {
     /**
      * Gets called when the scene is actually shown to the user
      */
+    @OnShowScene
     public void onShowScene() {
         username.setText(Main.USERNAME.equals("") ? "???" : Main.USERNAME);
     }

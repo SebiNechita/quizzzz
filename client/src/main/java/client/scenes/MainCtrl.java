@@ -15,6 +15,7 @@
  */
 package client.scenes;
 
+import client.utils.OnShowScene;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -22,6 +23,7 @@ import javafx.util.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 
 public class MainCtrl {
@@ -31,6 +33,12 @@ public class MainCtrl {
     private final HashMap<Class<?>, SceneCtrl> ctrlClasses = new HashMap<>();
     private final HashMap<Class<?>, Pair<Scene, String>> scenes = new HashMap<>();
 
+    /**
+     * Will be run when the window is shown to the user, and initializes all the scenes
+     *
+     * @param primaryStage The main stage which will show evey scene to the user
+     * @param page The page(s) which should be initialized
+     */
     @SafeVarargs
     public final void initialize(Stage primaryStage, Triple<? extends SceneCtrl, Parent, String>... page) {
         this.primaryStage = primaryStage;
@@ -43,18 +51,26 @@ public class MainCtrl {
         primaryStage.show();
     }
 
-    public <T extends SceneCtrl> T getCtrl(Class<T> c) {
-        return c.cast(ctrlClasses.get(c));
-    }
-
+    /**
+     * Can be used to show a scene by giving the Ctrl class of that scene.
+     * <p>Any method annotated with {@link OnShowScene} annotation will be called as soon as
+     * the scene is shown to the user.</p>
+     *
+     * @param c The SceneCtrl of the class that should be shown
+     * @param <T> The type of the SceneCtrl class
+     */
     public <T extends SceneCtrl> void showScene(Class<T> c) {
         Pair<Scene, String> pair = scenes.get(c);
         primaryStage.setScene(pair.getKey());
         primaryStage.setTitle(pair.getValue());
 
         try {
-            // Tries to run the method "onShowScene" if it exists.
-            c.getDeclaredMethod("onShowScene").invoke(ctrlClasses.get(c));
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) {}
+            // Runs every method in the scene with the "OnShowScene" annotation
+            for (Method method : c.getDeclaredMethods()) {
+                if (method.isAnnotationPresent(OnShowScene.class)) {
+                    method.invoke(ctrlClasses.get(c));
+                }
+            }
+        } catch (IllegalAccessException | InvocationTargetException ignored) {}
     }
 }
