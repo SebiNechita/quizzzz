@@ -37,7 +37,7 @@ public class LoginCtrl extends SceneCtrl{
         //the return string is "" if the login is unsuccessful.
         if (!result.isEmpty()){
             Main.TOKEN = result;
-            main.showScene(StartScreenCtrl.class);
+            main.showScene(MainMenuCtrl.class);
         }
         else{
             error.setText("Could not log in.");

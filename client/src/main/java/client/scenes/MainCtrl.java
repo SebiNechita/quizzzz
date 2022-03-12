@@ -21,6 +21,7 @@ import javafx.stage.Stage;
 import javafx.util.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
 public class MainCtrl {
@@ -50,5 +51,10 @@ public class MainCtrl {
         Pair<Scene, String> pair = scenes.get(c);
         primaryStage.setScene(pair.getKey());
         primaryStage.setTitle(pair.getValue());
+
+        try {
+            // Tries to run the method "onShowScene" if it exists.
+            c.getDeclaredMethod("onShowScene").invoke(ctrlClasses.get(c));
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) {}
     }
 }

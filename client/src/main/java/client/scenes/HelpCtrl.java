@@ -15,11 +15,11 @@
  */
 package client.scenes;
 
-import java.net.URL;
-
-import java.util.ResourceBundle;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+
+import java.net.URL;
+import java.util.ResourceBundle;
 
 
 public class HelpCtrl extends SceneCtrl {
@@ -39,23 +39,20 @@ public class HelpCtrl extends SceneCtrl {
      * Called to initialize a controller after its root element has been
      * completely processed.
      *
-     * @param location
-     * The location used to resolve relative paths for the root object, or
-     * {@code null} if the location is not known.
-     *
-     * @param resources
-     * The resources used to localize the root object, or {@code null} if
-     * the root object was not localized.
+     * @param location  The location used to resolve relative paths for the root object, or
+     *                  {@code null} if the location is not known.
+     * @param resources The resources used to localize the root object, or {@code null} if
+     *                  the root object was not localized.
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-  
+
     }
 
     /**
      * Show the home screen.
      */
-    public void showHome(){
-        main.showScene(StartScreenCtrl.class);
+    public void showHome() {
+        main.showScene(MainMenuCtrl.class);
     }
 }

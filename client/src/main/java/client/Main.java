@@ -15,11 +15,7 @@
  */
 package client;
 
-import client.scenes.HelpCtrl;
-import client.scenes.ConnectionCtrl;
-import client.scenes.HomeCtrl;
-import client.scenes.HomeLeaderboardCtrl;
-import client.scenes.MainCtrl;
+import client.scenes.*;
 import com.google.inject.Injector;
 import javafx.application.Application;
 import javafx.scene.Parent;
@@ -33,25 +29,35 @@ public class Main extends Application {
     private static final Injector INJECTOR = createInjector(new MyModule());
     private static final MyFXML FXML = new MyFXML(INJECTOR);
 
+    public static String USERNAME = "";
     public static String URL = "https://localhost:8080/";
     public static String TOKEN = "";
 
+    /**
+     * Gets called when the application is started
+     *
+     * @param args The arguments given on startup
+     */
     public static void main(String[] args) {
         launch();
     }
 
+    /**
+     * Sets up and starts the JavaFX application
+     *
+     * @param primaryStage The stage on which all content gets shown
+     */
     @Override
     public void start(Stage primaryStage) {
-
-        Triple<HomeCtrl, Parent, String> home = FXML.load("client/scenes/StartScreen.fxml", "Main Menu");
-        Triple<HomeCtrl, Parent, String> login = FXML.load("client/scenes/Login.fxml", "Main Menu");
-        Triple<HomeCtrl, Parent, String> register = FXML.load("client/scenes/Register.fxml", "Main Menu");
-        Triple<HomeLeaderboardCtrl, Parent, String> homeLeaderboard = FXML.load("client/scenes/HomeLeaderboard.fxml", "Main Menu");
-        Triple<ConnectionCtrl, Parent, String> connection = FXML.load("client/scenes/Connection.fxml", "Connection Page");
-        Triple<HelpCtrl, Parent, String> help = FXML.load("client/scenes/HelpScreen.fxml", "Main Menu");
+        Triple<ConnectionCtrl, Parent, String> connection = FXML.load("client/scenes/Connection.fxml", "Connection page");
+        Triple<LoginCtrl, Parent, String> login = FXML.load("client/scenes/Login.fxml", "Login page");
+        Triple<RegisterCtrl, Parent, String> register = FXML.load("client/scenes/Register.fxml", "Register page");
+        Triple<MainMenuCtrl, Parent, String> home = FXML.load("client/scenes/MainMenu.fxml", "Main Menu");
+        Triple<SingleplayerLeaderboardCtrl, Parent, String> homeLeaderboard = FXML.load("client/scenes/HomeLeaderboard.fxml", "Singeleplayer Leaderboard");
+        Triple<HelpCtrl, Parent, String> help = FXML.load("client/scenes/HelpScreen.fxml", "Help page");
 
         MainCtrl mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, home, homeLeaderboard, help, connection, login, register);
+        mainCtrl.initialize(primaryStage, connection, login, register, home, homeLeaderboard, help);
         mainCtrl.showScene(ConnectionCtrl.class);
     }
 }
