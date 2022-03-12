@@ -211,7 +211,7 @@ public class GameMultiChoiceCtrl extends GameCtrl {
     }
 
     /**
-     * Animates the option the user chose
+     * Sets the option's color from "hover blue" to "selected blue" (or from "hover blue" to white if inverted is false)
      8
      * @param anchorPane The pane to animate
      * @param inverted If the animation needs to be reversed or not
