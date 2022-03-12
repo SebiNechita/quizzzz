@@ -59,6 +59,7 @@ public class RegisterCtrl extends SceneCtrl{
      * Shows the login screen.
      */
     public void showLogin(){
+        clearFields();
         main.showScene(LoginCtrl.class);
     }
 
@@ -97,8 +98,18 @@ public class RegisterCtrl extends SceneCtrl{
                 error.setText("User exists");
             }
             else if (response.getCode() == HttpStatus.Created.getCode()){
+                clearFields();
                 login();
             }
         }
+    }
+
+    /**
+     * Clears input fields in this scene.
+     */
+    public void clearFields(){
+        userName.clear();
+        password.clear();
+        confirmPassword.clear();
     }
 }
