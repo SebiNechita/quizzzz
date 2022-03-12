@@ -27,11 +27,11 @@ public class RegistrationService {
         }
     }
 
-    public GeneralResponsePacket userAvailable(String username) {
+    public ResponsePacket userAvailable(String username) {
         if (appUserService.userExists(username)) {
-            return new GeneralResponsePacket(HttpStatus.Conflict);
+            return new ResponsePacket(HttpStatus.Conflict);
         } else {
-            return new GeneralResponsePacket(HttpStatus.OK);
+            return new ResponsePacket(HttpStatus.OK);
         }
     }
 

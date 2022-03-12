@@ -1,16 +1,13 @@
 package client.scenes;
 
+import client.Main;
 import client.utils.ServerUtils;
-import commons.utils.LoggerUtil;
-import javafx.fxml.FXML;
-import packets.GeneralResponsePacket;
-import packets.UsernameAvailableRequestPacket;
-
+//import commons.utils.LoggerUtil;
 import javax.inject.Inject;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class HomeCtrl extends SceneCtrl {
+public class StartScreenCtrl extends SceneCtrl {
 
     /**
      * Constructor for this Ctrl
@@ -19,7 +16,7 @@ public class HomeCtrl extends SceneCtrl {
      * @param serverUtils The server utils, for communicating with the server
      */
     @Inject
-    public HomeCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
+    public StartScreenCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
         super(mainCtrl, serverUtils);
     }
 
@@ -37,15 +34,8 @@ public class HomeCtrl extends SceneCtrl {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
-    }
-
-    /**
-     * Server communication
-     */
-    @FXML
-    public void pingButtonClicked() {
-        LoggerUtil.raw(server.postRequest("/api/user/available", new UsernameAvailableRequestPacket("Geoff"), GeneralResponsePacket.class));
+        Main.TOKEN = server.getToken("Geof", "password");
+        //LoggerUtil.raw(server.pingServer());
     }
 
     /**
@@ -56,7 +46,7 @@ public class HomeCtrl extends SceneCtrl {
     }
 
     /**
-     * Show the home screen.
+     * Show the help screen.
      */
     public void showHelp(){
         main.showScene(HelpCtrl.class);
