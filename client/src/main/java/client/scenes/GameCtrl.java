@@ -18,6 +18,7 @@ import javafx.scene.control.Button;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -54,8 +55,7 @@ public abstract class GameCtrl extends SceneCtrl {
 
     @FXML
     protected VBox jokers;
-    @FXML
-    protected AnchorPane jokerTooltip;
+    private AnchorPane jokerContainer;
 
     @FXML
     protected Text timeLeftText;
@@ -103,7 +103,14 @@ public abstract class GameCtrl extends SceneCtrl {
 
         nextQuestion.setVisible(false);
 
-        jokers.setVisible(false);
+        jokerContainer = (AnchorPane) jokers.getParent();
+        jokerContainer.setVisible(false);
+        jokers.getChildren().forEach(joker -> {
+            // Hide the tooltips by default
+            ((AnchorPane) joker).getChildren().get(1).setVisible(false);
+        });
+
+        emoteContainer.setVisible(false);
 
         notificationContainer.setVisible(gameMode == GameMode.MULTIPLAYER);
 
@@ -153,22 +160,22 @@ public abstract class GameCtrl extends SceneCtrl {
      */
     private void enableListeners() {
         for (Node node : jokers.getChildren()) {
-            AnchorPane jokerContainer = (AnchorPane) node;
-            ImageView joker = (ImageView) jokerContainer.getChildren().get(0);
-            AnchorPane tooltip = (AnchorPane) jokerContainer.getChildren().get(1);
+            AnchorPane joker = (AnchorPane) node;
+            ImageView jokerImage = (ImageView) joker.getChildren().get(0);
+            AnchorPane tooltip = (AnchorPane) joker.getChildren().get(1);
 
-            joker.setOnMouseEntered(event -> {
-                hoverAnim(jokerContainer, new Color(0.266, 0.266, 0.266, 1), new Color(1, 1, 1, 1)).play();
+            jokerImage.setOnMouseEntered(event -> {
+                hoverAnim(joker, new Color(0.266, 0.266, 0.266, 1), new Color(1, 1, 1, 1)).play();
                 showJokerTooltip(tooltip);
             });
 
-            joker.setOnMouseExited(event -> {
-                hoverAnim(jokerContainer, new Color(1, 1, 1, 1), new Color(0.266, 0.266, 0.266, 1)).play();
+            jokerImage.setOnMouseExited(event -> {
+                hoverAnim(joker, new Color(1, 1, 1, 1), new Color(0.266, 0.266, 0.266, 1)).play();
                 hideJokerTooltip(tooltip);
             });
 
-            joker.setOnMouseClicked(event -> {
-                jokerUsed(JokerType.valueOf(joker.getId()));
+            jokerImage.setOnMouseClicked(event -> {
+                jokerUsed(JokerType.valueOf(joker.getId().toUpperCase()));
             });
         }
 
@@ -204,6 +211,7 @@ public abstract class GameCtrl extends SceneCtrl {
      * @param tooltip The tooltip to show
      */
     private void showJokerTooltip(AnchorPane tooltip) {
+        tooltip.setVisible(true);
         FadeTransition transition = new FadeTransition();
         transition.setNode(tooltip);
         transition.setFromValue(0);
@@ -224,6 +232,7 @@ public abstract class GameCtrl extends SceneCtrl {
         transition.setToValue(0);
         transition.setDuration(Duration.millis(400));
         transition.playFromStart();
+        tooltip.setVisible(false);
     }
 
     /**
@@ -311,8 +320,9 @@ public abstract class GameCtrl extends SceneCtrl {
      * The timer which counts down the amount of time left and also shows the correct answer after the time limit has run out
      */
     protected void startTimer() {
-        jokers.setVisible(gameMode == GameMode.MULTIPLAYER);
+        jokerContainer.setVisible(gameMode == GameMode.MULTIPLAYER);
         notificationContainer.setVisible(gameMode == GameMode.MULTIPLAYER);
+        emoteContainer.setVisible(gameMode == GameMode.MULTIPLAYER);
 
         timer = timerAnim(timeLeftSlider);
 

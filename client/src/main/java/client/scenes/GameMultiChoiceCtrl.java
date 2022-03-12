@@ -7,6 +7,8 @@ import javafx.animation.Transition;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -40,8 +42,6 @@ public class GameMultiChoiceCtrl extends GameCtrl {
 
     @FXML
     private VBox jokers;
-    @FXML
-    private AnchorPane jokerTooltip;
 
     @FXML
     protected Text timeLeftText;
@@ -83,7 +83,6 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         super.nextQuestion = nextQuestion;
 
         super.jokers = jokers;
-        super.jokerTooltip = jokerTooltip;
 
         super.timeLeftText = timeLeftText;
         super.timeLeftBar = timeLeftBar;
@@ -120,7 +119,7 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                removeAnswer(0);
+                removeOption(0);
             }
         }, 3000);
     }
@@ -189,15 +188,26 @@ public class GameMultiChoiceCtrl extends GameCtrl {
     }
 
     /**
-     * Removes a certain answer by graying it out and making it non-clickable
+     * Removes a certain option by graying it out and making it non-clickable
      *
-     * @param answer The index of the answer to remove
+     * @param option The index of the option to remove
      */
-    private void removeAnswer(int answer) {
-        locked[answer] = true;
+    private void removeOption(int option) {
+        locked[option] = true;
 
-        removedAnswer = options[answer];
+        removedAnswer = options[option];
         fadeOption(removedAnswer, (Color) removedAnswer.getBackground().getFills().get(0).getFill(), new Color(0.478, 0.478, 0.478, 1)).play();
+    }
+
+    /**
+     * Sets the image of one of the options
+     *
+     * @param option The option to set it for
+     * @param image The image to set
+     */
+    protected void setImage(int option, Image image) {
+        ImageView imageView = (ImageView) options[option].getChildren().get(0);
+        imageView.setImage(image);
     }
 
     /**
