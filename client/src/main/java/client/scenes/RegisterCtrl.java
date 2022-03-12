@@ -3,11 +3,13 @@ package client.scenes;
 import client.Main;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import commons.utils.HttpStatus;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.text.Text;
+import packets.ResponsePacket;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -90,8 +92,11 @@ public class RegisterCtrl extends SceneCtrl{
         else{
             //the username and password are sent without any leading or trailing whitespaces.
             //If successful, logs the newly created user in.
-            //the logger is used by the register method.
-            if (server.register(userName.getText().trim(), password.getText().trim())){
+            ResponsePacket response = server.register(userName.getText().trim(), password.getText().trim());
+            if (response.getCode() == HttpStatus.Conflict.getCode()){
+                error.setText("User exists");
+            }
+            else if (response.getCode() == HttpStatus.Created.getCode()){
                 login();
             }
         }
