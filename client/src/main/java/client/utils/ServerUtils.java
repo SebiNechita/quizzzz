@@ -16,6 +16,7 @@
 package client.utils;
 
 import client.Main;
+import commons.Game;
 import commons.utils.HttpStatus;
 import commons.utils.LoggerUtil;
 import jakarta.ws.rs.client.*;
@@ -73,6 +74,15 @@ public class ServerUtils {
             LoggerUtil.severeInline("Unknown status $HLHTTP" + response.getStatus() + "$ given while trying to get a token");
         }
         return "";
+    }
+
+    public Game getGame(){
+        return getClient().target(Main.URL)
+                .path("api/game/create")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .header("Authorization", Main.TOKEN)
+                .get(Game.class);
     }
 
     public <T extends ResponsePacket, S extends RequestPacket> T postRequest(String path, S request, Class<T> response) {

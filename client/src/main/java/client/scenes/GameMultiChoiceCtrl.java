@@ -112,6 +112,8 @@ public class GameMultiChoiceCtrl extends GameCtrl {
             options[i] = (AnchorPane) optionsContainer.getChildren().get(i);
         }
 
+        server.getGame();
+
         generateProgressDots();
         enableListeners();
 
