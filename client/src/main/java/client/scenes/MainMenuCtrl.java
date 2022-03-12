@@ -1,21 +1,18 @@
 package client.scenes;
 
+import client.Main;
 import client.utils.ServerUtils;
-import com.google.inject.Inject;
 import javafx.fxml.FXML;
-import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 
+import javax.inject.Inject;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ConnectionCtrl extends SceneCtrl {
+public class MainMenuCtrl extends SceneCtrl {
 
     @FXML
-    private TextField url;
-
-    @FXML
-    private Text message;
+    private Text username;
 
     /**
      * Constructor for this Ctrl
@@ -24,7 +21,7 @@ public class ConnectionCtrl extends SceneCtrl {
      * @param serverUtils The server utils, for communicating with the server
      */
     @Inject
-    public ConnectionCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
+    public MainMenuCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
         super(mainCtrl, serverUtils);
     }
 
@@ -38,24 +35,26 @@ public class ConnectionCtrl extends SceneCtrl {
      *                  the root object was not localized.
      */
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        // set the default url to make testing easier
-        url.setText("https://localhost:8080");
+    public void initialize(URL location, ResourceBundle resources) {}
+
+    /**
+     * Gets called when the scene is actually shown to the user
+     */
+    public void onShowScene() {
+        username.setText(Main.USERNAME.equals("") ? "???" : Main.USERNAME);
     }
 
     /**
-     * Event handler for when 'Connect' button is clicked
+     * Show the leaderboard.
      */
-    public void connectClicked() {
-        String urlStr = url.getText();
-        // test if the url is valid
-        boolean res = server.testConnection(urlStr);
+    public void showHomeLeaderboard() {
+        main.showScene(SingleplayerLeaderboardCtrl.class);
+    }
 
-        if (res) {
-            main.showScene(LoginCtrl.class);
-        } else {
-            message.setText("This URL is invalid");
-            url.setStyle("-fx-background-color: #fc6363");
-        }
+    /**
+     * Show the help screen.
+     */
+    public void showHelp() {
+        main.showScene(HelpCtrl.class);
     }
 }
