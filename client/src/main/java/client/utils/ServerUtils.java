@@ -93,6 +93,7 @@ public class ServerUtils {
 
     /**
      * test the connection with the given url
+     *
      * @param url
      * @return returns true if given url is valid
      */
@@ -117,18 +118,19 @@ public class ServerUtils {
 
     /**
      * Register a new user on server
+     *
      * @param username the name of the user
      * @param password the password of the user
      * @return whether the registration was successful
      */
-    public ResponsePacket register(String username, String password){
+    public ResponsePacket register(String username, String password) {
         Invocation.Builder template = getClient().target(Main.URL)
-                                        .path("api/user/register")
-                                        .request(APPLICATION_JSON)
-                                        .accept(APPLICATION_JSON)
-                                        .header("Authorization", Main.TOKEN);
+                .path("api/user/register")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .header("Authorization", Main.TOKEN);
         return template.post(
-                Entity.entity(new RegisterRequestPacket(username, password),APPLICATION_JSON),
+                Entity.entity(new RegisterRequestPacket(username, password), APPLICATION_JSON),
                 RegisterResponsePacket.class);
     }
 }
