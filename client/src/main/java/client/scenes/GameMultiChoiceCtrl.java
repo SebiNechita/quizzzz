@@ -1,6 +1,8 @@
 package client.scenes;
 
+import client.Main;
 import client.utils.ServerUtils;
+import commons.Game;
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.Transition;
@@ -112,7 +114,9 @@ public class GameMultiChoiceCtrl extends GameCtrl {
             options[i] = (AnchorPane) optionsContainer.getChildren().get(i);
         }
 
-        server.getGame();
+        Main.TOKEN = server.getToken("Geof", "password");
+        Game game = server.getGame();
+        question.setText(game.getQuestions().get(0).getQuestion());
 
         generateProgressDots();
         enableListeners();

@@ -12,15 +12,21 @@ public class Game {
     /**
      * List of questions that'll be used in this particular instance of the game
      */
-    private final List<Question> questions;
+    private List<Question> questions;
     /**
      * The number of questions in that game session. Default 20 will be used if not provided.
      */
-    private final int noOfQuestions;
+    private int noOfQuestions;
     /**
      * Contains all the activities using which the questions will be made
      */
     private List<Activity> activities;
+
+    /**
+     * Default constructor for object mappers
+     */
+    public Game() {
+    }
 
     /**
      * Constructor for Game that takes in the number of questions in the game and list of activities.

@@ -54,6 +54,6 @@ public class Main extends Application {
 
         MainCtrl mainCtrl = INJECTOR.getInstance(MainCtrl.class);
         mainCtrl.initialize(primaryStage, home, game, homeLeaderboard, help, connection, login, register);
-        mainCtrl.showScene(ConnectionCtrl.class);
+        mainCtrl.showScene(GameMultiChoiceCtrl.class);
     }
 }
