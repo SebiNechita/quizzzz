@@ -15,6 +15,11 @@ public class HTTPSUtil {
     private static String currentURL = "";
     private static SSLContext sslContext;
 
+    /**
+     * Used to create a new SSL context, when the URL changes or the SSL context doesn't yet exist
+     *
+     * @return The new SSL context
+     */
     private static SSLContext initializeSSLContext() {
         // This line allows localhost to connect as localhost technically doesn't have a domain which can be certified.
         HttpsURLConnection.setDefaultHostnameVerifier((hostname, sslSession) -> hostname.equals("localhost"));
@@ -40,6 +45,11 @@ public class HTTPSUtil {
         }
     }
 
+    /**
+     * Can be used to retrieve the SSL context which in turn can be used for HTTPS requests
+     *
+     * @return The SSL Context
+     */
     public static SSLContext getSSLContext() {
         if (!Objects.equals(currentURL, Main.URL)) {
             return initializeSSLContext();

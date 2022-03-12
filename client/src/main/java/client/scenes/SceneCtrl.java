@@ -8,6 +8,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public abstract class SceneCtrl implements Initializable {
+    
     protected final MainCtrl main;
     protected final ServerUtils server;
 
