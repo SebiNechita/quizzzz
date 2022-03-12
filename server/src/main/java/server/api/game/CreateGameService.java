@@ -19,11 +19,8 @@ public class CreateGameService {
      */
     public Game createGame(Integer noOfQuestions) {
         List<Activity> activities = null;
-        File source = new File(
-                Objects.requireNonNull(
-                                getClass().getClassLoader().getResource("activity-bank/activities.json")
-                        ).
-                        getFile()
+        File source = new File(Objects.requireNonNull(
+                                getClass().getClassLoader().getResource("activity-bank/activities.json")).getFile()
         );
 
         try {
@@ -32,7 +29,10 @@ public class CreateGameService {
             e.printStackTrace();
         }
 
-        if (noOfQuestions != null) return new Game(noOfQuestions, activities);
-        else return new Game(activities);
+        if (noOfQuestions != null) {
+            return new Game(noOfQuestions, activities);
+        } else {
+            return new Game(activities);
+        }
     }
 }
