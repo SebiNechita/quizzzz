@@ -105,11 +105,12 @@ public class RegisterCtrl extends SceneCtrl{
     }
 
     /**
-     * Clears input fields in this scene.
+     * Clears input fields and error messages in this scene.
      */
     public void clearFields(){
         userName.clear();
         password.clear();
         confirmPassword.clear();
+        error.setText("");
     }
 }
