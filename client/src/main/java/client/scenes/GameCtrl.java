@@ -92,6 +92,10 @@ public abstract class GameCtrl extends SceneCtrl {
      * Gets called after scene has finished loading
      */
     protected void initialize() {
+
+    }
+
+    public void onShowScene() {
         notificationRenderer = new NotificationRenderer();
 
         timeLeftSlider = (AnchorPane) timeLeftBar.getChildren().get(0);
@@ -402,7 +406,7 @@ public abstract class GameCtrl extends SceneCtrl {
     /**
      * Hides point info.
      */
-    protected void hidePointsGained(){
+    protected void hidePointsGained() {
         pointsGainedText.setVisible(false);
         answerBonusText.setVisible(false);
         timeBonusText.setVisible(false);

@@ -1,6 +1,7 @@
 package client.scenes;
 
 import client.Main;
+import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import commons.Game;
 import javafx.animation.Animation;
@@ -67,7 +68,7 @@ public class GameMultiChoiceCtrl extends GameCtrl {
     /**
      * Constructor for this Ctrl
      *
-     * @param mainCtrl The parent class, which keeps track of all scenes
+     * @param mainCtrl    The parent class, which keeps track of all scenes
      * @param serverUtils The server utils, for communicating with the server
      */
     @Inject
@@ -98,24 +99,26 @@ public class GameMultiChoiceCtrl extends GameCtrl {
      * Called to initialize a controller after its root element has been
      * completely processed.
      *
-     * @param location
-     * The location used to resolve relative paths for the root object, or
-     * {@code null} if the location is not known.
-     *
-     * @param resources
-     * The resources used to localize the root object, or {@code null} if
-     * the root object was not localized.
+     * @param location  The location used to resolve relative paths for the root object, or
+     *                  {@code null} if the location is not known.
+     * @param resources The resources used to localize the root object, or {@code null} if
+     *                  the root object was not localized.
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        super.initialize();
+
+    }
+
+    @OnShowScene
+    public void onShowScene() {
+        super.onShowScene();
+
+        retrieveQuestion();
 
         for (int i = 0; i < 3; i++) {
             options[i] = (AnchorPane) optionsContainer.getChildren().get(i);
         }
 
-        Main.TOKEN = server.getToken("Geof","password");
-        retrieveQuestion();
 
         generateProgressDots();
         enableListeners();
@@ -198,7 +201,7 @@ public class GameMultiChoiceCtrl extends GameCtrl {
     /**
      * Hides point info, gets a new question, resets the options' appearance and the timer.
      */
-    protected void goToNextQuestion(){
+    protected void goToNextQuestion() {
         hidePointsGained();
         retrieveQuestion();
 
@@ -215,7 +218,7 @@ public class GameMultiChoiceCtrl extends GameCtrl {
     /**
      * Gets the next question.
      */
-    protected void retrieveQuestion(){
+    protected void retrieveQuestion() {
         Game game = server.getGame();
         question.setText(game.getQuestions().get(0).getQuestion());
     }
@@ -236,7 +239,7 @@ public class GameMultiChoiceCtrl extends GameCtrl {
      * Sets the image of one of the options
      *
      * @param option The option to set it for
-     * @param image The image to set
+     * @param image  The image to set
      */
     protected void setImage(int option, Image image) {
         ImageView imageView = (ImageView) options[option].getChildren().get(0);
@@ -245,9 +248,10 @@ public class GameMultiChoiceCtrl extends GameCtrl {
 
     /**
      * Sets the option's color from "hover blue" to "selected blue" (or from "hover blue" to white if inverted is false)
-     8
+     * 8
+     *
      * @param anchorPane The pane to animate
-     * @param inverted If the animation needs to be reversed or not
+     * @param inverted   If the animation needs to be reversed or not
      * @return The animation object which can be played
      */
     private Animation selectedAnim(AnchorPane anchorPane, boolean inverted) {
@@ -272,8 +276,8 @@ public class GameMultiChoiceCtrl extends GameCtrl {
      * Animates the options the user gets
      *
      * @param anchorPane The pane to animate
-     * @param start The color to start from
-     * @param target The color to end with
+     * @param start      The color to start from
+     * @param target     The color to end with
      * @return The animation object which can be played
      */
     private Animation fadeOption(AnchorPane anchorPane, Color start, Color target) {

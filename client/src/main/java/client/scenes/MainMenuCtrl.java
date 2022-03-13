@@ -50,7 +50,7 @@ public class MainMenuCtrl extends SceneCtrl {
      * Show the leaderboard.
      */
     public void showHomeLeaderboard() {
-        main.showScene(SingleplayerLeaderboardCtrl.class);
+        main.showScene(GameMultiChoiceCtrl.class);
     }
 
     /**
