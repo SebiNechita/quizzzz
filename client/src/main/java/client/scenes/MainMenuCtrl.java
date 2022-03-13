@@ -50,7 +50,7 @@ public class MainMenuCtrl extends SceneCtrl {
      * Show the leaderboard.
      */
     public void showHomeLeaderboard() {
-        main.showScene(GameMultiChoiceCtrl.class);
+        main.showScene(SingleplayerLeaderboardCtrl.class);
     }
 
     /**
@@ -58,5 +58,13 @@ public class MainMenuCtrl extends SceneCtrl {
      */
     public void showHelp() {
         main.showScene(HelpCtrl.class);
+    }
+
+    /**
+     * Temporary method, leads to a placeholder of singleplayer
+     * (but one that already gets its questions from the server)
+     */
+    public void showSingleplayer(){
+        main.showScene(GameMultiChoiceCtrl.class);
     }
 }
