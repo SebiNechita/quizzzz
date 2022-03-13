@@ -116,7 +116,7 @@ public abstract class GameCtrl extends SceneCtrl {
         enableListeners();
 
         //----- TODO: Everything below this is temporary and for testing/displaying purposes -----
-        gameMode = GameMode.MULTIPLAYER;
+        gameMode = GameMode.SINGLEPLAYER;
         Random random = new Random();
         for (int i = 0; i < 10; i++) {
             questionHistory.add(random.nextBoolean());
@@ -294,7 +294,6 @@ public abstract class GameCtrl extends SceneCtrl {
      * Resets everything and loads the next question
      */
     protected void goToNextQuestion() {
-        //TODO: implement
     }
 
     /**

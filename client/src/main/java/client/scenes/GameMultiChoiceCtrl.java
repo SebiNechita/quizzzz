@@ -193,6 +193,16 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         showPointsGained((selected != null && selected.getKey() == answer) ? 100 : 0);
     }
 
+    protected void goToNextQuestion(){
+        Game game = server.getGame();
+        question.setText(game.getQuestions().get(0).getQuestion());
+
+        locked = new boolean[]{false, false, false};
+
+
+        startTimer();
+    }
+
     /**
      * Removes a certain option by graying it out and making it non-clickable
      *
@@ -268,6 +278,6 @@ public class GameMultiChoiceCtrl extends GameCtrl {
      */
     @FXML
     private void onNextButton() {
-        super.goToNextQuestion();
+        goToNextQuestion();
     }
 }
