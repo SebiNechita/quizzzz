@@ -4,11 +4,12 @@ import commons.questions.Activity;
 import commons.questions.MultipleChoiceQuestion;
 import commons.questions.OpenQuestion;
 import commons.questions.Question;
+import packets.ResponsePacket;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Game {
+public class Game extends ResponsePacket {
     /**
      * List of questions that'll be used in this particular instance of the game
      */
