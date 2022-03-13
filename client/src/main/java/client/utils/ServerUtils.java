@@ -19,6 +19,8 @@ import client.Main;
 import commons.Game;
 import commons.utils.HttpStatus;
 import commons.utils.LoggerUtil;
+import jakarta.ws.rs.ProcessingException;
+import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.client.*;
 import jakarta.ws.rs.core.Response;
 import packets.RegisterRequestPacket;
@@ -31,6 +33,11 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 public class ServerUtils {
 
+    private Client client;
+
+    /**
+     * Creates the client if it doesn't exist yet
+     */
     private void initClient() {
         client = ClientBuilder.newBuilder()
                 .hostnameVerifier((hostname, session) -> true)
@@ -38,8 +45,11 @@ public class ServerUtils {
                 .build();
     }
 
-    private Client client;
-
+    /**
+     * Returns the client which will send the SSL context automatically for an HTTPS connection
+     *
+     * @return The client
+     */
     private Client getClient() {
         if (client == null) {
             initClient();
@@ -48,6 +58,12 @@ public class ServerUtils {
         return client;
     }
 
+    /**
+     * Builds a template which can be used for HTTP(S) requests
+     *
+     * @param path The path of the endpoint to send the request to
+     * @return The template which can be used for any type of HTTP(S) request
+     */
     private Invocation.Builder requestTemplate(String path) {
         if (Objects.equals(Main.TOKEN, "")) {
             LoggerUtil.warnInline("No token set, cancelling request to $HL" + Main.URL + path + "$");
@@ -61,6 +77,13 @@ public class ServerUtils {
                 .header("Authorization", Main.TOKEN);
     }
 
+    /**
+     * Tries to get a token with the given username and password
+     *
+     * @param username The username for which to get the token
+     * @param password The password for which to get the token
+     * @return The token, {@code null} if the username and/or password is invalid
+     */
     public String getToken(String username, String password) {
         Response response = getClient().target(Main.URL).path("/api/user/login")
                 .request(APPLICATION_JSON).accept(APPLICATION_JSON)
@@ -73,7 +96,7 @@ public class ServerUtils {
         } else {
             LoggerUtil.severeInline("Unknown status $HLHTTP" + response.getStatus() + "$ given while trying to get a token");
         }
-        return "";
+        return null;
     }
 
     public Game getGame(){
@@ -85,6 +108,16 @@ public class ServerUtils {
                 .get(Game.class);
     }
 
+    /**
+     * Builds a post request
+     *
+     * @param path     The path of the endpoint to send the request to
+     * @param request  The packet which the server returns
+     * @param response The packet which to send to the server
+     * @param <T>      The type of packet which the server should return
+     * @param <S>      The type of packet which should be sent to the server
+     * @return A packet containing the response of the server
+     */
     public <T extends ResponsePacket, S extends RequestPacket> T postRequest(String path, S request, Class<T> response) {
         Invocation.Builder template = requestTemplate(path);
         if (template == null) {
@@ -94,6 +127,14 @@ public class ServerUtils {
         return template.post(Entity.entity(request, APPLICATION_JSON), response);
     }
 
+    /**
+     * Builds a get request
+     *
+     * @param path     The path of the endpoint to send the request to
+     * @param response The packet which the server returns
+     * @param <T>      The type of packet which the server should return
+     * @return A packet containing the response of the server
+     */
     public <T extends ResponsePacket> T getRequest(String path, Class<T> response) {
         Invocation.Builder template = requestTemplate(path);
         if (template == null) {
@@ -104,22 +145,21 @@ public class ServerUtils {
     }
 
     /**
-     * test the connection with the given url
-     * @param url
-     * @return returns true if given url is valid
+     * Tests whether the URL is valid or not
+     *
+     * @param url The URL to test
+     * @return If the URL is valid or not
      */
     public boolean testConnection(String url) {
-        Client client = getClient();
-        WebTarget resourceTarget = client.target(url + "/ping");
-
-        Invocation invocation = resourceTarget.request("text/plain")
-                .buildGet();
+        Invocation invocation = getClient()
+                .target(url + "/ping")
+                .request("text/plain").buildGet();
 
         // Invoke the request
         String response;
         try {
             response = invocation.invoke(String.class);
-        } catch (Exception e) {
+        } catch (ProcessingException | WebApplicationException ignored) {
             return false;
         }
 
@@ -129,11 +169,12 @@ public class ServerUtils {
 
     /**
      * Register a new user on server
+     *
      * @param username the name of the user
      * @param password the password of the user
      * @return whether the registration was successful
      */
-    public boolean register(String username, String password){
+    public boolean register(String username, String password) {
         Response response = getClient().target(Main.URL).path("api/user/register")
                 .request(APPLICATION_JSON).accept(APPLICATION_JSON)
                 .post(Entity.entity(new RegisterRequestPacket(username, password), APPLICATION_JSON));
