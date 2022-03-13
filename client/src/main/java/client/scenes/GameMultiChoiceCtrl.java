@@ -222,7 +222,7 @@ public class GameMultiChoiceCtrl extends GameCtrl {
      * Gets the next question.
      */
     protected void retrieveMultipleChoiceQuestion() {
-        Game game = server.getGame();
+        Game game = server.getRequest("api/game/create", Game.class);
         question.setText(game.getMultipleChoiceQuestions().get(0).getQuestion());
     }
 
@@ -230,7 +230,7 @@ public class GameMultiChoiceCtrl extends GameCtrl {
      * Gets the next question.
      */
     protected void retrieveOpenQuestion() {
-        Game game = server.getGame();
+        Game game = server.getRequest("api/game/create", Game.class);
         question.setText(game.getOpenQuestions().get(0).getQuestion());
     }
 

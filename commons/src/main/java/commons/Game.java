@@ -4,6 +4,7 @@ import commons.questions.Activity;
 import commons.questions.MultipleChoiceQuestion;
 import commons.questions.OpenQuestion;
 import commons.questions.Question;
+import packets.RequestPacket;
 import packets.ResponsePacket;
 
 import java.util.ArrayList;
@@ -12,14 +13,25 @@ import java.util.List;
 public class Game extends ResponsePacket {
     /**
      * List of questions that'll be used in this particular instance of the game
+     * The questions are of the type MultipleChoiceQuestion
      */
     private List<Question> multipleChoiceQuestions;
+    /**
+     * List of questions that'll be used in this particular instance of the game
+     * The questions are of the type OpenQuestion
+     */
     private List<Question> openQuestions;
     /**
      * The number of questions in that game session. Default 20 will be used if not provided.
      */
     private int noOfQuestions;
+    /**
+     * The number of questions in that game session which are MultipleChoiceQuestions. Default 16 will be used if not provided.
+     */
     private int noOfMultipleChoiceQuestions;
+    /**
+     * The number of questions in that game session which are MultipleChoiceQuestions. Default 4 will be used if not provided.
+     */
     private int noOfOpenQuestions;
     /**
      * Contains all the activities using which the questions will be made
@@ -68,7 +80,7 @@ public class Game extends ResponsePacket {
      * @return A list of "noOfQuestions" questions. 4/5th of them are Multiple Choice Questions and the remaining are Open Questions
      */
     private static List<Question> generateMultipleChoiceQuestions(Game game,
-                                                    int noOfMultipleChoiceQuestions) {
+                                                                  int noOfMultipleChoiceQuestions) {
 
         List<Question> multipleChoiceQuestions = new ArrayList<>();
 
@@ -91,7 +103,7 @@ public class Game extends ResponsePacket {
      * @return A list of "noOfQuestions" questions. 4/5th of them are Multiple Choice Questions and the remaining are Open Questions
      */
     private static List<Question> generateOpenQuestions(Game game,
-                                                                  int noOfOpenQuestions) {
+                                                        int noOfOpenQuestions) {
         List<Question> openQuestions = new ArrayList<>();
 
         for(int i = 0; i < noOfOpenQuestions; ++i) {
@@ -166,6 +178,8 @@ public class Game extends ResponsePacket {
         this.activities = activities;
     }
 
+
+
     /**
      * String representation of the Game
      *
@@ -181,5 +195,37 @@ public class Game extends ResponsePacket {
                 ", noOfOpenQuestions=" + noOfOpenQuestions +
                 ", activities=" + activities +
                 '}';
+    }
+
+    /**
+     * @param o is the object to be compared with the game object
+     * @return boolean if the two games are equals
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Game)) return false;
+
+        Game game = (Game) o;
+
+        if (noOfQuestions != game.noOfQuestions) return false;
+        if (noOfMultipleChoiceQuestions != game.noOfMultipleChoiceQuestions) return false;
+        if (noOfOpenQuestions != game.noOfOpenQuestions) return false;
+        if (multipleChoiceQuestions != null ? !multipleChoiceQuestions.equals(game.multipleChoiceQuestions) : game.multipleChoiceQuestions != null)
+            return false;
+        if (openQuestions != null ? !openQuestions.equals(game.openQuestions) : game.openQuestions != null)
+            return false;
+        return activities != null ? activities.equals(game.activities) : game.activities == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = multipleChoiceQuestions != null ? multipleChoiceQuestions.hashCode() : 0;
+        result = 31 * result + (openQuestions != null ? openQuestions.hashCode() : 0);
+        result = 31 * result + noOfQuestions;
+        result = 31 * result + noOfMultipleChoiceQuestions;
+        result = 31 * result + noOfOpenQuestions;
+        result = 31 * result + (activities != null ? activities.hashCode() : 0);
+        return result;
     }
 }

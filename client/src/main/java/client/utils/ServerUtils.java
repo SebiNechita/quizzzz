@@ -99,14 +99,14 @@ public class ServerUtils {
         return null;
     }
 
-    public Game getGame(){
-        return getClient().target(Main.URL)
-                .path("api/game/create")
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .header("Authorization", Main.TOKEN)
-                .get(Game.class);
-    }
+//    public Game getGame(){
+//        return getClient().target(Main.URL)
+//                .path("api/game/create")
+//                .request(APPLICATION_JSON)
+//                .accept(APPLICATION_JSON)
+//                .header("Authorization", Main.TOKEN)
+//                .get(Game.class);
+//    }
 
     /**
      * Builds a post request
