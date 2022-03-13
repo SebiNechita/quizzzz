@@ -400,6 +400,15 @@ public abstract class GameCtrl extends SceneCtrl {
     }
 
     /**
+     * Hides point info.
+     */
+    protected void hidePointsGained(){
+        pointsGainedText.setVisible(false);
+        answerBonusText.setVisible(false);
+        timeBonusText.setVisible(false);
+    }
+
+    /**
      * Transitions from white to the target color
      *
      * @param anchorPane The pane which to change the color of

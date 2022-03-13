@@ -190,17 +190,35 @@ public class GameMultiChoiceCtrl extends GameCtrl {
             }
         }
 
-        showPointsGained((selected != null && selected.getKey() == answer) ? 100 : 0);
+        boolean correctlyAnswered = selected != null && selected.getKey() == answer;
+        showPointsGained(correctlyAnswered ? 100 : 0);
+        questionHistory.add(correctlyAnswered);
+        generateProgressDots();
     }
 
+    /**
+     * Hides point info, gets a new question, resets the options' appearance and the timer.
+     */
     protected void goToNextQuestion(){
-        Game game = server.getGame();
-        question.setText(game.getQuestions().get(0).getQuestion());
+        hidePointsGained();
+        retrieveQuestion();
 
         locked = new boolean[]{false, false, false};
+        selected = null;
 
+        for (AnchorPane option : options) {
+            fadeOption(option, (Color) option.getBackground().getFills().get(0).getFill(), new Color(1, 1, 1, 1)).play();
+        }
 
         startTimer();
+    }
+
+    /**
+     * Gets the next question.
+     */
+    protected void retrieveQuestion(){
+        Game game = server.getGame();
+        question.setText(game.getQuestions().get(0).getQuestion());
     }
 
     /**
