@@ -17,6 +17,7 @@ package client;
 
 import client.scenes.*;
 import com.google.inject.Injector;
+import commons.Game;
 import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
@@ -59,6 +60,6 @@ public class Main extends Application {
 
         MainCtrl mainCtrl = INJECTOR.getInstance(MainCtrl.class);
         mainCtrl.initialize(primaryStage, home, homeLeaderboard, help, game, connection, login, register);
-        mainCtrl.showScene(ConnectionCtrl.class);
+        mainCtrl.showScene(GameMultiChoiceCtrl.class);
     }
 }

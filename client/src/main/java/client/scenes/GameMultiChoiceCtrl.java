@@ -114,6 +114,9 @@ public class GameMultiChoiceCtrl extends GameCtrl {
             options[i] = (AnchorPane) optionsContainer.getChildren().get(i);
         }
 
+        Main.TOKEN = server.getToken("Geof","password");
+        retrieveQuestion();
+
         generateProgressDots();
         enableListeners();
 
