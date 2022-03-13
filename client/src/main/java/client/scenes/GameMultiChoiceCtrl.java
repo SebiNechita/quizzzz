@@ -113,7 +113,8 @@ public class GameMultiChoiceCtrl extends GameCtrl {
     public void onShowScene() {
         super.onShowScene();
 
-        retrieveQuestion();
+        //for now we can only look at the MC questions functionality
+        retrieveMultipleChoiceQuestion();
 
         for (int i = 0; i < 3; i++) {
             options[i] = (AnchorPane) optionsContainer.getChildren().get(i);
@@ -203,7 +204,9 @@ public class GameMultiChoiceCtrl extends GameCtrl {
      */
     protected void goToNextQuestion() {
         hidePointsGained();
-        retrieveQuestion();
+
+        //for now we can only look at the MC questions functionality
+        retrieveMultipleChoiceQuestion();
 
         locked = new boolean[]{false, false, false};
         selected = null;
@@ -218,9 +221,17 @@ public class GameMultiChoiceCtrl extends GameCtrl {
     /**
      * Gets the next question.
      */
-    protected void retrieveQuestion() {
+    protected void retrieveMultipleChoiceQuestion() {
         Game game = server.getGame();
-        question.setText(game.getQuestions().get(0).getQuestion());
+        question.setText(game.getMultipleChoiceQuestions().get(0).getQuestion());
+    }
+
+    /**
+     * Gets the next question.
+     */
+    protected void retrieveOpenQuestion() {
+        Game game = server.getGame();
+        question.setText(game.getOpenQuestions().get(0).getQuestion());
     }
 
     /**
