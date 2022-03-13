@@ -61,4 +61,8 @@ public class HomeCtrl extends SceneCtrl {
     public void showHelp(){
         main.showScene(HelpCtrl.class);
     }
+
+    public void showSingleplayer(){
+        main.showScene(GameMultiChoiceCtrl.class);
+    }
 }
