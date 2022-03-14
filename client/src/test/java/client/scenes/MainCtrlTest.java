@@ -9,7 +9,7 @@ public class MainCtrlTest {
 
     @BeforeEach
     public void setup() {
-        mainCtrl = new MainCtrl();
+        mainCtrl = new MainCtrl(null);
     }
 
     @Test

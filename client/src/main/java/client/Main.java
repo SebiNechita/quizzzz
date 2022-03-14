@@ -15,38 +15,43 @@
  */
 package client;
 
-import client.scenes.GameMultiChoiceCtrl;
-import client.scenes.HomeCtrl;
-import client.scenes.HomeLeaderboardCtrl;
+import client.scenes.ConnectionCtrl;
 import client.scenes.MainCtrl;
-import com.google.inject.Injector;
 import javafx.application.Application;
-import javafx.scene.Parent;
 import javafx.stage.Stage;
-import org.apache.commons.lang3.tuple.Triple;
-
-import static com.google.inject.Guice.createInjector;
 
 public class Main extends Application {
 
-    private static final Injector INJECTOR = createInjector(new MyModule());
-    private static final MyFXML FXML = new MyFXML(INJECTOR);
-
+    public static String USERNAME = "";
     public static String URL = "https://localhost:8080/";
     public static String TOKEN = "";
 
+    /**
+     * Gets called when the application is started
+     *
+     * @param args The arguments given on startup
+     */
     public static void main(String[] args) {
         launch();
     }
 
+    /**
+     * Sets up and starts the JavaFX application
+     *
+     * @param primaryStage The stage on which all content gets shown
+     */
     @Override
     public void start(Stage primaryStage) {
-        Triple<HomeCtrl, Parent, String> home = FXML.load("client/scenes/Home.fxml", "Main Menu");
-        Triple<GameMultiChoiceCtrl, Parent, String> game = FXML.load("client/scenes/GameMultiChoice.fxml", "Game Screen");
-        Triple<HomeLeaderboardCtrl, Parent, String> homeLeaderboard = FXML.load("client/scenes/HomeLeaderboard.fxml", "Main Menu");
+        MainCtrl mainCtrl = new MainCtrl(primaryStage);
 
-        MainCtrl mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, home, game, homeLeaderboard);
-        mainCtrl.showScene(GameMultiChoiceCtrl.class);
+        mainCtrl.load("client/scenes/Connection.fxml", "Connection page");
+        mainCtrl.load("client/scenes/Login.fxml", "Login page");
+        mainCtrl.load("client/scenes/Register.fxml", "Register page");
+        mainCtrl.load("client/scenes/MainMenu.fxml", "Main Menu");
+        mainCtrl.load("client/scenes/HomeLeaderboard.fxml", "Singleplayer Leaderboard");
+        mainCtrl.load("client/scenes/HelpScreen.fxml", "Help page");
+        mainCtrl.load("client/scenes/GameMultiChoice.fxml", "Game Screen");
+
+        mainCtrl.showScene(ConnectionCtrl.class);
     }
 }

@@ -16,7 +16,6 @@
 package client.scenes;
 
 import client.utils.ServerUtils;
-import com.google.inject.Inject;
 import commons.LeaderboardEntry;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -30,7 +29,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class HomeLeaderboardCtrl extends SceneCtrl {
+public class SingleplayerLeaderboardCtrl extends SceneCtrl {
 
     private ObservableList<LeaderboardEntry> data;
 
@@ -41,11 +40,25 @@ public class HomeLeaderboardCtrl extends SceneCtrl {
     @FXML
     private TableColumn<LeaderboardEntry, String> colPoints;
 
-    @Inject
-    public HomeLeaderboardCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
+    /**
+     * Constructor for this Ctrl
+     *
+     * @param mainCtrl    The parent class, which keeps track of all scenes
+     * @param serverUtils The server utils, for communicating with the server
+     */
+    public SingleplayerLeaderboardCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
         super(mainCtrl, serverUtils);
     }
 
+    /**
+     * Called to initialize a controller after its root element has been
+     * completely processed.
+     *
+     * @param location  The location used to resolve relative paths for the root object, or
+     *                  {@code null} if the location is not known.
+     * @param resources The resources used to localize the root object, or {@code null} if
+     *                  the root object was not localized.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         colUsername.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().username));
@@ -68,7 +81,7 @@ public class HomeLeaderboardCtrl extends SceneCtrl {
     /**
      * Show the home screen.
      */
-    public void showHome(){
-        main.showScene(HomeCtrl.class);
+    public void showHome() {
+        main.showScene(MainMenuCtrl.class);
     }
 }
