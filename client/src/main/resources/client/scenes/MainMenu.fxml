@@ -30,7 +30,7 @@
                </children>
             </HBox>
             </children></AnchorPane>
-          <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" style="-fx-background-color: WHITE; -fx-background-radius: 11;" text="Singleplayer" AnchorPane.leftAnchor="480.0" AnchorPane.rightAnchor="480.0" AnchorPane.topAnchor="360.0">
+          <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#showSinglePlayer" style="-fx-background-color: WHITE; -fx-background-radius: 11;" text="Singleplayer" AnchorPane.leftAnchor="480.0" AnchorPane.rightAnchor="480.0" AnchorPane.topAnchor="360.0">
               <font>
                   <Font name="Comic Sans MS" size="44.0" />
               </font>
