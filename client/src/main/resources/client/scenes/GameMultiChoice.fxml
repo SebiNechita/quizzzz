@@ -49,7 +49,7 @@
             <children>
                 <AnchorPane prefHeight="250.0" prefWidth="250.0" style="-fx-background-color: #fff; -fx-background-radius: 10;">
                     <children>
-                        <ImageView fitHeight="160.0" fitWidth="250.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <ImageView fx:id="image1" fitHeight="160.0" fitWidth="250.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                         <VBox alignment="CENTER" layoutY="150.0" prefHeight="100.0" prefWidth="250.0">
                             <children>
                                 <Text fx:id="choice1" strokeType="OUTSIDE" strokeWidth="0.0" text="The quick brown fox jumps over the lazy dog" textAlignment="CENTER" wrappingWidth="250.0">
@@ -63,7 +63,7 @@
                 </AnchorPane>
                 <AnchorPane prefHeight="250.0" prefWidth="250.0" style="-fx-background-color: #fff; -fx-background-radius: 10;">
                     <children>
-                        <ImageView fitHeight="160.0" fitWidth="250.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <ImageView fx:id="image2" fitHeight="160.0" fitWidth="250.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                         <VBox alignment="CENTER" layoutY="150.0" prefHeight="100.0" prefWidth="250.0">
                             <children>
                                 <Text fx:id="choice2" strokeType="OUTSIDE" strokeWidth="0.0" text="The quick brown fox jumps over the lazy dog" textAlignment="CENTER" wrappingWidth="250.0">
@@ -77,7 +77,7 @@
                 </AnchorPane>
                 <AnchorPane prefHeight="250.0" prefWidth="250.0" style="-fx-background-color: #fff; -fx-background-radius: 10;">
                     <children>
-                        <ImageView fitHeight="160.0" fitWidth="250.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <ImageView fx:id="image3" fitHeight="160.0" fitWidth="250.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                         <VBox alignment="CENTER" layoutY="150.0" prefHeight="100.0" prefWidth="250.0" style="-fx-background-radius: 8;">
                             <children>
                                 <Text fx:id="choice3" strokeType="OUTSIDE" strokeWidth="0.0" text="The quick brown fox jumps over the lazy dog" textAlignment="CENTER" wrappingWidth="250.0">

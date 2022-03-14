@@ -5,6 +5,7 @@ package client.scenes;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import commons.Game;
+//import commons.questions.Activity;
 import commons.questions.Question;
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
@@ -21,6 +22,8 @@ import javafx.util.Duration;
 import javafx.util.Pair;
 
 import javax.inject.Inject;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Timer;
@@ -72,6 +75,13 @@ public class GameMultiChoiceCtrl extends GameCtrl {
 
     @FXML
     private HBox emoteContainer;
+
+    @FXML
+    private ImageView image1;
+    @FXML
+    private ImageView image2;
+    @FXML
+    private ImageView image3;
 
     /**
      * Constructor for this Ctrl
@@ -225,7 +235,16 @@ public class GameMultiChoiceCtrl extends GameCtrl {
 
         startTimer();
     }
+    private void setImages(Question q1,Question q2,Question q3){
+        try {
+            image1.setImage(new Image(new FileInputStream("server/src/main/resources/activity-bank/" + q1.getAnswer().getImage_path())));
+            image2.setImage(new Image(new FileInputStream("server/src/main/resources/activity-bank/" + q2.getAnswer().getImage_path())));
+            image3.setImage(new Image(new FileInputStream("server/src/main/resources/activity-bank/" + q3.getAnswer().getImage_path())));
 
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
     /**
      * Gets the next question.
      */
@@ -246,15 +265,20 @@ public class GameMultiChoiceCtrl extends GameCtrl {
             choice1.setText(q.getAnswer().getTitle());
             choice2.setText(game2.getMultipleChoiceQuestions().get(0).getAnswer().getTitle());
             choice3.setText(game2.getMultipleChoiceQuestions().get(1).getAnswer().getTitle());
+            setImages(q,game2.getMultipleChoiceQuestions().get(0),game2.getMultipleChoiceQuestions().get(1));
         } else {
             if (random_int == 1) {
                 choice2.setText(q.getAnswer().getTitle());
                 choice1.setText(game2.getMultipleChoiceQuestions().get(0).getAnswer().getTitle());
                 choice3.setText(game2.getMultipleChoiceQuestions().get(1).getAnswer().getTitle());
+                setImages(game2.getMultipleChoiceQuestions().get(0),q,game2.getMultipleChoiceQuestions().get(1));
+
             } else {
                 choice3.setText(q.getAnswer().getTitle());
                 choice1.setText(game2.getMultipleChoiceQuestions().get(0).getAnswer().getTitle());
                 choice2.setText(game2.getMultipleChoiceQuestions().get(1).getAnswer().getTitle());
+                setImages(game2.getMultipleChoiceQuestions().get(1),q,game2.getMultipleChoiceQuestions().get(0));
+
             }
         }
     }
