@@ -111,6 +111,8 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         super.notificationContainer = notificationContainer;
 
         super.emoteContainer = emoteContainer;
+        super.answer = answer;
+
     }
 
     /**
@@ -261,6 +263,7 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         int max = 100;
         //Generate random int value from 50 to 100
         int random_int = (int) Math.floor(Math.random() * (max - min + 1) + min) % 3;
+        answer = random_int;
         if (random_int == 0) {
             choice1.setText(q.getAnswer().getTitle());
             choice2.setText(game2.getMultipleChoiceQuestions().get(0).getAnswer().getTitle());
@@ -277,7 +280,7 @@ public class GameMultiChoiceCtrl extends GameCtrl {
                 choice3.setText(q.getAnswer().getTitle());
                 choice1.setText(game2.getMultipleChoiceQuestions().get(0).getAnswer().getTitle());
                 choice2.setText(game2.getMultipleChoiceQuestions().get(1).getAnswer().getTitle());
-                setImages(game2.getMultipleChoiceQuestions().get(1),q,game2.getMultipleChoiceQuestions().get(0));
+                setImages(game2.getMultipleChoiceQuestions().get(0),game2.getMultipleChoiceQuestions().get(1),q);
 
             }
         }

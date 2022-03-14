@@ -75,6 +75,8 @@ public abstract class GameCtrl extends SceneCtrl {
 
     protected LinkedList<Boolean> questionHistory = new LinkedList<>();
 
+    protected int answer;
+
     Animation timer = null;
 
     /**
@@ -356,7 +358,7 @@ public abstract class GameCtrl extends SceneCtrl {
      */
     private void onTimerEnd() {
         timer.setOnFinished(event -> {
-            showCorrectAnswer(1);
+            showCorrectAnswer(answer);
 
             nextQuestion.setVisible(gameMode == GameMode.SINGLEPLAYER);
         });
