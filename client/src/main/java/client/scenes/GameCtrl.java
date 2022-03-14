@@ -77,7 +77,7 @@ public abstract class GameCtrl extends SceneCtrl {
     protected LinkedList<Boolean> questionHistory = new LinkedList<>();
 
     protected int answer;
-
+    protected int scoreTotal;
     Animation timer = null;
 
     /**
@@ -128,7 +128,8 @@ public abstract class GameCtrl extends SceneCtrl {
        /* for (int i = 0; i < 10; i++) {
             questionHistory.add(random.nextBoolean());
         }*/
-        setScore(random.nextInt(10000));
+        setScore(0);
+        scoreTotal = 0;
         startTimer();
         new Timer().schedule(new TimerTask() {
             @Override
@@ -387,7 +388,8 @@ public abstract class GameCtrl extends SceneCtrl {
     protected void showPointsGained(int answerPoints) {
         int timeBonus = (int) Math.round(lastAnswerChange * 100 * (answerPoints / 100d));
         int total = (int) (answerPoints + timeBonus * (answerPoints / 100d));
-
+        scoreTotal = scoreTotal + total;
+        setScore(scoreTotal);
         Paint color;
         if (answerPoints >= 90) {
             color = Paint.valueOf("#6cf06a");
