@@ -4,6 +4,7 @@ package client.scenes;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import commons.Game;
+import commons.questions.Question;
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.Transition;
@@ -25,6 +26,12 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class GameMultiChoiceCtrl extends GameCtrl {
+    @FXML
+    private Text choice1;
+    @FXML
+    private Text choice2;
+    @FXML
+    private Text choice3;
 
     @FXML
     private HBox progressBar;
@@ -223,93 +230,119 @@ public class GameMultiChoiceCtrl extends GameCtrl {
      */
     protected void retrieveMultipleChoiceQuestion() {
         Game game = server.getRequest("api/game/create", Game.class);
-        question.setText(game.getMultipleChoiceQuestions().get(0).getQuestion());
-    }
-
-    /**
-     * Gets the next question.
-     */
-    protected void retrieveOpenQuestion() {
-        Game game = server.getRequest("api/game/create", Game.class);
-        question.setText(game.getOpenQuestions().get(0).getQuestion());
-    }
-
-    /**
-     * Removes a certain option by graying it out and making it non-clickable
-     *
-     * @param option The index of the option to remove
-     */
-    private void removeOption(int option) {
-        locked[option] = true;
-
-        removedAnswer = options[option];
-        fadeOption(removedAnswer, (Color) removedAnswer.getBackground().getFills().get(0).getFill(), new Color(0.478, 0.478, 0.478, 1)).play();
-    }
-
-    /**
-     * Sets the image of one of the options
-     *
-     * @param option The option to set it for
-     * @param image  The image to set
-     */
-    protected void setImage(int option, Image image) {
-        ImageView imageView = (ImageView) options[option].getChildren().get(0);
-        imageView.setImage(image);
-    }
-
-    /**
-     * Sets the option's color from "hover blue" to "selected blue" (or from "hover blue" to white if inverted is false)
-     * 8
-     *
-     * @param anchorPane The pane to animate
-     * @param inverted   If the animation needs to be reversed or not
-     * @return The animation object which can be played
-     */
-    private Animation selectedAnim(AnchorPane anchorPane, boolean inverted) {
-        return new Transition() {
-            {
-                setCycleDuration(Duration.millis(200));
-                setInterpolator(Interpolator.EASE_BOTH);
+        // question.setText(game.getMultipleChoiceQuestions().get(0).getQuestion());
+        Question q = game.getMultipleChoiceQuestions().get(0);
+        // this does not give the certainty that all answers are different
+        // there might be case where 2 answers are the same or 2 answers
+        // from different questions to be the same
+        Game game2 = server.getRequest("api/game/create",Game.class);
+        question.setText(q.getQuestion());
+        int min = 50;
+        int max = 100;
+        //Generate random int value from 50 to 100
+        int random_int = (int) Math.floor(Math.random() * (max - min + 1) + min) % 3;
+        if (random_int == 0) {
+            choice1.setText(q.getAnswer().getTitle());
+            choice2.setText(game2.getMultipleChoiceQuestions().get(0).getAnswer().getTitle());
+            choice3.setText(game2.getMultipleChoiceQuestions().get(1).getAnswer().getTitle());
+        } else {
+            if (random_int == 1) {
+                choice2.setText(q.getAnswer().getTitle());
+                choice1.setText(game2.getMultipleChoiceQuestions().get(0).getAnswer().getTitle());
+                choice3.setText(game2.getMultipleChoiceQuestions().get(1).getAnswer().getTitle());
+            } else {
+                choice3.setText(q.getAnswer().getTitle());
+                choice1.setText(game2.getMultipleChoiceQuestions().get(0).getAnswer().getTitle());
+                choice2.setText(game2.getMultipleChoiceQuestions().get(1).getAnswer().getTitle());
             }
+        }
+    }
 
-            @Override
-            protected void interpolate(double frac) {
-                if (inverted) {
-                    anchorPane.setBackground(new Background(new BackgroundFill(lerp(0.698, 0.792, 0.921, 0.243, 0.505, 0.878, frac), new CornerRadii(10), Insets.EMPTY)));
-                } else {
-                    anchorPane.setBackground(new Background(new BackgroundFill(lerp(0.698, 0.792, 0.921, 1, 1, 1, frac), new CornerRadii(10), Insets.EMPTY)));
+                /**
+                 * Gets the next question.
+                 */
+                protected void retrieveOpenQuestion() {
+                    Game game = server.getRequest("api/game/create", Game.class);
+                    question.setText(game.getOpenQuestions().get(0).getQuestion());
+                }
+
+                /**
+                 * Removes a certain option by graying it out and making it non-clickable
+                 *
+                 * @param option The index of the option to remove
+                 */
+                private void removeOption(int option) {
+                    locked[option] = true;
+
+                    removedAnswer = options[option];
+                    fadeOption(removedAnswer, (Color) removedAnswer.getBackground().getFills().get(0).getFill(), new Color(0.478, 0.478, 0.478, 1)).play();
+                }
+
+                /**
+                 * Sets the image of one of the options
+                 *
+                 * @param option The option to set it for
+                 * @param image  The image to set
+                 */
+                protected void setImage(int option, Image image) {
+                    ImageView imageView = (ImageView) options[option].getChildren().get(0);
+                    imageView.setImage(image);
+                }
+
+                /**
+                 * Sets the option's color from "hover blue" to "selected blue" (or from "hover blue" to white if inverted is false)
+                 * 8
+                 *
+                 * @param anchorPane The pane to animate
+                 * @param inverted   If the animation needs to be reversed or not
+                 * @return The animation object which can be played
+                 */
+                private Animation selectedAnim(AnchorPane anchorPane, boolean inverted) {
+                    return new Transition() {
+                        {
+                            setCycleDuration(Duration.millis(200));
+                            setInterpolator(Interpolator.EASE_BOTH);
+                        }
+
+                        @Override
+                        protected void interpolate(double frac) {
+                            if (inverted) {
+                                anchorPane.setBackground(new Background(new BackgroundFill(lerp(0.698, 0.792, 0.921, 0.243, 0.505, 0.878, frac), new CornerRadii(10), Insets.EMPTY)));
+                            } else {
+                                anchorPane.setBackground(new Background(new BackgroundFill(lerp(0.698, 0.792, 0.921, 1, 1, 1, frac), new CornerRadii(10), Insets.EMPTY)));
+                            }
+                        }
+                    };
+                }
+
+                /**
+                 * Animates the options the user gets
+                 *
+                 * @param anchorPane The pane to animate
+                 * @param start      The color to start from
+                 * @param target     The color to end with
+                 * @return The animation object which can be played
+                 */
+                private Animation fadeOption(AnchorPane anchorPane, Color start, Color target) {
+                    return new Transition() {
+                        {
+                            setCycleDuration(Duration.millis(350));
+                            setInterpolator(Interpolator.EASE_BOTH);
+                        }
+
+                        @Override
+                        protected void interpolate(double frac) {
+                            anchorPane.setBackground(new Background(new BackgroundFill(lerp(start.getRed(), start.getGreen(), start.getBlue(), target.getRed(), target.getGreen(), target.getBlue(), frac), new CornerRadii(10), Insets.EMPTY)));
+                        }
+                    };
+                }
+
+                /**
+                 * Detects when the "Next Question" button has been pressed
+                 */
+                @FXML
+                private void onNextButton() {
+                    goToNextQuestion();
                 }
             }
-        };
-    }
 
-    /**
-     * Animates the options the user gets
-     *
-     * @param anchorPane The pane to animate
-     * @param start      The color to start from
-     * @param target     The color to end with
-     * @return The animation object which can be played
-     */
-    private Animation fadeOption(AnchorPane anchorPane, Color start, Color target) {
-        return new Transition() {
-            {
-                setCycleDuration(Duration.millis(350));
-                setInterpolator(Interpolator.EASE_BOTH);
-            }
-
-            @Override
-            protected void interpolate(double frac) {
-                anchorPane.setBackground(new Background(new BackgroundFill(lerp(start.getRed(), start.getGreen(), start.getBlue(), target.getRed(), target.getGreen(), target.getBlue(), frac), new CornerRadii(10), Insets.EMPTY)));
-            }
-        };
-    }
-
-    /**
-     * Detects when the "Next Question" button has been pressed
-     */
-    @FXML
-    private void onNextButton() {
-        goToNextQuestion();
-    }
-}
