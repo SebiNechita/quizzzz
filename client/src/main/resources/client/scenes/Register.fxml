@@ -66,7 +66,7 @@
         </Button>
       <Text fx:id="error" fill="RED" layoutX="435.0" layoutY="200.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="429.95068359375">
          <font>
-            <Font name="Comic Sans MS" size="13.0" />
+            <Font name="Comic Sans MS" size="26.0" />
          </font>
       </Text>
     </children>

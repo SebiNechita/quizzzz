@@ -22,9 +22,7 @@ import jakarta.ws.rs.ProcessingException;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.client.*;
 import jakarta.ws.rs.core.Response;
-import packets.RegisterRequestPacket;
-import packets.RequestPacket;
-import packets.ResponsePacket;
+import packets.*;
 
 import java.util.Objects;
 
@@ -164,16 +162,14 @@ public class ServerUtils {
      * @param password the password of the user
      * @return whether the registration was successful
      */
-    public boolean register(String username, String password) {
-        Response response = getClient().target(Main.URL).path("api/user/register")
-                .request(APPLICATION_JSON).accept(APPLICATION_JSON)
-                .post(Entity.entity(new RegisterRequestPacket(username, password), APPLICATION_JSON));
-
-        if (response.getStatus() == 200) {
-            LoggerUtil.info("Created user " + username);
-            return true;
-        }
-        LoggerUtil.warn("Could not create user");
-        return false;
+    public ResponsePacket register(String username, String password) {
+        Invocation.Builder template = getClient().target(Main.URL)
+                .path("api/user/register")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .header("Authorization", Main.TOKEN);
+        return template.post(
+                Entity.entity(new RegisterRequestPacket(username, password), APPLICATION_JSON),
+                RegisterResponsePacket.class);
     }
 }
