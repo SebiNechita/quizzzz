@@ -38,7 +38,7 @@ public class LoginCtrl extends SceneCtrl {
         if (result != null) {
             Main.TOKEN = result;
             //if the result string is not empty this means that userName.getText() is valid
-            Main.USERNAME = userName.getText();
+            Main.USERNAME = userName;
             main.showScene(MainMenuCtrl.class);
         }
         else{
