@@ -343,6 +343,9 @@ public class GameMultiChoiceCtrl extends GameCtrl {
      */
     @FXML
     private void onNextButton() {
+        // make the "Next" button invisible after clicking
+        nextQuestion.setVisible(false);
+        // go to next question
         goToNextQuestion();
     }
 }
