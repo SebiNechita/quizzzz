@@ -2,7 +2,6 @@ package client.scenes;
 
 import client.Main;
 import client.utils.ServerUtils;
-import com.google.inject.Inject;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
@@ -10,7 +9,7 @@ import javafx.scene.text.Text;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class LoginCtrl extends SceneCtrl{
+public class LoginCtrl extends SceneCtrl {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
     }
@@ -24,7 +23,6 @@ public class LoginCtrl extends SceneCtrl{
     @FXML
     private Text error;
 
-    @Inject
     public LoginCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
         super(mainCtrl, serverUtils);
     }
@@ -32,10 +30,10 @@ public class LoginCtrl extends SceneCtrl{
     /**
      * Logs in and redirects to the Home screen if the login credentials are valid.
      */
-    public void login(){
+    public static void login() {
         String result = server.getToken(userName.getText(), password.getText());
-        //the return string is "" if the login is unsuccessful.
-        if (!result.isEmpty()){
+        //the return string is null if the login is unsuccessful.
+        if (result != null) {
             Main.TOKEN = result;
             //if the result string is not empty this means that userName.getText() is valid
             Main.USERNAME = userName.getText();
@@ -49,7 +47,7 @@ public class LoginCtrl extends SceneCtrl{
     /**
      * Shows the Registration scene.
      */
-    public void showRegister(){
+    public void showRegister() {
         main.showScene(RegisterCtrl.class);
     }
 

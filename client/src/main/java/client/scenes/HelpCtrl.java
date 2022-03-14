@@ -16,7 +16,6 @@
 package client.scenes;
 
 import client.utils.ServerUtils;
-import com.google.inject.Inject;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -30,7 +29,6 @@ public class HelpCtrl extends SceneCtrl {
      * @param mainCtrl    The parent class, which keeps track of all scenes
      * @param serverUtils The server utils, for communicating with the server
      */
-    @Inject
     public HelpCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
         super(mainCtrl, serverUtils);
     }

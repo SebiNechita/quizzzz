@@ -4,9 +4,10 @@ import javax.persistence.*;
 
 @Entity
 public class LeaderboardEntry {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     public long id;
+
     public int points;
 
     public String username;
