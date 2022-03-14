@@ -7,7 +7,7 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 
-<AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.HelpScreen">
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.HelpCtrl">
    <children>
       <Pane layoutX="48.0" layoutY="87.0" prefHeight="498.0" prefWidth="1190.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 11;">
          <children>
@@ -24,14 +24,14 @@
       </Pane>
       <Pane layoutX="49.0" layoutY="14.0" prefHeight="58.0" prefWidth="1190.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 11;">
          <children>
-            <Text layoutX="600.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="HELP">
+            <Text layoutX="600.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" text="HELP">
                <font>
                   <Font name="Comic Sans MS" size="36.0" />
                </font>
             </Text>
          </children>
       </Pane>
-      <Button layoutX="600.0" layoutY="612.0" mnemonicParsing="false" style="-fx-background-color: #FFFFFF; -fx-background-radius: 11;" text="Back">
+      <Button layoutX="600.0" layoutY="612.0" mnemonicParsing="false" style="-fx-background-color: #FFFFFF; -fx-background-radius: 11;" onAction="#showHome" text="Back">
          <font>
             <Font name="Comic Sans MS" size="25.0" />
          </font>
