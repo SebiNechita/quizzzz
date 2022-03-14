@@ -69,6 +69,7 @@ public abstract class GameCtrl extends SceneCtrl {
     @FXML
     protected HBox emoteContainer;
 
+    protected int numberofQuestions = -1;
     protected double timeLeft = 0;
     protected double lastAnswerChange = 0;
     protected double timeMultiplier = 1d;
@@ -124,9 +125,9 @@ public abstract class GameCtrl extends SceneCtrl {
         //----- TODO: Everything below this is temporary and for testing/displaying purposes -----
         gameMode = GameMode.SINGLEPLAYER;
         Random random = new Random();
-        for (int i = 0; i < 10; i++) {
+       /* for (int i = 0; i < 10; i++) {
             questionHistory.add(random.nextBoolean());
-        }
+        }*/
         setScore(random.nextInt(10000));
         startTimer();
         new Timer().schedule(new TimerTask() {
@@ -261,21 +262,28 @@ public abstract class GameCtrl extends SceneCtrl {
         dropShadow.setOffsetY(3.0);
 
         Iterator<Boolean> history = questionHistory.iterator();
-        for (int i = 0; i < 20; i++) {
-            Circle circle;
-
-            if (history.hasNext()) {
-                if (history.next()) {
-                    circle = generateCircle(Paint.valueOf("#1ce319"), dropShadow);
-                } else {
-                    circle = generateCircle(Paint.valueOf("#e84343"), dropShadow);
-                }
-            } else {
-                circle = generateCircle(Paint.valueOf("#2b2b2b"), dropShadow);
+        if (numberofQuestions == -1) {
+            for (int i = 0; i < 20; i++) {
+                Circle circle = generateCircle(Paint.valueOf("#2b2b2b"), dropShadow);
+                children.add(circle);
             }
+        } else {
+            for (int i = numberofQuestions; i < 20; i++) {
+                Circle circle;
+                if (history.hasNext()) {
+                    if (history.next()) {
+                        circle = generateCircle(Paint.valueOf("#1ce319"), dropShadow);
+                    } else {
+                        circle = generateCircle(Paint.valueOf("#e84343"), dropShadow);
+                    }
+                } else {
+                    circle = generateCircle(Paint.valueOf("#2b2b2b"), dropShadow);
+                }
 
-            children.add(circle);
+                children.add(circle);
+            }
         }
+        numberofQuestions++;
     }
 
     /**
