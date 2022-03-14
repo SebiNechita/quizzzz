@@ -125,9 +125,6 @@ public abstract class GameCtrl extends SceneCtrl {
         //----- TODO: Everything below this is temporary and for testing/displaying purposes -----
         gameMode = GameMode.SINGLEPLAYER;
         Random random = new Random();
-       /* for (int i = 0; i < 10; i++) {
-            questionHistory.add(random.nextBoolean());
-        }*/
         setScore(0);
         scoreTotal = 0;
         startTimer();
@@ -269,8 +266,8 @@ public abstract class GameCtrl extends SceneCtrl {
                 children.add(circle);
             }
         } else {
-            for (int i = numberofQuestions; i < 20; i++) {
-                Circle circle;
+            Circle circle;
+            for (int i = numberofQuestions; i < 20 + numberofQuestions; i++) {
                 if (history.hasNext()) {
                     if (history.next()) {
                         circle = generateCircle(Paint.valueOf("#1ce319"), dropShadow);
@@ -280,7 +277,6 @@ public abstract class GameCtrl extends SceneCtrl {
                 } else {
                     circle = generateCircle(Paint.valueOf("#2b2b2b"), dropShadow);
                 }
-
                 children.add(circle);
             }
         }
