@@ -1,6 +1,6 @@
 package client.scenes;
 
-import client.Main;
+//import client.Main;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import commons.Game;

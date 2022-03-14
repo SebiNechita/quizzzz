@@ -16,7 +16,7 @@
 package client.utils;
 
 import client.Main;
-import commons.Game;
+//import commons.Game;
 import commons.utils.HttpStatus;
 import commons.utils.LoggerUtil;
 import jakarta.ws.rs.ProcessingException;

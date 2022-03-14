@@ -54,6 +54,8 @@ public class RegisterCtrl extends SceneCtrl{
             //If successful, returns to login.
             //the logger is used by the register method.
             if (server.register(userName.getText().trim(), password.getText().trim())){
+                // This should be added after Kristof merge request
+                // Main.USERNAME = userName.getText();
                 showLogin();
             }
         }

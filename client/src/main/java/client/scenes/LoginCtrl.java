@@ -37,6 +37,8 @@ public class LoginCtrl extends SceneCtrl{
         //the return string is "" if the login is unsuccessful.
         if (!result.isEmpty()){
             Main.TOKEN = result;
+            //if the result string is not empty this means that userName.getText() is valid
+            Main.USERNAME = userName.getText();
             main.showScene(MainMenuCtrl.class);
         }
         else{
@@ -49,5 +51,12 @@ public class LoginCtrl extends SceneCtrl{
      */
     public void showRegister(){
         main.showScene(RegisterCtrl.class);
+    }
+
+    /**
+     * Shows the Connection scene.
+     */
+    public void showConnection(){
+        main.showScene(ConnectionCtrl.class);
     }
 }
