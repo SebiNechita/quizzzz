@@ -56,4 +56,8 @@ public class LoginCtrl extends SceneCtrl {
     public void onLoginButtonPressed(){
         login(userName.getText(), password.getText());
     }
+
+    public void showConnection() {
+        main.showScene(ConnectionCtrl.class);
+    }
 }
