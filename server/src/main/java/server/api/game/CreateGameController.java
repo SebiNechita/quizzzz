@@ -1,6 +1,6 @@
 package server.api.game;
 
-import commons.Game;
+import commons.GameResponsePacket;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -26,7 +26,7 @@ public class CreateGameController {
      * @return Game with a list of questions
      */
     @GetMapping(path = "")
-    public Game createGame(@RequestParam(value = "noOfQuestions", required = false) Integer noOfQuestions) {
+    public GameResponsePacket createGame(@RequestParam(value = "noOfQuestions", required = false) Integer noOfQuestions) {
         return gameService.createGame(noOfQuestions);
     }
 }

@@ -4,7 +4,7 @@ package client.scenes;
 
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
-import commons.Game;
+import commons.GameResponsePacket;
 //import commons.questions.Activity;
 import commons.questions.Question;
 import javafx.animation.Animation;
@@ -251,13 +251,13 @@ public class GameMultiChoiceCtrl extends GameCtrl {
      * Gets the next question.
      */
     protected void retrieveMultipleChoiceQuestion() {
-        Game game = server.getRequest("api/game/create", Game.class);
+        GameResponsePacket game = server.getRequest("api/game/create", GameResponsePacket.class);
         // question.setText(game.getMultipleChoiceQuestions().get(0).getQuestion());
         Question q = game.getMultipleChoiceQuestions().get(0);
         // this does not give the certainty that all answers are different
         // there might be case where 2 answers are the same or 2 answers
         // from different questions to be the same
-        Game game2 = server.getRequest("api/game/create", Game.class);
+        GameResponsePacket game2 = server.getRequest("api/game/create", GameResponsePacket.class);
         question.setText(q.getQuestion());
         int min = 50;
         int max = 100;
@@ -290,7 +290,7 @@ public class GameMultiChoiceCtrl extends GameCtrl {
      * Gets the next question.
      */
     protected void retrieveOpenQuestion() {
-        Game game = server.getRequest("api/game/create", Game.class);
+        GameResponsePacket game = server.getRequest("api/game/create", GameResponsePacket.class);
         question.setText(game.getOpenQuestions().get(0).getQuestion());
     }
 

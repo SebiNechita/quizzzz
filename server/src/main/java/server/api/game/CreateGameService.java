@@ -1,6 +1,6 @@
 package server.api.game;
 
-import commons.Game;
+import commons.GameResponsePacket;
 import commons.questions.Activity;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +17,7 @@ public class CreateGameService {
      * @param noOfQuestions number of questions in the game
      * @return Game with a list of questions
      */
-    public Game createGame(Integer noOfQuestions) {
+    public GameResponsePacket createGame(Integer noOfQuestions) {
         List<Activity> activities = null;
         File source = new File(Objects.requireNonNull(
                                 getClass().getClassLoader().getResource("activity-bank/activities.json")).getFile()
@@ -30,9 +30,9 @@ public class CreateGameService {
         }
 
         if (noOfQuestions != null) {
-            return new Game(noOfQuestions, activities);
+            return new GameResponsePacket(noOfQuestions, activities);
         } else {
-            return new Game(activities);
+            return new GameResponsePacket(activities);
         }
     }
 }

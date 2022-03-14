@@ -10,7 +10,7 @@ import packets.ResponsePacket;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Game extends ResponsePacket {
+public class GameResponsePacket extends ResponsePacket {
     /**
      * List of questions that'll be used in this particular instance of the game
      * The questions are of the type MultipleChoiceQuestion
@@ -41,7 +41,7 @@ public class Game extends ResponsePacket {
     /**
      * Default constructor for object mappers
      */
-    public Game() {
+    public GameResponsePacket() {
     }
 
     /**
@@ -50,7 +50,7 @@ public class Game extends ResponsePacket {
      * @param noOfQuestions number of questions in the game
      * @param activities list of activities from which the questions are to be made
      */
-    public Game(int noOfQuestions, List<Activity> activities) {
+    public GameResponsePacket(int noOfQuestions, List<Activity> activities) {
         this.activities = activities;
         this.noOfQuestions = noOfQuestions;
         this.noOfMultipleChoiceQuestions = noOfQuestions * 4 / 5;
@@ -63,7 +63,7 @@ public class Game extends ResponsePacket {
      * Constructor that takes the list of activities to use to make the game. Using this, it creates a list of 20 (default) questions
      * @param activities list of activities using which the questions are to be made
      */
-    public Game(List<Activity> activities) {
+    public GameResponsePacket(List<Activity> activities) {
         this.activities = activities;
         this.noOfQuestions = 20;
         this.noOfMultipleChoiceQuestions = 16;
@@ -79,7 +79,7 @@ public class Game extends ResponsePacket {
      * @param noOfMultipleChoiceQuestions number of questions for that game
      * @return A list of "noOfQuestions" questions. 4/5th of them are Multiple Choice Questions and the remaining are Open Questions
      */
-    private static List<Question> generateMultipleChoiceQuestions(Game game,
+    private static List<Question> generateMultipleChoiceQuestions(GameResponsePacket game,
                                                                   int noOfMultipleChoiceQuestions) {
 
         List<Question> multipleChoiceQuestions = new ArrayList<>();
@@ -102,7 +102,7 @@ public class Game extends ResponsePacket {
      * @param noOfOpenQuestions number of questions for that game
      * @return A list of "noOfQuestions" questions. 4/5th of them are Multiple Choice Questions and the remaining are Open Questions
      */
-    private static List<Question> generateOpenQuestions(Game game,
+    private static List<Question> generateOpenQuestions(GameResponsePacket game,
                                                         int noOfOpenQuestions) {
         List<Question> openQuestions = new ArrayList<>();
 
@@ -204,9 +204,9 @@ public class Game extends ResponsePacket {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Game)) return false;
+        if (!(o instanceof GameResponsePacket)) return false;
 
-        Game game = (Game) o;
+        GameResponsePacket game = (GameResponsePacket) o;
 
         if (noOfQuestions != game.noOfQuestions) return false;
         if (noOfMultipleChoiceQuestions != game.noOfMultipleChoiceQuestions) return false;
