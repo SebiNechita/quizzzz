@@ -21,9 +21,10 @@ public class JwtUsernamePasswordAuthenticationFilter extends UsernamePasswordAut
     private final AuthenticationManager authenticationManager;
     private final JwtConfig jwtConfig;
 
-    public JwtUsernamePasswordAuthenticationFilter(AuthenticationManager authenticationManager, JwtConfig jwtConfig) {
+    public JwtUsernamePasswordAuthenticationFilter(AuthenticationManager authenticationManager, JwtConfig jwtConfig, String url) {
         this.authenticationManager = authenticationManager;
         this.jwtConfig = jwtConfig;
+        setFilterProcessesUrl(url);
     }
 
     @Override

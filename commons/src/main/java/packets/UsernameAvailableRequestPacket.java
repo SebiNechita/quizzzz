@@ -2,13 +2,13 @@ package packets;
 
 import java.util.Objects;
 
-public class UsernameExistsRequestPacket {
+public class UsernameAvailableRequestPacket extends RequestPacket {
 
     private String username;
 
-    protected UsernameExistsRequestPacket() {}
+    protected UsernameAvailableRequestPacket() {}
 
-    public UsernameExistsRequestPacket(String username) {
+    public UsernameAvailableRequestPacket(String username) {
         this.username = username;
     }
 
@@ -19,7 +19,7 @@ public class UsernameExistsRequestPacket {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof UsernameExistsRequestPacket that)) return false;
+        if (!(o instanceof UsernameAvailableRequestPacket that)) return false;
         return Objects.equals(username, that.username);
     }
 

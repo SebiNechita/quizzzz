@@ -16,18 +16,26 @@
 package client.utils;
 
 import client.Main;
+//import commons.Game;
+import commons.utils.HttpStatus;
 import commons.utils.LoggerUtil;
+import jakarta.ws.rs.ProcessingException;
+import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.client.*;
-import jakarta.ws.rs.core.*;
-import packets.RegisterRequestPacket;
+import jakarta.ws.rs.core.Response;
+import packets.*;
 
-import java.util.Locale;
 import java.util.Objects;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 public class ServerUtils {
 
+    private Client client;
+
+    /**
+     * Creates the client if it doesn't exist yet
+     */
     private void initClient() {
         client = ClientBuilder.newBuilder()
                 .hostnameVerifier((hostname, session) -> true)
@@ -35,7 +43,11 @@ public class ServerUtils {
                 .build();
     }
 
-    private Client client;
+    /**
+     * Returns the client which will send the SSL context automatically for an HTTPS connection
+     *
+     * @return The client
+     */
     private Client getClient() {
         if (client == null) {
             initClient();
@@ -44,235 +56,16 @@ public class ServerUtils {
         return client;
     }
 
+    /**
+     * Builds a template which can be used for HTTP(S) requests
+     *
+     * @param path The path of the endpoint to send the request to
+     * @return The template which can be used for any type of HTTP(S) request
+     */
     private Invocation.Builder requestTemplate(String path) {
         if (Objects.equals(Main.TOKEN, "")) {
             LoggerUtil.warnInline("No token set, cancelling request to $HL" + Main.URL + path + "$");
-            return new Invocation.Builder() {
-                @Override
-                public Invocation build(String method) {
-                    return null;
-                }
-
-                @Override
-                public Invocation build(String method, Entity<?> entity) {
-                    return null;
-                }
-
-                @Override
-                public Invocation buildGet() {
-                    return null;
-                }
-
-                @Override
-                public Invocation buildDelete() {
-                    return null;
-                }
-
-                @Override
-                public Invocation buildPost(Entity<?> entity) {
-                    return null;
-                }
-
-                @Override
-                public Invocation buildPut(Entity<?> entity) {
-                    return null;
-                }
-
-                @Override
-                public AsyncInvoker async() {
-                    return null;
-                }
-
-                @Override
-                public Invocation.Builder accept(String... mediaTypes) {
-                    return null;
-                }
-
-                @Override
-                public Invocation.Builder accept(MediaType... mediaTypes) {
-                    return null;
-                }
-
-                @Override
-                public Invocation.Builder acceptLanguage(Locale... locales) {
-                    return null;
-                }
-
-                @Override
-                public Invocation.Builder acceptLanguage(String... locales) {
-                    return null;
-                }
-
-                @Override
-                public Invocation.Builder acceptEncoding(String... encodings) {
-                    return null;
-                }
-
-                @Override
-                public Invocation.Builder cookie(Cookie cookie) {
-                    return null;
-                }
-
-                @Override
-                public Invocation.Builder cookie(String name, String value) {
-                    return null;
-                }
-
-                @Override
-                public Invocation.Builder cacheControl(CacheControl cacheControl) {
-                    return null;
-                }
-
-                @Override
-                public Invocation.Builder header(String name, Object value) {
-                    return null;
-                }
-
-                @Override
-                public Invocation.Builder headers(MultivaluedMap<String, Object> headers) {
-                    return null;
-                }
-
-                @Override
-                public Invocation.Builder property(String name, Object value) {
-                    return null;
-                }
-
-                @Override
-                public CompletionStageRxInvoker rx() {
-                    return null;
-                }
-
-                @Override
-                public <T extends RxInvoker> T rx(Class<T> clazz) {
-                    return null;
-                }
-
-                @Override
-                public Response get() {
-                    return null;
-                }
-
-                @Override
-                public <T> T get(Class<T> responseType) {
-                    return null;
-                }
-
-                @Override
-                public <T> T get(GenericType<T> responseType) {
-                    return null;
-                }
-
-                @Override
-                public Response put(Entity<?> entity) {
-                    return null;
-                }
-
-                @Override
-                public <T> T put(Entity<?> entity, Class<T> responseType) {
-                    return null;
-                }
-
-                @Override
-                public <T> T put(Entity<?> entity, GenericType<T> responseType) {
-                    return null;
-                }
-
-                @Override
-                public Response post(Entity<?> entity) {
-                    return null;
-                }
-
-                @Override
-                public <T> T post(Entity<?> entity, Class<T> responseType) {
-                    return null;
-                }
-
-                @Override
-                public <T> T post(Entity<?> entity, GenericType<T> responseType) {
-                    return null;
-                }
-
-                @Override
-                public Response delete() {
-                    return null;
-                }
-
-                @Override
-                public <T> T delete(Class<T> responseType) {
-                    return null;
-                }
-
-                @Override
-                public <T> T delete(GenericType<T> responseType) {
-                    return null;
-                }
-
-                @Override
-                public Response head() {
-                    return null;
-                }
-
-                @Override
-                public Response options() {
-                    return null;
-                }
-
-                @Override
-                public <T> T options(Class<T> responseType) {
-                    return null;
-                }
-
-                @Override
-                public <T> T options(GenericType<T> responseType) {
-                    return null;
-                }
-
-                @Override
-                public Response trace() {
-                    return null;
-                }
-
-                @Override
-                public <T> T trace(Class<T> responseType) {
-                    return null;
-                }
-
-                @Override
-                public <T> T trace(GenericType<T> responseType) {
-                    return null;
-                }
-
-                @Override
-                public Response method(String name) {
-                    return null;
-                }
-
-                @Override
-                public <T> T method(String name, Class<T> responseType) {
-                    return null;
-                }
-
-                @Override
-                public <T> T method(String name, GenericType<T> responseType) {
-                    return null;
-                }
-
-                @Override
-                public Response method(String name, Entity<?> entity) {
-                    return null;
-                }
-
-                @Override
-                public <T> T method(String name, Entity<?> entity, Class<T> responseType) {
-                    return null;
-                }
-
-                @Override
-                public <T> T method(String name, Entity<?> entity, GenericType<T> responseType) {
-                    return null;
-                }
-            };
+            return null;
         }
 
         return getClient().target(Main.URL)
@@ -282,8 +75,15 @@ public class ServerUtils {
                 .header("Authorization", Main.TOKEN);
     }
 
+    /**
+     * Tries to get a token with the given username and password
+     *
+     * @param username The username for which to get the token
+     * @param password The password for which to get the token
+     * @return The token, {@code null} if the username and/or password is invalid
+     */
     public String getToken(String username, String password) {
-        Response response = getClient().target(Main.URL).path("login")
+        Response response = getClient().target(Main.URL).path("/api/user/login")
                 .request(APPLICATION_JSON).accept(APPLICATION_JSON)
                 .post(Entity.entity(new RegisterRequestPacket(username, password), APPLICATION_JSON));
 
@@ -294,15 +94,94 @@ public class ServerUtils {
         } else {
             LoggerUtil.severeInline("Unknown status $HLHTTP" + response.getStatus() + "$ given while trying to get a token");
         }
-        return "";
+        return null;
+    }
+
+//    public Game getGame(){
+//        return getClient().target(Main.URL)
+//                .path("api/game/create")
+//                .request(APPLICATION_JSON)
+//                .accept(APPLICATION_JSON)
+//                .header("Authorization", Main.TOKEN)
+//                .get(Game.class);
+//    }
+
+    /**
+     * Builds a post request
+     *
+     * @param path     The path of the endpoint to send the request to
+     * @param request  The packet which the server returns
+     * @param response The packet which to send to the server
+     * @param <T>      The type of packet which the server should return
+     * @param <S>      The type of packet which should be sent to the server
+     * @return A packet containing the response of the server
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends ResponsePacket, S extends RequestPacket> T postRequest(String path, S request, Class<T> response) {
+        Invocation.Builder template = requestTemplate(path);
+        if (template == null) {
+            return (T) new ResponsePacket(HttpStatus.NotFound);
+        }
+
+        return template.post(Entity.entity(request, APPLICATION_JSON), response);
     }
 
     /**
-     * Example request which checks if the server is online
+     * Builds a get request
      *
-     * @return The response of the server
+     * @param path     The path of the endpoint to send the request to
+     * @param response The packet which the server returns
+     * @param <T>      The type of packet which the server should return
+     * @return A packet containing the response of the server
      */
-    public String pingServer() {
-        return requestTemplate("ping").get(String.class);
+    @SuppressWarnings("unchecked")
+    public <T extends ResponsePacket> T getRequest(String path, Class<T> response) {
+        Invocation.Builder template = requestTemplate(path);
+        if (template == null) {
+            return (T) new ResponsePacket(HttpStatus.NotFound);
+        }
+
+        return template.get(response);
+    }
+
+    /**
+     * Tests whether the URL is valid or not
+     *
+     * @param url The URL to test
+     * @return If the URL is valid or not
+     */
+    public boolean testConnection(String url) {
+        Invocation invocation = getClient()
+                .target(url + "/ping")
+                .request("text/plain").buildGet();
+
+        // Invoke the request
+        String response;
+        try {
+            response = invocation.invoke(String.class);
+        } catch (ProcessingException | WebApplicationException ignored) {
+            return false;
+        }
+
+        return response.equals("Pong");
+    }
+
+
+    /**
+     * Register a new user on server
+     *
+     * @param username the name of the user
+     * @param password the password of the user
+     * @return whether the registration was successful
+     */
+    public ResponsePacket register(String username, String password) {
+        Invocation.Builder template = getClient().target(Main.URL)
+                .path("api/user/register")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .header("Authorization", Main.TOKEN);
+        return template.post(
+                Entity.entity(new RegisterRequestPacket(username, password), APPLICATION_JSON),
+                RegisterResponsePacket.class);
     }
 }

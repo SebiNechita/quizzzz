@@ -9,6 +9,7 @@ build/
 **/*.trace.db
 **/.DS_Store
 **/*.swp
+server/src/main/resources/activity-bank
 
 ### STS ###
 .apt_generated
