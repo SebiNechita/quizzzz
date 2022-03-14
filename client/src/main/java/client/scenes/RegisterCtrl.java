@@ -95,7 +95,7 @@ public class RegisterCtrl extends SceneCtrl {
                 error.setText("User exists");
             } else if (response.getCode() == HttpStatus.Created.getCode()) {
                 clearFields();
-                login();
+                LoginCtrl.login();
             }
         }
     }

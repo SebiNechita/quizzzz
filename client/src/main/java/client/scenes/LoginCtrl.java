@@ -30,7 +30,7 @@ public class LoginCtrl extends SceneCtrl {
     /**
      * Logs in and redirects to the Home screen if the login credentials are valid.
      */
-    public void login() {
+    public static void login() {
         String result = server.getToken(userName.getText(), password.getText());
         //the return string is null if the login is unsuccessful.
         if (result != null) {
