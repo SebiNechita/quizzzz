@@ -28,7 +28,9 @@ public class LoginCtrl extends SceneCtrl {
     }
 
     /**
-     * Logs in and redirects to the Home screen if the login credentials are valid.
+     * Logs in the user with the account data
+     * @param userName - the username of the user
+     * @param password - the password of the user
      */
     public void login(String userName, String password) {
         String result = server.getToken(userName, password);
