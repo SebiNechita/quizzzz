@@ -1,11 +1,57 @@
 package commons.questions;
 
-public abstract class Question {
+import java.util.List;
+
+public class Question {
 
     /**
      * String representation of the Question
      */
     private String question;
+
+    /**
+     * This list contains three activities that must be the choices displayed on the screen
+     */
+    private List<Activity> activityList;
+    /**
+     * The activity that is the answer
+     */
+    private Activity answer;
+
+    /**
+     * The energy consumed in WH of the activity
+     */
+    private long answerInWH;
+
+    public List<Activity> getActivityList() {
+        return activityList;
+    }
+
+    public void setActivityList(List<Activity> activityList) {
+        this.activityList = activityList;
+    }
+
+    public Activity getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(Activity answer) {
+        this.answer = answer;
+    }
+
+    public long getAnswerInWH() {
+        return answerInWH;
+    }
+
+    public void setAnswerInWH(long answerInWH) {
+        this.answerInWH = answerInWH;
+    }
+
+    /**
+     * Default Constructor for object mappers
+     */
+    public Question() {
+    }
 
     /**
      * Constructor for Question

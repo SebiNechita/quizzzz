@@ -59,9 +59,18 @@ public class MainMenuCtrl extends SceneCtrl {
     }
 
     /**
-     * Show the Singleplayer screen
+     * Show the Logic screen.
      */
-    public void showSinglePlayer(){
+    public void showLogin() {
+        main.showScene(LoginCtrl.class);
+    }
+
+
+    /**
+     * Temporary method, leads to a placeholder of singleplayer
+     * (but one that already gets its questions from the server)
+     */
+    public void showSingleplayer(){
         main.showScene(GameMultiChoiceCtrl.class);
     }
 }

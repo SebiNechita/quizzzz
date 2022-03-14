@@ -69,12 +69,15 @@ public abstract class GameCtrl extends SceneCtrl {
     @FXML
     protected HBox emoteContainer;
 
+    protected int numberofQuestions = -1;
     protected double timeLeft = 0;
     protected double lastAnswerChange = 0;
     protected double timeMultiplier = 1d;
 
     protected LinkedList<Boolean> questionHistory = new LinkedList<>();
 
+    protected int answer;
+    protected int scoreTotal;
     Animation timer = null;
 
     /**
@@ -92,6 +95,10 @@ public abstract class GameCtrl extends SceneCtrl {
      * Gets called after scene has finished loading
      */
     protected void initialize() {
+
+    }
+
+    public void onShowScene() {
         notificationRenderer = new NotificationRenderer();
 
         timeLeftSlider = (AnchorPane) timeLeftBar.getChildren().get(0);
@@ -116,12 +123,10 @@ public abstract class GameCtrl extends SceneCtrl {
         enableListeners();
 
         //----- TODO: Everything below this is temporary and for testing/displaying purposes -----
-        gameMode = GameMode.MULTIPLAYER;
+        gameMode = GameMode.SINGLEPLAYER;
         Random random = new Random();
-        for (int i = 0; i < 10; i++) {
-            questionHistory.add(random.nextBoolean());
-        }
-        setScore(random.nextInt(10000));
+        setScore(0);
+        scoreTotal = 0;
         startTimer();
         new Timer().schedule(new TimerTask() {
             @Override
@@ -255,21 +260,27 @@ public abstract class GameCtrl extends SceneCtrl {
         dropShadow.setOffsetY(3.0);
 
         Iterator<Boolean> history = questionHistory.iterator();
-        for (int i = 0; i < 20; i++) {
-            Circle circle;
-
-            if (history.hasNext()) {
-                if (history.next()) {
-                    circle = generateCircle(Paint.valueOf("#1ce319"), dropShadow);
-                } else {
-                    circle = generateCircle(Paint.valueOf("#e84343"), dropShadow);
-                }
-            } else {
-                circle = generateCircle(Paint.valueOf("#2b2b2b"), dropShadow);
+        if (numberofQuestions == -1) {
+            for (int i = 0; i < 20; i++) {
+                Circle circle = generateCircle(Paint.valueOf("#2b2b2b"), dropShadow);
+                children.add(circle);
             }
-
-            children.add(circle);
+        } else {
+            Circle circle;
+            for (int i = numberofQuestions; i < 20 + numberofQuestions; i++) {
+                if (history.hasNext()) {
+                    if (history.next()) {
+                        circle = generateCircle(Paint.valueOf("#1ce319"), dropShadow);
+                    } else {
+                        circle = generateCircle(Paint.valueOf("#e84343"), dropShadow);
+                    }
+                } else {
+                    circle = generateCircle(Paint.valueOf("#2b2b2b"), dropShadow);
+                }
+                children.add(circle);
+            }
         }
+        numberofQuestions++;
     }
 
     /**
@@ -294,7 +305,6 @@ public abstract class GameCtrl extends SceneCtrl {
      * Resets everything and loads the next question
      */
     protected void goToNextQuestion() {
-        //TODO: implement
     }
 
     /**
@@ -353,7 +363,7 @@ public abstract class GameCtrl extends SceneCtrl {
      */
     private void onTimerEnd() {
         timer.setOnFinished(event -> {
-            showCorrectAnswer(1);
+            showCorrectAnswer(answer);
 
             nextQuestion.setVisible(gameMode == GameMode.SINGLEPLAYER);
         });
@@ -374,7 +384,8 @@ public abstract class GameCtrl extends SceneCtrl {
     protected void showPointsGained(int answerPoints) {
         int timeBonus = (int) Math.round(lastAnswerChange * 100 * (answerPoints / 100d));
         int total = (int) (answerPoints + timeBonus * (answerPoints / 100d));
-
+        scoreTotal = scoreTotal + total;
+        setScore(scoreTotal);
         Paint color;
         if (answerPoints >= 90) {
             color = Paint.valueOf("#6cf06a");
@@ -398,6 +409,15 @@ public abstract class GameCtrl extends SceneCtrl {
 
         Animation pointsAnim = pointsAnim(total, answerPoints, timeBonus);
         pointsAnim.playFromStart();
+    }
+
+    /**
+     * Hides point info.
+     */
+    protected void hidePointsGained() {
+        pointsGainedText.setVisible(false);
+        answerBonusText.setVisible(false);
+        timeBonusText.setVisible(false);
     }
 
     /**

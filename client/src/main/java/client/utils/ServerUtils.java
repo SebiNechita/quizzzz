@@ -16,6 +16,7 @@
 package client.utils;
 
 import client.Main;
+//import commons.Game;
 import commons.utils.HttpStatus;
 import commons.utils.LoggerUtil;
 import jakarta.ws.rs.ProcessingException;
@@ -95,6 +96,15 @@ public class ServerUtils {
         }
         return null;
     }
+
+//    public Game getGame(){
+//        return getClient().target(Main.URL)
+//                .path("api/game/create")
+//                .request(APPLICATION_JSON)
+//                .accept(APPLICATION_JSON)
+//                .header("Authorization", Main.TOKEN)
+//                .get(Game.class);
+//    }
 
     /**
      * Builds a post request
