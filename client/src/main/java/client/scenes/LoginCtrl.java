@@ -28,10 +28,12 @@ public class LoginCtrl extends SceneCtrl {
     }
 
     /**
-     * Logs in and redirects to the Home screen if the login credentials are valid.
+     * Logs in the user with the account data
+     * @param userName - the username of the user
+     * @param password - the password of the user
      */
-    public static void login() {
-        String result = server.getToken(userName.getText(), password.getText());
+    public void login(String userName, String password) {
+        String result = server.getToken(userName, password);
         //the return string is null if the login is unsuccessful.
         if (result != null) {
             Main.TOKEN = result;
@@ -51,10 +53,7 @@ public class LoginCtrl extends SceneCtrl {
         main.showScene(RegisterCtrl.class);
     }
 
-    /**
-     * Shows the Connection scene.
-     */
-    public void showConnection(){
-        main.showScene(ConnectionCtrl.class);
+    public void onLoginButtonPressed(){
+        login(userName.getText(), password.getText());
     }
 }
