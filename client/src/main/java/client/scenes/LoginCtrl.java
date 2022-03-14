@@ -34,8 +34,8 @@ public class LoginCtrl extends SceneCtrl {
      */
     public void login() {
         String result = server.getToken(userName.getText(), password.getText());
-        //the return string is "" if the login is unsuccessful.
-        if (!result.isEmpty()) {
+        //the return string is null if the login is unsuccessful.
+        if (result != null) {
             Main.TOKEN = result;
             main.showScene(MainMenuCtrl.class);
         }
