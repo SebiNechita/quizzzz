@@ -106,6 +106,7 @@ public class ServerUtils {
      * @param <S>      The type of packet which should be sent to the server
      * @return A packet containing the response of the server
      */
+    @SuppressWarnings("unchecked")
     public <T extends ResponsePacket, S extends RequestPacket> T postRequest(String path, S request, Class<T> response) {
         Invocation.Builder template = requestTemplate(path);
         if (template == null) {
@@ -123,6 +124,7 @@ public class ServerUtils {
      * @param <T>      The type of packet which the server should return
      * @return A packet containing the response of the server
      */
+    @SuppressWarnings("unchecked")
     public <T extends ResponsePacket> T getRequest(String path, Class<T> response) {
         Invocation.Builder template = requestTemplate(path);
         if (template == null) {

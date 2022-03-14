@@ -6,7 +6,6 @@ import client.utils.ServerUtils;
 import javafx.fxml.FXML;
 import javafx.scene.text.Text;
 
-import javax.inject.Inject;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -21,7 +20,6 @@ public class MainMenuCtrl extends SceneCtrl {
      * @param mainCtrl    The parent class, which keeps track of all scenes
      * @param serverUtils The server utils, for communicating with the server
      */
-    @Inject
     public MainMenuCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
         super(mainCtrl, serverUtils);
     }

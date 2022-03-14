@@ -15,19 +15,12 @@
  */
 package client;
 
-import client.scenes.*;
-import com.google.inject.Injector;
+import client.scenes.ConnectionCtrl;
+import client.scenes.MainCtrl;
 import javafx.application.Application;
-import javafx.scene.Parent;
 import javafx.stage.Stage;
-import org.apache.commons.lang3.tuple.Triple;
-
-import static com.google.inject.Guice.createInjector;
 
 public class Main extends Application {
-
-    private static final Injector INJECTOR = createInjector(new MyModule());
-    private static final MyFXML FXML = new MyFXML(INJECTOR);
 
     public static String USERNAME = "";
     public static String URL = "https://localhost:8080/";
@@ -49,15 +42,15 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage primaryStage) {
-        Triple<ConnectionCtrl, Parent, String> connection = FXML.load("client/scenes/Connection.fxml", "Connection page");
-        Triple<LoginCtrl, Parent, String> login = FXML.load("client/scenes/Login.fxml", "Login page");
-        Triple<RegisterCtrl, Parent, String> register = FXML.load("client/scenes/Register.fxml", "Register page");
-        Triple<MainMenuCtrl, Parent, String> home = FXML.load("client/scenes/MainMenu.fxml", "Main Menu");
-        Triple<SingleplayerLeaderboardCtrl, Parent, String> homeLeaderboard = FXML.load("client/scenes/HomeLeaderboard.fxml", "Singeleplayer Leaderboard");
-        Triple<HelpCtrl, Parent, String> help = FXML.load("client/scenes/HelpScreen.fxml", "Help page");
+        MainCtrl mainCtrl = new MainCtrl(primaryStage);
 
-        MainCtrl mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, connection, login, register, home, homeLeaderboard, help);
+        mainCtrl.load("client/scenes/Connection.fxml", "Connection page");
+        mainCtrl.load("client/scenes/Login.fxml", "Login page");
+        mainCtrl.load("client/scenes/Register.fxml", "Register page");
+        mainCtrl.load("client/scenes/MainMenu.fxml", "Main Menu");
+        mainCtrl.load("client/scenes/HomeLeaderboard.fxml", "Singleplayer Leaderboard");
+        mainCtrl.load("client/scenes/HelpScreen.fxml", "Help page");
+
         mainCtrl.showScene(ConnectionCtrl.class);
     }
 }

@@ -1,7 +1,6 @@
 package client.scenes;
 
 import client.utils.ServerUtils;
-import com.google.inject.Inject;
 import javafx.fxml.Initializable;
 
 import java.net.URL;
@@ -18,7 +17,6 @@ public abstract class SceneCtrl implements Initializable {
      * @param mainCtrl    The parent class, which keeps track of all scenes
      * @param serverUtils The server utils, for communicating with the server
      */
-    @Inject
     public SceneCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
         this.main = mainCtrl;
         this.server = serverUtils;
