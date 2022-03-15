@@ -29,5 +29,6 @@ dependencies {
 
 	testImplementation("org.mock-server:mockserver-netty:5.12.0")
 	testImplementation("org.mock-server:mockserver-client-java:5.12.0")
-	
+	testImplementation("org.bouncycastle:bcprov-jdk15on:1.70")
+	testImplementation("org.bouncycastle:bcpkix-jdk15on:1.70")
 }
