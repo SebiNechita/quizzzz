@@ -240,15 +240,9 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         startTimer();
     }
     private void setImages(Question q1,Question q2,Question q3){
-        try {
-//            image1.setImage(new Image(new FileInputStream("server/src/main/resources/activity-bank/" + q1.getAnswer().getImage_path())));
-            server.getImage(q1.getAnswer().getImage_path());
-            image2.setImage(new Image(new FileInputStream("server/src/main/resources/activity-bank/" + q2.getAnswer().getImage_path())));
-            image3.setImage(new Image(new FileInputStream("server/src/main/resources/activity-bank/" + q3.getAnswer().getImage_path())));
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        image1.setImage(server.getImage(q1.getAnswer().getImage_path()));
+        image2.setImage(server.getImage(q2.getAnswer().getImage_path()));
+        image3.setImage(server.getImage(q3.getAnswer().getImage_path()));
     }
     /**
      * Gets the next question.

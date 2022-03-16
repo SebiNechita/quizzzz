@@ -147,9 +147,15 @@ public class ServerUtils {
     }
 
     public Image getImage(String imagePath) {
-//        System.out.println("api/activity/image?imagePath=" + imagePath);
-        ImageResponsePacket imageResponsePacket = getRequest("api/activity/image?imagePath=" + imagePath, ImageResponsePacket.class);
-        return new Image(new ByteArrayInputStream(imageResponsePacket.getImageByte()));
+        ImageResponsePacket image = getClient().target(Main.URL)
+                .path("api/activity/image")
+                .queryParam("imagePath", imagePath)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .header("Authorization", Main.TOKEN)
+                .get(ImageResponsePacket.class);
+
+        return new Image(new ByteArrayInputStream(image.getImageByte()));
     }
 
     /**
