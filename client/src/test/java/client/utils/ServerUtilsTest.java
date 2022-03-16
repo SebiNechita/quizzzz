@@ -2,7 +2,6 @@ package client.utils;
 
 import client.Main;
 import commons.utils.HttpStatus;
-import io.swagger.annotations.Authorization;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
