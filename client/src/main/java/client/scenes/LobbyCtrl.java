@@ -67,6 +67,7 @@ public class LobbyCtrl extends  SceneCtrl{
      */
     public void showHome() {
         main.showScene(MainMenuCtrl.class);
+        textflow.getChildren().remove(text);
     }
 
     /**
