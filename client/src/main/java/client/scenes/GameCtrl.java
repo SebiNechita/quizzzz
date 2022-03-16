@@ -55,6 +55,7 @@ public abstract class GameCtrl extends SceneCtrl {
     @FXML
     protected VBox jokers;
     private AnchorPane jokerContainer;
+    private List<AnchorPane> disabledJokers;
 
     @FXML
     protected Text timeLeftText;
@@ -89,6 +90,7 @@ public abstract class GameCtrl extends SceneCtrl {
     @Inject
     public GameCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
         super(mainCtrl, serverUtils);
+        disabledJokers = new LinkedList<>();
     }
 
     /**
@@ -169,16 +171,25 @@ public abstract class GameCtrl extends SceneCtrl {
             AnchorPane tooltip = (AnchorPane) joker.getChildren().get(1);
 
             jokerImage.setOnMouseEntered(event -> {
+                if (disabledJokers.contains(joker))
+                    return;
+
                 hoverAnim(joker, new Color(0.266, 0.266, 0.266, 1), new Color(1, 1, 1, 1)).play();
                 showJokerTooltip(tooltip);
             });
 
             jokerImage.setOnMouseExited(event -> {
+                if (disabledJokers.contains(joker))
+                    return;
+
                 hoverAnim(joker, new Color(1, 1, 1, 1), new Color(0.266, 0.266, 0.266, 1)).play();
                 hideJokerTooltip(tooltip);
             });
 
             jokerImage.setOnMouseClicked(event -> {
+                if (disabledJokers.contains(joker))
+                    return;
+
                 jokerUsed(JokerType.valueOf(joker.getId().toUpperCase()));
             });
         }
@@ -207,6 +218,31 @@ public abstract class GameCtrl extends SceneCtrl {
      */
     private void jokerUsed(JokerType type) {
         LoggerUtil.infoInline("Clicked on the " + type + " joker.");
+    }
+
+    /**
+     * Can be used to disallow a user form using a specific joker
+     *
+     * @param type The joker to disable
+     */
+    protected void disableJoker(JokerType type) {
+        jokers.getChildren().stream()
+            .filter(joker -> joker.getId().equalsIgnoreCase(type.toString()))
+            .map(joker -> (AnchorPane) joker)
+            .forEach(joker -> {
+                LoggerUtil.log(joker.getId());
+                ImageView image = (ImageView) joker.getChildren().get(0);
+
+                ColorAdjust effect = new ColorAdjust();
+                effect.setBrightness(-0.5);
+                effect.setContrast(-0.5);
+                effect.setSaturation(-1);
+
+                image.setEffect(effect);
+
+                disabledJokers.add(joker);
+            }
+        );
     }
 
     /**

@@ -2,6 +2,7 @@ package client.scenes;
 
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
+import commons.utils.JokerType;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
@@ -89,6 +90,8 @@ public class GameOpenQuestionCtrl extends GameCtrl {
     @OnShowScene
     public void onShowScene() {
         super.onShowScene();
+
+        disableJoker(JokerType.REMOVE_ANSWER);
 
         generateProgressDots();
         enableListeners();
