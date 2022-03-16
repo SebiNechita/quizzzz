@@ -111,8 +111,6 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         super.notificationContainer = notificationContainer;
 
         super.emoteContainer = emoteContainer;
-        super.answer = answer;
-
     }
 
     /**

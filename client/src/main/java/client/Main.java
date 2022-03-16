@@ -15,7 +15,7 @@
  */
 package client;
 
-import client.scenes.ConnectionCtrl;
+import client.scenes.GameOpenQuestionCtrl;
 import client.scenes.MainCtrl;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -51,7 +51,8 @@ public class Main extends Application {
         mainCtrl.load("client/scenes/HomeLeaderboard.fxml", "Singleplayer Leaderboard");
         mainCtrl.load("client/scenes/HelpScreen.fxml", "Help page");
         mainCtrl.load("client/scenes/GameMultiChoice.fxml", "Game Screen");
+        mainCtrl.load("client/scenes/GameOpenQuestion.fxml", "Game Screen");
 
-        mainCtrl.showScene(ConnectionCtrl.class);
+        mainCtrl.showScene(GameOpenQuestionCtrl.class);
     }
 }
