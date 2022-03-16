@@ -95,7 +95,7 @@ public class GameOpenQuestionCtrl extends GameCtrl {
     public void initialize(URL location, ResourceBundle resources) {
 
     }
-    
+
     /**
      * Gets called when the scene is shown to the user
      */

@@ -125,7 +125,7 @@ public abstract class GameCtrl extends SceneCtrl {
         enableListeners();
 
         //----- TODO: Everything below this is temporary and for testing/displaying purposes -----
-        gameMode = GameMode.MULTIPLAYER;
+        gameMode = GameMode.SINGLEPLAYER;
         Random random = new Random();
         setScore(0);
         scoreTotal = 0;

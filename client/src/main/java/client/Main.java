@@ -15,7 +15,7 @@
  */
 package client;
 
-import client.scenes.GameOpenQuestionCtrl;
+import client.scenes.ConnectionCtrl;
 import client.scenes.MainCtrl;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -53,6 +53,6 @@ public class Main extends Application {
         mainCtrl.load("client/scenes/GameMultiChoice.fxml", "Game Screen");
         mainCtrl.load("client/scenes/GameOpenQuestion.fxml", "Game Screen");
 
-        mainCtrl.showScene(GameOpenQuestionCtrl.class);
+        mainCtrl.showScene(ConnectionCtrl.class);
     }
 }
