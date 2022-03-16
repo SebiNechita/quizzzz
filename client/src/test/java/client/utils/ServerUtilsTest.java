@@ -1,6 +1,8 @@
 package client.utils;
 
+import client.Main;
 import commons.utils.HttpStatus;
+import io.swagger.annotations.Authorization;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -42,5 +44,20 @@ public class ServerUtilsTest {
         assertTrue(serverUtils.testConnection("https://localhost:" + port));
 
         mockClientServer.verify(HttpRequest.request("/ping"), VerificationTimes.once());
+    }
+
+    @Test
+    public void registerTest(){
+        mockClientServer.when(new HttpRequest().withMethod("POST")
+                        .withPath("/api/user/register")
+                        .withHeader("Authorization", Main.TOKEN))
+                .respond(new HttpResponse().withStatusCode(HttpStatus.OK.getCode()).withBody("Pong"));
+
+        ServerUtils serverUtils = new ServerUtils();
+        serverUtils.register("Geoff", "password");
+
+        mockClientServer.verify(HttpRequest.request("/api/user/register"), VerificationTimes.once());
+
+
     }
 }
