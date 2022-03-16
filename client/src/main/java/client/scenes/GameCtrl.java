@@ -418,6 +418,8 @@ public abstract class GameCtrl extends SceneCtrl {
      * @param answerPoints The amount of points the player got for answering <p>0 <b>or</b> 100 for multi-choice, number between 0-100 for open</p>
      */
     protected void showPointsGained(int answerPoints) {
+        answerPoints = Math.min(Math.max(answerPoints, 0), 100);
+
         int timeBonus = (int) Math.round(lastAnswerChange * 100 * (answerPoints / 100d));
         int total = (int) (answerPoints + timeBonus * (answerPoints / 100d));
         scoreTotal = scoreTotal + total;
