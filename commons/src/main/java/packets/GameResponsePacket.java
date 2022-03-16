@@ -1,11 +1,10 @@
-package commons;
+package packets;
 
 import commons.questions.Activity;
 import commons.questions.MultipleChoiceQuestion;
 import commons.questions.OpenQuestion;
 import commons.questions.Question;
 //import packets.RequestPacket;
-import packets.ResponsePacket;
 
 import java.util.ArrayList;
 import java.util.List;

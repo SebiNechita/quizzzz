@@ -1,6 +1,6 @@
 package server.api.game;
 
-import commons.GameResponsePacket;
+import packets.GameResponsePacket;
 import commons.questions.Activity;
 import org.springframework.stereotype.Service;
 

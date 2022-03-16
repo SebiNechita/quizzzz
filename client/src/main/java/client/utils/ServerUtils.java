@@ -23,8 +23,10 @@ import jakarta.ws.rs.ProcessingException;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.client.*;
 import jakarta.ws.rs.core.Response;
+import javafx.scene.image.Image;
 import packets.*;
 
+import java.io.ByteArrayInputStream;
 import java.util.Objects;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -142,6 +144,12 @@ public class ServerUtils {
         }
 
         return template.get(response);
+    }
+
+    public Image getImage(String imagePath) {
+//        System.out.println("api/activity/image?imagePath=" + imagePath);
+        ImageResponsePacket imageResponsePacket = getRequest("api/activity/image?imagePath=" + imagePath, ImageResponsePacket.class);
+        return new Image(new ByteArrayInputStream(imageResponsePacket.getImageByte()));
     }
 
     /**

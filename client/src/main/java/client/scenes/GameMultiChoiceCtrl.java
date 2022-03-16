@@ -4,7 +4,7 @@ package client.scenes;
 
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
-import commons.GameResponsePacket;
+import packets.GameResponsePacket;
 //import commons.questions.Activity;
 import commons.questions.Question;
 import javafx.animation.Animation;
@@ -134,11 +134,13 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         super.onShowScene();
 
         //for now we can only look at the MC questions functionality
-        retrieveMultipleChoiceQuestion();
+
 
         for (int i = 0; i < 3; i++) {
             options[i] = (AnchorPane) optionsContainer.getChildren().get(i);
         }
+
+        retrieveMultipleChoiceQuestion();
 
 
         generateProgressDots();
@@ -239,7 +241,8 @@ public class GameMultiChoiceCtrl extends GameCtrl {
     }
     private void setImages(Question q1,Question q2,Question q3){
         try {
-            image1.setImage(new Image(new FileInputStream("server/src/main/resources/activity-bank/" + q1.getAnswer().getImage_path())));
+//            image1.setImage(new Image(new FileInputStream("server/src/main/resources/activity-bank/" + q1.getAnswer().getImage_path())));
+            server.getImage(q1.getAnswer().getImage_path());
             image2.setImage(new Image(new FileInputStream("server/src/main/resources/activity-bank/" + q2.getAnswer().getImage_path())));
             image3.setImage(new Image(new FileInputStream("server/src/main/resources/activity-bank/" + q3.getAnswer().getImage_path())));
 
