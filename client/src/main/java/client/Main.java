@@ -51,6 +51,7 @@ public class Main extends Application {
         mainCtrl.load("client/scenes/HomeLeaderboard.fxml", "Singleplayer Leaderboard");
         mainCtrl.load("client/scenes/HelpScreen.fxml", "Help page");
         mainCtrl.load("client/scenes/GameMultiChoice.fxml", "Game Screen");
+        mainCtrl.load("client/scenes/Lobby.fxml","Lobby  Screen");
 
         mainCtrl.showScene(ConnectionCtrl.class);
     }

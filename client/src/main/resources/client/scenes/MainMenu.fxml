@@ -35,7 +35,7 @@
                   <Font name="Comic Sans MS" size="44.0" />
               </font>
           </Button>
-          <Button mnemonicParsing="false" style="-fx-background-color: WHITE; -fx-background-radius: 11;" text="Multiplayer" AnchorPane.leftAnchor="480.0" AnchorPane.rightAnchor="480.0" AnchorPane.topAnchor="475.0">
+          <Button mnemonicParsing="false" onAction="#showMultiplayer" style="-fx-background-color: WHITE; -fx-background-radius: 11;" text="Multiplayer" AnchorPane.leftAnchor="480.0" AnchorPane.rightAnchor="480.0" AnchorPane.topAnchor="475.0">
               <font>
                   <Font name="Comic Sans MS" size="44.0" />
               </font>
