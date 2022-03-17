@@ -250,8 +250,6 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         Activity option3 = q.getActivityList().get(1); // Another option that is not the answer
 
         question.setText(q.getQuestion());
-        int min = 50;
-        int max = 100;
 
         // Generates random int value from 0 to 3
         Random randomGen = new Random();
