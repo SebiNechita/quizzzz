@@ -5,7 +5,6 @@ package client.scenes;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import packets.GameResponsePacket;
-//import commons.questions.Activity;
 import commons.questions.Question;
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
@@ -22,8 +21,6 @@ import javafx.util.Duration;
 import javafx.util.Pair;
 
 import javax.inject.Inject;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Timer;
