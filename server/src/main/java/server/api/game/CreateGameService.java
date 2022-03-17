@@ -1,5 +1,6 @@
 package server.api.game;
 
+import commons.Game;
 import packets.GameResponsePacket;
 import commons.questions.Activity;
 import org.springframework.stereotype.Service;
@@ -30,9 +31,9 @@ public class CreateGameService {
         }
 
         if (noOfQuestions != null) {
-            return new GameResponsePacket(noOfQuestions, activities);
+            return new GameResponsePacket(new Game(noOfQuestions, activities));
         } else {
-            return new GameResponsePacket(activities);
+            return new GameResponsePacket(new Game(activities));
         }
     }
 }

@@ -16,7 +16,7 @@
 package client.utils;
 
 import client.Main;
-//import commons.Game;
+import commons.Game;
 import commons.utils.HttpStatus;
 import commons.utils.LoggerUtil;
 import jakarta.ws.rs.ProcessingException;
@@ -99,14 +99,14 @@ public class ServerUtils {
         return null;
     }
 
-//    public Game getGame(){
-//        return getClient().target(Main.URL)
-//                .path("api/game/create")
-//                .request(APPLICATION_JSON)
-//                .accept(APPLICATION_JSON)
-//                .header("Authorization", Main.TOKEN)
-//                .get(Game.class);
-//    }
+    /**
+     * Retrieves an instance of Game from the server using the endpoint made for the same
+     *
+     * @return Instance of Game with a list of questions
+     */
+    public Game getGame(){
+        return getRequest("api/game/create", GameResponsePacket.class).getGame();
+    }
 
     /**
      * Builds a post request
@@ -146,6 +146,11 @@ public class ServerUtils {
         return template.get(response);
     }
 
+    /**
+     * Uses an endpoint to retrieve the image from the Server using the path at which it is stored
+     * @param imagePath the path within activity-bank to access the image
+     * @return loaded Image is returned
+     */
     public Image getImage(String imagePath) {
         ImageResponsePacket image = getClient().target(Main.URL)
                 .path("api/activity/image")

@@ -4,7 +4,8 @@ package client.scenes;
 
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
-import packets.GameResponsePacket;
+import commons.Game;
+import commons.questions.Activity;
 import commons.questions.Question;
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
@@ -22,6 +23,7 @@ import javafx.util.Pair;
 
 import javax.inject.Inject;
 import java.net.URL;
+import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -108,8 +110,6 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         super.notificationContainer = notificationContainer;
 
         super.emoteContainer = emoteContainer;
-        super.answer = answer;
-
     }
 
     /**
@@ -126,19 +126,20 @@ public class GameMultiChoiceCtrl extends GameCtrl {
 
     }
 
+    /**
+     * This method is executed when the scene is displayed.
+     * It sets up the screen for a Multiple Choice Game
+     */
     @OnShowScene
     public void onShowScene() {
         super.onShowScene();
 
-        //for now we can only look at the MC questions functionality
-
+        // for now we can only look at the MC questions functionality
+        retrieveMultipleChoiceQuestion();
 
         for (int i = 0; i < 3; i++) {
             options[i] = (AnchorPane) optionsContainer.getChildren().get(i);
         }
-
-        retrieveMultipleChoiceQuestion();
-
 
         generateProgressDots();
         enableListeners();
@@ -224,7 +225,7 @@ public class GameMultiChoiceCtrl extends GameCtrl {
     protected void goToNextQuestion() {
         hidePointsGained();
 
-        //for now we can only look at the MC questions functionality
+        // for now we can only look at the MC questions functionality
         retrieveMultipleChoiceQuestion();
 
         locked = new boolean[]{false, false, false};
@@ -236,55 +237,58 @@ public class GameMultiChoiceCtrl extends GameCtrl {
 
         startTimer();
     }
-    private void setImages(Question q1,Question q2,Question q3){
-        image1.setImage(server.getImage(q1.getAnswer().getImage_path()));
-        image2.setImage(server.getImage(q2.getAnswer().getImage_path()));
-        image3.setImage(server.getImage(q3.getAnswer().getImage_path()));
-    }
+
     /**
      * Gets the next question.
      */
     protected void retrieveMultipleChoiceQuestion() {
-        GameResponsePacket game = server.getRequest("api/game/create", GameResponsePacket.class);
-        // question.setText(game.getMultipleChoiceQuestions().get(0).getQuestion());
+        Game game = server.getGame();
+
         Question q = game.getMultipleChoiceQuestions().get(0);
-        // this does not give the certainty that all answers are different
-        // there might be case where 2 answers are the same or 2 answers
-        // from different questions to be the same
-        GameResponsePacket game2 = server.getRequest("api/game/create", GameResponsePacket.class);
+        Activity answer = q.getAnswer();
+        Activity option2 = q.getActivityList().get(0); // An option that is not the answer
+        Activity option3 = q.getActivityList().get(1); // Another option that is not the answer
+
         question.setText(q.getQuestion());
         int min = 50;
         int max = 100;
-        //Generate random int value from 50 to 100
-        int random_int = (int) Math.floor(Math.random() * (max - min + 1) + min) % 3;
-        answer = random_int;
-        if (random_int == 0) {
-            choice1.setText(q.getAnswer().getTitle());
-            choice2.setText(game2.getMultipleChoiceQuestions().get(0).getAnswer().getTitle());
-            choice3.setText(game2.getMultipleChoiceQuestions().get(1).getAnswer().getTitle());
-            setImages(q,game2.getMultipleChoiceQuestions().get(0),game2.getMultipleChoiceQuestions().get(1));
-        } else {
-            if (random_int == 1) {
-                choice2.setText(q.getAnswer().getTitle());
-                choice1.setText(game2.getMultipleChoiceQuestions().get(0).getAnswer().getTitle());
-                choice3.setText(game2.getMultipleChoiceQuestions().get(1).getAnswer().getTitle());
-                setImages(game2.getMultipleChoiceQuestions().get(0),q,game2.getMultipleChoiceQuestions().get(1));
 
-            } else {
-                choice3.setText(q.getAnswer().getTitle());
-                choice1.setText(game2.getMultipleChoiceQuestions().get(0).getAnswer().getTitle());
-                choice2.setText(game2.getMultipleChoiceQuestions().get(1).getAnswer().getTitle());
-                setImages(game2.getMultipleChoiceQuestions().get(0),game2.getMultipleChoiceQuestions().get(1),q);
+        // Generates random int value from 0 to 3
+        Random randomGen = new Random();
+        answerOptionNumber = randomGen.nextInt(3);
 
-            }
+        // This is to ensure that the answers are in different options and are not predictable by the user
+        switch (answerOptionNumber) {
+            case 0 -> setOptions(answer, option2, option3);
+            case 1 -> setOptions(option2, answer, option3);
+            case 2 -> setOptions(option2, option3, answer);
         }
     }
+
+
+    /**
+     * This method sets the texts and images in the options
+     *
+     * @param option1 Activity of the text and image that'll be set in the first option
+     * @param option2 Activity of the text and image that'll be set in the second option
+     * @param option3 Activity of the text and image that'll be set in the third option
+     */
+    public void setOptions(Activity option1, Activity option2, Activity option3) {
+        choice1.setText(option1.getTitle());
+        choice2.setText(option2.getTitle());
+        choice3.setText(option3.getTitle());
+
+        image1.setImage(server.getImage(option1.getImage_path()));
+        image2.setImage(server.getImage(option2.getImage_path()));
+        image3.setImage(server.getImage(option3.getImage_path()));
+    }
+
 
     /**
      * Gets the next question.
      */
     protected void retrieveOpenQuestion() {
-        GameResponsePacket game = server.getRequest("api/game/create", GameResponsePacket.class);
+        Game game = server.getGame();
         question.setText(game.getOpenQuestions().get(0).getQuestion());
     }
 
