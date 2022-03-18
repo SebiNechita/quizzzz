@@ -28,6 +28,10 @@ public class UserRegistrationControllerTest {
     @MockBean
     private RegistrationService service;
 
+    /**
+     * test for register method
+     * @throws Exception
+     */
     @Test
     public void registerTest()
             throws Exception {
@@ -36,6 +40,7 @@ public class UserRegistrationControllerTest {
         mvc.perform(post("/api/user/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(new RegisterRequestPacket("Joe", "password")))
+                        .secure( true )
                 );
 
         verify(service, times(1)).register(new RegisterRequestPacket("Joe", "password"));
