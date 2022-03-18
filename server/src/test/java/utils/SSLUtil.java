@@ -1,4 +1,4 @@
-package server.security;
+package utils;
 
 import javax.net.ssl.*;
 import java.security.*;

@@ -18,6 +18,8 @@ import javax.net.ssl.HttpsURLConnection;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 
+// this SSUtil is from this answer bellow. it's purpose is to turn off SSL validation when testing.
+// https://stackoverflow.com/questions/23504819/how-to-disable-ssl-certificate-checking-with-spring-resttemplate
 public class ServerUtilsTest {
     private static ClientAndServer mockClientServer;
     private static int port = -1;
