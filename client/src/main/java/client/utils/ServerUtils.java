@@ -204,6 +204,12 @@ public class ServerUtils {
 
     private StompSession session = connect("ws://localhost:8080/websocket");
 
+    /**
+     * This method initializes the WebSocket connection between client and server
+     * @param url - the url address for the connection
+     * @return returns a new protocol
+     * @throws IllegalAccessException
+     */
     private StompSession connect(String url) throws IllegalAccessException {
         var client = new StandardWebSocketClient();
         var stomp = new WebSocketStompClient(client);
@@ -220,6 +226,13 @@ public class ServerUtils {
         throw new IllegalAccessException();
     }
 
+    /**
+     * Subscribes the client for messages from the server
+     * @param dest - the destination address
+     * @param type - the class of the object to be returned by the method
+     * @param consumer - the consumer
+     * @param <T> - generic type
+     */
     public <T> void registerForMessages(String dest, Class<T> type, Consumer<T> consumer) {
         session.subscribe(dest, new StompFrameHandler() {
             @Override
@@ -234,6 +247,11 @@ public class ServerUtils {
         });
     }
 
+    /**
+     * This method sends an object to a desired destination
+     * @param dest - the destination address
+     * @param o - the object to be sent
+     */
     public void send(String dest, Object o) {
         session.send(dest, o);
     }
