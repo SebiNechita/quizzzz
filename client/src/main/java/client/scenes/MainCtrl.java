@@ -60,6 +60,11 @@ public class MainCtrl {
         Main.questions = game.getMultipleChoiceQuestions();
     }
 
+    public void loadNextQuestion(){
+        Main.currentQuestion++;
+        showScene(GameMultiChoiceCtrl.class);
+    }
+
     /**
      * Loads and initializes a scene
      *
