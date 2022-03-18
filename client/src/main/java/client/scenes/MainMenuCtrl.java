@@ -67,10 +67,11 @@ public class MainMenuCtrl extends SceneCtrl {
 
 
     /**
-     * Temporary method, leads to a placeholder of singleplayer
-     * (but one that already gets its questions from the server)
+     * Starts singleplayer mode and sets current question to 0
      */
     public void showSingleplayer(){
+        main.getQuestions();
+        Main.currentQuestion = 0;
         main.showScene(GameMultiChoiceCtrl.class);
     }
 }
