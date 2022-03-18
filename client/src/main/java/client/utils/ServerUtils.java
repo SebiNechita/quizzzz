@@ -23,15 +23,32 @@ import jakarta.ws.rs.ProcessingException;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.client.*;
 import jakarta.ws.rs.core.Response;
+import org.apache.catalina.Server;
+import org.springframework.boot.autoconfigure.integration.IntegrationProperties;
+import org.springframework.boot.autoconfigure.rsocket.RSocketProperties;
+import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.converter.MappingJackson2MessageConverter;
+import org.springframework.messaging.simp.stomp.StompFrameHandler;
+import org.springframework.messaging.simp.stomp.StompHeaders;
+import org.springframework.messaging.simp.stomp.StompSession;
+import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
+import org.springframework.web.socket.client.standard.StandardWebSocketClient;
+import org.springframework.web.socket.messaging.WebSocketStompClient;
 import packets.*;
 
+import java.lang.reflect.Type;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
+import java.util.function.Consumer;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 public class ServerUtils {
 
     private Client client;
+
+    public ServerUtils() throws IllegalAccessException {
+    }
 
     /**
      * Creates the client if it doesn't exist yet
@@ -184,4 +201,48 @@ public class ServerUtils {
                 Entity.entity(new RegisterRequestPacket(username, password), APPLICATION_JSON),
                 RegisterResponsePacket.class);
     }
+
+    private StompSession session = connect("ws://localhost:8080/websocket");
+
+    private StompSession connect(String url) throws IllegalAccessException {
+        var client = new StandardWebSocketClient();
+        var stomp = new WebSocketStompClient(client);
+
+        stomp.setMessageConverter(new MappingJackson2MessageConverter());
+
+        try {
+            return stomp.connect(url, new StompSessionHandlerAdapter() {}).get();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+        throw new IllegalAccessException();
+    }
+
+    public <T> void registerForMessages(String dest, Class<T> type, Consumer<T> consumer) {
+        session.subscribe(dest, new StompFrameHandler() {
+            @Override
+            public Type getPayloadType(StompHeaders headers) {
+                return type;
+            }
+
+            @Override
+            public void handleFrame(StompHeaders headers, Object payload) {
+                consumer.accept((T) payload);
+            }
+        });
+    }
+
+    public void send(String dest, Object o) {
+        session.send(dest, o);
+    }
+
+    //    ADD THIS PIECE OF CODE IN THE INITIALISE METHOD OF A MULTIPLAYER LOGIC CLASS WHEN WE MAKE IT
+    //    server.registerForMessages("/topic/quotes", ResponseEntity.class, q -> {
+    //        data.add(q);
+    //    });
+
+    //    ADD THIS PIECE OF CODE IN THE INITIALISE METHOD OF A MULTIPLAYER LOGIC CLASS WHEN WE MAKE IT
+    //server.send("/app/quotes", getResponse());
 }
