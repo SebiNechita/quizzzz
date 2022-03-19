@@ -28,8 +28,6 @@ import javax.inject.Inject;
 import java.net.URL;
 import java.util.Random;
 import java.util.ResourceBundle;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class GameMultiChoiceCtrl extends GameCtrl {
     @FXML
@@ -146,14 +144,6 @@ public class GameMultiChoiceCtrl extends GameCtrl {
 
         generateProgressDots();
         enableListeners();
-
-        //----- TODO: Everything below this is temporary and for testing/displaying purposes -----
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                removeOption(0);
-            }
-        }, 3000);
     }
 
     /**
@@ -223,9 +213,11 @@ public class GameMultiChoiceCtrl extends GameCtrl {
     }
 
     /**
-     * Hides point info, gets a new question, resets the options' appearance and the timer.
+     * Hides point info and , gets a new question, resets the options' appearance and the timer.
      */
-    protected void goToNextQuestion() {
+    @FXML
+    protected void initialiseNextQuestion() {
+        nextQuestion.setVisible(false);
         hidePointsGained();
 
         if (Main.currentQuestionCount <Main.questions.size()){
@@ -233,7 +225,7 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         }
         else {
             server.postRequest("api/leaderboard", new LeaderboardEntry(80,Main.USERNAME), LeaderboardResponsePacket.class);
-            main.showScene(MainMenuCtrl.class);
+            main.showScene(SingleplayerLeaderboardCtrl.class);
         }
 
         retrieveMultipleChoiceQuestion();
@@ -368,17 +360,6 @@ public class GameMultiChoiceCtrl extends GameCtrl {
                 anchorPane.setBackground(new Background(new BackgroundFill(lerp(start.getRed(), start.getGreen(), start.getBlue(), target.getRed(), target.getGreen(), target.getBlue(), frac), new CornerRadii(10), Insets.EMPTY)));
             }
         };
-    }
-
-    /**
-     * Detects when the "Next Question" button has been pressed
-     */
-    @FXML
-    private void onNextButton() {
-        // make the "Next" button invisible after clicking
-        nextQuestion.setVisible(false);
-        // go to next question
-        goToNextQuestion();
     }
 }
 

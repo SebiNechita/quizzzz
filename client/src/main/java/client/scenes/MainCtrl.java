@@ -57,15 +57,15 @@ public class MainCtrl {
      */
     public void getQuestions(){
         Game game = serverUtils.getGame();
-        Main.questions = game.getMultipleChoiceQuestions();
+        Main.questions = game.getMultipleChoiceQuestions().subList(0,1);
     }
 
     /**
      * Updates the currentQuestion
      */
     public void loadNextQuestion(){
-        Main.currentQuestionCount++;
         Main.currentQuestion = Main.questions.get(Main.currentQuestionCount);
+        Main.currentQuestionCount++;
         showScene(GameMultiChoiceCtrl.class);
     }
 

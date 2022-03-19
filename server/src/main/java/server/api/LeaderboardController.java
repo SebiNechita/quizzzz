@@ -2,7 +2,6 @@ package server.api;
 
 import commons.LeaderboardEntry;
 import commons.utils.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import packets.LeaderboardResponsePacket;
 import server.database.LeaderboardRepository;
@@ -28,15 +27,15 @@ public class LeaderboardController {
     }
 
     @PostMapping(path = { "/leaderboard" })
-    public ResponseEntity<LeaderboardEntry> add(@RequestBody LeaderboardEntry leaderboardEntry) {
+    public LeaderboardResponsePacket add(@RequestBody LeaderboardEntry leaderboardEntry) {
 
         if (leaderboardEntry.points < 0
                 || isNullOrEmpty(leaderboardEntry.username)) {
-            return ResponseEntity.badRequest().build();
+            return new LeaderboardResponsePacket(HttpStatus.BadRequest);
         }
 
-        LeaderboardEntry saved = repo.save(leaderboardEntry);
-        return ResponseEntity.ok(saved);
+        repo.save(leaderboardEntry);
+        return new LeaderboardResponsePacket(HttpStatus.OK,repo.findAll());
     }
 
     private static boolean isNullOrEmpty(String s) {

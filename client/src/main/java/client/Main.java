@@ -16,7 +16,9 @@
 package client;
 
 import client.scenes.ConnectionCtrl;
+import client.scenes.LoginCtrl;
 import client.scenes.MainCtrl;
+import client.scenes.MainMenuCtrl;
 import commons.questions.Question;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -48,6 +50,7 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage primaryStage) {
+        boolean debug = false;
         MainCtrl mainCtrl = new MainCtrl(primaryStage);
 
         mainCtrl.load("client/scenes/Connection.fxml", "Connection page");
@@ -58,6 +61,14 @@ public class Main extends Application {
         mainCtrl.load("client/scenes/HelpScreen.fxml", "Help page");
         mainCtrl.load("client/scenes/GameMultiChoice.fxml", "Game Screen");
 
-        mainCtrl.showScene(ConnectionCtrl.class);
+        if (debug) {
+            LoginCtrl login = mainCtrl.getCtrl(LoginCtrl.class);
+            login.login("Geof", "password");
+            mainCtrl.showScene(MainMenuCtrl.class);
+        }
+        else{
+            mainCtrl.showScene(ConnectionCtrl.class);
+        }
+
     }
 }

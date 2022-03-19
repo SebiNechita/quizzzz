@@ -71,7 +71,7 @@ public class MainMenuCtrl extends SceneCtrl {
      */
     public void showSingleplayer(){
         main.getQuestions();
-        Main.currentQuestionCount = -1;
+        Main.currentQuestionCount = 0;
         main.loadNextQuestion();
     }
 }

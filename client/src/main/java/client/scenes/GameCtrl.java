@@ -9,7 +9,6 @@ import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.Transition;
-import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -132,39 +131,10 @@ public abstract class GameCtrl extends SceneCtrl {
 
         //----- TODO: Everything below this is temporary and for testing/displaying purposes -----
         gameMode = GameMode.SINGLEPLAYER;
-        Random random = new Random();
         setScore(0);
         scoreTotal = 0;
         startTimer();
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                reduceTimer(0.5d);
-            }
-        }, 2000);
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                reduceTimer(0.5d);
-            }
-        }, 4000);
 
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                Platform.runLater(() -> {
-                    if (random.nextBoolean()) {
-                        notificationRenderer.addEmoteNotification(String.valueOf(random.nextInt()), Emote.values()[random.nextInt(5)]);
-                    } else {
-                        if (random.nextBoolean()) {
-                            notificationRenderer.addDisconnectNotification(String.valueOf(random.nextInt()));
-                        } else {
-                            notificationRenderer.addJokerNotification(String.valueOf(random.nextInt()), JokerType.values()[random.nextInt(3)]);
-                        }
-                    }
-                });
-            }
-        }, 1000, 400);
     }
 
     /**
