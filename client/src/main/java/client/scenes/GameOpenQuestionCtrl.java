@@ -46,7 +46,6 @@ public class GameOpenQuestionCtrl extends GameCtrl {
 
     @FXML
     private TextField userInput;
-    private boolean locked = false;
 
     @FXML
     private VBox notificationContainer;
@@ -114,8 +113,6 @@ public class GameOpenQuestionCtrl extends GameCtrl {
      */
     private void enableListeners() {
         userInput.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (locked) return;
-
             if (!newValue.matches("\\d*")) {
                 userInput.setText(newValue.replaceAll("[^\\d]", ""));
             } else {
@@ -131,7 +128,8 @@ public class GameOpenQuestionCtrl extends GameCtrl {
      */
     @Override
     protected void showCorrectAnswer(int answer) {
-        int difference = Math.abs(Integer.parseInt(userInput.getText()) - answer);
+        userInput.setDisable(true);
+        int difference = userInput.getText().equals("") ? 100 : Math.abs(Integer.parseInt(userInput.getText()) - answer);
         Color current = (Color) userInput.getBackground().getFills().get(0).getFill();
         if (difference <= 10) {
             fadeTextField(userInput, current, new Color(0.423, 0.941, 0.415, 1)).play();
@@ -141,7 +139,6 @@ public class GameOpenQuestionCtrl extends GameCtrl {
             fadeTextField(userInput, current, new Color(0.949, 0.423, 0.392, 1)).play();
         }
 
-        locked = true;
         showPointsGained(100 - difference);
         questionHistory.add(difference <= 50);
         generateProgressDots();

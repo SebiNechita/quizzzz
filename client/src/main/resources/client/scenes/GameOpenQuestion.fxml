@@ -259,7 +259,7 @@
                   <Font name="Comic Sans MS" size="20.0" />
                </font>
             </Text>
-            <TextField fx:id="userInput" alignment="CENTER" layoutX="131.0" layoutY="291.0" prefHeight="45.0" prefWidth="329.0" promptText="Type an integer...">
+            <TextField fx:id="userInput" alignment="CENTER" layoutX="131.0" layoutY="291.0" prefHeight="45.0" prefWidth="329.0">
                <font>
                   <Font name="Comic Sans MS" size="22.0" />
                </font>
