@@ -4,13 +4,12 @@ import commons.questions.Activity;
 import commons.questions.MultipleChoiceQuestion;
 import commons.questions.OpenQuestion;
 import commons.questions.Question;
-//import packets.RequestPacket;
-import packets.ResponsePacket;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-public class GameResponsePacket extends ResponsePacket {
+public class Game {
     /**
      * List of questions that'll be used in this particular instance of the game
      * The questions are of the type MultipleChoiceQuestion
@@ -41,7 +40,7 @@ public class GameResponsePacket extends ResponsePacket {
     /**
      * Default constructor for object mappers
      */
-    public GameResponsePacket() {
+    public Game() {
     }
 
     /**
@@ -50,7 +49,7 @@ public class GameResponsePacket extends ResponsePacket {
      * @param noOfQuestions number of questions in the game
      * @param activities list of activities from which the questions are to be made
      */
-    public GameResponsePacket(int noOfQuestions, List<Activity> activities) {
+    public Game(int noOfQuestions, List<Activity> activities) {
         this.activities = activities;
         this.noOfQuestions = noOfQuestions;
         this.noOfMultipleChoiceQuestions = noOfQuestions * 4 / 5;
@@ -63,7 +62,7 @@ public class GameResponsePacket extends ResponsePacket {
      * Constructor that takes the list of activities to use to make the game. Using this, it creates a list of 20 (default) questions
      * @param activities list of activities using which the questions are to be made
      */
-    public GameResponsePacket(List<Activity> activities) {
+    public Game(List<Activity> activities) {
         this.activities = activities;
         this.noOfQuestions = 20;
         this.noOfMultipleChoiceQuestions = 16;
@@ -79,7 +78,7 @@ public class GameResponsePacket extends ResponsePacket {
      * @param noOfMultipleChoiceQuestions number of questions for that game
      * @return A list of "noOfQuestions" questions. 4/5th of them are Multiple Choice Questions and the remaining are Open Questions
      */
-    private static List<Question> generateMultipleChoiceQuestions(GameResponsePacket game,
+    private static List<Question> generateMultipleChoiceQuestions(Game game,
                                                                   int noOfMultipleChoiceQuestions) {
 
         List<Question> multipleChoiceQuestions = new ArrayList<>();
@@ -102,7 +101,7 @@ public class GameResponsePacket extends ResponsePacket {
      * @param noOfOpenQuestions number of questions for that game
      * @return A list of "noOfQuestions" questions. 4/5th of them are Multiple Choice Questions and the remaining are Open Questions
      */
-    private static List<Question> generateOpenQuestions(GameResponsePacket game,
+    private static List<Question> generateOpenQuestions(Game game,
                                                         int noOfOpenQuestions) {
         List<Question> openQuestions = new ArrayList<>();
 
@@ -198,34 +197,24 @@ public class GameResponsePacket extends ResponsePacket {
     }
 
     /**
-     * @param o is the object to be compared with the game object
-     * @return boolean if the two games are equals
+     * Checks if two instances of Game are equal
+     * @param o the Object with which this has to be compared to
+     * @return true if equal; false otherwise
      */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof GameResponsePacket)) return false;
-
-        GameResponsePacket game = (GameResponsePacket) o;
-
-        if (noOfQuestions != game.noOfQuestions) return false;
-        if (noOfMultipleChoiceQuestions != game.noOfMultipleChoiceQuestions) return false;
-        if (noOfOpenQuestions != game.noOfOpenQuestions) return false;
-        if (multipleChoiceQuestions != null ? !multipleChoiceQuestions.equals(game.multipleChoiceQuestions) : game.multipleChoiceQuestions != null)
-            return false;
-        if (openQuestions != null ? !openQuestions.equals(game.openQuestions) : game.openQuestions != null)
-            return false;
-        return activities != null ? activities.equals(game.activities) : game.activities == null;
+        if (o == null || getClass() != o.getClass()) return false;
+        Game game = (Game) o;
+        return noOfQuestions == game.noOfQuestions && noOfMultipleChoiceQuestions == game.noOfMultipleChoiceQuestions && noOfOpenQuestions == game.noOfOpenQuestions && Objects.equals(multipleChoiceQuestions, game.multipleChoiceQuestions) && Objects.equals(openQuestions, game.openQuestions) && Objects.equals(activities, game.activities);
     }
 
+    /**
+     * Generates hashcode of this instance of Game
+     * @return hash code is returned
+     */
     @Override
     public int hashCode() {
-        int result = multipleChoiceQuestions != null ? multipleChoiceQuestions.hashCode() : 0;
-        result = 31 * result + (openQuestions != null ? openQuestions.hashCode() : 0);
-        result = 31 * result + noOfQuestions;
-        result = 31 * result + noOfMultipleChoiceQuestions;
-        result = 31 * result + noOfOpenQuestions;
-        result = 31 * result + (activities != null ? activities.hashCode() : 0);
-        return result;
+        return Objects.hash(multipleChoiceQuestions, openQuestions, noOfQuestions, noOfMultipleChoiceQuestions, noOfOpenQuestions, activities);
     }
 }

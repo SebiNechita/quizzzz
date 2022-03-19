@@ -76,7 +76,12 @@ public abstract class GameCtrl extends SceneCtrl {
 
     protected LinkedList<Boolean> questionHistory = new LinkedList<>();
 
-    protected int answer;
+    /**
+     * There are three options visible to the user.
+     * This variable describes the option in which the answer is visible.
+     * Starts from 0
+     */
+    protected int answerOptionNumber;
     protected int scoreTotal;
     Animation timer = null;
 
@@ -98,6 +103,9 @@ public abstract class GameCtrl extends SceneCtrl {
 
     }
 
+    /**
+     * This method is called from its subclasses when that scene is displayed
+     */
     public void onShowScene() {
         notificationRenderer = new NotificationRenderer();
 
@@ -363,7 +371,7 @@ public abstract class GameCtrl extends SceneCtrl {
      */
     private void onTimerEnd() {
         timer.setOnFinished(event -> {
-            showCorrectAnswer(answer);
+            showCorrectAnswer(answerOptionNumber);
 
             nextQuestion.setVisible(gameMode == GameMode.SINGLEPLAYER);
         });

@@ -15,8 +15,10 @@
  */
 package client.scenes;
 
+import client.Main;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
+import commons.Game;
 import commons.utils.LoggerUtil;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -48,6 +50,19 @@ public class MainCtrl {
     public MainCtrl(Stage primaryStage) {
         this.primaryStage = primaryStage;
         serverUtils = new ServerUtils();
+    }
+
+    /**
+     * Retrieves a list of questions and stores it.
+     */
+    public void getQuestions(){
+        Game game = serverUtils.getGame();
+        Main.questions = game.getMultipleChoiceQuestions();
+    }
+
+    public void loadNextQuestion(){
+        Main.currentQuestion++;
+        showScene(GameMultiChoiceCtrl.class);
     }
 
     /**

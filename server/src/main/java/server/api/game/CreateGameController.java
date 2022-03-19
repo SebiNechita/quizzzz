@@ -1,6 +1,6 @@
 package server.api.game;
 
-import commons.GameResponsePacket;
+import packets.GameResponsePacket;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
