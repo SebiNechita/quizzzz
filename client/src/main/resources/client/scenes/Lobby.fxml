@@ -34,48 +34,18 @@
                <children>
                   <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../img/emojis/nerd.png" />
+                        <Image url="@../../img/emojis/heart_eyes.png" />
                      </image>
                   </ImageView>
                   <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../../img/emojis/joy.png" />
                      </image>
-                     <effect>
-                        <ColorAdjust brightness="-0.3" />
-                     </effect>
                   </ImageView>
                   <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../img/emojis/heart_eyes.png" />
+                        <Image url="@../../img/emojis/nerd.png" />
                      </image>
-                     <effect>
-                        <ColorAdjust brightness="-0.3" />
-                     </effect>
-                  </ImageView>
-                  <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
-                     <effect>
-                        <ColorAdjust brightness="-0.3" />
-                     </effect>
-                     <image>
-                        <Image url="@../../img/emojis/thinking.png" />
-                     </image>
-                  </ImageView>
-                  <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../img/emojis/crying.png" />
-                     </image>
-                     <effect>
-                        <ColorAdjust brightness="-0.3" />
-                     </effect>
-                  </ImageView>
-                  <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../img/emojis/exhaling.png" />
-                     </image>
-                     <effect>
-                        <ColorAdjust brightness="-0.3" />
-                     </effect>
                   </ImageView>
                   <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -95,7 +65,7 @@
                         <Image url="@../../img/emojis/sunglasses.png" />
                      </image>
                   </ImageView>
-                  <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../../img/emojis/devil.png" />
                      </image>
@@ -118,6 +88,21 @@
                   <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../../img/emojis/thumbup.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../img/emojis/exhaling.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../img/emojis/crying.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../img/emojis/thinking.png" />
                      </image>
                   </ImageView>
                </children>

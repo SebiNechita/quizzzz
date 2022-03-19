@@ -73,7 +73,7 @@ public class LobbyCtrl extends  SceneCtrl{
      * Show the home screen.
      */
     public void showHome() {
-        chattext = new Text("Quizzzz: " + Main.USERNAME + "has left the lobby!" + "\n");
+        chattext = new Text("Quizzzz: " + Main.USERNAME + " has left the lobby!" + "\n");
         chattext.setFont(Font.font("Comic Sans MS", 30));
         textflow.getChildren().remove(playertext);
         chattextflow.getChildren().add(chattext);
