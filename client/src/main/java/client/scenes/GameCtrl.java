@@ -75,15 +75,12 @@ public abstract class GameCtrl extends SceneCtrl {
     protected double lastAnswerChange = 0;
     protected double timeMultiplier = 1d;
 
-    protected LinkedList<Boolean> questionHistory = new LinkedList<>();
-
     /**
      * There are three options visible to the user.
      * This variable describes the option in which the answer is visible.
      * Starts from 0
      */
     protected int answerOptionNumber;
-    protected int scoreTotal;
     Animation timer = null;
 
     /**
@@ -274,7 +271,7 @@ public abstract class GameCtrl extends SceneCtrl {
         dropShadow.setOffsetX(3.0);
         dropShadow.setOffsetY(3.0);
 
-        Iterator<Boolean> history = questionHistory.iterator();
+        Iterator<Boolean> history = Main.questionHistory.iterator();
         if (numberofQuestions == -1) {
             for (int i = 0; i < 20; i++) {
                 Circle circle = generateCircle(Paint.valueOf("#2b2b2b"), dropShadow);

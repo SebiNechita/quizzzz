@@ -134,15 +134,14 @@ public class GameMultiChoiceCtrl extends GameCtrl {
     public void onShowScene() {
         super.onShowScene();
 
-        //for now we can only look at the MC questions functionality
-        retrieveMultipleChoiceQuestion();
-
         for (int i = 0; i < 3; i++) {
             options[i] = (AnchorPane) optionsContainer.getChildren().get(i);
         }
 
         generateProgressDots();
         enableListeners();
+
+        retrieveMultipleChoiceQuestion();
     }
 
     /**
@@ -207,7 +206,7 @@ public class GameMultiChoiceCtrl extends GameCtrl {
 
         boolean correctlyAnswered = selected != null && selected.getKey() == answer;
         showPointsGained(correctlyAnswered ? 100 : 0);
-        questionHistory.add(correctlyAnswered);
+        Main.questionHistory.add(correctlyAnswered);
         generateProgressDots();
     }
 
@@ -221,23 +220,20 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         nextQuestion.setVisible(false);
         hidePointsGained();
 
-        //TODO: Move the logic from this if statement to a new method
         if (Main.currentQuestionCount <Main.questions.size()){
             main.loadNextQuestion();
-            retrieveMultipleChoiceQuestion();
-
-            locked = new boolean[]{false, false, false};
-            selected = null;
-
-            for (AnchorPane option : options) {
-                fadeOption(option, (Color) option.getBackground().getFills().get(0).getFill(), new Color(1, 1, 1, 1)).play();
-            }
-
-            startTimer();
         }
         else {
             server.postRequest("api/leaderboard", new LeaderboardEntry(Main.scoreTotal,Main.USERNAME), LeaderboardResponsePacket.class);
             main.showScene(SingleplayerLeaderboardCtrl.class);
+        }
+
+        //clean up
+        locked = new boolean[]{false, false, false};
+        selected = null;
+
+        for (AnchorPane option : options) {
+            fadeOption(option, (Color) option.getBackground().getFills().get(0).getFill(), new Color(1, 1, 1, 1)).play();
         }
 
 

@@ -57,7 +57,7 @@ public class MainCtrl {
      */
     public void getQuestions(){
         Game game = serverUtils.getGame();
-        Main.questions = game.getMultipleChoiceQuestions().subList(0,1);
+        Main.questions = game.getMultipleChoiceQuestions().subList(0,2);
     }
 
     /**

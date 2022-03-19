@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.Main;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import commons.utils.JokerType;
@@ -143,7 +144,7 @@ public class GameOpenQuestionCtrl extends GameCtrl {
 
         locked = true;
         showPointsGained(100 - difference);
-        questionHistory.add(difference <= 50);
+        Main.questionHistory.add(difference <= 50);
         generateProgressDots();
     }
 

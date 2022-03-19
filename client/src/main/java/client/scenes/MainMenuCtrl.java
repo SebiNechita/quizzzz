@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.scene.text.Text;
 
 import java.net.URL;
+import java.util.LinkedList;
 import java.util.ResourceBundle;
 
 public class MainMenuCtrl extends SceneCtrl {
@@ -72,6 +73,8 @@ public class MainMenuCtrl extends SceneCtrl {
     public void showSingleplayer(){
         main.getQuestions();
         Main.currentQuestionCount = 0;
+        Main.questionHistory = new LinkedList<>();
+        Main.scoreTotal = 0;
         main.loadNextQuestion();
     }
 }

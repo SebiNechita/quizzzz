@@ -23,6 +23,7 @@ import commons.questions.Question;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class Main extends Application {
@@ -34,6 +35,7 @@ public class Main extends Application {
     public static int currentQuestionCount;
     public static Question currentQuestion;
     public static int scoreTotal;
+    public static LinkedList<Boolean> questionHistory = new LinkedList<>();
 
     /**
      * Gets called when the application is started
@@ -51,7 +53,7 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage primaryStage) {
-        boolean debug = false;
+        boolean debug = true;
         MainCtrl mainCtrl = new MainCtrl(primaryStage);
 
         mainCtrl.load("client/scenes/Connection.fxml", "Connection page");
