@@ -146,5 +146,19 @@
             </Text>
          </children>
       </AnchorPane>
+      <AnchorPane layoutX="743.0" layoutY="109.0" prefHeight="464.0" prefWidth="627.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 11;">
+         <children>
+            <ScrollPane layoutX="4.0" layoutY="60.0" prefHeight="384.0" prefWidth="623.0">
+               <content>
+                  <TextFlow fx:id="chattextflow" prefHeight="364.0" prefWidth="622.0" />
+               </content>
+            </ScrollPane>
+            <Text layoutX="39.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Chatroom:">
+               <font>
+                  <Font name="Comic Sans MS" size="32.0" />
+               </font>
+            </Text>
+         </children>
+      </AnchorPane>
    </children>
 </AnchorPane>

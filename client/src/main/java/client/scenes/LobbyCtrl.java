@@ -21,7 +21,11 @@ public class LobbyCtrl extends  SceneCtrl{
     @FXML
     private TextFlow textflow;
     @FXML
-    private Text text;
+    private TextFlow chattextflow;
+    @FXML
+    private Text playertext;
+    @FXML
+    private Text chattext;
     private Boolean ready;
     /**
      * Constructor for this Ctrl
@@ -54,10 +58,13 @@ public class LobbyCtrl extends  SceneCtrl{
     public void onShowScene() {
         buttonReady.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
         ready = false;
-        text = new Text(Main.USERNAME + "\n");
-        text.setFill(Color.RED);
-        text.setFont(Font.font("Comic Sans MS", 27));
-        textflow.getChildren().add(text);
+        playertext = new Text(Main.USERNAME + "\n");
+        playertext.setFill(Color.RED);
+        playertext.setFont(Font.font("Comic Sans MS", 27));
+        textflow.getChildren().add(playertext);
+        chattext = new Text("Quizzzz: Welcome to the game, " + Main.USERNAME + "\n");
+        chattext.setFont(Font.font("Comic Sans MS", 30));
+        chattextflow.getChildren().add(chattext);
     }
 
 
@@ -66,8 +73,11 @@ public class LobbyCtrl extends  SceneCtrl{
      * Show the home screen.
      */
     public void showHome() {
+        chattext = new Text("Quizzzz: " + Main.USERNAME + "has left the lobby!" + "\n");
+        chattext.setFont(Font.font("Comic Sans MS", 30));
+        textflow.getChildren().remove(playertext);
+        chattextflow.getChildren().add(chattext);
         main.showScene(MainMenuCtrl.class);
-        textflow.getChildren().remove(text);
     }
 
     /**
@@ -76,12 +86,12 @@ public class LobbyCtrl extends  SceneCtrl{
     public void makeButtonReady(){
         if(ready == false){
             buttonReady.setBackground(new Background(new BackgroundFill(Color.GREEN, null, null)));
-            text.setFill(Color.GREEN);
+            playertext.setFill(Color.GREEN);
             ready = true;
         }
         else{
             buttonReady.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
-            text.setFill(Color.RED);
+            playertext.setFill(Color.RED);
             ready = false;
         }
     }
