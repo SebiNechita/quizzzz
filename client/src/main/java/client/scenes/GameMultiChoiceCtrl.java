@@ -2,9 +2,11 @@ package client.scenes;
 
 //import client.Main;
 
+import client.Main;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import commons.Game;
+import commons.LeaderboardEntry;
 import commons.questions.Activity;
 import commons.questions.Question;
 import javafx.animation.Animation;
@@ -20,6 +22,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import javafx.util.Pair;
+import packets.LeaderboardResponsePacket;
 
 import javax.inject.Inject;
 import java.net.URL;
@@ -225,7 +228,14 @@ public class GameMultiChoiceCtrl extends GameCtrl {
     protected void goToNextQuestion() {
         hidePointsGained();
 
-        // for now we can only look at the MC questions functionality
+        if (Main.currentQuestionCount <Main.questions.size()){
+            main.loadNextQuestion();
+        }
+        else {
+            server.postRequest("api/leaderboard", new LeaderboardEntry(80,Main.USERNAME), LeaderboardResponsePacket.class);
+            main.showScene(MainMenuCtrl.class);
+        }
+
         retrieveMultipleChoiceQuestion();
 
         locked = new boolean[]{false, false, false};
@@ -242,9 +252,8 @@ public class GameMultiChoiceCtrl extends GameCtrl {
      * Gets the next question.
      */
     protected void retrieveMultipleChoiceQuestion() {
-        Game game = server.getGame();
 
-        Question q = game.getMultipleChoiceQuestions().get(0);
+        Question q = Main.currentQuestion;
         Activity answer = q.getAnswer();
         Activity option2 = q.getActivityList().get(0); // An option that is not the answer
         Activity option3 = q.getActivityList().get(1); // Another option that is not the answer

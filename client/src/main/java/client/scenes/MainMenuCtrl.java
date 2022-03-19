@@ -67,11 +67,11 @@ public class MainMenuCtrl extends SceneCtrl {
 
 
     /**
-     * Starts singleplayer mode and sets current question to 0
+     * Starts singleplayer mode and loads the first question with the screen
      */
     public void showSingleplayer(){
         main.getQuestions();
-        Main.currentQuestion = 0;
-        main.showScene(GameMultiChoiceCtrl.class);
+        Main.currentQuestionCount = -1;
+        main.loadNextQuestion();
     }
 }

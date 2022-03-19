@@ -29,7 +29,8 @@ public class Main extends Application {
     public static String URL = "https://localhost:8080/";
     public static String TOKEN = "";
     public static List<Question> questions;
-    public static int currentQuestion;
+    public static int currentQuestionCount;
+    public static Question currentQuestion;
 
     /**
      * Gets called when the application is started

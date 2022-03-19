@@ -60,8 +60,12 @@ public class MainCtrl {
         Main.questions = game.getMultipleChoiceQuestions();
     }
 
+    /**
+     * Updates the currentQuestion
+     */
     public void loadNextQuestion(){
-        Main.currentQuestion++;
+        Main.currentQuestionCount++;
+        Main.currentQuestion = Main.questions.get(Main.currentQuestionCount);
         showScene(GameMultiChoiceCtrl.class);
     }
 
