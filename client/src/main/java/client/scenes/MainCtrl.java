@@ -19,6 +19,7 @@ import client.Main;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import commons.Game;
+import commons.LeaderboardEntry;
 import commons.utils.LoggerUtil;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -26,6 +27,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Pair;
+import packets.LeaderboardResponsePacket;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -57,16 +59,37 @@ public class MainCtrl {
      */
     public void getQuestions(){
         Game game = serverUtils.getGame();
-        Main.questions = game.getMultipleChoiceQuestions().subList(0,2);
+        Main.questions.addAll(game.getMultipleChoiceQuestions().subList(0,2));
+        Main.openQuestions.add(game.getOpenQuestions().get(0));
     }
 
     /**
-     * Updates the currentQuestion
+     * Steps to the next question and displays it.
+     * Or exits if the game is over.
      */
-    public void loadNextQuestion(){
-        Main.currentQuestion = Main.questions.get(Main.currentQuestionCount);
+    public void jumpToNextQuestion(){
+        if (Main.currentQuestionCount <3){
+            showQuestion();
+        }
+        else {
+            serverUtils.postRequest("api/leaderboard", new LeaderboardEntry(Main.scoreTotal,Main.USERNAME), LeaderboardResponsePacket.class);
+            showScene(SingleplayerLeaderboardCtrl.class);
+        }
+
         Main.currentQuestionCount++;
-        showScene(GameMultiChoiceCtrl.class);
+
+    }
+
+    /**
+     * Decides which type of question to display.
+     */
+    private void showQuestion() {
+        if (Main.currentQuestionCount % 3 == 0){
+            showScene(GameOpenQuestionCtrl.class);
+        }
+        else{
+            showScene(GameMultiChoiceCtrl.class);
+        }
     }
 
     /**

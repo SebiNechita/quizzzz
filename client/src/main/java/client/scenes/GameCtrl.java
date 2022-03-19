@@ -373,13 +373,7 @@ public abstract class GameCtrl extends SceneCtrl {
     /**
      * Sets up the events for when the timer runs out
      */
-    private void onTimerEnd() {
-        timer.setOnFinished(event -> {
-            showCorrectAnswer(answerOptionNumber);
-
-            nextQuestion.setVisible(gameMode == GameMode.SINGLEPLAYER);
-        });
-    }
+    protected abstract void onTimerEnd();
 
     /**
      * Shows the correct answer to the user

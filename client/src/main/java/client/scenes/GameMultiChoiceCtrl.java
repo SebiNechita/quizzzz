@@ -6,9 +6,9 @@ import client.Main;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import commons.Game;
-import commons.LeaderboardEntry;
 import commons.questions.Activity;
 import commons.questions.Question;
+import commons.utils.GameMode;
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.Transition;
@@ -22,7 +22,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import javafx.util.Pair;
-import packets.LeaderboardResponsePacket;
 
 import javax.inject.Inject;
 import java.net.URL;
@@ -181,6 +180,14 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         }
     }
 
+    protected void onTimerEnd(){
+        timer.setOnFinished(event -> {
+            showCorrectAnswer(answerOptionNumber);
+
+            nextQuestion.setVisible(Main.gameMode == GameMode.SINGLEPLAYER);
+        });
+    }
+
     /**
      * Shows the correct answer to the user
      *
@@ -215,18 +222,13 @@ public class GameMultiChoiceCtrl extends GameCtrl {
      */
     @FXML
     //initialising includes loading the next question, but also cleaning up the screen
-    // and of course, deciding whether a new question actually needs to be loaded.
     protected void initialiseNextQuestion() {
         nextQuestion.setVisible(false);
         hidePointsGained();
 
-        if (Main.currentQuestionCount <Main.questions.size()){
-            main.loadNextQuestion();
-        }
-        else {
-            server.postRequest("api/leaderboard", new LeaderboardEntry(Main.scoreTotal,Main.USERNAME), LeaderboardResponsePacket.class);
-            main.showScene(SingleplayerLeaderboardCtrl.class);
-        }
+        main.jumpToNextQuestion();
+
+
 
         //clean up
         locked = new boolean[]{false, false, false};
@@ -244,7 +246,7 @@ public class GameMultiChoiceCtrl extends GameCtrl {
      */
     protected void retrieveMultipleChoiceQuestion() {
 
-        Question q = Main.currentQuestion;
+        Question q = Main.questions.poll();
         Activity answer = q.getAnswer();
         Activity option2 = q.getActivityList().get(0); // An option that is not the answer
         Activity option3 = q.getActivityList().get(1); // Another option that is not the answer

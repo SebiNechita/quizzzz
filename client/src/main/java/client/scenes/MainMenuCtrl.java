@@ -3,6 +3,7 @@ package client.scenes;
 import client.Main;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
+import commons.utils.GameMode;
 import javafx.fxml.FXML;
 import javafx.scene.text.Text;
 
@@ -71,10 +72,13 @@ public class MainMenuCtrl extends SceneCtrl {
      * Starts singleplayer mode and loads the first question with the screen
      */
     public void showSingleplayer(){
-        main.getQuestions();
+        Main.gameMode = GameMode.SINGLEPLAYER;
         Main.currentQuestionCount = 0;
+        Main.questions = new LinkedList<>();
+        Main.openQuestions = new LinkedList<>();
         Main.questionHistory = new LinkedList<>();
         Main.scoreTotal = 0;
-        main.loadNextQuestion();
+        main.getQuestions();
+        main.jumpToNextQuestion();
     }
 }

@@ -3,6 +3,8 @@ package client.scenes;
 import client.Main;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
+import commons.questions.Question;
+import commons.utils.GameMode;
 import commons.utils.JokerType;
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
@@ -55,6 +57,8 @@ public class GameOpenQuestionCtrl extends GameCtrl {
     @FXML
     private HBox emoteContainer;
 
+    private Question q;
+
     /**
      * Constructor for this Ctrl
      *
@@ -106,8 +110,33 @@ public class GameOpenQuestionCtrl extends GameCtrl {
 
         disableJoker(JokerType.REMOVE_ANSWER);
 
+        displayQuestion();
+
         generateProgressDots();
         enableListeners();
+    }
+
+    /**
+     * Gets the current question and displays it.
+     */
+    private void displayQuestion() {
+        q = Main.openQuestions.poll();
+        setQuestion(q.getQuestion());
+        System.out.println(q.getAnswerInWH());
+    }
+
+    /**
+     * Hides Next button and point info and jumps to next question
+     */
+    @FXML
+    //initialising includes loading the next question, but also cleaning up the screen
+    protected void initialiseNextQuestion() {
+        nextQuestion.setVisible(false);
+        hidePointsGained();
+
+        main.jumpToNextQuestion();
+
+
     }
 
     /**
@@ -122,6 +151,14 @@ public class GameOpenQuestionCtrl extends GameCtrl {
             } else {
                 lastAnswerChange = timeLeft;
             }
+        });
+    }
+
+    protected void onTimerEnd(){
+        timer.setOnFinished(event -> {
+            showCorrectAnswer((int) q.getAnswerInWH());
+
+            nextQuestion.setVisible(Main.gameMode == GameMode.SINGLEPLAYER);
         });
     }
 
