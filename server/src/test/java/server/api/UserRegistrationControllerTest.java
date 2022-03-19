@@ -9,16 +9,17 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import packets.RegisterRequestPacket;
-import packets.RegisterResponsePacket;
-import packets.ResponsePacket;
-import packets.UsernameAvailableRequestPacket;
+import packets.*;
 import server.api.registration.RegistrationService;
 
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static utils.TestUtil.asJsonString;
@@ -35,31 +36,57 @@ public class UserRegistrationControllerTest {
     private RegistrationService service;
 
     /**
-     * test for register method
+     * test for unauthenticated register request.
      *
      * @throws Exception
      */
     @Test
     public void registerTest()
             throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
-
 
         when(service.register(new RegisterRequestPacket("Joe", "password")))
                 .thenReturn(new RegisterResponsePacket(HttpStatus.Created));
 
+        ObjectMapper objectMapper = new ObjectMapper();
         mvc.perform(post("/api/user/register")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(new RegisterRequestPacket("Joe", "password")))
+                        .content(objectMapper.writeValueAsString(new RegisterRequestPacket("Joe", "password")))
                         .secure(true)
                 )
                 .andExpect(status().isOk())
                 // the JSON object looks like this: {"RegisterResponsePacket":{"code":201}}
                 // 201 means created
-                .andExpect(MockMvcResultMatchers.jsonPath("$.RegisterResponsePacket.code").value("201"))
-                .andReturn();
+                .andExpect(MockMvcResultMatchers.jsonPath("$.RegisterResponsePacket.code").value(HttpStatus.Created.getCode()));
 
         verify(service, times(1)).register(new RegisterRequestPacket("Joe", "password"));
+
+    }
+
+    /**
+     * test for authenticated delete user request
+     * @throws Exception
+     */
+    @WithMockUser(username = "Geoff")
+    @Test
+    public void deleteUserByUserTest() throws Exception {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        when(service.deleteUser(new DeleteRequestPacket("Kim", "password"), authentication.getAuthorities()))
+                .thenReturn(new DeleteResponsePacket(HttpStatus.Accepted, "User has been deleted"));
+
+        //JSON convertor
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        mvc.perform(delete("/api/user/delete")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new DeleteRequestPacket("Kim", "password")))
+                        .secure(true)
+                )
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.DeleteResponsePacket.code").value(HttpStatus.Accepted.getCode()));
+
+
+        verify(service, times(1)).deleteUser(new DeleteRequestPacket("Kim", "password"), authentication.getAuthorities());
 
     }
 
@@ -79,4 +106,5 @@ public class UserRegistrationControllerTest {
 
         verify(service, times(1)).userAvailable("Kim");
     }
+
 }
