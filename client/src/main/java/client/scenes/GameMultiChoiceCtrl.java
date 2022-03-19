@@ -212,31 +212,35 @@ public class GameMultiChoiceCtrl extends GameCtrl {
     }
 
     /**
-     * Hides point info and , gets a new question, resets the options' appearance and the timer.
+     * Hides point info and next button, gets a new question, resets the options' appearance and the timer.
      */
     @FXML
+    //initialising includes loading the next question, but also cleaning up the screen
+    // and of course, deciding whether a new question actually needs to be loaded.
     protected void initialiseNextQuestion() {
         nextQuestion.setVisible(false);
         hidePointsGained();
 
+        //TODO: Move the logic from this if statement to a new method
         if (Main.currentQuestionCount <Main.questions.size()){
             main.loadNextQuestion();
+            retrieveMultipleChoiceQuestion();
+
+            locked = new boolean[]{false, false, false};
+            selected = null;
+
+            for (AnchorPane option : options) {
+                fadeOption(option, (Color) option.getBackground().getFills().get(0).getFill(), new Color(1, 1, 1, 1)).play();
+            }
+
+            startTimer();
         }
         else {
-            server.postRequest("api/leaderboard", new LeaderboardEntry(80,Main.USERNAME), LeaderboardResponsePacket.class);
+            server.postRequest("api/leaderboard", new LeaderboardEntry(Main.scoreTotal,Main.USERNAME), LeaderboardResponsePacket.class);
             main.showScene(SingleplayerLeaderboardCtrl.class);
         }
 
-        retrieveMultipleChoiceQuestion();
 
-        locked = new boolean[]{false, false, false};
-        selected = null;
-
-        for (AnchorPane option : options) {
-            fadeOption(option, (Color) option.getBackground().getFills().get(0).getFill(), new Color(1, 1, 1, 1)).play();
-        }
-
-        startTimer();
     }
 
     /**

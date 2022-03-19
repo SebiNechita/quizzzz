@@ -33,6 +33,7 @@ public class Main extends Application {
     public static List<Question> questions;
     public static int currentQuestionCount;
     public static Question currentQuestion;
+    public static int scoreTotal;
 
     /**
      * Gets called when the application is started

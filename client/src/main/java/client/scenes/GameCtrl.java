@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.Main;
 import client.utils.ServerUtils;
 import commons.utils.Emote;
 import commons.utils.GameMode;
@@ -116,6 +117,8 @@ public abstract class GameCtrl extends SceneCtrl {
         answerBonusText.setVisible(false);
         timeBonusText.setVisible(false);
 
+        setScore(Main.scoreTotal);
+
         nextQuestion.setVisible(false);
 
         jokerContainer = (AnchorPane) jokers.getParent();
@@ -133,8 +136,6 @@ public abstract class GameCtrl extends SceneCtrl {
 
         //----- TODO: Everything below this is temporary and for testing/displaying purposes -----
         gameMode = GameMode.SINGLEPLAYER;
-        setScore(0);
-        scoreTotal = 0;
         startTimer();
 
     }
@@ -400,8 +401,8 @@ public abstract class GameCtrl extends SceneCtrl {
 
         int timeBonus = (int) Math.round(lastAnswerChange * 100 * (answerPoints / 100d));
         int total = (int) (answerPoints + timeBonus * (answerPoints / 100d));
-        scoreTotal = scoreTotal + total;
-        setScore(scoreTotal);
+        Main.scoreTotal += total;
+        setScore(Main.scoreTotal);
         Paint color;
         if (answerPoints >= 90) {
             color = Paint.valueOf("#6cf06a");
