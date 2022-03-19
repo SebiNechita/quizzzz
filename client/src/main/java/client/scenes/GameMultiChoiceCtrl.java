@@ -128,14 +128,13 @@ public class GameMultiChoiceCtrl extends GameCtrl {
     }
 
     /**
-     * This method is executed when the scene is displayed.
-     * It sets up the screen for a Multiple Choice Game
+     * Gets called when the scene is shown to the user
      */
     @OnShowScene
     public void onShowScene() {
         super.onShowScene();
 
-        // for now we can only look at the MC questions functionality
+        //for now we can only look at the MC questions functionality
         retrieveMultipleChoiceQuestion();
 
         for (int i = 0; i < 3; i++) {

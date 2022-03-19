@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.ColorAdjust?>
+<?import javafx.scene.effect.InnerShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.GameOpenQuestionCtrl">
+    <children>
+        <HBox fx:id="progressBar" alignment="CENTER" fillHeight="false" layoutX="345.0" layoutY="14.0" prefHeight="35.0" prefWidth="591.0" spacing="5.0" style="-fx-background-color: #888; -fx-background-radius: 8;">
+            <children>
+                <Circle fill="WHITE" radius="12.0" stroke="BLACK" strokeType="INSIDE" />
+                <Circle fill="WHITE" radius="12.0" stroke="BLACK" strokeType="INSIDE" />
+                <Circle fill="WHITE" radius="12.0" stroke="BLACK" strokeType="INSIDE" />
+                <Circle fill="WHITE" radius="12.0" stroke="BLACK" strokeType="INSIDE" />
+                <Circle fill="WHITE" radius="12.0" stroke="BLACK" strokeType="INSIDE" />
+                <Circle fill="WHITE" radius="12.0" stroke="BLACK" strokeType="INSIDE" />
+                <Circle fill="WHITE" radius="12.0" stroke="BLACK" strokeType="INSIDE" />
+                <Circle fill="WHITE" radius="12.0" stroke="BLACK" strokeType="INSIDE" />
+                <Circle fill="WHITE" radius="12.0" stroke="BLACK" strokeType="INSIDE" />
+                <Circle fill="WHITE" radius="12.0" stroke="BLACK" strokeType="INSIDE" />
+                <Circle fill="WHITE" radius="12.0" stroke="BLACK" strokeType="INSIDE" />
+                <Circle fill="WHITE" radius="12.0" stroke="BLACK" strokeType="INSIDE" />
+                <Circle fill="WHITE" radius="12.0" stroke="BLACK" strokeType="INSIDE" />
+                <Circle fill="WHITE" radius="12.0" stroke="BLACK" strokeType="INSIDE" />
+                <Circle fill="WHITE" radius="12.0" stroke="BLACK" strokeType="INSIDE" />
+                <Circle fill="WHITE" radius="12.0" stroke="BLACK" strokeType="INSIDE" />
+                <Circle fill="WHITE" radius="12.0" stroke="BLACK" strokeType="INSIDE" />
+                <Circle fill="WHITE" radius="12.0" stroke="BLACK" strokeType="INSIDE" />
+                <Circle fill="WHITE" radius="12.0" stroke="BLACK" strokeType="INSIDE" />
+                <Circle fill="WHITE" radius="12.0" stroke="BLACK" strokeType="INSIDE" />
+            </children>
+        </HBox>
+        <Text fx:id="question" fill="WHITE" layoutX="241.0" layoutY="128.0" strokeType="OUTSIDE" strokeWidth="0.0" text="The quick brown fox jumps over the lazy dog?" textAlignment="CENTER" wrappingWidth="800.0">
+            <font>
+                <Font name="Comic Sans MS" size="36.0" />
+            </font>
+        </Text>
+        <Text fx:id="score" fill="WHITE" layoutX="1015.0" layoutY="44.373046875" strokeType="OUTSIDE" strokeWidth="0.0" text="Score: 1234" textAlignment="RIGHT" wrappingWidth="250.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="12.0">
+            <font>
+                <Font name="Comic Sans MS" size="30.0" />
+            </font>
+        </Text>
+        <AnchorPane fx:id="timeLeftBar" layoutX="391.0" layoutY="686.0" prefHeight="20.0" prefWidth="500.0" style="-fx-background-color: #525252; -fx-background-radius: 6;">
+            <children>
+                <AnchorPane prefHeight="20.0" prefWidth="25.0" style="-fx-background-color: #29bae6; -fx-background-radius: 6;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            </children>
+        </AnchorPane>
+        <Text fx:id="timeLeftText" fill="WHITE" layoutX="565.0" layoutY="672.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time left: 10s">
+            <font>
+                <Font name="Comic Sans MS Bold" size="24.0" />
+            </font>
+        </Text>
+        <Button fx:id="nextQuestion" alignment="CENTER" layoutX="1099.0" layoutY="650.0" mnemonicParsing="false" onAction="#onNextButton" prefHeight="56.0" prefWidth="166.0" style="-fx-background-color: #616161; -fx-skin: 'client.skins.MinimalButtonSkin'; -fx-background-radius: 10;" text="Next" textFill="WHITE">
+            <font>
+                <Font name="Comic Sans MS Bold" size="26.0" />
+            </font>
+         <effect>
+            <InnerShadow height="50.0" radius="24.5" width="50.0">
+               <color>
+                  <Color red="0.25" green="0.25" blue="0.25" />
+               </color>
+            </InnerShadow>
+         </effect>
+        </Button>
+      <Text fx:id="pointsGainedText" fill="WHITE" layoutX="368.0" layoutY="547.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You gained 170 points" textAlignment="CENTER" wrappingWidth="563.671875">
+         <font>
+            <Font name="Comic Sans MS" size="40.0" />
+         </font>
+      </Text>
+      <Text fx:id="answerBonusText" fill="WHITE" layoutX="465.0" layoutY="579.0" strokeType="OUTSIDE" strokeWidth="0.0" text="+100 for correct option" textAlignment="CENTER" wrappingWidth="371.140625">
+         <font>
+            <Font name="Comic Sans MS" size="17.0" />
+         </font>
+      </Text>
+      <Text fx:id="timeBonusText" fill="WHITE" layoutX="465.0" layoutY="603.0" strokeType="OUTSIDE" strokeWidth="0.0" text="+70 time bonus" textAlignment="CENTER" wrappingWidth="371.140625">
+         <font>
+            <Font name="Comic Sans MS" size="17.0" />
+         </font>
+      </Text>
+      <AnchorPane layoutY="160.0" maxHeight="400.0" maxWidth="150.0" minHeight="400.0" minWidth="150.0" prefHeight="400.0" prefWidth="150.0" style="-fx-background-color: #666; -fx-background-radius: 0 10 10 0;">
+         <children>
+            <Text fill="WHITE" layoutX="30.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Jokers" textAlignment="CENTER">
+               <font>
+                  <Font name="Comic Sans MS" size="28.0" />
+               </font>
+            </Text>
+            <VBox fx:id="jokers" alignment="CENTER" fillWidth="false" layoutY="38.0" prefHeight="362.0" prefWidth="150.0" spacing="10.0">
+               <children>
+                  <AnchorPane fx:id="double_points" maxHeight="110.0" maxWidth="110.0" minHeight="110.0" minWidth="110.0" prefHeight="110.0" prefWidth="110.0" style="-fx-background-color: #444444; -fx-background-radius: 10;">
+                     <children>
+                        <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="6.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../img/jokers/double_points.png" />
+                           </image>
+                        </ImageView>
+                        <AnchorPane layoutX="120.0" layoutY="34.0" opacity="0.0" prefHeight="45.0" prefWidth="458.0" style="-fx-background-color: #444444d0; -fx-background-radius: 10;">
+                           <children>
+                              <Text fill="WHITE" layoutX="14.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Doubles the amount of points you earn">
+                                 <font>
+                                    <Font name="Comic Sans MS" size="24.0" />
+                                 </font>
+                              </Text>
+                           </children>
+                        </AnchorPane>
+                     </children>
+                     <padding>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                     </padding>
+                  </AnchorPane>
+                  <AnchorPane fx:id="half_time" maxHeight="110.0" maxWidth="110.0" minHeight="110.0" minWidth="110.0" prefHeight="110.0" prefWidth="110.0" style="-fx-background-color: #444444; -fx-background-radius: 10;">
+                     <children>
+                        <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="6.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../img/jokers/half_time.png" />
+                           </image>
+                        </ImageView>
+                        <AnchorPane layoutX="120.0" layoutY="34.0" opacity="0.0" prefHeight="45.0" prefWidth="412.0" style="-fx-background-color: #444444d0; -fx-background-radius: 10;">
+                           <children>
+                              <Text fill="WHITE" layoutX="14.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Halves the time of your opponents">
+                                 <font>
+                                    <Font name="Comic Sans MS" size="24.0" />
+                                 </font>
+                              </Text>
+                           </children>
+                        </AnchorPane>
+                     </children>
+                     <padding>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                     </padding>
+                  </AnchorPane>
+                  <AnchorPane fx:id="remove_answer" maxHeight="110.0" maxWidth="110.0" minHeight="110.0" minWidth="110.0" prefHeight="110.0" prefWidth="110.0" style="-fx-background-color: #444444; -fx-background-radius: 10;">
+                     <children>
+                        <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="6.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../img/jokers/remove_answer.png" />
+                           </image>
+                        </ImageView>
+                        <AnchorPane layoutX="120.0" layoutY="34.0" opacity="0.0" prefHeight="45.0" prefWidth="359.0" style="-fx-background-color: #444444d0; -fx-background-radius: 10;">
+                           <children>
+                              <Text fill="WHITE" layoutX="14.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Removes one incorrect option">
+                                 <font>
+                                    <Font name="Comic Sans MS" size="24.0" />
+                                 </font>
+                              </Text>
+                           </children>
+                        </AnchorPane>
+                     </children>
+                     <padding>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                     </padding>
+                  </AnchorPane>
+               </children>
+            </VBox>
+         </children>
+      </AnchorPane>
+      <VBox fx:id="notificationContainer" alignment="BOTTOM_CENTER" layoutX="1068.0" layoutY="131.0" prefHeight="500.0" prefWidth="205.0" spacing="10.0">
+         <children>
+            <AnchorPane prefHeight="85.0" prefWidth="200.0" style="-fx-background-color: rgba(59, 59, 59, 0.8); -fx-background-radius: 8;">
+               <children>
+                  <Text fill="WHITE" layoutX="6.0" layoutY="22.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Player reacted with:" wrappingWidth="200.0">
+                     <font>
+                        <Font name="Comic Sans MS" size="18.0" />
+                     </font>
+                  </Text>
+               </children>
+            </AnchorPane>
+            <AnchorPane prefHeight="85.0" prefWidth="200.0" style="-fx-background-color: rgba(59, 59, 59, 0.8); -fx-background-radius: 8;">
+               <children>
+                  <Text fill="#ff5353" layoutX="6.0" layoutY="22.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Player disconnected" wrappingWidth="200.0">
+                     <font>
+                        <Font name="Comic Sans MS" size="18.0" />
+                     </font>
+                  </Text>
+               </children>
+            </AnchorPane>
+            <AnchorPane prefHeight="85.0" prefWidth="200.0" style="-fx-background-color: rgba(59, 59, 59, 0.8); -fx-background-radius: 8;">
+               <children>
+                  <Text fill="WHITE" layoutX="6.0" layoutY="22.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Player reacted with:" wrappingWidth="200.0">
+                     <font>
+                        <Font name="Comic Sans MS" size="18.0" />
+                     </font>
+                  </Text>
+                  <ImageView fitHeight="45.0" fitWidth="45.0" layoutX="140.0" layoutY="30.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../img/emojis/heart_eyes.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+         </children>
+      </VBox>
+      <HBox fx:id="emoteContainer" alignment="CENTER_RIGHT" layoutX="978.0" layoutY="649.0" prefHeight="59.0" prefWidth="297.0" spacing="15.0" style="-fx-background-color: #666; -fx-background-radius: 10;">
+         <children>
+            <ImageView fx:id="JOY" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../img/emojis/joy.png" />
+               </image>
+               <effect>
+                  <ColorAdjust brightness="-0.3" />
+               </effect>
+            </ImageView>
+            <ImageView fx:id="HEART_EYES" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../img/emojis/heart_eyes.png" />
+               </image>
+                <effect>
+                    <ColorAdjust brightness="-0.3" />
+                </effect>
+            </ImageView>
+            <ImageView fx:id="THINKING" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../img/emojis/thinking.png" />
+               </image>
+                <effect>
+                    <ColorAdjust brightness="-0.3" />
+                </effect>
+            </ImageView>
+            <ImageView fx:id="CRYING" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../img/emojis/crying.png" />
+               </image>
+                <effect>
+                    <ColorAdjust brightness="-0.3" />
+                </effect>
+            </ImageView>
+            <ImageView fx:id="EXHALING" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../img/emojis/exhaling.png" />
+               </image>
+                <effect>
+                    <ColorAdjust brightness="-0.3" />
+                </effect>
+            </ImageView>
+         </children>
+         <padding>
+            <Insets right="15.0" />
+         </padding>
+      </HBox>
+      <AnchorPane layoutX="346.0" layoutY="146.0" prefHeight="343.0" prefWidth="591.0">
+         <children>
+            <AnchorPane layoutX="112.0" prefHeight="253.0" prefWidth="371.0" style="-fx-background-color: rgba(59, 59, 59, 0.8); -fx-background-radius: 20;">
+               <children>
+                  <ImageView fitHeight="253.0" fitWidth="371.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
+            <Text fill="WHITE" layoutX="211.0" layoutY="275.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Type your answer:">
+               <font>
+                  <Font name="Comic Sans MS" size="20.0" />
+               </font>
+            </Text>
+            <TextField fx:id="userInput" alignment="CENTER" layoutX="131.0" layoutY="291.0" prefHeight="45.0" prefWidth="329.0" promptText="Type an integer...">
+               <font>
+                  <Font name="Comic Sans MS" size="22.0" />
+               </font>
+            </TextField>
+         </children>
+      </AnchorPane>
+    </children>
+</AnchorPane>
