@@ -17,14 +17,19 @@ package client;
 
 import client.scenes.ConnectionCtrl;
 import client.scenes.MainCtrl;
+import commons.questions.Question;
 import javafx.application.Application;
 import javafx.stage.Stage;
+
+import java.util.List;
 
 public class Main extends Application {
 
     public static String USERNAME = "";
     public static String URL = "https://localhost:8080/";
     public static String TOKEN = "";
+    public static List<Question> questions;
+    public static int currentQuestion;
 
     /**
      * Gets called when the application is started
