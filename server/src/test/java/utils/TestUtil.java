@@ -2,6 +2,9 @@ package utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * maps a object into JSON
+ */
 public class TestUtil {
     public static String asJsonString(final Object obj) {
         try {

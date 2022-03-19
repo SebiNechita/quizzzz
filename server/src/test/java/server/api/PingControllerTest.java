@@ -1,37 +1,37 @@
 package server.api;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
-import utils.SSLUtil;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import javax.net.ssl.HttpsURLConnection;
-
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@RunWith(SpringRunner.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class PingControllerTest {
 
-    @LocalServerPort
-    private int port;
 
     @Autowired
-    private TestRestTemplate restTemplate;
-
+    private MockMvc mvc;
 
     @Test
     public void pingTest() throws Exception {
-        SSLUtil.turnOffSslChecking();
+        MvcResult res = mvc.perform(get("/ping")
+                .secure( true )
+        ).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 
-        HttpsURLConnection.setDefaultHostnameVerifier((hostname, sslSession) -> hostname.equals("localhost"));
-
-        assertThat(this.restTemplate.getForObject("https://localhost:" + port + "/ping",
-                String.class)).contains("Pong");
-
-        SSLUtil.turnOnSslChecking();
+        String resStr = res.getResponse().getContentAsString();
+        String expected = "Pong";
+        assertTrue(resStr.equals(expected));
     }
 
 

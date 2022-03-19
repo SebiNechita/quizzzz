@@ -47,7 +47,7 @@ public class ServerUtilsTest {
         mockClientServer.verify(HttpRequest.request("/ping"), VerificationTimes.once());
     }
 
-    @Test
+
     public void registerTest(){
         mockClientServer.when(new HttpRequest().withMethod("POST")
                         .withPath("/api/user/register")
