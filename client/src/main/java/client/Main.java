@@ -32,6 +32,7 @@ public class Main extends Application {
     public static String USERNAME = "";
     public static String URL = "https://localhost:8080/";
     public static String TOKEN = "";
+    //I created the variables which are required by multiple game scenes here:
     public static Queue<Question> questions = new LinkedList<>();
     public static Queue<Question> openQuestions = new LinkedList<>();
     public static int currentQuestionCount;

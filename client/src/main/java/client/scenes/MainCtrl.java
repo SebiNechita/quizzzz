@@ -59,6 +59,8 @@ public class MainCtrl {
      */
     public void getQuestions(){
         Game game = serverUtils.getGame();
+        //Currently, for testing, one game only consists of 3 questions.
+        //TODO: Replace with a full (20-question) game
         Main.questions.addAll(game.getMultipleChoiceQuestions().subList(0,2));
         Main.openQuestions.add(game.getOpenQuestions().get(0));
     }
@@ -84,6 +86,8 @@ public class MainCtrl {
      * Decides which type of question to display.
      */
     private void showQuestion() {
+        //every nth question is open, the others are multi.
+        //n=3 for now.
         if (Main.currentQuestionCount % 3 == 0){
             showScene(GameOpenQuestionCtrl.class);
         }

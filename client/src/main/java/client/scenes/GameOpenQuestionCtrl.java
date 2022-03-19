@@ -130,6 +130,8 @@ public class GameOpenQuestionCtrl extends GameCtrl {
      */
     @FXML
     //initialising includes loading the next question, but also cleaning up the screen
+    //TODO: Create a super method for this, because the first three lines are the same
+    // for both types of questions.
     protected void initialiseNextQuestion() {
         nextQuestion.setVisible(false);
         hidePointsGained();
@@ -154,6 +156,9 @@ public class GameOpenQuestionCtrl extends GameCtrl {
         });
     }
 
+    /**
+     * When the time's up, shows the correct answer and makes Next visible
+     */
     protected void onTimerEnd(){
         timer.setOnFinished(event -> {
             showCorrectAnswer((int) q.getAnswerInWH());
