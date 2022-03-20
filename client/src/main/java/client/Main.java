@@ -57,7 +57,7 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage primaryStage) {
-        boolean debug = true;
+        boolean debug = false;
         MainCtrl mainCtrl = new MainCtrl(primaryStage);
 
         mainCtrl.load("client/scenes/Connection.fxml", "Connection page");

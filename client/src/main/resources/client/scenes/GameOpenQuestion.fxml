@@ -251,7 +251,7 @@
          <children>
             <AnchorPane layoutX="112.0" prefHeight="253.0" prefWidth="371.0" style="-fx-background-color: rgba(59, 59, 59, 0.8); -fx-background-radius: 20;">
                <children>
-                  <ImageView fitHeight="253.0" fitWidth="371.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <ImageView fx:id="image" fitHeight="253.0" fitWidth="371.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
             <Text fill="WHITE" layoutX="211.0" layoutY="275.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Type your answer:">

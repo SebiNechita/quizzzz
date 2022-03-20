@@ -13,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -21,6 +22,8 @@ import javafx.util.Duration;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static javafx.scene.paint.Color.*;
+
 public class GameOpenQuestionCtrl extends GameCtrl {
     @FXML
     private HBox progressBar;
@@ -28,6 +31,8 @@ public class GameOpenQuestionCtrl extends GameCtrl {
     private Text score;
     @FXML
     private Text question;
+    @FXML
+    private ImageView image;
 
     @FXML
     private Text pointsGainedText;
@@ -122,7 +127,16 @@ public class GameOpenQuestionCtrl extends GameCtrl {
     private void displayQuestion() {
         q = Main.openQuestions.poll();
         setQuestion(q.getQuestion());
+        setActivityImage(q.getAnswer().getImage_path());
         System.out.println(q.getAnswerInWH());
+    }
+
+    /**
+     * Sets the ImageView for the open question
+     * @param imagePath path within the activity-bank
+     */
+    private void setActivityImage(String imagePath) {
+        this.image.setImage(server.getImage(imagePath));
     }
 
     /**
@@ -133,6 +147,8 @@ public class GameOpenQuestionCtrl extends GameCtrl {
     //TODO: Create a super method for this, because the first three lines are the same
     // for both types of questions.
     protected void initialiseNextQuestion() {
+        userInput.clear();
+        resetTextInputColor();
         nextQuestion.setVisible(false);
         hidePointsGained();
 
@@ -162,7 +178,6 @@ public class GameOpenQuestionCtrl extends GameCtrl {
     protected void onTimerEnd(){
         timer.setOnFinished(event -> {
             showCorrectAnswer((int) q.getAnswerInWH());
-
             nextQuestion.setVisible(Main.gameMode == GameMode.SINGLEPLAYER);
         });
     }
@@ -188,6 +203,13 @@ public class GameOpenQuestionCtrl extends GameCtrl {
         showPointsGained(100 - difference);
         Main.questionHistory.add(difference <= 50);
         generateProgressDots();
+    }
+
+    /**
+     * Resets the color of the text input field for the next question
+     */
+    private void resetTextInputColor() {
+        userInput.setBackground(new Background(new BackgroundFill(Color.color(1,1,1,1), new CornerRadii(10), Insets.EMPTY)));
     }
 
     /**
