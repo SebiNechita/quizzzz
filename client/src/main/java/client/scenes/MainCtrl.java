@@ -45,7 +45,7 @@ public class MainCtrl {
      *
      * @param primaryStage The primary stage which will contain every scene that will be shown to the user
      */
-    public MainCtrl(Stage primaryStage) throws IllegalAccessException {
+    public MainCtrl(Stage primaryStage) {
         this.primaryStage = primaryStage;
         serverUtils = new ServerUtils();
     }

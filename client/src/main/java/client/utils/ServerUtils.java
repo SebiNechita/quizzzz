@@ -47,7 +47,7 @@ public class ServerUtils {
 
     private Client client;
 
-    public ServerUtils() throws IllegalAccessException {
+    public ServerUtils() {
     }
 
     /**
@@ -208,9 +208,8 @@ public class ServerUtils {
      * This method initializes the WebSocket connection between client and server
      * @param url - the url address for the connection
      * @return returns a new protocol
-     * @throws IllegalAccessException
      */
-    private StompSession connect(String url) throws IllegalAccessException {
+    private StompSession connect(String url) {
         var client = new StandardWebSocketClient();
         var stomp = new WebSocketStompClient(client);
 
@@ -223,7 +222,7 @@ public class ServerUtils {
         } catch (ExecutionException e) {
             throw new RuntimeException(e);
         }
-        throw new IllegalAccessException();
+        throw new IllegalStateException();
     }
 
     /**
