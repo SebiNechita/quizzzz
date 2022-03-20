@@ -8,6 +8,7 @@ import javax.persistence.*;
 public class LeaderboardEntry extends RequestPacket {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     public long id;
 
     public int points;

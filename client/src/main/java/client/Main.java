@@ -57,7 +57,7 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage primaryStage) {
-        boolean debug = true;
+        boolean debug = false;
         MainCtrl mainCtrl = new MainCtrl(primaryStage);
 
         mainCtrl.load("client/scenes/Connection.fxml", "Connection page");
@@ -69,9 +69,10 @@ public class Main extends Application {
         mainCtrl.load("client/scenes/GameMultiChoice.fxml", "Game Screen");
         mainCtrl.load("client/scenes/GameOpenQuestion.fxml", "Game Screen");
 
+        //For testing, I skipped the Connection and Login screens
         if (debug) {
             LoginCtrl login = mainCtrl.getCtrl(LoginCtrl.class);
-            login.login("Geof", "password");
+            login.login("Kristof", "password");
             mainCtrl.showScene(MainMenuCtrl.class);
         }
         else{

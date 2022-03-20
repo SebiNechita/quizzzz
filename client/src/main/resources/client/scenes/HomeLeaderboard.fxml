@@ -24,4 +24,5 @@
       </Text>
       <Button layoutX="536.0" layoutY="649.0" mnemonicParsing="false" onAction="#showHome" text="Back" />
       <Button layoutX="701.0" layoutY="648.0" mnemonicParsing="false" onAction="#refresh" text="Refresh" />
+   <Text fx:id="rankInfo" layoutX="613.0" layoutY="172.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Your rank:" />
 </AnchorPane>
