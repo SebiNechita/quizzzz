@@ -41,7 +41,7 @@ public class Main extends Application {
      * @param primaryStage The stage on which all content gets shown
      */
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws IllegalAccessException {
         MainCtrl mainCtrl = new MainCtrl(primaryStage);
 
         mainCtrl.load("client/scenes/Connection.fxml", "Connection page");
