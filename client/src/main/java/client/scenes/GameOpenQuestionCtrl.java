@@ -165,7 +165,7 @@ public class GameOpenQuestionCtrl extends GameCtrl {
             if (locked) return;
 
             if (!newValue.matches("\\d*")) {
-                userInput.setText(newValue.replaceAll("[^\\d]", ""));
+                userInput.setText(newValue.replaceAll("\\d", ""));
             } else {
                 lastAnswerChange = timeLeft;
             }
