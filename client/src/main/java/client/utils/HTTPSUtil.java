@@ -25,11 +25,13 @@ public class HTTPSUtil {
         HttpsURLConnection.setDefaultHostnameVerifier((hostname, sslSession) -> hostname.equals("localhost"));
 
         try {
-            Certificate certificate = CertificateFactory.getInstance("X.509").generateCertificate(HTTPSUtil.class.getResourceAsStream("/servercert.crt"));
+            Certificate springCertificate = CertificateFactory.getInstance("X.509").generateCertificate(HTTPSUtil.class.getResourceAsStream("/servercert.crt"));
+            Certificate mockCertificate = CertificateFactory.getInstance("X.509").generateCertificate(HTTPSUtil.class.getResourceAsStream("/mockcert.crt"));
 
             KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
             keyStore.load(null, null);
-            keyStore.setCertificateEntry("server", certificate);
+            keyStore.setCertificateEntry("server", springCertificate);
+            keyStore.setCertificateEntry("mock", mockCertificate);
 
             TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
             trustManagerFactory.init(keyStore);
