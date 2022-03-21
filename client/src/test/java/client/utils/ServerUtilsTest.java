@@ -2,7 +2,6 @@ package client.utils;
 
 import client.Main;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import commons.utils.HttpStatus;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -65,8 +64,8 @@ public class ServerUtilsTest {
                 )
 
                 .respond(response()
-                        .withStatusCode(HttpStatus.OK.getCode())
-                );
+                        .withStatusCode(HttpStatus.OK.getCode()));
+
         ServerUtils serverUtils = new ServerUtils();
 
         try {
@@ -93,8 +92,7 @@ public class ServerUtilsTest {
                 .respond(
                         response()
                                 .withStatusCode(HttpStatus.OK.getCode())
-                                .withBody(json(packet, MediaType.APPLICATION_JSON_UTF_8))
-                );
+                                .withBody(json(packet, MediaType.APPLICATION_JSON_UTF_8)));
 
         ServerUtils serverUtils = new ServerUtils();
         serverUtils.register("Joe", "password");
