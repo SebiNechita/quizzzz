@@ -1,6 +1,8 @@
 package client.utils;
 
 import client.Main;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import commons.utils.HttpStatus;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -9,14 +11,19 @@ import org.mockserver.integration.ClientAndServer;
 import org.mockserver.logging.MockServerLogger;
 import org.mockserver.model.HttpRequest;
 import org.mockserver.model.HttpResponse;
+import org.mockserver.model.MediaType;
 import org.mockserver.socket.PortFactory;
 import org.mockserver.socket.tls.KeyStoreFactory;
 import org.mockserver.verify.VerificationTimes;
+import packets.RegisterResponsePacket;
 
 import javax.net.ssl.HttpsURLConnection;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
+import static org.mockserver.model.HttpRequest.request;
+import static org.mockserver.model.HttpResponse.response;
+import static org.mockserver.model.JsonBody.json;
 
 // this SSUtil is from this answer bellow. it's purpose is to turn off SSL validation when testing.
 // https://stackoverflow.com/questions/23504819/how-to-disable-ssl-certificate-checking-with-spring-resttemplate
@@ -29,6 +36,8 @@ public class ServerUtilsTest {
         HttpsURLConnection.setDefaultSSLSocketFactory(new KeyStoreFactory(new MockServerLogger()).sslContext().getSocketFactory());
         port = PortFactory.findFreePort();
         mockClientServer = startClientAndServer(port);
+        Main.URL = "https://localhost:" + port;
+        Main.TOKEN = "mock token";
     }
 
     @AfterAll
@@ -47,17 +56,50 @@ public class ServerUtilsTest {
         mockClientServer.verify(HttpRequest.request("/ping"), VerificationTimes.once());
     }
 
+    @Test
+    public void getRequestTest() throws Exception {
+        mockClientServer.when(
+                        request()
+                                .withMethod("GET")
+                                .withPath("/api/random")
+                )
 
-    public void registerTest(){
-        mockClientServer.when(new HttpRequest().withMethod("POST")
-                        .withPath("/api/user/register")
-                        .withHeader("Authorization", Main.TOKEN))
-                .respond(new HttpResponse().withStatusCode(HttpStatus.OK.getCode()).withBody("Pong"));
+                .respond(response()
+                        .withStatusCode(HttpStatus.OK.getCode())
+                );
+        ServerUtils serverUtils = new ServerUtils();
+
+        try {
+            serverUtils.getRequest("/api/random", RegisterResponsePacket.class);
+        } catch (Exception e) {
+            System.out.println("failed");
+        }
+
+
+        mockClientServer.verify(request("/api/random"), VerificationTimes.once());
+
+    }
+
+    @Test
+    public void registerTest() throws Exception {
+        ObjectMapper om = new ObjectMapper();
+        String packet = om.writeValueAsString(new RegisterResponsePacket(HttpStatus.Created));
+
+        mockClientServer.when(
+                        request()
+                                .withMethod("POST")
+                                .withPath("/api/user/register"))
+
+                .respond(
+                        response()
+                                .withStatusCode(HttpStatus.OK.getCode())
+                                .withBody(json(packet, MediaType.APPLICATION_JSON_UTF_8))
+                );
 
         ServerUtils serverUtils = new ServerUtils();
-        serverUtils.register("Geoff", "password");
+        serverUtils.register("Joe", "password");
 
-        mockClientServer.verify(HttpRequest.request("/api/user/register"), VerificationTimes.once());
+        mockClientServer.verify(request("/api/user/register"), VerificationTimes.once());
 
 
     }

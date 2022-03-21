@@ -184,4 +184,5 @@ public class ServerUtils {
                 Entity.entity(new RegisterRequestPacket(username, password), APPLICATION_JSON),
                 RegisterResponsePacket.class);
     }
+
 }
