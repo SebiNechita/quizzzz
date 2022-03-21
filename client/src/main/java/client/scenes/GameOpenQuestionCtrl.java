@@ -22,8 +22,6 @@ import javafx.util.Duration;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static javafx.scene.paint.Color.*;
-
 public class GameOpenQuestionCtrl extends GameCtrl {
     @FXML
     private HBox progressBar;
@@ -116,7 +114,6 @@ public class GameOpenQuestionCtrl extends GameCtrl {
 
         displayQuestion();
 
-        generateProgressDots();
         enableListeners();
     }
 
