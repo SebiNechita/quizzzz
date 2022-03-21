@@ -111,8 +111,6 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         super.notificationContainer = notificationContainer;
 
         super.emoteContainer = emoteContainer;
-        super.answer = answer;
-
     }
 
     /**
@@ -129,6 +127,9 @@ public class GameMultiChoiceCtrl extends GameCtrl {
 
     }
 
+    /**
+     * Gets called when the scene is shown to the user
+     */
     @OnShowScene
     public void onShowScene() {
         super.onShowScene();
