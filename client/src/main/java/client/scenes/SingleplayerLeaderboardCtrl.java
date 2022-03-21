@@ -73,13 +73,13 @@ public class SingleplayerLeaderboardCtrl extends SceneCtrl {
 
     //TODO: Get this to work
     @OnShowScene
-    public void onShowScene(){
+    public void onShowScene() {
         refresh();
         showPlayerRank();
     }
 
-    public void showPlayerRank(){
-        GeneralResponsePacket packet = server.getRequest("api/leaderboard/"+ Main.USERNAME+"/rank", GeneralResponsePacket.class);
+    public void showPlayerRank() {
+        GeneralResponsePacket packet = server.getRequest("api/leaderboard/" + Main.USERNAME + "/rank", GeneralResponsePacket.class);
         rankInfo.setText("Your rank is " + packet.getMessage());
     }
 
@@ -93,6 +93,9 @@ public class SingleplayerLeaderboardCtrl extends SceneCtrl {
             List<LeaderboardEntry> leaderboardEntries = packet.getLeaderboard();
             data = FXCollections.observableList(leaderboardEntries);
             table.setItems(data);
+            colPoints.setSortType(TableColumn.SortType.DESCENDING);
+            table.getSortOrder().add(colPoints);
+            table.sort();
         }
     }
 

@@ -70,7 +70,8 @@ public abstract class GameCtrl extends SceneCtrl {
     @FXML
     protected HBox emoteContainer;
 
-    protected int numberofQuestions = -1;
+    // Static because it has to be common between both the GameOpenQuestionCtrl and GameMultiChoiceCtrl
+    protected static int numberofQuestions = -1;
     protected double timeLeft = 0;
     protected double lastAnswerChange = 0;
     protected double timeMultiplier = 1d;
@@ -129,6 +130,7 @@ public abstract class GameCtrl extends SceneCtrl {
 
         notificationContainer.setVisible(gameMode == GameMode.MULTIPLAYER);
 
+        generateProgressDots();
         enableListeners();
 
         //----- TODO: Everything below this is temporary and for testing/displaying purposes -----

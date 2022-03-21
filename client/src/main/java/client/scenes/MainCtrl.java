@@ -57,24 +57,21 @@ public class MainCtrl {
     /**
      * Retrieves a list of questions and stores it.
      */
-    public void getQuestions(){
+    public void getQuestions() {
         Game game = serverUtils.getGame();
-        //Currently, for testing, one game only consists of 3 questions.
-        //TODO: Replace with a full (20-question) game
-        Main.questions.addAll(game.getMultipleChoiceQuestions().subList(0,2));
-        Main.openQuestions.add(game.getOpenQuestions().get(0));
+        Main.questions.addAll(game.getMultipleChoiceQuestions());
+        Main.openQuestions.addAll(game.getOpenQuestions());
     }
 
     /**
      * Steps to the next question and displays it.
      * Or exits if the game is over.
      */
-    public void jumpToNextQuestion(){
-        if (Main.currentQuestionCount <3){
+    public void jumpToNextQuestion() {
+        if (Main.currentQuestionCount < 20) {
             showQuestion();
-        }
-        else {
-            serverUtils.postRequest("api/leaderboard", new LeaderboardEntry(Main.scoreTotal,Main.USERNAME), LeaderboardResponsePacket.class);
+        } else {
+            serverUtils.postRequest("api/leaderboard", new LeaderboardEntry(Main.scoreTotal, Main.USERNAME), LeaderboardResponsePacket.class);
             showScene(SingleplayerLeaderboardCtrl.class);
         }
 
@@ -87,11 +84,10 @@ public class MainCtrl {
      */
     private void showQuestion() {
         //every nth question is open, the others are multi.
-        //n=3 for now.
-        if (Main.currentQuestionCount % 3 == 0){
+        //n=5 for now.
+        if (Main.currentQuestionCount % 5 == 0) {
             showScene(GameOpenQuestionCtrl.class);
-        }
-        else{
+        } else {
             showScene(GameMultiChoiceCtrl.class);
         }
     }
@@ -99,9 +95,9 @@ public class MainCtrl {
     /**
      * Loads and initializes a scene
      *
-     * @param path The path of the FXML file which contains the graphics of the scene
+     * @param path  The path of the FXML file which contains the graphics of the scene
      * @param title The title that the window must have when this scene is shown
-     * @param <T> The type of the SceneCtrl
+     * @param <T>   The type of the SceneCtrl
      */
     public <T extends SceneCtrl> void load(String path, String title) {
         try {
@@ -120,10 +116,10 @@ public class MainCtrl {
     /**
      * Will be run when the window is shown to the user, and initializes all the scenes
      *
-     * @param ctrl The Ctrl that should be initialized
+     * @param ctrl   The Ctrl that should be initialized
      * @param parent The parent (the scene) that should be initialized
-     * @param title The title for that scene
-     * @param <T> The type of the SceneCtrl
+     * @param title  The title for that scene
+     * @param <T>    The type of the SceneCtrl
      */
     private <T extends SceneCtrl> void initialize(T ctrl, Parent parent, String title) {
         ctrlClasses.put(ctrl.getClass(), ctrl);
@@ -133,7 +129,7 @@ public class MainCtrl {
     /**
      * Gets the Ctrl object of the specified scene.
      *
-     * @param c The class to get the instance for
+     * @param c   The class to get the instance for
      * @param <T> The type of the SceneCtrl class
      * @return The Ctrl instance
      */
@@ -146,7 +142,7 @@ public class MainCtrl {
      * <p>Any method annotated with the {@link OnShowScene} annotation will be called as soon as
      * the scene is shown to the user.</p>
      *
-     * @param c The SceneCtrl of the class that should be shown
+     * @param c   The SceneCtrl of the class that should be shown
      * @param <T> The type of the SceneCtrl class
      */
     public <T extends SceneCtrl> void showScene(Class<T> c) {
@@ -164,7 +160,8 @@ public class MainCtrl {
                     method.invoke(ctrlClasses.get(c));
                 }
             }
-        } catch (IllegalAccessException | InvocationTargetException ignored) {}
+        } catch (IllegalAccessException | InvocationTargetException ignored) {
+        }
     }
 
     /**

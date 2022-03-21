@@ -41,9 +41,9 @@
                 <Circle fill="WHITE" radius="12.0" stroke="BLACK" strokeType="INSIDE" />
             </children>
         </HBox>
-        <Text fx:id="question" fill="WHITE" layoutX="241.0" layoutY="128.0" strokeType="OUTSIDE" strokeWidth="0.0" text="The quick brown fox jumps over the lazy dog?" textAlignment="CENTER" wrappingWidth="800.0">
+        <Text fx:id="question" fill="WHITE" layoutX="194.0" layoutY="107.0" strokeType="OUTSIDE" strokeWidth="0.0" text="The quick brown fox jumps over the lazy dog?" textAlignment="CENTER" wrappingWidth="895.0">
             <font>
-                <Font name="Comic Sans MS" size="36.0" />
+                <Font name="Comic Sans MS" size="29.0" />
             </font>
         </Text>
         <Text fx:id="score" fill="WHITE" layoutX="1015.0" layoutY="44.373046875" strokeType="OUTSIDE" strokeWidth="0.0" text="Score: 1234" textAlignment="RIGHT" wrappingWidth="250.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="12.0">
@@ -73,17 +73,17 @@
             </InnerShadow>
          </effect>
         </Button>
-      <Text fx:id="pointsGainedText" fill="WHITE" layoutX="368.0" layoutY="547.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You gained 170 points" textAlignment="CENTER" wrappingWidth="563.671875">
+      <Text fx:id="pointsGainedText" fill="WHITE" layoutX="369.0" layoutY="565.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You gained 170 points" textAlignment="CENTER" wrappingWidth="563.671875">
          <font>
-            <Font name="Comic Sans MS" size="40.0" />
+            <Font name="Comic Sans MS" size="30.0" />
          </font>
       </Text>
-      <Text fx:id="answerBonusText" fill="WHITE" layoutX="465.0" layoutY="579.0" strokeType="OUTSIDE" strokeWidth="0.0" text="+100 for correct option" textAlignment="CENTER" wrappingWidth="371.140625">
+      <Text fx:id="answerBonusText" fill="WHITE" layoutX="465.0" layoutY="594.0" strokeType="OUTSIDE" strokeWidth="0.0" text="+100 for correct option" textAlignment="CENTER" wrappingWidth="371.140625">
          <font>
             <Font name="Comic Sans MS" size="17.0" />
          </font>
       </Text>
-      <Text fx:id="timeBonusText" fill="WHITE" layoutX="465.0" layoutY="603.0" strokeType="OUTSIDE" strokeWidth="0.0" text="+70 time bonus" textAlignment="CENTER" wrappingWidth="371.140625">
+      <Text fx:id="timeBonusText" fill="WHITE" layoutX="465.0" layoutY="618.0" strokeType="OUTSIDE" strokeWidth="0.0" text="+70 time bonus" textAlignment="CENTER" wrappingWidth="371.140625">
          <font>
             <Font name="Comic Sans MS" size="17.0" />
          </font>
@@ -247,7 +247,7 @@
             <Insets right="15.0" />
          </padding>
       </HBox>
-      <AnchorPane layoutX="346.0" layoutY="146.0" prefHeight="343.0" prefWidth="591.0">
+      <AnchorPane layoutX="358.0" layoutY="185.0" prefHeight="327.0" prefWidth="564.0">
          <children>
             <AnchorPane layoutX="112.0" prefHeight="253.0" prefWidth="371.0" style="-fx-background-color: rgba(59, 59, 59, 0.8); -fx-background-radius: 20;">
                <children>

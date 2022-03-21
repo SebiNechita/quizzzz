@@ -1,11 +1,8 @@
 package client.scenes;
 
-//import client.Main;
-
 import client.Main;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
-import commons.Game;
 import commons.questions.Activity;
 import commons.questions.Question;
 import commons.utils.GameMode;
@@ -137,7 +134,6 @@ public class GameMultiChoiceCtrl extends GameCtrl {
             options[i] = (AnchorPane) optionsContainer.getChildren().get(i);
         }
 
-        generateProgressDots();
         enableListeners();
 
         retrieveMultipleChoiceQuestion();
@@ -183,7 +179,7 @@ public class GameMultiChoiceCtrl extends GameCtrl {
     /**
      * When the time's up, shows the correct answer and makes Next visible
      */
-    protected void onTimerEnd(){
+    protected void onTimerEnd() {
         timer.setOnFinished(event -> {
             showCorrectAnswer(answerOptionNumber);
 
@@ -232,7 +228,6 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         hidePointsGained();
 
         main.jumpToNextQuestion();
-
 
 
         //clean up
@@ -286,15 +281,6 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         image1.setImage(server.getImage(option1.getImage_path()));
         image2.setImage(server.getImage(option2.getImage_path()));
         image3.setImage(server.getImage(option3.getImage_path()));
-    }
-
-
-    /**
-     * Gets the next question.
-     */
-    protected void retrieveOpenQuestion() {
-        Game game = server.getGame();
-        question.setText(game.getOpenQuestions().get(0).getQuestion());
     }
 
     /**
