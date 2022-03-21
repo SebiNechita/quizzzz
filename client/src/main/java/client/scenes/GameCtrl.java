@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.Main;
 import client.utils.ServerUtils;
 import commons.utils.Emote;
 import commons.utils.GameMode;
@@ -9,7 +10,6 @@ import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.Transition;
-import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -75,10 +75,12 @@ public abstract class GameCtrl extends SceneCtrl {
     protected double lastAnswerChange = 0;
     protected double timeMultiplier = 1d;
 
-    protected LinkedList<Boolean> questionHistory = new LinkedList<>();
-
-    protected int answer;
-    protected int scoreTotal;
+    /**
+     * There are three options visible to the user.
+     * This variable describes the option in which the answer is visible.
+     * Starts from 0
+     */
+    protected int answerOptionNumber;
     Animation timer = null;
 
     /**
@@ -100,6 +102,9 @@ public abstract class GameCtrl extends SceneCtrl {
 
     }
 
+    /**
+     * This method is called from its subclasses when that scene is displayed
+     */
     public void onShowScene() {
         notificationRenderer = new NotificationRenderer();
 
@@ -108,6 +113,8 @@ public abstract class GameCtrl extends SceneCtrl {
         pointsGainedText.setVisible(false);
         answerBonusText.setVisible(false);
         timeBonusText.setVisible(false);
+
+        setScore(Main.scoreTotal);
 
         nextQuestion.setVisible(false);
 
@@ -126,39 +133,8 @@ public abstract class GameCtrl extends SceneCtrl {
 
         //----- TODO: Everything below this is temporary and for testing/displaying purposes -----
         gameMode = GameMode.SINGLEPLAYER;
-        Random random = new Random();
-        setScore(0);
-        scoreTotal = 0;
         startTimer();
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                reduceTimer(0.5d);
-            }
-        }, 2000);
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                reduceTimer(0.5d);
-            }
-        }, 4000);
 
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                Platform.runLater(() -> {
-                    if (random.nextBoolean()) {
-                        notificationRenderer.addEmoteNotification(String.valueOf(random.nextInt()), Emote.values()[random.nextInt(5)]);
-                    } else {
-                        if (random.nextBoolean()) {
-                            notificationRenderer.addDisconnectNotification(String.valueOf(random.nextInt()));
-                        } else {
-                            notificationRenderer.addJokerNotification(String.valueOf(random.nextInt()), JokerType.values()[random.nextInt(3)]);
-                        }
-                    }
-                });
-            }
-        }, 1000, 400);
     }
 
     /**
@@ -295,7 +271,7 @@ public abstract class GameCtrl extends SceneCtrl {
         dropShadow.setOffsetX(3.0);
         dropShadow.setOffsetY(3.0);
 
-        Iterator<Boolean> history = questionHistory.iterator();
+        Iterator<Boolean> history = Main.questionHistory.iterator();
         if (numberofQuestions == -1) {
             for (int i = 0; i < 20; i++) {
                 Circle circle = generateCircle(Paint.valueOf("#2b2b2b"), dropShadow);
@@ -397,13 +373,7 @@ public abstract class GameCtrl extends SceneCtrl {
     /**
      * Sets up the events for when the timer runs out
      */
-    private void onTimerEnd() {
-        timer.setOnFinished(event -> {
-            showCorrectAnswer(answer);
-
-            nextQuestion.setVisible(gameMode == GameMode.SINGLEPLAYER);
-        });
-    }
+    protected abstract void onTimerEnd();
 
     /**
      * Shows the correct answer to the user
@@ -422,8 +392,8 @@ public abstract class GameCtrl extends SceneCtrl {
 
         int timeBonus = (int) Math.round(lastAnswerChange * 100 * (answerPoints / 100d));
         int total = (int) (answerPoints + timeBonus * (answerPoints / 100d));
-        scoreTotal = scoreTotal + total;
-        setScore(scoreTotal);
+        Main.scoreTotal += total;
+        setScore(Main.scoreTotal);
         Paint color;
         if (answerPoints >= 90) {
             color = Paint.valueOf("#6cf06a");

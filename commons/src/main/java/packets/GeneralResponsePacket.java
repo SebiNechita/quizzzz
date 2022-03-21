@@ -65,6 +65,10 @@ public class GeneralResponsePacket extends ResponsePacket {
         return code;
     }
 
+    public String getMessage() {
+        return message;
+    }
+
     /**
      * Getter for the HTTP status
      *

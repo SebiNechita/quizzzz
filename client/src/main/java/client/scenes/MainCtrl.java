@@ -15,8 +15,11 @@
  */
 package client.scenes;
 
+import client.Main;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
+import commons.Game;
+import commons.LeaderboardEntry;
 import commons.utils.LoggerUtil;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -24,6 +27,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Pair;
+import packets.LeaderboardResponsePacket;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -48,6 +52,48 @@ public class MainCtrl {
     public MainCtrl(Stage primaryStage) {
         this.primaryStage = primaryStage;
         serverUtils = new ServerUtils();
+    }
+
+    /**
+     * Retrieves a list of questions and stores it.
+     */
+    public void getQuestions(){
+        Game game = serverUtils.getGame();
+        //Currently, for testing, one game only consists of 3 questions.
+        //TODO: Replace with a full (20-question) game
+        Main.questions.addAll(game.getMultipleChoiceQuestions().subList(0,2));
+        Main.openQuestions.add(game.getOpenQuestions().get(0));
+    }
+
+    /**
+     * Steps to the next question and displays it.
+     * Or exits if the game is over.
+     */
+    public void jumpToNextQuestion(){
+        if (Main.currentQuestionCount <3){
+            showQuestion();
+        }
+        else {
+            serverUtils.postRequest("api/leaderboard", new LeaderboardEntry(Main.scoreTotal,Main.USERNAME), LeaderboardResponsePacket.class);
+            showScene(SingleplayerLeaderboardCtrl.class);
+        }
+
+        Main.currentQuestionCount++;
+
+    }
+
+    /**
+     * Decides which type of question to display.
+     */
+    private void showQuestion() {
+        //every nth question is open, the others are multi.
+        //n=3 for now.
+        if (Main.currentQuestionCount % 3 == 0){
+            showScene(GameOpenQuestionCtrl.class);
+        }
+        else{
+            showScene(GameMultiChoiceCtrl.class);
+        }
     }
 
     /**

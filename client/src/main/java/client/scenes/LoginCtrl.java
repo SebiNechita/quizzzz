@@ -69,6 +69,9 @@ public class LoginCtrl extends SceneCtrl {
         login(userName.getText(), password.getText());
     }
 
+    /**
+     * Event controller for clicking on the "Back" button
+     */
     public void showConnection() {
         main.showScene(ConnectionCtrl.class);
     }

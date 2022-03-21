@@ -1,7 +1,10 @@
 package client.scenes;
 
+import client.Main;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
+import commons.questions.Question;
+import commons.utils.GameMode;
 import commons.utils.JokerType;
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
@@ -10,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -18,6 +22,8 @@ import javafx.util.Duration;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static javafx.scene.paint.Color.*;
+
 public class GameOpenQuestionCtrl extends GameCtrl {
     @FXML
     private HBox progressBar;
@@ -25,6 +31,8 @@ public class GameOpenQuestionCtrl extends GameCtrl {
     private Text score;
     @FXML
     private Text question;
+    @FXML
+    private ImageView image;
 
     @FXML
     private Text pointsGainedText;
@@ -52,6 +60,8 @@ public class GameOpenQuestionCtrl extends GameCtrl {
 
     @FXML
     private HBox emoteContainer;
+
+    private Question q;
 
     /**
      * Constructor for this Ctrl
@@ -104,8 +114,46 @@ public class GameOpenQuestionCtrl extends GameCtrl {
 
         disableJoker(JokerType.REMOVE_ANSWER);
 
+        displayQuestion();
+
         generateProgressDots();
         enableListeners();
+    }
+
+    /**
+     * Gets the current question and displays it.
+     */
+    private void displayQuestion() {
+        q = Main.openQuestions.poll();
+        setQuestion(q.getQuestion());
+        setActivityImage(q.getAnswer().getImage_path());
+        System.out.println(q.getAnswerInWH());
+    }
+
+    /**
+     * Sets the ImageView for the open question
+     * @param imagePath path within the activity-bank
+     */
+    private void setActivityImage(String imagePath) {
+        this.image.setImage(server.getImage(imagePath));
+    }
+
+    /**
+     * Hides Next button and point info and jumps to next question
+     */
+    @FXML
+    //initialising includes loading the next question, but also cleaning up the screen
+    //TODO: Create a super method for this, because the first three lines are the same
+    // for both types of questions.
+    protected void initialiseNextQuestion() {
+        userInput.clear();
+        resetTextInputColor();
+        nextQuestion.setVisible(false);
+        hidePointsGained();
+
+        main.jumpToNextQuestion();
+
+
     }
 
     /**
@@ -114,10 +162,20 @@ public class GameOpenQuestionCtrl extends GameCtrl {
     private void enableListeners() {
         userInput.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*")) {
-                userInput.setText(newValue.replaceAll("[^\\d]", ""));
+                userInput.setText(newValue.replaceAll("\\D", ""));
             } else {
                 lastAnswerChange = timeLeft;
             }
+        });
+    }
+
+    /**
+     * When the time's up, shows the correct answer and makes Next visible
+     */
+    protected void onTimerEnd(){
+        timer.setOnFinished(event -> {
+            showCorrectAnswer((int) q.getAnswerInWH());
+            nextQuestion.setVisible(Main.gameMode == GameMode.SINGLEPLAYER);
         });
     }
 
@@ -140,8 +198,15 @@ public class GameOpenQuestionCtrl extends GameCtrl {
         }
 
         showPointsGained(100 - difference);
-        questionHistory.add(difference <= 50);
+        Main.questionHistory.add(difference <= 50);
         generateProgressDots();
+    }
+
+    /**
+     * Resets the color of the text input field for the next question
+     */
+    private void resetTextInputColor() {
+        userInput.setBackground(new Background(new BackgroundFill(Color.color(1,1,1,1), new CornerRadii(10), Insets.EMPTY)));
     }
 
     /**

@@ -22,6 +22,18 @@ public class OpenQuestion extends Question {
     }
 
     /**
+     * Constructor for OpenQuestion
+     *
+     * @param question String representation of the question
+     * @param answerInWH energy consumed in wh
+     * @param answer Activity instance of this question
+     */
+    public OpenQuestion(String question, long answerInWH, Activity answer) {
+        super(question, answer);
+        this.answerInWH = answerInWH;
+    }
+
+    /**
      * Getter for answerInWH
      *
      * @return answerInWH
@@ -56,7 +68,7 @@ public class OpenQuestion extends Question {
                 " consume?";
         long answer = activity.getConsumption_in_wh();
 
-        return new OpenQuestion(question, answer);
+        return new OpenQuestion(question, answer, activity);
     }
 
     /**
