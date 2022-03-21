@@ -39,13 +39,14 @@ public class LoginCtrlTest {
         serverUtils = PowerMockito.mock(ServerUtils.class);
 
         loginCtrl = new LoginCtrl(mainCtrl, serverUtils);
+        WaitForAsyncUtils.checkAllExceptions = false;
     }
 
     @Test
     public void loginTest() throws Exception {
         // for pipeline issue
-        WaitForAsyncUtils.clearExceptions();
-        //fill in dummy data for 'error' Text
+        WaitForAsyncUtils.checkAllExceptions = false;
+    //fill in dummy data for 'error' Text
         Whitebox.setInternalState(loginCtrl, "error", new Text("mock error message"));
 
         String username = "Joe";
