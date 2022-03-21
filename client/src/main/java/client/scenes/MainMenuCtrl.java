@@ -73,4 +73,12 @@ public class MainMenuCtrl extends SceneCtrl {
     public void showSingleplayer(){
         main.showScene(GameMultiChoiceCtrl.class);
     }
+
+
+    /**
+     * Leads to the Multiplayer Lobby
+     */
+    public void showMultiplayer(){
+        main.showScene(LobbyCtrl.class);
+    }
 }
