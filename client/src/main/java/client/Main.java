@@ -16,15 +16,30 @@
 package client;
 
 import client.scenes.ConnectionCtrl;
+import client.scenes.LoginCtrl;
 import client.scenes.MainCtrl;
+import client.scenes.MainMenuCtrl;
+import commons.questions.Question;
+import commons.utils.GameMode;
 import javafx.application.Application;
 import javafx.stage.Stage;
+
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class Main extends Application {
 
     public static String USERNAME = "";
     public static String URL = "https://localhost:8080/";
     public static String TOKEN = "";
+    //I created the variables which are required by multiple game scenes here:
+    public static Queue<Question> questions = new LinkedList<>();
+    public static Queue<Question> openQuestions = new LinkedList<>();
+    public static int currentQuestionCount;
+    public static Question currentQuestion;
+    public static int scoreTotal;
+    public static LinkedList<Boolean> questionHistory = new LinkedList<>();
+    public static GameMode gameMode;
 
     /**
      * Gets called when the application is started
@@ -42,6 +57,7 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage primaryStage) {
+        boolean debug = false;
         MainCtrl mainCtrl = new MainCtrl(primaryStage);
 
         mainCtrl.load("client/scenes/Connection.fxml", "Connection page");
@@ -51,7 +67,18 @@ public class Main extends Application {
         mainCtrl.load("client/scenes/HomeLeaderboard.fxml", "Singleplayer Leaderboard");
         mainCtrl.load("client/scenes/HelpScreen.fxml", "Help page");
         mainCtrl.load("client/scenes/GameMultiChoice.fxml", "Game Screen");
+        mainCtrl.load("client/scenes/Lobby.fxml","Lobby  Screen");
+        mainCtrl.load("client/scenes/GameOpenQuestion.fxml", "Game Screen");
 
-        mainCtrl.showScene(ConnectionCtrl.class);
+        //For testing, I skipped the Connection and Login screens
+        if (debug) {
+            LoginCtrl login = mainCtrl.getCtrl(LoginCtrl.class);
+            login.login("Kristof", "password");
+            mainCtrl.showScene(MainMenuCtrl.class);
+        }
+        else{
+            mainCtrl.showScene(ConnectionCtrl.class);
+        }
+
     }
 }

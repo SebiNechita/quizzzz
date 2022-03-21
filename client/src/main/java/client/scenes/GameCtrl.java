@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.Main;
 import client.utils.ServerUtils;
 import commons.utils.Emote;
 import commons.utils.GameMode;
@@ -9,7 +10,6 @@ import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.Transition;
-import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -55,6 +55,7 @@ public abstract class GameCtrl extends SceneCtrl {
     @FXML
     protected VBox jokers;
     private AnchorPane jokerContainer;
+    private List<AnchorPane> disabledJokers;
 
     @FXML
     protected Text timeLeftText;
@@ -74,10 +75,12 @@ public abstract class GameCtrl extends SceneCtrl {
     protected double lastAnswerChange = 0;
     protected double timeMultiplier = 1d;
 
-    protected LinkedList<Boolean> questionHistory = new LinkedList<>();
-
-    protected int answer;
-    protected int scoreTotal;
+    /**
+     * There are three options visible to the user.
+     * This variable describes the option in which the answer is visible.
+     * Starts from 0
+     */
+    protected int answerOptionNumber;
     Animation timer = null;
 
     /**
@@ -89,6 +92,7 @@ public abstract class GameCtrl extends SceneCtrl {
     @Inject
     public GameCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
         super(mainCtrl, serverUtils);
+        disabledJokers = new LinkedList<>();
     }
 
     /**
@@ -98,6 +102,9 @@ public abstract class GameCtrl extends SceneCtrl {
 
     }
 
+    /**
+     * This method is called from its subclasses when that scene is displayed
+     */
     public void onShowScene() {
         notificationRenderer = new NotificationRenderer();
 
@@ -106,6 +113,8 @@ public abstract class GameCtrl extends SceneCtrl {
         pointsGainedText.setVisible(false);
         answerBonusText.setVisible(false);
         timeBonusText.setVisible(false);
+
+        setScore(Main.scoreTotal);
 
         nextQuestion.setVisible(false);
 
@@ -124,39 +133,8 @@ public abstract class GameCtrl extends SceneCtrl {
 
         //----- TODO: Everything below this is temporary and for testing/displaying purposes -----
         gameMode = GameMode.SINGLEPLAYER;
-        Random random = new Random();
-        setScore(0);
-        scoreTotal = 0;
         startTimer();
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                reduceTimer(0.5d);
-            }
-        }, 2000);
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                reduceTimer(0.5d);
-            }
-        }, 4000);
 
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                Platform.runLater(() -> {
-                    if (random.nextBoolean()) {
-                        notificationRenderer.addEmoteNotification(String.valueOf(random.nextInt()), Emote.values()[random.nextInt(5)]);
-                    } else {
-                        if (random.nextBoolean()) {
-                            notificationRenderer.addDisconnectNotification(String.valueOf(random.nextInt()));
-                        } else {
-                            notificationRenderer.addJokerNotification(String.valueOf(random.nextInt()), JokerType.values()[random.nextInt(3)]);
-                        }
-                    }
-                });
-            }
-        }, 1000, 400);
     }
 
     /**
@@ -169,16 +147,25 @@ public abstract class GameCtrl extends SceneCtrl {
             AnchorPane tooltip = (AnchorPane) joker.getChildren().get(1);
 
             jokerImage.setOnMouseEntered(event -> {
+                if (disabledJokers.contains(joker))
+                    return;
+
                 hoverAnim(joker, new Color(0.266, 0.266, 0.266, 1), new Color(1, 1, 1, 1)).play();
                 showJokerTooltip(tooltip);
             });
 
             jokerImage.setOnMouseExited(event -> {
+                if (disabledJokers.contains(joker))
+                    return;
+
                 hoverAnim(joker, new Color(1, 1, 1, 1), new Color(0.266, 0.266, 0.266, 1)).play();
                 hideJokerTooltip(tooltip);
             });
 
             jokerImage.setOnMouseClicked(event -> {
+                if (disabledJokers.contains(joker))
+                    return;
+
                 jokerUsed(JokerType.valueOf(joker.getId().toUpperCase()));
             });
         }
@@ -207,6 +194,31 @@ public abstract class GameCtrl extends SceneCtrl {
      */
     private void jokerUsed(JokerType type) {
         LoggerUtil.infoInline("Clicked on the " + type + " joker.");
+    }
+
+    /**
+     * Can be used to disallow a user form using a specific joker
+     *
+     * @param type The joker to disable
+     */
+    protected void disableJoker(JokerType type) {
+        jokers.getChildren().stream()
+            .filter(joker -> joker.getId().equalsIgnoreCase(type.toString()))
+            .map(joker -> (AnchorPane) joker)
+            .forEach(joker -> {
+                LoggerUtil.log(joker.getId());
+                ImageView image = (ImageView) joker.getChildren().get(0);
+
+                ColorAdjust effect = new ColorAdjust();
+                effect.setBrightness(-0.5);
+                effect.setContrast(-0.5);
+                effect.setSaturation(-1);
+
+                image.setEffect(effect);
+
+                disabledJokers.add(joker);
+            }
+        );
     }
 
     /**
@@ -259,7 +271,7 @@ public abstract class GameCtrl extends SceneCtrl {
         dropShadow.setOffsetX(3.0);
         dropShadow.setOffsetY(3.0);
 
-        Iterator<Boolean> history = questionHistory.iterator();
+        Iterator<Boolean> history = Main.questionHistory.iterator();
         if (numberofQuestions == -1) {
             for (int i = 0; i < 20; i++) {
                 Circle circle = generateCircle(Paint.valueOf("#2b2b2b"), dropShadow);
@@ -361,13 +373,7 @@ public abstract class GameCtrl extends SceneCtrl {
     /**
      * Sets up the events for when the timer runs out
      */
-    private void onTimerEnd() {
-        timer.setOnFinished(event -> {
-            showCorrectAnswer(answer);
-
-            nextQuestion.setVisible(gameMode == GameMode.SINGLEPLAYER);
-        });
-    }
+    protected abstract void onTimerEnd();
 
     /**
      * Shows the correct answer to the user
@@ -382,10 +388,12 @@ public abstract class GameCtrl extends SceneCtrl {
      * @param answerPoints The amount of points the player got for answering <p>0 <b>or</b> 100 for multi-choice, number between 0-100 for open</p>
      */
     protected void showPointsGained(int answerPoints) {
+        answerPoints = Math.min(Math.max(answerPoints, 0), 100);
+
         int timeBonus = (int) Math.round(lastAnswerChange * 100 * (answerPoints / 100d));
         int total = (int) (answerPoints + timeBonus * (answerPoints / 100d));
-        scoreTotal = scoreTotal + total;
-        setScore(scoreTotal);
+        Main.scoreTotal += total;
+        setScore(Main.scoreTotal);
         Paint color;
         if (answerPoints >= 90) {
             color = Paint.valueOf("#6cf06a");

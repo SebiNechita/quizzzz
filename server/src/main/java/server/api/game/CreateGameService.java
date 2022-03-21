@@ -1,10 +1,12 @@
 package server.api.game;
 
-import commons.GameResponsePacket;
+import commons.Game;
+import packets.GameResponsePacket;
 import commons.questions.Activity;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 
@@ -19,20 +21,20 @@ public class CreateGameService {
      */
     public GameResponsePacket createGame(Integer noOfQuestions) {
         List<Activity> activities = null;
-        File source = new File(Objects.requireNonNull(
-                                getClass().getClassLoader().getResource("activity-bank/activities.json")).getFile()
-        );
 
         try {
+            File source = new File(Objects.requireNonNull(
+                    getClass().getClassLoader().getResource("activity-bank/activities.json")).toURI()
+            );
             activities = Activity.readActivities(source);
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
 
         if (noOfQuestions != null) {
-            return new GameResponsePacket(noOfQuestions, activities);
+            return new GameResponsePacket(new Game(noOfQuestions, activities));
         } else {
-            return new GameResponsePacket(activities);
+            return new GameResponsePacket(new Game(activities));
         }
     }
 }

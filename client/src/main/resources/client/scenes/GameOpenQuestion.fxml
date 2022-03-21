@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.effect.ColorAdjust?>
 <?import javafx.scene.effect.InnerShadow?>
 <?import javafx.scene.image.Image?>
@@ -14,7 +15,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.GameMultiChoiceCtrl">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.GameOpenQuestionCtrl">
     <children>
         <HBox fx:id="progressBar" alignment="CENTER" fillHeight="false" layoutX="345.0" layoutY="14.0" prefHeight="35.0" prefWidth="591.0" spacing="5.0" style="-fx-background-color: #888; -fx-background-radius: 8;">
             <children>
@@ -45,52 +46,6 @@
                 <Font name="Comic Sans MS" size="36.0" />
             </font>
         </Text>
-        <HBox fx:id="optionsContainer" alignment="CENTER" layoutX="221.0" layoutY="235.0" prefHeight="250.0" prefWidth="860.0" spacing="30.0">
-            <children>
-                <AnchorPane prefHeight="250.0" prefWidth="250.0" style="-fx-background-color: #fff; -fx-background-radius: 10;">
-                    <children>
-                        <ImageView fx:id="image1" fitHeight="160.0" fitWidth="250.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                        <VBox alignment="CENTER" layoutY="150.0" prefHeight="100.0" prefWidth="250.0">
-                            <children>
-                                <Text fx:id="choice1" strokeType="OUTSIDE" strokeWidth="0.0" text="The quick brown fox jumps over the lazy dog" textAlignment="CENTER" wrappingWidth="250.0">
-                                    <font>
-                                        <Font name="Comic Sans MS" size="21.0" />
-                                    </font>
-                                </Text>
-                            </children>
-                        </VBox>
-                    </children>
-                </AnchorPane>
-                <AnchorPane prefHeight="250.0" prefWidth="250.0" style="-fx-background-color: #fff; -fx-background-radius: 10;">
-                    <children>
-                        <ImageView fx:id="image2" fitHeight="160.0" fitWidth="250.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                        <VBox alignment="CENTER" layoutY="150.0" prefHeight="100.0" prefWidth="250.0">
-                            <children>
-                                <Text fx:id="choice2" strokeType="OUTSIDE" strokeWidth="0.0" text="The quick brown fox jumps over the lazy dog" textAlignment="CENTER" wrappingWidth="250.0">
-                                    <font>
-                                        <Font name="Comic Sans MS" size="21.0" />
-                                    </font>
-                                </Text>
-                            </children>
-                        </VBox>
-                    </children>
-                </AnchorPane>
-                <AnchorPane prefHeight="250.0" prefWidth="250.0" style="-fx-background-color: #fff; -fx-background-radius: 10;">
-                    <children>
-                        <ImageView fx:id="image3" fitHeight="160.0" fitWidth="250.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                        <VBox alignment="CENTER" layoutY="150.0" prefHeight="100.0" prefWidth="250.0" style="-fx-background-radius: 8;">
-                            <children>
-                                <Text fx:id="choice3" strokeType="OUTSIDE" strokeWidth="0.0" text="The quick brown fox jumps over the lazy dog" textAlignment="CENTER" wrappingWidth="250.0">
-                                    <font>
-                                        <Font name="Comic Sans MS" size="21.0" />
-                                    </font>
-                                </Text>
-                            </children>
-                        </VBox>
-                    </children>
-                </AnchorPane>
-            </children>
-        </HBox>
         <Text fx:id="score" fill="WHITE" layoutX="1015.0" layoutY="44.373046875" strokeType="OUTSIDE" strokeWidth="0.0" text="Score: 1234" textAlignment="RIGHT" wrappingWidth="250.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="12.0">
             <font>
                 <Font name="Comic Sans MS" size="30.0" />
@@ -292,5 +247,24 @@
             <Insets right="15.0" />
          </padding>
       </HBox>
+      <AnchorPane layoutX="346.0" layoutY="146.0" prefHeight="343.0" prefWidth="591.0">
+         <children>
+            <AnchorPane layoutX="112.0" prefHeight="253.0" prefWidth="371.0" style="-fx-background-color: rgba(59, 59, 59, 0.8); -fx-background-radius: 20;">
+               <children>
+                  <ImageView fx:id="image" fitHeight="253.0" fitWidth="371.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
+            <Text fill="WHITE" layoutX="211.0" layoutY="275.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Type your answer:">
+               <font>
+                  <Font name="Comic Sans MS" size="20.0" />
+               </font>
+            </Text>
+            <TextField fx:id="userInput" alignment="CENTER" layoutX="131.0" layoutY="291.0" prefHeight="45.0" prefWidth="329.0">
+               <font>
+                  <Font name="Comic Sans MS" size="22.0" />
+               </font>
+            </TextField>
+         </children>
+      </AnchorPane>
     </children>
 </AnchorPane>

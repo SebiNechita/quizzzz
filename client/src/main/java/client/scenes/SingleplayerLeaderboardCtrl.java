@@ -15,6 +15,8 @@
  */
 package client.scenes;
 
+import client.Main;
+import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import commons.LeaderboardEntry;
 import javafx.beans.property.SimpleStringProperty;
@@ -23,6 +25,8 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.text.Text;
+import packets.GeneralResponsePacket;
 import packets.LeaderboardResponsePacket;
 
 import java.net.URL;
@@ -39,6 +43,8 @@ public class SingleplayerLeaderboardCtrl extends SceneCtrl {
     private TableColumn<LeaderboardEntry, String> colUsername;
     @FXML
     private TableColumn<LeaderboardEntry, String> colPoints;
+    @FXML
+    private Text rankInfo;
 
     /**
      * Constructor for this Ctrl
@@ -63,6 +69,18 @@ public class SingleplayerLeaderboardCtrl extends SceneCtrl {
     public void initialize(URL location, ResourceBundle resources) {
         colUsername.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().username));
         colPoints.setCellValueFactory(q -> new SimpleStringProperty(Integer.toString(q.getValue().points)));
+    }
+
+    //TODO: Get this to work
+    @OnShowScene
+    public void onShowScene(){
+        refresh();
+        showPlayerRank();
+    }
+
+    public void showPlayerRank(){
+        GeneralResponsePacket packet = server.getRequest("api/leaderboard/"+ Main.USERNAME+"/rank", GeneralResponsePacket.class);
+        rankInfo.setText("Your rank is " + packet.getMessage());
     }
 
     /**

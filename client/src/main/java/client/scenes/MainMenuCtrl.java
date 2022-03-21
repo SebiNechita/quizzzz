@@ -3,10 +3,12 @@ package client.scenes;
 import client.Main;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
+import commons.utils.GameMode;
 import javafx.fxml.FXML;
 import javafx.scene.text.Text;
 
 import java.net.URL;
+import java.util.LinkedList;
 import java.util.ResourceBundle;
 
 public class MainMenuCtrl extends SceneCtrl {
@@ -67,10 +69,24 @@ public class MainMenuCtrl extends SceneCtrl {
 
 
     /**
-     * Temporary method, leads to a placeholder of singleplayer
-     * (but one that already gets its questions from the server)
+     * Starts singleplayer mode and loads the first question with the screen
      */
     public void showSingleplayer(){
-        main.showScene(GameMultiChoiceCtrl.class);
+        Main.gameMode = GameMode.SINGLEPLAYER;
+        Main.currentQuestionCount = 0;
+        Main.questions = new LinkedList<>();
+        Main.openQuestions = new LinkedList<>();
+        Main.questionHistory = new LinkedList<>();
+        Main.scoreTotal = 0;
+        main.getQuestions();
+        main.jumpToNextQuestion();
+    }
+
+
+    /**
+     * Leads to the Multiplayer Lobby
+     */
+    public void showMultiplayer(){
+        main.showScene(LobbyCtrl.class);
     }
 }

@@ -23,30 +23,6 @@ public class Question {
      */
     private long answerInWH;
 
-    public List<Activity> getActivityList() {
-        return activityList;
-    }
-
-    public void setActivityList(List<Activity> activityList) {
-        this.activityList = activityList;
-    }
-
-    public Activity getAnswer() {
-        return answer;
-    }
-
-    public void setAnswer(Activity answer) {
-        this.answer = answer;
-    }
-
-    public long getAnswerInWH() {
-        return answerInWH;
-    }
-
-    public void setAnswerInWH(long answerInWH) {
-        this.answerInWH = answerInWH;
-    }
-
     /**
      * Default Constructor for object mappers
      */
@@ -61,6 +37,65 @@ public class Question {
         this.question = question;
     }
 
+    /**
+     * Constructor for Question
+     *
+     * @param question String representation of question
+     * @param answer Activity instance of the question
+     */
+    public Question(String question, Activity answer) {
+        this.question = question;
+        this.answer = answer;
+    }
+
+    /**
+     * Getter for activity list
+     * @return list of non-answer activities (specific for MultipleChoiceQuestion)
+     */
+    public List<Activity> getActivityList() {
+        return activityList;
+    }
+
+    /**
+     * Setter for activityList
+     * @param activityList A list of non-answer options
+     */
+    public void setActivityList(List<Activity> activityList) {
+        this.activityList = activityList;
+    }
+
+    /**
+     * Getter for Answer
+     * @return Activity instance of the answer
+     */
+    public Activity getAnswer() {
+        return answer;
+    }
+
+
+    /**
+     * Setter for Answer
+     * @param answer Activity instance of the Answer
+     */
+    public void setAnswer(Activity answer) {
+        this.answer = answer;
+    }
+
+    /**
+     * Getter for energy consumed in wh
+     * @return energy consumed in wh
+     */
+    public long getAnswerInWH() {
+        return answerInWH;
+    }
+
+    /**
+     * Setter for energy consumed in wh
+     * @param answerInWH energy consumed in wh
+     */
+    public void setAnswerInWH(long answerInWH) {
+        this.answerInWH = answerInWH;
+    }
     /**
      * Getter for question
      * @return question

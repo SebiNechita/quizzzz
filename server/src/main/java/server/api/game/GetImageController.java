@@ -2,6 +2,7 @@ package server.api.game;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import packets.ImageResponsePacket;
 
 @RestController
 @RequestMapping(path = "api/activity/image")
@@ -27,9 +28,10 @@ public class GetImageController {
      */
     @GetMapping(
             path = "",
-            produces = MediaType.IMAGE_JPEG_VALUE
+            produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public @ResponseBody byte[] getImage(@RequestParam(value = "imagePath", required = true) String imagePath) {
+    public @ResponseBody
+    ImageResponsePacket getImage(@RequestParam(value = "imagePath", required = true) String imagePath) {
         return imageService.getImage(imagePath);
     }
 }

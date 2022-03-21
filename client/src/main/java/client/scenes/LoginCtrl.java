@@ -4,6 +4,7 @@ import client.Main;
 import client.utils.ServerUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.text.Text;
 
 import java.net.URL;
@@ -12,6 +13,17 @@ import java.util.ResourceBundle;
 public class LoginCtrl extends SceneCtrl {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        //treat Enter as clicking login button
+        userName.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.ENTER) {
+                onLoginButtonPressed();
+            }
+        });
+        password.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.ENTER) {
+                onLoginButtonPressed();
+            }
+        });
     }
 
     @FXML
@@ -57,6 +69,9 @@ public class LoginCtrl extends SceneCtrl {
         login(userName.getText(), password.getText());
     }
 
+    /**
+     * Event controller for clicking on the "Back" button
+     */
     public void showConnection() {
         main.showScene(ConnectionCtrl.class);
     }

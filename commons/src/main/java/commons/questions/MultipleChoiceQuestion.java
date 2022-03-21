@@ -7,7 +7,7 @@ import java.util.Random;
 public class MultipleChoiceQuestion extends Question {
 
     /**
-     * This list contains three activities that must be the choices displayed on the screen
+     * This list contains 2 activities that must be the choices displayed on the screen other than the Answer which is stored in the variable answer
      */
     private List<Activity> activityList;
     /**
@@ -45,7 +45,9 @@ public class MultipleChoiceQuestion extends Question {
                     )
             );
         }
-        Activity answer = activityList.get(
+        // Here, the answer is removed from the activity list because this makes it easier to find the non-answer options.
+        // The answer is rather stores in the variable answer
+        Activity answer = activityList.remove(
                 randomGen.nextInt(activityList.size())
         );
         String question = "Which of the following activities uses " + answer.getConsumption_in_wh() + "wh of energy?";
@@ -64,7 +66,7 @@ public class MultipleChoiceQuestion extends Question {
     /**
      * Setter for ActivityList
      *
-     * @param activityList the list of activities
+     * @param activityList the list of activities that are not the answer
      */
     public void setActivityList(List<Activity> activityList) {
         this.activityList = activityList;
