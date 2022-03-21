@@ -23,6 +23,7 @@ import jakarta.ws.rs.ProcessingException;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.client.*;
 import jakarta.ws.rs.core.Response;
+import javafx.scene.image.Image;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
@@ -32,6 +33,7 @@ import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 import packets.*;
 
+import java.io.ByteArrayInputStream;
 import java.lang.reflect.Type;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
