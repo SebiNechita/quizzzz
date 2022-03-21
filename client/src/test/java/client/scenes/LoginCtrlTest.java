@@ -13,6 +13,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.reflect.Whitebox;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
+import org.testfx.util.WaitForAsyncUtils;
 
 import java.io.IOException;
 
@@ -42,6 +43,8 @@ public class LoginCtrlTest {
 
     @Test
     public void loginTest() throws Exception {
+        // for pipeline issue
+        WaitForAsyncUtils.clearExceptions();
         //fill in dummy data for 'error' Text
         Whitebox.setInternalState(loginCtrl, "error", new Text("mock error message"));
 
