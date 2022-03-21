@@ -202,7 +202,10 @@ public class ServerUtils {
                 RegisterResponsePacket.class);
     }
 
-    private StompSession session = connect("ws://localhost:8080/websocket");
+    //private StompSession session = connect("ws://localhost:8080/websocket");
+
+    //THIS IS A TEMPORARY SOLUTION FOR MAKING THE CODE COMPILE, WILL FIX WEBSOCKETS IN NEXT SPRINT
+    private StompSession session = null;
 
     /**
      * This method initializes the WebSocket connection between client and server
