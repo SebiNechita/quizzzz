@@ -6,12 +6,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 public class Activity {
 
     @SuppressWarnings("checkstyle:JavadocVariable")
     /**
-     *
+     * Id of the activity
      */
     private String id;
     /**
@@ -64,7 +65,7 @@ public class Activity {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readValue(
                 source,
-                new TypeReference<List<Activity>>() {
+                new TypeReference<>() {
                 }
         );
     }
@@ -178,6 +179,24 @@ public class Activity {
         this.consumption_in_wh = consumption_in_wh;
     }
 
+    /**
+     * Checks if another activity is equivalent to this.
+     * @param o the other activity
+     * @return true iff the other activity has same id, consumption,
+     * source, path and title
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Activity activity = (Activity) o;
+        return consumption_in_wh == activity.consumption_in_wh && id.equals(activity.id) && image_path.equals(activity.image_path) && source.equals(activity.source) && title.equals(activity.title);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, image_path, consumption_in_wh, source, title);
+    }
 
     /**
      * String representation of Activity
