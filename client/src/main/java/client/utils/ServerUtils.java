@@ -23,21 +23,12 @@ import jakarta.ws.rs.ProcessingException;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.client.*;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.sse.SseEventSource;
 import javafx.scene.image.Image;
-import org.springframework.messaging.converter.MappingJackson2MessageConverter;
-import org.springframework.messaging.simp.stomp.StompFrameHandler;
-import org.springframework.messaging.simp.stomp.StompHeaders;
-import org.springframework.messaging.simp.stomp.StompSession;
-import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
-import org.springframework.web.socket.client.standard.StandardWebSocketClient;
-import org.springframework.web.socket.messaging.WebSocketStompClient;
 import packets.*;
 
 import java.io.ByteArrayInputStream;
-import java.lang.reflect.Type;
 import java.util.Objects;
-import java.util.concurrent.ExecutionException;
-import java.util.function.Consumer;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
@@ -91,6 +82,18 @@ public class ServerUtils {
     }
 
     /**
+     * Builds a template which can be used for HTTP(S) requests
+     *
+     * @param path The path of the endpoint to send the request to
+     * @return The template which can be used for any type of HTTP(S) request
+     */
+    private SseEventSource longRequestTemplate(String path) {
+        Client client = ClientBuilder.newBuilder().build();
+        WebTarget target = client.target(Main.URL + "api/game/join");
+        return SseEventSource.target(target).build();
+    }
+
+    /**
      * Tries to get a token with the given username and password
      *
      * @param username The username for which to get the token
@@ -117,50 +120,13 @@ public class ServerUtils {
      *
      * @return Instance of Game with a list of questions
      */
-    public Game getGame(){
+    public Game getGame() {
         return getRequest("api/game/create", GameResponsePacket.class).getGame();
     }
 
     /**
-     * Builds a post request
-     *
-     * @param path     The path of the endpoint to send the request to
-     * @param request  The packet which the server returns
-     * @param response The packet which to send to the server
-     * @param <T>      The type of packet which the server should return
-     * @param <S>      The type of packet which should be sent to the server
-     * @return A packet containing the response of the server
-     */
-    @SuppressWarnings("unchecked")
-    public <T extends ResponsePacket, S extends RequestPacket> T postRequest(String path, S request, Class<T> response) {
-        Invocation.Builder template = requestTemplate(path);
-        if (template == null) {
-            return (T) new ResponsePacket(HttpStatus.NotFound);
-        }
-
-        return template.post(Entity.entity(request, APPLICATION_JSON), response);
-    }
-
-    /**
-     * Builds a get request
-     *
-     * @param path     The path of the endpoint to send the request to
-     * @param response The packet which the server returns
-     * @param <T>      The type of packet which the server should return
-     * @return A packet containing the response of the server
-     */
-    @SuppressWarnings("unchecked")
-    public <T extends ResponsePacket> T getRequest(String path, Class<T> response) {
-        Invocation.Builder template = requestTemplate(path);
-        if (template == null) {
-            return (T) new ResponsePacket(HttpStatus.NotFound);
-        }
-
-        return template.get(response);
-    }
-
-    /**
      * Uses an endpoint to retrieve the image from the Server using the path at which it is stored
+     *
      * @param imagePath the path within activity-bank to access the image
      * @return loaded Image is returned
      */
@@ -198,7 +164,6 @@ public class ServerUtils {
         return response.equals("Pong");
     }
 
-
     /**
      * Register a new user on server
      *
@@ -217,67 +182,184 @@ public class ServerUtils {
                 RegisterResponsePacket.class);
     }
 
-    //private StompSession session = connect("ws://localhost:8080/websocket");
-
-    //THIS IS A TEMPORARY SOLUTION FOR MAKING THE CODE COMPILE, WILL FIX WEBSOCKETS IN NEXT SPRINT
-    private StompSession session = null;
-
     /**
-     * This method initializes the WebSocket connection between client and server
-     * @param url - the url address for the connection
-     * @return returns a new protocol
+     * Builds a get request
+     *
+     * @param path     The path of the endpoint to send the request to
+     * @param response The packet which the server returns
+     * @param <T>      The type of packet which the server should return
+     * @return A packet containing the response of the server
      */
-    private StompSession connect(String url) {
-        var client = new StandardWebSocketClient();
-        var stomp = new WebSocketStompClient(client);
-
-        stomp.setMessageConverter(new MappingJackson2MessageConverter());
-
-        try {
-            return stomp.connect(url, new StompSessionHandlerAdapter() {}).get();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
+    @SuppressWarnings("unchecked")
+    public <T extends ResponsePacket> T getRequest(String path, Class<T> response) {
+        Invocation.Builder template = requestTemplate(path);
+        if (template == null) {
+            return (T) new ResponsePacket(HttpStatus.NotFound);
         }
-        throw new IllegalStateException();
+
+        return template.get(response);
     }
 
     /**
-     * Subscribes the client for messages from the server
-     * @param dest - the destination address
-     * @param type - the class of the object to be returned by the method
-     * @param consumer - the consumer
-     * @param <T> - generic type
+     * Builds a post request
+     *
+     * @param path     The path of the endpoint to send the request to
+     * @param request  The packet which to send to the server
+     * @param response The packet which the server returns
+     * @param <T>      The type of packet which the server should return
+     * @param <S>      The type of packet which should be sent to the server
+     * @return A packet containing the response of the server
      */
-    public <T> void registerForMessages(String dest, Class<T> type, Consumer<T> consumer) {
-        session.subscribe(dest, new StompFrameHandler() {
-            @Override
-            public Type getPayloadType(StompHeaders headers) {
-                return type;
-            }
+    @SuppressWarnings("unchecked")
+    public <T extends ResponsePacket, S extends RequestPacket> T postRequest(String path, S request, Class<T> response) {
+        Invocation.Builder template = requestTemplate(path);
+        if (template == null) {
+            return (T) new ResponsePacket(HttpStatus.NotFound);
+        }
 
-            @Override
-            public void handleFrame(StompHeaders headers, Object payload) {
-                consumer.accept((T) payload);
-            }
-        });
+        return template.post(Entity.entity(request, APPLICATION_JSON), response);
     }
 
     /**
-     * This method sends an object to a desired destination
-     * @param dest - the destination address
-     * @param o - the object to be sent
+     * Builds a long polling get request which can be called on demand
+     *
+     * @param path       The path of the endpoint to send the request to
+     * @param response   The packet which the server returns
+     * @param onResponse The {@code run} method inside this interface will be called as soon as the server gives a response
+     * @param <T>        The type of packet which the server should return
+     * @return The long polling class which can be started or stopped on demand
      */
-    public void send(String dest, Object o) {
-        session.send(dest, o);
+    public <T extends ResponsePacket> LongPollingRequest<T> longGetRequest(String path, Class<T> response, ServerResponse<T> onResponse) {
+        LongPollingRequest<T> longPollingRequest = new ServerUtils.LongPollingRequest<>(path, response);
+        longPollingRequest.setCallback(onResponse);
+        return longPollingRequest;
     }
 
-    //    ADD THIS PIECE OF CODE IN THE INITIALISE METHOD OF A MULTIPLAYER LOGIC CLASS WHEN WE MAKE IT
-    //    server.registerForMessages("/topic/quotes", ResponseEntity.class, q -> {
-    //        data.add(q);
-    //    });
+    /**
+     * Builds a long polling post request which can be called on demand
+     *
+     * @param path       The path of the endpoint to send the request to
+     * @param request    The packet which to send to the server
+     * @param response   The packet which the server returns
+     * @param onResponse The {@code run} method inside this interface will be called as soon as the server gives a response
+     * @param <T>        The type of packet which the server should return
+     * @param <S>        The type of packet which should be sent to the server
+     * @return The long polling class which can be started or stopped on demand
+     */
+    public <T extends ResponsePacket, S extends RequestPacket> LongPollingRequest<T> longPostRequest(String path, S request, Class<T> response, ServerResponse<T> onResponse) {
+        LongPollingRequest<T> longPollingRequest = new ServerUtils.LongPollingRequest<>(path, response);
+        longPollingRequest.setCallback(onResponse);
+        longPollingRequest.setRequestPacket(request);
+        return longPollingRequest;
+    }
 
-    //    ADD THIS PIECE OF CODE IN THE INITIALISE METHOD OF A MULTIPLAYER LOGIC CLASS WHEN WE MAKE IT
-    //server.send("/app/quotes", getResponse());
+    /**
+     * Class which  handles a long polling request
+     *
+     * @param <T> The type of packet which the server should return
+     */
+    public class LongPollingRequest<T extends ResponsePacket> {
+        private final String path;
+        private final Class<T> response;
+
+        private ServerResponse<T> onResponse;
+
+        private Thread thread = null;
+        private boolean interrupted = false;
+
+        /**
+         * @param path     The path of the request
+         * @param response The response class of the packet
+         */
+        public LongPollingRequest(String path, Class<T> response) {
+            this.path = path;
+            this.response = response;
+        }
+
+        /**
+         * Sets the callback for this long polling request
+         *
+         * @param onResponse The callback interface instance
+         */
+        public void setCallback(ServerResponse<T> onResponse) {
+            this.onResponse = onResponse;
+        }
+
+        /**
+         * Constructs and calls a long polling get request
+         */
+        public void getRequest() {
+            Invocation.Builder template = requestTemplate(path);
+            if (template == null) {
+                return;
+            }
+
+            Invocation invocation = template.buildGet();
+            poll(invocation);
+        }
+
+        /**
+         * Constructs and calls a long polling post request
+         *
+         * @param request The packet which to send to the server
+         * @param <S>     The type of packet which should be sent to the server
+         */
+        public <S extends RequestPacket> void postRequest(S request) {
+            Invocation.Builder template = requestTemplate(path);
+            if (template == null) {
+                return;
+            }
+
+            Invocation invocation = template.buildPost(Entity.entity(request, APPLICATION_JSON));
+            poll(invocation);
+        }
+
+        /**
+         * Starts a long polling request
+         *
+         * @param invocation The invocation to instantiate
+         */
+        private void poll(Invocation invocation) {
+            thread = new Thread(() -> callback(invocation.invoke(response)));
+            interrupted = false;
+            thread.start();
+        }
+
+        /**
+         * Used to call the {@code run} method of the callback interface
+         *
+         * @param packet The packet the server returned
+         */
+        private void callback(T packet) {
+            if (onResponse != null && !interrupted) {
+                onResponse.run(packet);
+            }
+        }
+
+        /**
+         * Stops the long polling request
+         */
+        public void stop() {
+            if (thread != null) {
+                thread.interrupt();
+            }
+
+            interrupted = true;
+        }
+    }
+
+    /**
+     * Callback for {@link #longGetRequest(String, Class, ServerResponse)} and {@link #longPostRequest(String, RequestPacket, Class, ServerResponse)}.
+     * Contains a {@code run} method which will be called when the server responds to data to a long polling request.
+     *
+     * @param <T> The type of packet which the server should return
+     */
+    public interface ServerResponse<T extends ResponsePacket> {
+        /**
+         * Will be called when the server response with data to a long polling request
+         *
+         * @param responsePacket The packet which the server returned
+         */
+        void run(T responsePacket);
+    }
 }
