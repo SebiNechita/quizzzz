@@ -31,6 +31,9 @@ import javafx.util.Duration;
 import javax.inject.Inject;
 import java.util.*;
 
+import static client.utils.EmoteUtility.emoteHoverAnim;
+import static client.utils.EmoteUtility.emoteUsed;
+
 public abstract class GameCtrl extends SceneCtrl {
 
     private GameMode gameMode;
@@ -254,15 +257,6 @@ public abstract class GameCtrl extends SceneCtrl {
     }
 
     /**
-     * Gets called when an emote is used
-     *
-     * @param emote What emote has been used
-     */
-    private void emoteUsed(Emote emote) {
-        LoggerUtil.infoInline("Clicked on the " + emote.name() + " emote.");
-    }
-
-    /**
      * Generates the colors (or lack thereof) of the progress dots at the top of the screen
      */
     protected void generateProgressDots() {
@@ -470,30 +464,6 @@ public abstract class GameCtrl extends SceneCtrl {
             @Override
             protected void interpolate(double frac) {
                 anchorPane.setBackground(new Background(new BackgroundFill(lerp(start.getRed(), start.getGreen(), start.getBlue(), end.getRed(), end.getGreen(), end.getBlue(), frac), new CornerRadii(10), Insets.EMPTY)));
-            }
-        };
-    }
-
-
-    /**
-     * Transitions the brightness of the given ImageView
-     *
-     * @param imageView The element to affect
-     * @param inverted  If the animation needs to be reversed or not
-     * @return The animation object which can be played
-     */
-    protected Animation emoteHoverAnim(ImageView imageView, boolean inverted) {
-        return new Transition() {
-            {
-                setCycleDuration(Duration.millis(150));
-                setInterpolator(Interpolator.EASE_BOTH);
-            }
-
-            @Override
-            protected void interpolate(double frac) {
-                ColorAdjust colorAdjust = new ColorAdjust();
-                colorAdjust.setBrightness(-0.3 * (inverted ? frac : 1 - frac));
-                imageView.setEffect(colorAdjust);
             }
         };
     }

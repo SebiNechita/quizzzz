@@ -5,5 +5,14 @@ public enum Emote {
     HEART_EYES,
     THINKING,
     CRYING,
-    EXHALING
+    EXHALING,
+    ANNOYED,
+    DEVIL,
+    NERD,
+    LOVE,
+    SAD,
+    SMIRKING,
+    SUNGLASSES,
+    THUMBUP,
+    TROPHY
 }
