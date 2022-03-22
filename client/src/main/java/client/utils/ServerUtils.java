@@ -23,7 +23,6 @@ import jakarta.ws.rs.ProcessingException;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.client.*;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.sse.SseEventSource;
 import javafx.scene.image.Image;
 import packets.*;
 
@@ -79,18 +78,6 @@ public class ServerUtils {
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .header("Authorization", Main.TOKEN);
-    }
-
-    /**
-     * Builds a template which can be used for HTTP(S) requests
-     *
-     * @param path The path of the endpoint to send the request to
-     * @return The template which can be used for any type of HTTP(S) request
-     */
-    private SseEventSource longRequestTemplate(String path) {
-        Client client = ClientBuilder.newBuilder().build();
-        WebTarget target = client.target(Main.URL + "api/game/join");
-        return SseEventSource.target(target).build();
     }
 
     /**
@@ -249,7 +236,6 @@ public class ServerUtils {
     public <T extends ResponsePacket, S extends RequestPacket> LongPollingRequest<T> longPostRequest(String path, S request, Class<T> response, ServerResponse<T> onResponse) {
         LongPollingRequest<T> longPollingRequest = new ServerUtils.LongPollingRequest<>(path, response);
         longPollingRequest.setCallback(onResponse);
-        longPollingRequest.setRequestPacket(request);
         return longPollingRequest;
     }
 
