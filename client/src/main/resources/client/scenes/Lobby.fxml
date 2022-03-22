@@ -32,78 +32,117 @@
             </Button>
             <HBox fx:id="emoteContainer" alignment="CENTER_RIGHT" layoutX="374.0" layoutY="6.0" prefHeight="59.0" prefWidth="403.0" spacing="15.0" style="-fx-background-color: #666; -fx-background-radius: 10;">
                <children>
-                  <ImageView fx:id="emoji1" fitHeight="40.0" fitWidth="40.0" onMouseClicked="#showEmoji1" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="HEART_EYES" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../../img/emojis/heart_eyes.png" />
                      </image>
+                     <effect>
+                        <ColorAdjust brightness="-0.3" />
+                     </effect>
                   </ImageView>
-                  <ImageView fitHeight="40.0" fitWidth="40.0" onMouseClicked="#showEmoji2" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="JOY" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../../img/emojis/joy.png" />
                      </image>
+                     <effect>
+                        <ColorAdjust brightness="-0.3" />
+                     </effect>
                   </ImageView>
-                  <ImageView fitHeight="40.0" fitWidth="40.0" onMouseClicked="#showEmoji3" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="NERD" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../../img/emojis/nerd.png" />
                      </image>
+                     <effect>
+                        <ColorAdjust brightness="-0.3" />
+                     </effect>
                   </ImageView>
-                  <ImageView fitHeight="40.0" fitWidth="40.0" onMouseClicked="#showEmoji4" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="SMIRKING" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../../img/emojis/smirking.png" />
                      </image>
                      <effect>
-                        <ColorAdjust />
+                        <ColorAdjust brightness="-0.3" />
                      </effect>
                   </ImageView>
-                  <ImageView fitHeight="40.0" fitWidth="40.0" onMouseClicked="#showEmoji5" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="ANNOYED" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../../img/emojis/annoyed.png" />
                      </image>
+                     <effect>
+                        <ColorAdjust brightness="-0.3" />
+                     </effect>
                   </ImageView>
-                  <ImageView fitHeight="40.0" fitWidth="40.0" onMouseClicked="#showEmoji6" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="SUNGLASSES" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../../img/emojis/sunglasses.png" />
                      </image>
+                     <effect>
+                        <ColorAdjust brightness="-0.3" />
+                     </effect>
                   </ImageView>
-                  <ImageView fitHeight="45.0" fitWidth="45.0" onMouseClicked="#showEmoji7" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="DEVIL" fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../../img/emojis/devil.png" />
                      </image>
+                     <effect>
+                        <ColorAdjust brightness="-0.3" />
+                     </effect>
                   </ImageView>
-                  <ImageView fitHeight="40.0" fitWidth="40.0" onMouseClicked="#showEmoji8" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="SAD" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../../img/emojis/sad.png" />
                      </image>
+                     <effect>
+                        <ColorAdjust brightness="-0.3" />
+                     </effect>
                   </ImageView>
-                  <ImageView fitHeight="150.0" fitWidth="40.0" onMouseClicked="#showEmoji9" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="LOVE" fitHeight="150.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../../img/emojis/love.png" />
                      </image>
+                     <effect>
+                        <ColorAdjust brightness="-0.3" />
+                     </effect>
                   </ImageView>
-                  <ImageView fitHeight="40.0" fitWidth="40.0" onMouseClicked="#showEmoji10" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="TROPHY" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../../img/emojis/trophy.png" />
                      </image>
+                     <effect>
+                        <ColorAdjust brightness="-0.3" />
+                     </effect>
                   </ImageView>
-                  <ImageView fitHeight="40.0" fitWidth="40.0" onMouseClicked="#showEmoji11" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="THUMBUP" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../../img/emojis/thumbup.png" />
                      </image>
+                     <effect>
+                        <ColorAdjust brightness="-0.3" />
+                     </effect>
                   </ImageView>
-                  <ImageView fitHeight="40.0" fitWidth="40.0" onMouseClicked="#showEmoji12" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="EXHALING" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../../img/emojis/exhaling.png" />
                      </image>
+                     <effect>
+                        <ColorAdjust brightness="-0.3" />
+                     </effect>
                   </ImageView>
-                  <ImageView fitHeight="40.0" fitWidth="40.0" onMouseClicked="#showEmoji13" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="CRYING" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../../img/emojis/crying.png" />
                      </image>
+                     <effect>
+                        <ColorAdjust brightness="-0.3" />
+                     </effect>
                   </ImageView>
-                  <ImageView fitHeight="40.0" fitWidth="40.0" onMouseClicked="#showEmoji14" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="THINKING" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../../img/emojis/thinking.png" />
                      </image>
+                     <effect>
+                        <ColorAdjust brightness="-0.3" />
+                     </effect>
                   </ImageView>
                </children>
                <padding>
@@ -124,7 +163,7 @@
                   <TextFlow fx:id="textflow" prefHeight="364.0" prefWidth="638.0" />
                </content>
             </ScrollPane>
-            <Text layoutX="39.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Players in this session:">
+            <Text layoutX="167.0" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Players in this session" textAlignment="CENTER">
                <font>
                   <Font name="Comic Sans MS" size="32.0" />
                </font>
@@ -138,7 +177,7 @@
                   <TextFlow fx:id="chattextflow" prefHeight="364.0" prefWidth="622.0" />
                </content>
             </ScrollPane>
-            <Text layoutX="39.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Chatroom:">
+            <Text layoutX="244.0" layoutY="45.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Chat Room">
                <font>
                   <Font name="Comic Sans MS" size="32.0" />
                </font>
