@@ -4,11 +4,14 @@ import client.Main;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.utils.HttpStatus;
+import javafx.animation.Animation;
+import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 import packets.ResponsePacket;
 
 import java.net.URL;
@@ -84,15 +87,21 @@ public class RegisterCtrl extends SceneCtrl {
     public void registerButtonClicked() {
         if (!password.getText().equals(confirmPassword.getText())) {
             error.setText("Passwords are not matching.");
+            shake(password).playFromStart();
+            shake(confirmPassword).playFromStart();
         } else if (password.getText().isBlank() || userName.getText().isBlank()) {
             //the username or password is empty or only consists of whitespaces.
             error.setText("Password or username is empty.");
+            shake(userName).playFromStart();
+            shake(password).playFromStart();
+            shake(confirmPassword).playFromStart();
         } else {
             //the username and password are sent without any leading or trailing whitespaces.
             //If successful, logs the newly created user in.
             ResponsePacket response = server.register(userName.getText().trim(), password.getText().trim());
             if (response.getCode() == HttpStatus.Conflict.getCode()) {
                 error.setText("User exists");
+                shake(userName).playFromStart();
             } else if (response.getCode() == HttpStatus.Created.getCode()) {
                 LoginCtrl login = main.getCtrl(LoginCtrl.class);
                 clearFields();
@@ -109,5 +118,21 @@ public class RegisterCtrl extends SceneCtrl {
         password.clear();
         confirmPassword.clear();
         error.setText("");
+    }
+
+    /**
+     * returns a shaking Animation
+     * @param node
+     * @return shaking Animation
+     */
+    protected Animation shake(TextField node) {
+
+        TranslateTransition transition = new TranslateTransition(Duration.millis(50), node);
+        transition.setFromX(0f);
+        transition.setByX(10f);
+        transition.setCycleCount(2);
+        transition.setAutoReverse(true);
+
+        return transition;
     }
 }

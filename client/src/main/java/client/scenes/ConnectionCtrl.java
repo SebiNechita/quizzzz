@@ -1,9 +1,13 @@
 package client.scenes;
 
 import client.utils.ServerUtils;
+import javafx.animation.Animation;
+import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -51,9 +55,30 @@ public class ConnectionCtrl extends SceneCtrl {
 
         if (res) {
             main.showScene(LoginCtrl.class);
+            url.setStyle("-fx-background-color: #green");
+            message.setText("Connected");
+
         } else {
             message.setText("This URL is invalid");
             url.setStyle("-fx-background-color: #fc6363");
+            shake(url).playFromStart();
         }
     }
+
+    /**
+     * returns a shaking Animation
+     * @param node
+     * @return shaking Animation
+     */
+    protected Animation shake(TextField node) {
+
+        TranslateTransition transition = new TranslateTransition(Duration.millis(50), node);
+        transition.setFromX(0f);
+        transition.setByX(10f);
+        transition.setCycleCount(2);
+        transition.setAutoReverse(true);
+
+        return transition;
+    }
+
 }
