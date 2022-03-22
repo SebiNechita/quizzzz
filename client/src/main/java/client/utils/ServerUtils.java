@@ -252,6 +252,7 @@ public class ServerUtils {
 
         private Thread thread = null;
         private boolean interrupted = false;
+        private boolean persistent = false;
 
         /**
          * @param path     The path of the request
@@ -269,6 +270,16 @@ public class ServerUtils {
          */
         public void setCallback(ServerResponse<T> onResponse) {
             this.onResponse = onResponse;
+        }
+
+        /**
+         * Set whether the long polling should be persistent or not; if it should open a
+         * new request as soon as the server has handled one.
+         *
+         * @param persistent If it should be persistent or not
+         */
+        public void setPersistent(boolean persistent) {
+            this.persistent = persistent;
         }
 
         /**
@@ -306,7 +317,7 @@ public class ServerUtils {
          * @param invocation The invocation to instantiate
          */
         private void poll(Invocation invocation) {
-            thread = new Thread(() -> callback(invocation.invoke(response)));
+            thread = new Thread(() -> callback(invocation.invoke(response), invocation));
             interrupted = false;
             thread.start();
         }
@@ -315,10 +326,17 @@ public class ServerUtils {
          * Used to call the {@code run} method of the callback interface
          *
          * @param packet The packet the server returned
+         * @param source The source invocation which got called
          */
-        private void callback(T packet) {
-            if (onResponse != null && !interrupted) {
-                onResponse.run(packet);
+        private void callback(T packet, Invocation source) {
+            if (!interrupted) {
+                if (onResponse != null) {
+                    onResponse.run(packet);
+                }
+
+                if (persistent) {
+                    poll(source);
+                }
             }
         }
 
