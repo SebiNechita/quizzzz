@@ -112,6 +112,8 @@ public class GameOpenQuestionCtrl extends GameCtrl {
 
         disableJoker(JokerType.REMOVE_ANSWER);
 
+        userInput.setDisable(false);
+
         displayQuestion();
 
         enableListeners();
