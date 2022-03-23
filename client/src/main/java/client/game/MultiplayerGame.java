@@ -3,10 +3,8 @@ package client.game;
 import client.scenes.LobbyCtrl;
 import client.scenes.MainCtrl;
 import client.utils.ServerUtils;
-import packets.EmoteRequestPacket;
-import packets.JoinRequestPacket;
-import packets.JoinResponsePacket;
-import packets.LobbyResponsePacket;
+import javafx.application.Platform;
+import packets.*;
 
 
 public class MultiplayerGame {
@@ -30,25 +28,38 @@ public class MultiplayerGame {
                 JoinResponsePacket.class);
     }
 
-    public LobbyResponsePacket sendEmote(String username, String emoteNo) {
+    public GeneralResponsePacket sendEmote(String username, String emoteNo) {
         return server.postRequest("api/game/emote",
                 new EmoteRequestPacket(username, emoteNo),
-                LobbyResponsePacket.class);
+                GeneralResponsePacket.class);
+    }
+
+    public void getLobbyUpdate() {
+        ServerUtils.LongPollingRequest<LobbyResponsePacket> request
+                = server.longGetRequest("api/game/lobbyEventListener", LobbyResponsePacket.class, new LobbyOnResponse());
+        // set persistent long-polling to true
+        request.setPersistent(true);
+        request.getRequest();
     }
 
     private class LobbyOnResponse implements ServerUtils.ServerResponse<LobbyResponsePacket> {
         @Override
         public void run(LobbyResponsePacket responsePacket) {
             if (responsePacket.getType().equals("Emote")) {
-                main.getCtrl(LobbyCtrl.class).updateEmoji1(responsePacket.getFrom());
+                Platform.runLater(() ->
+                        main.getCtrl(LobbyCtrl.class)
+                                .updateEmoji1(responsePacket.getFrom()));
+            } else if (
+                    responsePacket.getType().equals("Join")) {
+                Platform.runLater(() ->
+                        main.getCtrl(LobbyCtrl.class)
+                                .showJoinMsg(responsePacket.getFrom()));
             }
 
         }
-    }
 
-    public void getLobbyUpdate() {
-        ServerUtils.LongPollingRequest<LobbyResponsePacket> request
-                = server.longGetRequest("api/game/lobbyEventListener", LobbyResponsePacket.class, new LobbyOnResponse());
-        request.getRequest();
     }
 }
+
+
+

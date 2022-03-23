@@ -82,6 +82,16 @@ public class LobbyCtrl extends SceneCtrl {
     }
 
     /**
+     * show message when other player joins the game
+     * @param player
+     */
+    public void showJoinMsg(String player) {
+        chattext = new Text(player + " entered the lobby"+ "\n");
+        chattext.setFont(Font.font("Comic Sans MS", 30));
+        chattextflow.getChildren().add(chattext);
+    }
+
+    /**
      * add the Hearts Eye emoji into the chat
      */
     public void showEmoji1() {

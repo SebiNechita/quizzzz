@@ -18,12 +18,12 @@ public class GameController {
     }
 
     @GetMapping("/lobbyEventListener")
-    public DeferredResult<GeneralResponsePacket> playersInLobby() {
+    public DeferredResult<LobbyResponsePacket> playersInLobby() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = (String) auth.getPrincipal();
 
-        DeferredResult<GeneralResponsePacket> output = new DeferredResult<>();
-        EventCaller<GeneralResponsePacket> eventCaller = new EventCaller(output, username);
+        DeferredResult<LobbyResponsePacket> output = new DeferredResult<>();
+        EventCaller<LobbyResponsePacket> eventCaller = new EventCaller(output, username);
         gameService.waitForPlayerEvent(eventCaller);
         return output;
     }
@@ -46,6 +46,7 @@ public class GameController {
         gameService.onPlayerEvent("Emote", request.getEmoteNo(), request.getUsername());
         return new GeneralResponsePacket(HttpStatus.OK);
     }
+
 
     public static class EventCaller<T extends ResponsePacket> {
         private final DeferredResult<T> result;
