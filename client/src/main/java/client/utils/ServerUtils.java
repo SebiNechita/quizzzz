@@ -169,21 +169,7 @@ public class ServerUtils {
                 RegisterResponsePacket.class);
     }
 
-    /**
-     * Join a player in a lobby
-     * @param username
-     * @return JoinRequestPacket
-     */
-    public ResponsePacket join(String username) {
-        Invocation.Builder template = getClient().target(Main.URL)
-                .path("api/game/join")
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .header("Authorization", Main.TOKEN);
-        return template.post(
-                Entity.entity(new JoinRequestPacket(username), APPLICATION_JSON),
-                JoinResponsePacket.class);
-    }
+
 
 
 

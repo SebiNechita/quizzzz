@@ -1,6 +1,7 @@
 package client.scenes;
 
 import client.Main;
+import client.utils.MultiplayerGame;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import javafx.fxml.FXML;
@@ -32,15 +33,18 @@ public class LobbyCtrl extends SceneCtrl {
     protected HBox emoteContainer;
 
     private Boolean ready;
+    private MultiplayerGame multiGame;
 
     /**
      * Constructor for this Ctrl
      *
      * @param mainCtrl    The parent class, which keeps track of all scenes
      * @param serverUtils The server utils, for communicating with the server
+     * @param multiGame   multigame class
      */
-    public LobbyCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
+    public LobbyCtrl(MainCtrl mainCtrl, ServerUtils serverUtils, MultiplayerGame multiGame) {
         super(mainCtrl, serverUtils);
+        multiGame = new MultiplayerGame(mainCtrl, serverUtils);
     }
 
     /**
@@ -63,7 +67,8 @@ public class LobbyCtrl extends SceneCtrl {
     @OnShowScene
     public void onShowScene() {
 
-        server.join(Main.USERNAME);
+        multiGame.join(Main.USERNAME);
+        multiGame.getLobbyUpdate();
 
         buttonReady.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
         ready = false;
@@ -89,6 +94,16 @@ public class LobbyCtrl extends SceneCtrl {
         iv.setFitWidth(40);
         chattextflow.getChildren().addAll(text, iv, text2);
         //chattextflow.getChildren().addAll(text, emoteContainer.getChildren().get(0),text2);
+    }
+
+    public void updateEmoji1(String from) {
+        Text text = new Text(Main.USERNAME + ": ");
+        text.setFont(Font.font("Comic Sans MS", 30));
+        Text text2 = new Text("\n");
+        ImageView iv = new ImageView("img/emojis/heart_eyes.png");
+        iv.setFitHeight(40);
+        iv.setFitWidth(40);
+        chattextflow.getChildren().addAll(text, iv, text2);
     }
 
     /**
