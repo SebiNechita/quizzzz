@@ -1,43 +1,35 @@
 package server.api.game;
 
 import commons.utils.HttpStatus;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 import packets.GeneralResponsePacket;
 import packets.JoinRequestPacket;
 import packets.JoinResponsePacket;
 
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 @RestController
 @RequestMapping("/api/game")
 public class GameController {
 
-    private final ExecutorService games = Executors.newFixedThreadPool(4);
+    private final GameService gameService;
 
-    @Autowired
-    private List<String> playerList;
+    public GameController(GameService gameService) {
+        this.gameService = gameService;
+    }
 
-    @GetMapping("/lobbyData")
-    public DeferredResult<GeneralResponsePacket> joinGame() {
+    @GetMapping("/lobbyEventListener")
+    public DeferredResult<GeneralResponsePacket> playersInLobby() {
         DeferredResult<GeneralResponsePacket> output = new DeferredResult<>();
-        games.execute(() -> {
-            try {
-                Thread.sleep(60000);
-                output.setResult(new GeneralResponsePacket(HttpStatus.ImATeapot));
-            } catch (InterruptedException ignored) {
-            }
+        Thread thread = new Thread(() -> {
+            output.setResult(new GeneralResponsePacket(HttpStatus.OK));
         });
-
+        gameService.waitForPlayerEvent(thread);
         return output;
     }
 
     @PostMapping("/join")
     public JoinResponsePacket join(@RequestBody JoinRequestPacket request) {
-        playerList.add(request.getUsername());
+        gameService.addPlayer(request.getUsername());
         return new JoinResponsePacket(HttpStatus.OK);
     }
 }

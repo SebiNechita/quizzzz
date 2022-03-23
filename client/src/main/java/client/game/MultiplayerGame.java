@@ -1,11 +1,11 @@
-package client.utils;
+package client.game;
 
 import client.scenes.LobbyCtrl;
 import client.scenes.MainCtrl;
+import client.utils.ServerUtils;
 import packets.JoinRequestPacket;
 import packets.JoinResponsePacket;
 import packets.LobbyResponsePacket;
-import packets.ResponsePacket;
 
 
 public class MultiplayerGame {
@@ -23,18 +23,15 @@ public class MultiplayerGame {
      * @param username
      * @return JoinRequestPacket
      */
-    public ResponsePacket join(String username) {
+    public JoinResponsePacket join(String username) {
         return server.postRequest("api/game/join",
                 new JoinRequestPacket(username),
                 JoinResponsePacket.class);
     }
 
-    public class LobbyOnResponse implements ServerUtils.ServerResponse<LobbyResponsePacket> {
-
+    private class LobbyOnResponse implements ServerUtils.ServerResponse<LobbyResponsePacket> {
         @Override
         public void run(LobbyResponsePacket responsePacket) {
-
-
             if(responsePacket.getType().equals("EMOTE")) {
                 if(responsePacket.getContent().equals("1")){
                     main.getCtrl(LobbyCtrl.class).updateEmoji1(responsePacket.getFrom());
@@ -45,7 +42,7 @@ public class MultiplayerGame {
     }
 
     public void getLobbyUpdate() {
-        ServerUtils.LongPollingRequest request = server.longGetRequest("api/game/update", LobbyResponsePacket.class, new LobbyOnResponse());
+        ServerUtils.LongPollingRequest<LobbyResponsePacket> request = server.longGetRequest("api/game/lobbyEventListener", LobbyResponsePacket.class, new LobbyOnResponse());
         request.getRequest();
     }
 }

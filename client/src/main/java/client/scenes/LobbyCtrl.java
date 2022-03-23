@@ -1,7 +1,7 @@
 package client.scenes;
 
 import client.Main;
-import client.utils.MultiplayerGame;
+import client.game.MultiplayerGame;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import javafx.fxml.FXML;
@@ -42,9 +42,9 @@ public class LobbyCtrl extends SceneCtrl {
      * @param serverUtils The server utils, for communicating with the server
      * @param multiGame   multigame class
      */
-    public LobbyCtrl(MainCtrl mainCtrl, ServerUtils serverUtils, MultiplayerGame multiGame) {
+    public LobbyCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
         super(mainCtrl, serverUtils);
-        multiGame = new MultiplayerGame(mainCtrl, serverUtils);
+        this.multiGame = mainCtrl.getMultiplayerGame();
     }
 
     /**
