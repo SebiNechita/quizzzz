@@ -17,7 +17,6 @@ package server;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import server.user.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +26,7 @@ public class Config {
 
     /**
      * a singleton player list
-     * @return
+     * @return player list
      */
     @Bean
     public List<String> playerList(){

@@ -172,7 +172,7 @@ public class ServerUtils {
     /**
      * Join a player in a lobby
      * @param username
-     * @return
+     * @return JoinRequestPacket
      */
     public ResponsePacket join(String username) {
         Invocation.Builder template = getClient().target(Main.URL)

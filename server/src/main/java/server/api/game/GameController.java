@@ -1,15 +1,12 @@
 package server.api.game;
 
 import commons.utils.HttpStatus;
-import commons.utils.LoggerUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 import packets.GeneralResponsePacket;
 import packets.JoinRequestPacket;
 import packets.JoinResponsePacket;
-import packets.RegisterRequestPacket;
-import server.user.User;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
