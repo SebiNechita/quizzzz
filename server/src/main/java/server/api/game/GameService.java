@@ -1,6 +1,8 @@
 package server.api.game;
 
+import commons.utils.HttpStatus;
 import org.springframework.stereotype.Service;
+import packets.GeneralResponsePacket;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -10,7 +12,7 @@ import java.util.List;
 public class GameService {
 
     private final List<String> playerList;
-    private final List<Thread> playerEventList;
+    private final List<GameController.EventCaller<GeneralResponsePacket>> playerEventList;
 
     public GameService() {
         this.playerList = new ArrayList<>();
@@ -29,13 +31,14 @@ public class GameService {
         return playerList;
     }
 
-    public void waitForPlayerEvent(Thread thread) {
-        playerEventList.add(thread);
+    public void waitForPlayerEvent(GameController.EventCaller<GeneralResponsePacket> eventCaller) {
+        playerEventList.add(eventCaller);
     }
 
     public void onPlayerEvent() {
-        for (Thread thread : playerEventList) {
-            thread.start();
+        for (GameController.EventCaller<GeneralResponsePacket> thread : playerEventList) {
+            thread.run(new GeneralResponsePacket(HttpStatus.OK));
         }
+        playerEventList.clear();
     }
 }
