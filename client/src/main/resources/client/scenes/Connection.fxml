@@ -8,26 +8,26 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.ConnectionCtrl">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #212121;" stylesheets="@../../stylesheets/commonStyle.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.ConnectionCtrl">
     <children>
-        <Text fill="WHITE" layoutX="210.0" layoutY="146.0" strokeType="OUTSIDE" strokeWidth="0.0" text="QUIZZZZ" textAlignment="CENTER" wrappingWidth="859.3333435058594">
+        <Text fx:id="gameName" fill="WHITE" layoutX="210.0" layoutY="146.0" strokeType="OUTSIDE" strokeWidth="0.0" text="QUIZZZZ" textAlignment="CENTER" wrappingWidth="859.3333435058594">
             <font>
                 <Font name="Comic Sans MS" size="120.0" />
             </font>
         </Text>
-        <Button alignment="CENTER" layoutX="501.0" layoutY="509.0" mnemonicParsing="false" onAction="#connectClicked" prefHeight="79.0" prefWidth="278.0" style="-fx-background-radius: 11;" text="Connect" textAlignment="CENTER">
+        <Button fx:id="connectButton" alignment="CENTER" layoutX="501.0" layoutY="509.0" mnemonicParsing="false" onAction="#connectClicked" prefHeight="79.0" prefWidth="278.0" style="-fx-background-radius: 11;" text="Connect" textAlignment="CENTER">
             <font>
                 <Font name="Comic Sans MS" size="40.0" />
             </font>
         </Button>
-      <Text fx:id="message" fill="#fc6363" layoutX="706.0" layoutY="415.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="312.0">
+      <Text fx:id="message" fill="#fc6363" layoutX="652.0" layoutY="451.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="312.0">
          <font>
             <Font name="Comic Sans MS" size="24.0" />
          </font>
       </Text>
-      <HBox alignment="CENTER" layoutX="249.0" layoutY="310.0" prefHeight="100.0" prefWidth="782.0" spacing="20.0">
+      <HBox fx:id="text" alignment="CENTER" layoutX="249.0" layoutY="310.0" prefHeight="100.0" prefWidth="782.0" spacing="20.0">
          <children>
-              <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter the URL of your server:">
+              <Text fx:id="text" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter the URL of your server:">
                   <font>
                       <Font name="Comic Sans MS" size="30.0" />
                   </font>

@@ -41,20 +41,21 @@ public class LoginCtrl extends SceneCtrl {
 
     /**
      * Logs in the user with the account data
-     * @param userName - the username of the user
-     * @param password - the password of the user
+     * @param username - the username of the user
+     * @param passwordEntered - the password of the user
      */
-    public void login(String userName, String password) {
-        String result = server.getToken(userName, password);
+    public void login(String username, String passwordEntered) {
+        String result = server.getToken(username, passwordEntered);
         //the return string is null if the login is unsuccessful.
         if (result != null) {
             Main.TOKEN = result;
             //if the result string is not empty this means that userName.getText() is valid
-            Main.USERNAME = userName;
+            Main.USERNAME = username;
             main.showScene(MainMenuCtrl.class);
-        }
-        else{
-            error.setText("Could not log in.");
+        } else {
+            userName.setStyle("-fx-background-color: #fc6363");
+            password.setStyle("-fx-background-color: #fc6363");
+            error.setText("Could not log in");
         }
     }
 

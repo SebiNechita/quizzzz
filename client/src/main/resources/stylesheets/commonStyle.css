@@ -1,0 +1,50 @@
+@font-face {
+    src: url("../fonts/PressStart2P-Regular.ttf");
+}
+
+@font-face {
+    src: url("../fonts/AmaticSC-Bold.ttf");
+}
+
+@font-face {
+    src: url("../fonts/AmaticSC-Regular.ttf");
+}
+
+#gameName {
+    -fx-font-family: "Press Start 2P";
+    -fx-font-size: 120;
+}
+
+#yourUsername, #username, #passwordLabel, #usernameLabel, #helpTitle {
+    -fx-font-family: "Amatic SC";
+    -fx-font-size: 50;
+}
+
+
+#userName, #password, #confirmPassword, #confirmPasswordLabel, #text, #url, #message, #error {
+    -fx-font-family: "Amatic SC";
+    -fx-font-size: 40;
+}
+
+#registerText {
+    -fx-font-family: "Amatic SC";
+    -fx-font-size: 30;
+}
+
+#registerText:hover {
+    -fx-underline: true;
+}
+
+#loginButton, #backButton, #registerButton, #connectButton {
+    -fx-font-family: "Amatic SC";
+    -fx-font-size: 45;
+}
+
+#helpButton:hover {
+    -fx-opacity: 0.1;
+    -fx-background-color: red;
+}
+
+.button:hover {
+    -fx-opacity: 0.8;
+}

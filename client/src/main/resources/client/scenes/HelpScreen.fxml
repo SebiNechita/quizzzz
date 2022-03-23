@@ -1,40 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
-<?import javafx.scene.text.TextFlow?>
 
 <AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.HelpCtrl">
    <children>
-      <Pane layoutX="48.0" layoutY="87.0" prefHeight="498.0" prefWidth="1190.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 11;">
-         <children>
-            <TextFlow layoutX="3.0" layoutY="9.0" prefHeight="482.0" prefWidth="1182.0">
-               <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="-Singleplayer&#10;&#10; There are 20 questions and for each the player has 10 seconds to respond. At the end, the player will see the result and will also see a leaderboard in which THEY can see where they stand among other players. &#10;&#10;-Multiplayer&#10;&#10; The player goes to the waiting room and then a session will start. The number of players in a session is not limited. During the game, players can choose between three “JOKERS” (only once per session). These “JOKERS” can improve the performance of the player. At the end of the game, they can see a leaderboard that shows the rank and points everyone has acquired. &#10;" wrappingWidth="1181.2734375">
-                     <font>
-                        <Font name="Comic Sans MS" size="27.0" />
-                     </font>
-                  </Text>
-               </children>
-            </TextFlow>
-         </children>
-      </Pane>
       <Pane layoutX="49.0" layoutY="14.0" prefHeight="58.0" prefWidth="1190.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 11;">
          <children>
-            <Text layoutX="550.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="HELP" textAlignment="CENTER">
+            <Text fx:id="helpTitle" layoutX="550.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="HELP" textAlignment="CENTER">
                <font>
                   <Font name="Comic Sans MS" size="36.0" />
                </font>
             </Text>
          </children>
       </Pane>
-      <Button layoutX="600.0" layoutY="612.0" mnemonicParsing="false" onAction="#showHome" style="-fx-background-color: #FFFFFF; -fx-background-radius: 11;" text="Back">
+      <ScrollPane layoutX="45.0" layoutY="83.0" prefHeight="516.0" prefWidth="1190.0" style="-fx-background-radius: 11;">
+         <content>
+            <Text fx:id="text" strokeType="OUTSIDE" strokeWidth="0.0" text="-Singleplayer&#10;&#10; There are 20 questions and for each the player has 10 seconds to respond. At the end, the player will see the result and will also see a leaderboard in which THEY can see where they stand among other players. &#10;&#10;-Multiplayer&#10;&#10; The player goes to the waiting room and then a session will start. The number of players in a session is not limited. During the game, players can choose between three “JOKERS” (only once per session). These “JOKERS” can improve the performance of the player. At the end of the game, they can see a leaderboard that shows the rank and points everyone has acquired. &#10;" wrappingWidth="1181.2734375">
+               <font>
+                  <Font name="Comic Sans MS" size="27.0" />
+               </font>
+            </Text>
+         </content>
+      </ScrollPane>
+      <Button fx:id="backButton" layoutX="600.0" layoutY="612.0" mnemonicParsing="false" onAction="#showHome" style="-fx-background-color: #FFFFFF; -fx-background-radius: 11;" text="Back">
          <font>
             <Font name="Comic Sans MS" size="25.0" />
          </font>
       </Button>
    </children>
+   <stylesheets>
+      <URL value="@../../stylesheets/commonStyle.css" />
+      <URL value="@../../stylesheets/helpScreenStyle.css" />
+   </stylesheets>
 </AnchorPane>
