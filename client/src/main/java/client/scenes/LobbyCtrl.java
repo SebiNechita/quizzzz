@@ -40,7 +40,6 @@ public class LobbyCtrl extends SceneCtrl {
      *
      * @param mainCtrl    The parent class, which keeps track of all scenes
      * @param serverUtils The server utils, for communicating with the server
-     * @param multiGame   multigame class
      */
     public LobbyCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
         super(mainCtrl, serverUtils);
@@ -93,11 +92,13 @@ public class LobbyCtrl extends SceneCtrl {
         iv.setFitHeight(40);
         iv.setFitWidth(40);
         chattextflow.getChildren().addAll(text, iv, text2);
+        //send pressed emote to server
+        multiGame.sendEmote(Main.USERNAME, "1");
         //chattextflow.getChildren().addAll(text, emoteContainer.getChildren().get(0),text2);
     }
 
-    public void updateEmoji1(String from) {
-        Text text = new Text(Main.USERNAME + ": ");
+    public void updateEmoji1(String sender) {
+        Text text = new Text(sender + ": ");
         text.setFont(Font.font("Comic Sans MS", 30));
         Text text2 = new Text("\n");
         ImageView iv = new ImageView("img/emojis/heart_eyes.png");

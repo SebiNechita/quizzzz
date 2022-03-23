@@ -4,7 +4,7 @@ import commons.utils.HttpStatus;
 
 import java.util.Objects;
 
-public class LobbyResponsePacket extends ResponsePacket {
+public class LobbyResponsePacket extends GeneralResponsePacket {
     String type;
     String content;
     String from;
@@ -23,6 +23,7 @@ public class LobbyResponsePacket extends ResponsePacket {
 
     public LobbyResponsePacket() {
     }
+
 
     public LobbyResponsePacket(String type, String content, String from) {
         this.type = type;

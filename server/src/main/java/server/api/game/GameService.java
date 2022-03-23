@@ -1,8 +1,8 @@
 package server.api.game;
 
-import commons.utils.HttpStatus;
 import org.springframework.stereotype.Service;
 import packets.GeneralResponsePacket;
+import packets.LobbyResponsePacket;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -35,9 +35,12 @@ public class GameService {
         playerEventList.add(eventCaller);
     }
 
-    public void onPlayerEvent() {
+    public void onPlayerEvent(String type, String content, String from) {
         for (GameController.EventCaller<GeneralResponsePacket> thread : playerEventList) {
-            thread.run(new GeneralResponsePacket(HttpStatus.OK));
+            if(type.equals("Emote")) {
+                thread.run(new LobbyResponsePacket("Emote", content, from));
+            }
+
         }
         playerEventList.clear();
     }
