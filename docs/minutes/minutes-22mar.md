@@ -31,7 +31,7 @@ Everyone agrees.
     More JavaDoc and more tests should be added, manual testing for the client: see the rubric. There can also be tests for added for the logic side. Server-side is lacking tests in general.
     * Reviewing:\
     Most people only have one merge request, try to get two. Don't postpone merging. Kim should commend and approve more. There can be an agreement that a person should review a merge request in a limited amount of time. The build server still fails a lot: try to run the pipeline locally.
-- **Discuss the things that we were not able to finish during this sprint**\
+- **Discuss the things that we were not able to finish during this sprint**
     * We can use long polling as an alternative to WebSockets. Jegor also recommends long-polling. Secure WebSockets seem complicated and there is also not much information available about the.m
 - **Other notable mentions**
     * Issues should be mainly assigned to one person: it is ok if someone helps a bit, but there should be one person who does most of the work.
