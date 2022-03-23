@@ -35,10 +35,19 @@ import java.util.List;
 @EnableConfigurationProperties
 public class Main {
 
+    /**
+     * runs the server
+     * @param args - arguments passed by command line while starting a program
+     */
     public static void main(String[] args) {
         SpringApplication.run(Main.class, args);
     }
 
+    /**
+     * parses a json file when the application starts
+     * @param activityService - the activity service
+     * @return a lambda expression which parses a json file
+     */
     @Bean
     CommandLineRunner runner(ActivityService activityService) {
         return args -> {
@@ -52,7 +61,7 @@ public class Main {
             try {
                 List<Activity> activities = mapper.readValue(inputStream, typeReference);
                 activityService.save(activities);
-                System.out.println("Users Saved!");
+                System.out.println("Activities Saved!");
             } catch (IOException e) {
                 System.out.println("Unable to save activities: " + e.getMessage());
             }
