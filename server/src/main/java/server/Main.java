@@ -15,10 +15,20 @@
  */
 package server;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import commons.questions.Activity;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import server.api.game.ActivityService;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 
 @SpringBootApplication
 @EntityScan(basePackages = { "commons", "server" })
@@ -27,5 +37,25 @@ public class Main {
 
     public static void main(String[] args) {
         SpringApplication.run(Main.class, args);
+    }
+
+    @Bean
+    CommandLineRunner runner(ActivityService activityService) {
+        return args -> {
+            // read json and write to db
+            ObjectMapper mapper = new ObjectMapper();
+
+            TypeReference<List<Activity>> typeReference = new TypeReference<List<Activity>>() {};
+
+            InputStream inputStream = TypeReference.class.getResourceAsStream("activity-bank/activities.json");
+
+            try {
+                List<Activity> activities = mapper.readValue(inputStream, typeReference);
+                activityService.save(activities);
+                System.out.println("Activities Saved!");
+            } catch (IOException e) {
+                System.out.println("Unable to save activities: " + e.getMessage());
+            }
+        };
     }
 }
