@@ -54,14 +54,17 @@ public class LobbyCtrl extends SceneCtrl {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
     }
+
 
     /**
      * Gets called when the scene is actually shown to the user
      */
     @OnShowScene
     public void onShowScene() {
+
+        server.join(Main.USERNAME);
+
         buttonReady.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
         ready = false;
         playertext = new Text(Main.USERNAME + "\n");
@@ -71,6 +74,7 @@ public class LobbyCtrl extends SceneCtrl {
         chattext = new Text("Quizzzz: Welcome to the game, " + Main.USERNAME + "! " + "\n");
         chattext.setFont(Font.font("Comic Sans MS", 30));
         chattextflow.getChildren().add(chattext);
+
     }
 
     /**
