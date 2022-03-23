@@ -47,12 +47,12 @@ public class Main {
 
             TypeReference<List<Activity>> typeReference = new TypeReference<List<Activity>>() {};
 
-            InputStream inputStream = TypeReference.class.getResourceAsStream("activity-bank/activities.json");
+            InputStream inputStream = TypeReference.class.getResourceAsStream("/activity-bank/activities.json");
 
             try {
                 List<Activity> activities = mapper.readValue(inputStream, typeReference);
                 activityService.save(activities);
-                System.out.println("Activities Saved!");
+                System.out.println("Users Saved!");
             } catch (IOException e) {
                 System.out.println("Unable to save activities: " + e.getMessage());
             }
