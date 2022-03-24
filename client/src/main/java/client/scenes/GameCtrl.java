@@ -14,15 +14,18 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Button;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -349,7 +352,7 @@ public abstract class GameCtrl extends SceneCtrl {
 
         timer = timerAnim(timeLeftSlider);
 
-        timeLeftSlider.setBackground(new Background(new BackgroundFill(new Color(0.160, 0.729, 0.901, 1), new CornerRadii(6), Insets.EMPTY)));
+        timeLeftSlider.setBackground(new Background(new BackgroundFill(new Color(0.160, 0.729, 0.901, 1), new CornerRadii(50), Insets.EMPTY)));
         timeMultiplier = 1d;
         timer.playFromStart();
         onTimerEnd();
@@ -590,6 +593,35 @@ public abstract class GameCtrl extends SceneCtrl {
      */
     private int lerp(int start, int end, double time) {
         return (int) Math.round(start + (end - start) * time);
+    }
+
+
+    /**
+     * Rounds the image
+     * Source: https://stackoverflow.com/a/56303884/9957954
+     * @param imageView imageView in which the image will be viewed
+     */
+    public void setRoundedImage(ImageView imageView) {
+        Rectangle clip = new Rectangle(
+                imageView.getFitWidth(), imageView.getFitHeight()
+        );
+        clip.setArcWidth(40);
+        clip.setArcHeight(40);
+        imageView.setClip(clip);
+
+        // snapshot the rounded image.
+        SnapshotParameters parameters = new SnapshotParameters();
+        parameters.setFill(Color.TRANSPARENT);
+        WritableImage image = imageView.snapshot(parameters, null);
+
+        // remove the rounding clip so that our effect can show through.
+        imageView.setClip(null);
+
+        // apply a shadow effect.
+        imageView.setEffect(new DropShadow(20, Color.BLACK));
+
+        // store the rounded image in the imageView.
+        imageView.setImage(image);
     }
 
     /**

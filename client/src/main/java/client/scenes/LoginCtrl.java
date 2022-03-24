@@ -51,10 +51,13 @@ public class LoginCtrl extends SceneCtrl {
             Main.TOKEN = result;
             //if the result string is not empty this means that userName.getText() is valid
             Main.USERNAME = username;
+            userName.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 50");
+            password.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 50");
+            error.setText("");
             main.showScene(MainMenuCtrl.class);
         } else {
-            userName.setStyle("-fx-background-color: #fc6363");
-            password.setStyle("-fx-background-color: #fc6363");
+            userName.setStyle("-fx-background-color: #fc6363; -fx-background-radius: 50");
+            password.setStyle("-fx-background-color: #fc6363; -fx-background-radius: 50");
             error.setText("Could not log in");
         }
     }

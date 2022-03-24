@@ -173,7 +173,7 @@ public class ServerUtils {
                 .header("Authorization", Main.TOKEN)
                 .get(ImageResponsePacket.class);
 
-        return new Image(new ByteArrayInputStream(image.getImageByte()));
+        return new Image(new ByteArrayInputStream(image.getImageByte()), 240, 143, false, false);
     }
 
     /**

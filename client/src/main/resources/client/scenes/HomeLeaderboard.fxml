@@ -9,9 +9,9 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.SingleplayerLeaderboardCtrl">
-      <Rectangle arcHeight="20.0" arcWidth="20.0" fill="#e1e1e1" height="462.0" layoutX="139.0" layoutY="141.0" stroke="BLACK" strokeLineCap="ROUND" strokeType="INSIDE" strokeWidth="0.0" width="1013.0" />
-      <Rectangle arcHeight="20.0" arcWidth="20.0" fill="#e1e1e1" height="79.0" layoutX="139.0" layoutY="37.0" stroke="BLACK" strokeLineCap="ROUND" strokeType="INSIDE" strokeWidth="0.0" width="1015.0" />
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #212121;" stylesheets="@../../stylesheets/commonStyle.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.SingleplayerLeaderboardCtrl">
+      <Rectangle arcHeight="20.0" arcWidth="20.0" fill="#e1e1e1" height="462.0" layoutX="139.0" layoutY="141.0" stroke="BLACK" strokeLineCap="ROUND" strokeType="INSIDE" strokeWidth="0.0" style="-fx-arc-height: 50; -fx-arc-width: 50;" width="1013.0" />
+      <Rectangle arcHeight="20.0" arcWidth="20.0" fill="#e1e1e1" height="79.0" layoutX="139.0" layoutY="37.0" stroke="BLACK" strokeLineCap="ROUND" strokeType="INSIDE" strokeWidth="0.0" style="-fx-arc-height: 50; -fx-arc-width: 50;" width="1015.0" />
    <StackPane layoutX="181.0" layoutY="180.0" prefHeight="392.0" prefWidth="931.0">
       <children>
             <TableView fx:id="table" prefHeight="404.0" prefWidth="961.0" stylesheets="@../../stylesheets/leaderboardStyle.css">
@@ -24,21 +24,21 @@
             </columnResizePolicy>
             </TableView>
       </children></StackPane>
-      <Text layoutX="504.0" layoutY="94.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Single Player Leaderboard">
+      <Text layoutX="395.0" layoutY="92.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Single Player Leaderboard">
          <font>
-            <Font name="Amatic SC Regular" size="46.0" />
+            <Font name="Comic Sans MS" size="40.0" />
          </font>
       </Text>
-      <Button layoutX="528.0" layoutY="638.0" mnemonicParsing="false" onAction="#showHome" prefHeight="49.0" prefWidth="108.0" text="Back">
+      <Button layoutX="395.0" layoutY="632.0" mnemonicParsing="false" onAction="#showHome" prefHeight="56.0" prefWidth="158.0" style="-fx-background-radius: 50;" text="Back">
       <font>
-         <Font name="Amatic SC Regular" size="30.0" />
+         <Font name="Comic Sans MS" size="30.0" />
       </font></Button>
-      <Button layoutX="702.0" layoutY="638.0" mnemonicParsing="false" onAction="#refresh" prefHeight="49.0" prefWidth="108.0" text="Refresh">
+      <Button layoutX="726.0" layoutY="632.0" mnemonicParsing="false" onAction="#refresh" prefHeight="56.0" prefWidth="158.0" style="-fx-background-radius: 50;" text="Refresh">
       <font>
-         <Font name="Amatic SC Regular" size="30.0" />
+         <Font name="Comic Sans MS" size="30.0" />
       </font></Button>
-   <Text fx:id="rankInfo" layoutX="623.0" layoutY="172.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Your rank:">
+   <Text fx:id="rankInfo" layoutX="567.0" layoutY="174.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Your rank:">
       <font>
-         <Font name="Amatic SC Regular" size="30.0" />
+         <Font name="Comic Sans MS" size="30.0" />
       </font></Text>
 </AnchorPane>

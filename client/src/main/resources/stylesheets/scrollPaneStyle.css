@@ -1,11 +1,3 @@
-@font-face {
-    src: url("../fonts/AmaticSC-Bold.ttf");
-}
-
-@font-face {
-    src: url("../fonts/AmaticSC-Regular.ttf");
-}
-
 .scroll-bar:vertical,
 .scroll-bar:vertical .track,
 .scroll-bar:vertical .track-background,

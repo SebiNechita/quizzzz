@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ScrollPane?>
@@ -14,7 +15,7 @@
 
 <AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.LobbyCtrl">
    <children>
-      <AnchorPane layoutX="537.0" layoutY="37.0" prefHeight="47.0" prefWidth="200.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 11;" AnchorPane.leftAnchor="55.0" AnchorPane.rightAnchor="55.0">
+      <AnchorPane layoutX="537.0" layoutY="37.0" prefHeight="47.0" prefWidth="200.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 50;" AnchorPane.leftAnchor="55.0" AnchorPane.rightAnchor="55.0">
          <children>
             <Text layoutX="556.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Waiting Room" AnchorPane.leftAnchor="557.0" AnchorPane.rightAnchor="557.0">
                <font>
@@ -23,14 +24,14 @@
             </Text>
          </children>
       </AnchorPane>
-      <AnchorPane layoutX="45.0" layoutY="393.0" prefHeight="70.0" prefWidth="1319.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 11;" AnchorPane.bottomAnchor="55.0" AnchorPane.leftAnchor="55.0" AnchorPane.rightAnchor="55.0">
+      <AnchorPane layoutX="45.0" layoutY="393.0" prefHeight="70.0" prefWidth="1319.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 50;" AnchorPane.bottomAnchor="55.0" AnchorPane.leftAnchor="55.0" AnchorPane.rightAnchor="55.0">
          <children>
             <Button fx:id="buttonReady" layoutX="29.0" layoutY="11.0" mnemonicParsing="false" onAction="#makeButtonReady" prefHeight="46.0" prefWidth="134.0" text="Ready" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="12.0">
                <font>
                   <Font name="Comic Sans MS" size="22.0" />
                </font>
             </Button>
-            <HBox fx:id="emoteContainer" alignment="CENTER_RIGHT" layoutX="374.0" layoutY="6.0" prefHeight="59.0" prefWidth="403.0" spacing="15.0" style="-fx-background-color: #666; -fx-background-radius: 10;">
+            <HBox fx:id="emoteContainer" alignment="CENTER_RIGHT" layoutX="374.0" layoutY="6.0" prefHeight="59.0" prefWidth="403.0" spacing="15.0" style="-fx-background-color: #666; -fx-background-radius: 50;">
                <children>
                   <ImageView fx:id="emoji1" fitHeight="40.0" fitWidth="40.0" onMouseClicked="#showEmoji1" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -112,7 +113,7 @@
             </HBox>
             <Button layoutX="192.0" layoutY="23.0" mnemonicParsing="false" onAction="#showHome" prefHeight="46.0" prefWidth="137.0" text="Back" AnchorPane.bottomAnchor="12.0" AnchorPane.topAnchor="12.0">
                <font>
-                  <Font size="22.0" />
+                  <Font name="Comic Sans MS" size="22.0" />
                </font>
             </Button>
          </children>
@@ -133,9 +134,9 @@
       </AnchorPane>
       <AnchorPane layoutX="743.0" layoutY="109.0" prefHeight="464.0" prefWidth="627.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 11;">
          <children>
-            <ScrollPane layoutX="4.0" layoutY="60.0" prefHeight="384.0" prefWidth="623.0">
+            <ScrollPane layoutX="4.0" layoutY="60.0" prefHeight="384.0" prefWidth="619.0">
                <content>
-                  <TextFlow fx:id="chattextflow" prefHeight="364.0" prefWidth="622.0" />
+                  <TextFlow fx:id="chattextflow" prefHeight="364.0" prefWidth="607.0" />
                </content>
             </ScrollPane>
             <Text layoutX="39.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Chatroom:">
@@ -146,4 +147,7 @@
          </children>
       </AnchorPane>
    </children>
+   <stylesheets>
+      <URL value="@../../stylesheets/scrollPaneStyle.css" />
+   </stylesheets>
 </AnchorPane>

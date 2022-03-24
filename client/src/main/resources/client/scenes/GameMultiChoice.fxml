@@ -17,7 +17,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.GameMultiChoiceCtrl">
     <children>
-        <HBox fx:id="progressBar" alignment="CENTER" fillHeight="false" layoutX="345.0" layoutY="14.0" prefHeight="35.0" prefWidth="591.0" spacing="5.0" style="-fx-background-color: #888; -fx-background-radius: 8;">
+        <HBox fx:id="progressBar" alignment="CENTER" fillHeight="false" layoutX="345.0" layoutY="14.0" prefHeight="35.0" prefWidth="591.0" spacing="5.0" style="-fx-background-color: #888; -fx-background-radius: 50;">
             <children>
                 <Circle fill="WHITE" radius="12.0" stroke="BLACK" strokeType="INSIDE" />
                 <Circle fill="WHITE" radius="12.0" stroke="BLACK" strokeType="INSIDE" />
@@ -41,16 +41,16 @@
                 <Circle fill="WHITE" radius="12.0" stroke="BLACK" strokeType="INSIDE" />
             </children>
         </HBox>
-        <Text fx:id="question" fill="WHITE" layoutX="241.0" layoutY="128.0" strokeType="OUTSIDE" strokeWidth="0.0" text="The quick brown fox jumps over the lazy dog?" textAlignment="CENTER" wrappingWidth="800.0">
+        <Text fx:id="question" fill="WHITE" layoutX="239.0" layoutY="128.0" strokeType="OUTSIDE" strokeWidth="0.0" text="The quick brown fox jumps over the lazy dog?" textAlignment="CENTER" wrappingWidth="800.0">
             <font>
                 <Font name="Comic Sans MS" size="36.0" />
             </font>
         </Text>
         <HBox fx:id="optionsContainer" alignment="CENTER" layoutX="221.0" layoutY="235.0" prefHeight="250.0" prefWidth="860.0" spacing="30.0">
             <children>
-                <AnchorPane prefHeight="250.0" prefWidth="250.0" style="-fx-background-color: #fff; -fx-background-radius: 10;">
+                <AnchorPane prefHeight="250.0" prefWidth="250.0" style="-fx-background-color: #fff; -fx-background-radius: 40;">
                     <children>
-                        <ImageView fx:id="image1" fitHeight="160.0" fitWidth="250.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <ImageView fx:id="image1" fitHeight="143.0" fitWidth="230.0" layoutX="10.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="14.0" />
                         <VBox alignment="CENTER" layoutY="150.0" prefHeight="100.0" prefWidth="250.0">
                             <children>
                                 <Text fx:id="choice1" strokeType="OUTSIDE" strokeWidth="0.0" text="The quick brown fox jumps over the lazy dog" textAlignment="CENTER" wrappingWidth="250.0">
@@ -62,9 +62,9 @@
                         </VBox>
                     </children>
                 </AnchorPane>
-                <AnchorPane prefHeight="250.0" prefWidth="250.0" style="-fx-background-color: #fff; -fx-background-radius: 10;">
+                <AnchorPane prefHeight="250.0" prefWidth="250.0" style="-fx-background-color: #fff; -fx-background-radius: 40;">
                     <children>
-                        <ImageView fx:id="image2" fitHeight="160.0" fitWidth="250.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <ImageView fx:id="image2" fitHeight="143.0" fitWidth="230.0" layoutX="10.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="14.0" />
                         <VBox alignment="CENTER" layoutY="150.0" prefHeight="100.0" prefWidth="250.0">
                             <children>
                                 <Text fx:id="choice2" strokeType="OUTSIDE" strokeWidth="0.0" text="The quick brown fox jumps over the lazy dog" textAlignment="CENTER" wrappingWidth="250.0">
@@ -76,9 +76,9 @@
                         </VBox>
                     </children>
                 </AnchorPane>
-                <AnchorPane prefHeight="250.0" prefWidth="250.0" style="-fx-background-color: #fff; -fx-background-radius: 10;">
+                <AnchorPane prefHeight="250.0" prefWidth="250.0" style="-fx-background-color: #fff; -fx-background-radius: 40;">
                     <children>
-                        <ImageView fx:id="image3" fitHeight="160.0" fitWidth="250.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <ImageView fx:id="image3" fitHeight="143.0" fitWidth="230.0" layoutX="10.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="14.0" />
                         <VBox alignment="CENTER" layoutY="150.0" prefHeight="100.0" prefWidth="250.0" style="-fx-background-radius: 8;">
                             <children>
                                 <Text fx:id="choice3" strokeType="OUTSIDE" strokeWidth="0.0" text="The quick brown fox jumps over the lazy dog" textAlignment="CENTER" wrappingWidth="250.0">
@@ -97,12 +97,12 @@
                 <Font name="Comic Sans MS" size="30.0" />
             </font>
         </Text>
-        <AnchorPane fx:id="timeLeftBar" layoutX="391.0" layoutY="686.0" prefHeight="20.0" prefWidth="500.0" style="-fx-background-color: #525252; -fx-background-radius: 6;">
+        <AnchorPane fx:id="timeLeftBar" layoutX="391.0" layoutY="686.0" prefHeight="20.0" prefWidth="500.0" style="-fx-background-color: #525252; -fx-background-radius: 50;">
             <children>
-                <AnchorPane prefHeight="20.0" prefWidth="25.0" style="-fx-background-color: #29bae6; -fx-background-radius: 6;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                <AnchorPane prefHeight="20.0" prefWidth="25.0" style="-fx-background-color: #29bae6; -fx-background-radius: 50;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
             </children>
         </AnchorPane>
-        <Text fx:id="timeLeftText" fill="WHITE" layoutX="565.0" layoutY="672.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time left: 10s">
+        <Text fx:id="timeLeftText" fill="WHITE" layoutX="532.0" layoutY="672.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time left: 10s">
             <font>
                 <Font name="Comic Sans MS Bold" size="24.0" />
             </font>
@@ -119,24 +119,24 @@
             </InnerShadow>
          </effect>
         </Button>
-      <Text fx:id="pointsGainedText" fill="WHITE" layoutX="367.0" layoutY="547.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You gained 170 points" textAlignment="CENTER" wrappingWidth="563.671875">
+      <Text fx:id="pointsGainedText" fill="WHITE" layoutX="351.0" layoutY="545.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You gained 170 points" textAlignment="CENTER" wrappingWidth="563.671875">
          <font>
             <Font name="Comic Sans MS" size="40.0" />
          </font>
       </Text>
-      <Text fx:id="answerBonusText" fill="WHITE" layoutX="465.0" layoutY="579.0" strokeType="OUTSIDE" strokeWidth="0.0" text="+100 for correct option" textAlignment="CENTER" wrappingWidth="371.140625">
+      <Text fx:id="answerBonusText" fill="WHITE" layoutX="438.0" layoutY="586.0" strokeType="OUTSIDE" strokeWidth="0.0" text="+100 for correct option" textAlignment="CENTER" wrappingWidth="371.140625">
          <font>
             <Font name="Comic Sans MS" size="17.0" />
          </font>
       </Text>
-      <Text fx:id="timeBonusText" fill="WHITE" layoutX="465.0" layoutY="603.0" strokeType="OUTSIDE" strokeWidth="0.0" text="+70 time bonus" textAlignment="CENTER" wrappingWidth="371.140625">
+      <Text fx:id="timeBonusText" fill="WHITE" layoutX="446.0" layoutY="620.0" strokeType="OUTSIDE" strokeWidth="0.0" text="+70 time bonus" textAlignment="CENTER" wrappingWidth="371.140625">
          <font>
             <Font name="Comic Sans MS" size="17.0" />
          </font>
       </Text>
-      <AnchorPane layoutY="160.0" maxHeight="400.0" maxWidth="150.0" minHeight="400.0" minWidth="150.0" prefHeight="400.0" prefWidth="150.0" style="-fx-background-color: #666; -fx-background-radius: 0 10 10 0;">
+      <AnchorPane layoutY="160.0" maxHeight="400.0" maxWidth="150.0" minHeight="400.0" minWidth="150.0" prefHeight="400.0" prefWidth="150.0" style="-fx-background-color: #666; -fx-background-radius: 0 30 30 0;">
          <children>
-            <Text fx:id="jokersText" fill="WHITE" layoutX="38.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Jokers" textAlignment="CENTER">
+            <Text fx:id="jokersText" fill="WHITE" layoutX="24.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Jokers" textAlignment="CENTER">
                <font>
                   <Font name="Comic Sans MS" size="28.0" />
                </font>
@@ -246,7 +246,7 @@
             </AnchorPane>
          </children>
       </VBox>
-      <HBox fx:id="emoteContainer" alignment="CENTER_RIGHT" layoutX="978.0" layoutY="649.0" prefHeight="59.0" prefWidth="297.0" spacing="15.0" style="-fx-background-color: #666; -fx-background-radius: 10;">
+      <HBox fx:id="emoteContainer" alignment="CENTER_RIGHT" layoutX="978.0" layoutY="649.0" prefHeight="59.0" prefWidth="297.0" spacing="15.0" style="-fx-background-color: #666; -fx-background-radius: 50;">
          <children>
             <ImageView fx:id="JOY" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                <image>

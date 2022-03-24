@@ -15,17 +15,17 @@
                 <Font name="Comic Sans MS" size="120.0" />
             </font>
         </Text>
-        <Text fx:id="usernameLabel" fill="WHITE" layoutX="360.0" layoutY="265.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username" textAlignment="RIGHT" wrappingWidth="200.0">
+        <Text fx:id="usernameLabel" fill="WHITE" layoutX="360.0" layoutY="270.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username" textAlignment="RIGHT" wrappingWidth="200.0">
             <font>
                 <Font name="Comic Sans MS" size="26.0" />
             </font>
         </Text>
-        <Button fx:id="registerButton" layoutX="501.0" layoutY="485.0" mnemonicParsing="false" onAction="#registerButtonClicked" prefHeight="79.0" prefWidth="278.0" style="-fx-background-radius: 11;" text="Register" textAlignment="CENTER">
+        <Button fx:id="registerButton" layoutX="501.0" layoutY="498.0" mnemonicParsing="false" onAction="#registerButtonClicked" prefHeight="74.0" prefWidth="278.0" style="-fx-background-radius: 40;" text="Register" textAlignment="CENTER">
             <font>
                 <Font name="Comic Sans MS" size="39.0" />
             </font>
         </Button>
-        <TextField fx:id="userName" alignment="TOP_CENTER" layoutX="600.0" layoutY="203.0" prefHeight="50.0" prefWidth="312.0" promptText="enter name" style="-fx-background-radius: 11;">
+        <TextField fx:id="userName" alignment="TOP_CENTER" layoutX="600.0" layoutY="227.0" prefHeight="50.0" prefWidth="312.0" promptText="enter name" style="-fx-background-radius: 40;">
             <font>
                 <Font name="Comic Sans MS" size="26.0" />
             </font>
@@ -33,12 +33,12 @@
                 <Insets />
             </opaqueInsets>
         </TextField>
-        <Text fx:id="passwordLabel" fill="WHITE" layoutX="360.0" layoutY="354.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password" textAlignment="RIGHT" wrappingWidth="200.0">
+        <Text fx:id="passwordLabel" fill="WHITE" layoutX="360.0" layoutY="359.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password" textAlignment="RIGHT" wrappingWidth="200.0">
             <font>
                 <Font name="Comic Sans MS" size="26.0" />
             </font>
         </Text>
-        <PasswordField fx:id="password" alignment="TOP_CENTER" layoutX="600.0" layoutY="291.0" prefHeight="50.0" prefWidth="312.0" promptText="enter password" style="-fx-background-radius: 11;">
+        <PasswordField fx:id="password" alignment="TOP_CENTER" layoutX="600.0" layoutY="313.0" prefHeight="50.0" prefWidth="312.0" promptText="enter password" style="-fx-background-radius: 40;">
             <font>
                 <Font name="Comic Sans MS" size="26.0" />
             </font>
@@ -46,12 +46,12 @@
                 <Insets />
             </opaqueInsets>
         </PasswordField>
-        <Text fx:id="confirmPasswordLabel" fill="WHITE" layoutX="328.0" layoutY="427.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Confirm password" textAlignment="RIGHT" wrappingWidth="231.13668823242188">
+        <Text fx:id="confirmPasswordLabel" fill="WHITE" layoutX="308.0" layoutY="443.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Confirm password" textAlignment="CENTER">
             <font>
                 <Font name="Comic Sans MS" size="26.0" />
             </font>
         </Text>
-        <PasswordField fx:id="confirmPassword" alignment="TOP_CENTER" layoutX="600.0" layoutY="378.0" prefHeight="58.0" prefWidth="312.0" promptText="confirm password" style="-fx-background-radius: 11;">
+        <PasswordField fx:id="confirmPassword" alignment="TOP_CENTER" layoutX="599.0" layoutY="401.0" prefHeight="58.0" prefWidth="313.0" promptText="confirm password" style="-fx-background-radius: 40;">
             <font>
                 <Font name="Comic Sans MS" size="26.0" />
             </font>
@@ -59,7 +59,7 @@
                 <Insets />
             </opaqueInsets>
         </PasswordField>
-        <Button fx:id="backButton" layoutX="501.0" layoutY="586.0" mnemonicParsing="false" onAction="#showLogin" prefHeight="79.0" prefWidth="278.0" style="-fx-background-radius: 11;" text="Back" textAlignment="CENTER">
+        <Button fx:id="backButton" layoutX="501.0" layoutY="593.0" mnemonicParsing="false" onAction="#showLogin" prefHeight="70.0" prefWidth="278.0" style="-fx-background-radius: 40;" text="Back" textAlignment="CENTER">
             <font>
                 <Font name="Comic Sans MS" size="39.0" />
             </font>

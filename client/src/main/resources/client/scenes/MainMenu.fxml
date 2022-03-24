@@ -10,9 +10,9 @@
     <children>
         <AnchorPane prefHeight="720.0" prefWidth="1299.0" style="-fx-background-color: #212121;" stylesheets="@../../stylesheets/commonStyle.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
-            <Button layoutX="480.0" layoutY="619.0" mnemonicParsing="false" onAction="#showLogin" prefHeight="80.0" prefWidth="339.0" style="-fx-background-radius: 11; -fx-background-color: WHITE; -fx-font-family: &quot;Amatic SC&quot;; -fx-font-size: 40;" text="Back" AnchorPane.bottomAnchor="21.0" AnchorPane.leftAnchor="483.0">
+            <Button layoutX="483.0" layoutY="644.2265625" mnemonicParsing="false" onAction="#showLogin" prefHeight="90.0" prefWidth="339.0" style="-fx-background-radius: 40; -fx-background-color: WHITE;" text="Back" AnchorPane.bottomAnchor="33.0" AnchorPane.leftAnchor="483.0">
                <font>
-                  <Font name="Comic Sans MS" size="12.0" />
+                  <Font name="Comic Sans MS" size="40.0" />
                </font>
             </Button>
                 <Text fx:id="gameName" fill="WHITE" layoutX="216.0" layoutY="157.0" strokeType="OUTSIDE" strokeWidth="0.0" text="QUIZZZZ" textAlignment="CENTER" wrappingWidth="859.3333435058594" x="25.0" y="25.0" AnchorPane.bottomAnchor="550.0" AnchorPane.topAnchor="50.0">
@@ -34,24 +34,24 @@
                   </Text>
                </children>
             </HBox>
-            <Button fx:id="helpButton" layoutX="1192.0" layoutY="625.0" mnemonicParsing="false" onAction="#showHelp" opacity="0.26" prefHeight="37.0" prefWidth="78.0" style="-fx-background-radius: 55; -fx-background-color: white; -fx-font-family: &quot;Amatic SC&quot;; -fx-font-size: 40; -fx-font-weight: bold; -fx-text-fill: black;" text="?" textFill="#e4dede">
+            <Button fx:id="helpButton" layoutX="1212.0" layoutY="681.0" mnemonicParsing="false" onAction="#showHelp" opacity="0.26" prefHeight="77.0" prefWidth="81.0" style="-fx-background-radius: 70; -fx-background-color: white;" text="?">
                <font>
-                  <Font name="Comic Sans MS" size="12.0" />
+                  <Font name="Comic Sans MS" size="35.0" />
                </font>
             </Button>
-                <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#showSingleplayer" prefHeight="80.0" prefWidth="339.0" style="-fx-background-color: WHITE; -fx-background-radius: 11; -fx-font-family: &quot;Amatic SC&quot;; -fx-font-size: 40;" text="Singleplayer" AnchorPane.leftAnchor="480.0" AnchorPane.rightAnchor="480.0" AnchorPane.topAnchor="333.0">
+                <Button fx:id="singlepPlayerButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#showSingleplayer" prefHeight="90.0" prefWidth="339.0" style="-fx-background-color: WHITE; -fx-background-radius: 40;" text="Singleplayer" textAlignment="CENTER" AnchorPane.leftAnchor="480.0" AnchorPane.rightAnchor="480.0" AnchorPane.topAnchor="333.0">
                     <font>
                         <Font name="Comic Sans MS" size="44.0" />
                     </font>
                 </Button>
-                <Button layoutX="480.0" layoutY="429.0" mnemonicParsing="false" onAction="#showMultiplayer" prefHeight="80.0" prefWidth="339.0" style="-fx-background-color: WHITE; -fx-background-radius: 11; -fx-font-family: &quot;Amatic SC&quot;; -fx-font-size: 40;" text="Multiplayer" AnchorPane.leftAnchor="480.0" AnchorPane.rightAnchor="480.0" AnchorPane.topAnchor="429.0">
+                <Button layoutX="480.0" layoutY="436.0" mnemonicParsing="false" onAction="#showMultiplayer" prefHeight="90.0" prefWidth="339.0" style="-fx-background-color: WHITE; -fx-background-radius: 40;" text="Multiplayer" textAlignment="CENTER" AnchorPane.leftAnchor="480.0" AnchorPane.rightAnchor="480.0" AnchorPane.topAnchor="436.0">
                     <font>
                         <Font name="Comic Sans MS" size="44.0" />
                     </font>
                 </Button>
-                <Button layoutX="480.0" layoutY="523.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#showHomeLeaderboard" prefHeight="80.0" prefWidth="339.0" style="-fx-background-color: WHITE; -fx-background-radius: 11; -fx-font-family: &quot;Amatic SC&quot;; -fx-font-size: 40;" text="Leaderboard" textAlignment="CENTER" AnchorPane.leftAnchor="480.0" AnchorPane.rightAnchor="480.0" AnchorPane.topAnchor="523.0">
+                <Button fx:id="leaderboardButton" layoutX="480.0" layoutY="542.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#showHomeLeaderboard" prefHeight="90.0" prefWidth="339.0" style="-fx-background-color: WHITE; -fx-background-radius: 40;" text="Leaderboard" textAlignment="CENTER" AnchorPane.leftAnchor="480.0" AnchorPane.rightAnchor="480.0" AnchorPane.topAnchor="542.0">
                     <font>
-                        <Font name="Comic Sans MS" size="44.0" />
+                        <Font name="Comic Sans MS" size="29.0" />
                     </font>
                 </Button>
             </children></AnchorPane>

@@ -135,6 +135,7 @@ public class GameOpenQuestionCtrl extends GameCtrl {
      */
     private void setActivityImage(String imagePath) {
         this.image.setImage(server.getImage(imagePath));
+        setRoundedImage(this.image);
     }
 
     /**

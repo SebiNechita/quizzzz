@@ -281,6 +281,9 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         image1.setImage(server.getImage(option1.getImage_path()));
         image2.setImage(server.getImage(option2.getImage_path()));
         image3.setImage(server.getImage(option3.getImage_path()));
+        setRoundedImage(image1);
+        setRoundedImage(image2);
+        setRoundedImage(image3);
     }
 
     /**

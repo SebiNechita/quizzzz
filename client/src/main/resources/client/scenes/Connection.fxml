@@ -15,12 +15,12 @@
                 <Font name="Comic Sans MS" size="120.0" />
             </font>
         </Text>
-        <Button fx:id="connectButton" alignment="CENTER" layoutX="501.0" layoutY="509.0" mnemonicParsing="false" onAction="#connectClicked" prefHeight="79.0" prefWidth="278.0" style="-fx-background-radius: 11;" text="Connect" textAlignment="CENTER">
+        <Button fx:id="connectButton" alignment="CENTER" layoutX="501.0" layoutY="509.0" mnemonicParsing="false" onAction="#connectClicked" prefHeight="79.0" prefWidth="278.0" style="-fx-background-radius: 40;" text="Connect" textAlignment="CENTER">
             <font>
                 <Font name="Comic Sans MS" size="40.0" />
             </font>
         </Button>
-      <Text fx:id="message" fill="#fc6363" layoutX="652.0" layoutY="451.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="312.0">
+      <Text fx:id="message" fill="#fc6363" layoutX="705.0" layoutY="437.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="312.0">
          <font>
             <Font name="Comic Sans MS" size="24.0" />
          </font>
@@ -32,7 +32,7 @@
                       <Font name="Comic Sans MS" size="30.0" />
                   </font>
               </Text>
-              <TextField id="url" fx:id="url" alignment="CENTER" onAction="#connectClicked" prefHeight="58.0" prefWidth="314.0" promptText="enter URL" style="-fx-background-radius: 11;">
+              <TextField id="url" fx:id="url" alignment="CENTER" onAction="#connectClicked" prefHeight="58.0" prefWidth="314.0" promptText="enter URL" style="-fx-background-radius: 40;">
                   <font>
                       <Font name="Comic Sans MS" size="22.0" />
                   </font>
