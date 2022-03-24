@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 import packets.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/game")
 public class GameController {
@@ -31,8 +33,8 @@ public class GameController {
     @PostMapping("/join")
     public JoinResponsePacket join(@RequestBody JoinRequestPacket request) {
         gameService.addPlayer(request.getUsername());
-        gameService.onPlayerEvent("Join", request.getUsername(), request.getUsername());
-        return new JoinResponsePacket(HttpStatus.OK);
+        Map<String, String> playerMap = gameService.onPlayerJoin(request.getUsername());
+        return new JoinResponsePacket(HttpStatus.OK, playerMap);
     }
 
     /**
@@ -43,14 +45,13 @@ public class GameController {
      */
     @PostMapping("/emote")
     public GeneralResponsePacket sendEmote(@RequestBody EmoteRequestPacket request) {
-        gameService.onPlayerEvent("Emote", request.getEmoteNo(), request.getUsername());
+        gameService.onEmoteReceived("Emote", request.getEmoteNo(), request.getUsername());
         return new GeneralResponsePacket(HttpStatus.OK);
     }
 
     @PostMapping("/ready")
-    public GeneralResponsePacket onReadyMsg(@RequestBody ReadyRequestPacket request) {
-        gameService.onPlayerReady("Ready", request.getIsReady(), request.getUsername());
-        return new GeneralResponsePacket(HttpStatus.OK);
+    public LobbyResponsePacket onReadyMsg(@RequestBody ReadyRequestPacket request) {
+        return gameService.onPlayerReady("Ready", request.getIsReady(), request.getUsername());
     }
 
     public static class EventCaller<T extends ResponsePacket> {

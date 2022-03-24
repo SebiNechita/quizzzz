@@ -1,13 +1,14 @@
 package packets;
 
-import commons.utils.HttpStatus;
 
+import java.util.Map;
 import java.util.Objects;
 
 public class LobbyResponsePacket extends GeneralResponsePacket {
-    String type;
-    String content;
-    String from;
+    private String type;
+    private String content;
+    private String from;
+    private Map<String,String> playerList;
 
     public String getType() {
         return type;
@@ -21,6 +22,10 @@ public class LobbyResponsePacket extends GeneralResponsePacket {
         return from;
     }
 
+    public Map<String, String> getPlayerList() {
+        return playerList;
+    }
+
     public LobbyResponsePacket() {
     }
 
@@ -30,20 +35,13 @@ public class LobbyResponsePacket extends GeneralResponsePacket {
         this.content = content;
         this.from = from;
     }
-
-    public LobbyResponsePacket(int httpCode, String type, String content, String from) {
-        super(httpCode);
+    public LobbyResponsePacket(String type, String content, String from, Map<String,String> playerList) {
         this.type = type;
         this.content = content;
         this.from = from;
+        this.playerList = playerList;
     }
 
-    public LobbyResponsePacket(HttpStatus status, String type, String content, String from) {
-        super(status);
-        this.type = type;
-        this.content = content;
-        this.from = from;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -51,12 +49,12 @@ public class LobbyResponsePacket extends GeneralResponsePacket {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         LobbyResponsePacket that = (LobbyResponsePacket) o;
-        return Objects.equals(type, that.type) && Objects.equals(content, that.content) && Objects.equals(from, that.from);
+        return Objects.equals(type, that.type) && Objects.equals(content, that.content) && Objects.equals(from, that.from) && Objects.equals(playerList, that.playerList);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), type, content, from);
+        return Objects.hash(super.hashCode(), type, content, from, playerList);
     }
 
     @Override
@@ -65,6 +63,7 @@ public class LobbyResponsePacket extends GeneralResponsePacket {
                 "type='" + type + '\'' +
                 ", content='" + content + '\'' +
                 ", from='" + from + '\'' +
+                ", playerList=" + playerList +
                 '}';
     }
 }
