@@ -5,21 +5,18 @@ import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import commons.utils.GameMode;
 import javafx.fxml.FXML;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
 
-public class EndGameCtrl extends SceneCtrl{
+public class EndGameCtrl extends SceneCtrl {
 
 
     @FXML
     private Text pointsObtained;
+
     /**
      * Constructor for this Ctrl
      *
@@ -66,7 +63,7 @@ public class EndGameCtrl extends SceneCtrl{
         main.showScene(MainMenuCtrl.class);
     }
 
-    public void showRestart(){
+    public void showRestart() {
         Main.gameMode = GameMode.SINGLEPLAYER;
         Main.currentQuestionCount = 0;
         Main.questions = new LinkedList<>();
