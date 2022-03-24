@@ -227,11 +227,7 @@ public class ServerUtils {
      * @return The activities stored
      */
     public List<Activity> getActivities() {
-        return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/game/activities/list")
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .get(new GenericType<>() {});
+        return getRequest("api/activities/list", ActivitiesResponsePacket.class).getActivities();
     }
 
     //private StompSession session = connect("ws://localhost:8080/websocket");

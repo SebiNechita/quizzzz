@@ -94,7 +94,6 @@ public class MainMenuCtrl extends SceneCtrl {
      * Leads to the Multiplayer Lobby
      */
     public void showAdminPanel() {
-        //Main.noOfActivities = Integer.toString(server.getActivities().size());
         main.showScene(AdminPanelCtrl.class);
     }
 }

@@ -4,6 +4,7 @@ import commons.questions.Activity;
 import commons.utils.LoggerUtil;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import packets.ActivitiesResponsePacket;
 import server.database.ActivityRepository;
 
 import java.util.ArrayList;
@@ -28,8 +29,8 @@ public class ActivityService {
      * Returns a list of all activities in the repository
      * @return a list of all activities in the repository
      */
-    public Iterable<Activity> list() {
-        return activityRepository.findAll();
+    public ActivitiesResponsePacket list() {
+        return new ActivitiesResponsePacket(activityRepository.findAll());
     }
 
     /**

@@ -63,6 +63,7 @@ public class AdminPanelCtrl extends SceneCtrl {
      */
     @OnShowScene
     public void onShowScene() {
-        noOfActivities.setText(Main.noOfActivities.equals("") ? "X" : Main.noOfActivities);
+        Main.noOfActivities = server.getActivities().size();
+        noOfActivities.setText(Main.noOfActivities == 0 ? "X" : Integer.toString(Main.noOfActivities));
     }
 }

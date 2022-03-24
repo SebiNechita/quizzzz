@@ -40,7 +40,7 @@ public class Main extends Application {
     public static int scoreTotal;
     public static LinkedList<Boolean> questionHistory = new LinkedList<>();
     public static GameMode gameMode;
-    public static String noOfActivities;
+    public static int noOfActivities;
 
     /**
      * Gets called when the application is started
