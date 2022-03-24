@@ -1,6 +1,7 @@
 package server.api.game;
 
 import commons.questions.Activity;
+import commons.utils.LoggerUtil;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import server.database.ActivityRepository;
@@ -51,7 +52,7 @@ public class ActivityService {
             try {
                 savedActivities.add(activityRepository.saveAndFlush(activity));
             } catch (DataIntegrityViolationException e) {
-                System.out.println("Failed to save: \n\n" + activity);
+                LoggerUtil.warnInline("Failed to save: \n\n" + activity);
             }
         }
         return savedActivities;

@@ -18,6 +18,7 @@ package server;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import commons.questions.Activity;
+import commons.utils.LoggerUtil;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -59,7 +60,7 @@ public class Main {
             InputStream inputStream = TypeReference.class.getResourceAsStream("/activity-bank/activities.json");
 
             if (inputStream == null) {
-                System.out.println("The file '/activity-bank/activities.json' does not exist in the resources directory!" +
+                LoggerUtil.warnInline("The file '/activity-bank/activities.json' does not exist in the resources directory!" +
                         "\nThe reason could be that it is included in .gitignore and hence not available in the remote repository");
                 return;
             }
@@ -67,9 +68,9 @@ public class Main {
             try {
                 List<Activity> activities = mapper.readValue(inputStream, typeReference);
                 activityService.save(activities);
-                System.out.println("Activities Saved!");
+                LoggerUtil.infoInline("Activities Saved!");
             } catch (IOException e) {
-                System.out.println("Unable to save activities: " + e.getMessage());
+                LoggerUtil.warnInline("Unable to save activities: " + e.getMessage());
             }
         };
     }
