@@ -1,9 +1,11 @@
 package server.api.game;
 
 import commons.questions.Activity;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import server.database.ActivityRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -44,6 +46,14 @@ public class ActivityService {
      * @return An iterable collection of stored activities
      */
     public Iterable<Activity> save(List<Activity> activities) {
-        return activityRepository.saveAll(activities);
+        List<Activity> savedActivities = new ArrayList<>();
+        for (Activity activity : activities) {
+            try {
+                savedActivities.add(activityRepository.saveAndFlush(activity));
+            } catch (DataIntegrityViolationException e) {
+                System.out.println("Failed to save: \n\n" + activity);
+            }
+        }
+        return savedActivities;
     }
 }

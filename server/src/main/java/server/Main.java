@@ -58,6 +58,12 @@ public class Main {
 
             InputStream inputStream = TypeReference.class.getResourceAsStream("/activity-bank/activities.json");
 
+            if (inputStream == null) {
+                System.out.println("The file '/activity-bank/activities.json' does not exist in the resources directory!" +
+                        "\nThe reason could be that it is included in .gitignore and hence not available in the remote repository");
+                return;
+            }
+
             try {
                 List<Activity> activities = mapper.readValue(inputStream, typeReference);
                 activityService.save(activities);
