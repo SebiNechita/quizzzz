@@ -450,7 +450,7 @@ public abstract class GameCtrl extends SceneCtrl {
 
             @Override
             protected void interpolate(double frac) {
-                anchorPane.setBackground(new Background(new BackgroundFill(lerp(target.getRed(), target.getGreen(), target.getBlue(), inverted ? 1 - frac : frac), new CornerRadii(10), Insets.EMPTY)));
+                anchorPane.setBackground(new Background(new BackgroundFill(lerp(target.getRed(), target.getGreen(), target.getBlue(), inverted ? 1 - frac : frac), new CornerRadii(40), Insets.EMPTY)));
             }
         };
     }
@@ -618,7 +618,7 @@ public abstract class GameCtrl extends SceneCtrl {
         imageView.setClip(null);
 
         // apply a shadow effect.
-        imageView.setEffect(new DropShadow(20, Color.BLACK));
+        imageView.setEffect(new DropShadow(40, Color.BLACK));
 
         // store the rounded image in the imageView.
         imageView.setImage(image);

@@ -10,7 +10,7 @@
     <children>
         <AnchorPane prefHeight="720.0" prefWidth="1299.0" style="-fx-background-color: #212121;" stylesheets="@../../stylesheets/commonStyle.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
-            <Button layoutX="483.0" layoutY="644.2265625" mnemonicParsing="false" onAction="#showLogin" prefHeight="90.0" prefWidth="339.0" style="-fx-background-radius: 40; -fx-background-color: WHITE;" text="Back" AnchorPane.bottomAnchor="33.0" AnchorPane.leftAnchor="483.0">
+            <Button layoutX="483.0" layoutY="644.2265625" mnemonicParsing="false" onAction="#showLogin" prefHeight="90.0" prefWidth="339.0" style="-fx-background-radius: 40; -fx-background-color: WHITE;" text="Logout" AnchorPane.bottomAnchor="33.0" AnchorPane.leftAnchor="483.0">
                <font>
                   <Font name="Comic Sans MS" size="40.0" />
                </font>
@@ -34,7 +34,7 @@
                   </Text>
                </children>
             </HBox>
-            <Button fx:id="helpButton" layoutX="1212.0" layoutY="681.0" mnemonicParsing="false" onAction="#showHelp" opacity="0.26" prefHeight="77.0" prefWidth="81.0" style="-fx-background-radius: 70; -fx-background-color: white;" text="?">
+            <Button fx:id="helpButton" layoutX="1212.0" layoutY="681.0" mnemonicParsing="false" onAction="#showHelp" prefHeight="77.0" prefWidth="81.0" style="-fx-background-radius: 70; -fx-background-color: white;" text="?">
                <font>
                   <Font name="Comic Sans MS" size="35.0" />
                </font>
