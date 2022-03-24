@@ -5,7 +5,10 @@ import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import commons.utils.GameMode;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
+import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 
 import java.net.URL;
 import java.util.LinkedList;
@@ -16,6 +19,10 @@ public class EndGameCtrl extends SceneCtrl {
 
     @FXML
     private Text pointsObtained;
+    @FXML
+    private Text textPerformance;
+    @FXML
+    private HBox hboxText;
 
     /**
      * Constructor for this Ctrl
@@ -46,7 +53,15 @@ public class EndGameCtrl extends SceneCtrl {
      */
     @OnShowScene
     public void onShowScene() {
-        pointsObtained.setText("You have obtained: " + Main.scoreTotal + " points!");
+        pointsObtained.setText(Main.scoreTotal + " points!");
+        if (Main.scoreTotal < 100)
+            textPerformance.setText("Poor performance, " + Main.USERNAME + "!" + "Try again!");
+        else if (Main.scoreTotal > 2000)
+            textPerformance.setText("Congratulation, " + Main.USERNAME + "!" + "!");
+        else
+            textPerformance.setText("Good game, " + Main.USERNAME + "!");
+        textPerformance.setTextAlignment(TextAlignment.CENTER);
+        hboxText.setAlignment(Pos.CENTER);
     }
 
     /**
