@@ -16,7 +16,7 @@
             </Text>
          </children>
       </AnchorPane>
-      <Text fx:id="pointsObtained" fill="WHITE" layoutX="136.0" layoutY="294.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You have obtained: " wrappingWidth="1050.9125289916992">
+      <Text fx:id="pointsObtained" fill="WHITE" layoutX="172.0" layoutY="309.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You have obtained: " wrappingWidth="1100.5125045776367">
          <font>
             <Font name="Comic Sans MS" size="70.0" />
          </font>
@@ -26,19 +26,19 @@
             <Font name="Comic Sans MS" size="33.0" />
          </font>
       </Button>
-      <Button layoutX="458.0" layoutY="318.0" mnemonicParsing="false" onAction="#showSinglePlayerLeaderboard" style="-fx-background-radius: 50;" text="See the leaderboard" AnchorPane.bottomAnchor="55.0">
+      <Button layoutX="441.0" layoutY="598.0" mnemonicParsing="false" onAction="#showSinglePlayerLeaderboard" style="-fx-background-radius: 50;" text="See the leaderboard" AnchorPane.bottomAnchor="52.39999999999998">
          <font>
-            <Font size="33.0" />
+            <Font name="Comic Sans MS" size="33.0" />
          </font>
       </Button>
       <Button layoutX="445.0" layoutY="317.0" mnemonicParsing="false" onAction="#showMainMenu" style="-fx-background-radius: 50;" text="Go to Main Menu" AnchorPane.bottomAnchor="55.0" AnchorPane.rightAnchor="55.0">
          <font>
-            <Font size="33.0" />
+            <Font name="Comic Sans MS" size="33.0" />
          </font>
       </Button>
-      <Text fill="WHITE" layoutX="377.0" layoutY="448.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Congratulations!">
+      <Text fill="WHITE" layoutX="453.0" layoutY="435.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Congratulations!">
          <font>
-            <Font name="Comic Sans MS" size="69.0" />
+            <Font name="Comic Sans MS" size="53.0" />
          </font>
       </Text>
    </children>
