@@ -18,10 +18,16 @@ public class LoginCtrl extends SceneCtrl {
             if (e.getCode() == KeyCode.ENTER) {
                 onLoginButtonPressed();
             }
+            if (e.getCode() == KeyCode.DOWN) {
+                password.requestFocus();
+            }
         });
         password.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
                 onLoginButtonPressed();
+            }
+            if (e.getCode() == KeyCode.UP) {
+                userName.requestFocus();
             }
         });
     }

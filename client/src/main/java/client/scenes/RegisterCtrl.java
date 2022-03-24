@@ -22,15 +22,27 @@ public class RegisterCtrl extends SceneCtrl {
             if (e.getCode() == KeyCode.ENTER) {
                 registerButtonClicked();
             }
+            if (e.getCode() == KeyCode.DOWN) {
+                password.requestFocus();
+            }
         });
         password.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
                 registerButtonClicked();
             }
+            if (e.getCode() == KeyCode.UP) {
+                userName.requestFocus();
+            }
+            if (e.getCode() == KeyCode.DOWN) {
+                confirmPassword.requestFocus();
+            }
         });
         confirmPassword.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
                 registerButtonClicked();
+            }
+            if (e.getCode() == KeyCode.UP) {
+                password.requestFocus();
             }
         });
     }

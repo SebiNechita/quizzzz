@@ -161,7 +161,7 @@ public class ServerUtils {
             return (T) new ResponsePacket(HttpStatus.NotFound);
         }
 
-        return template.get(response);
+        return (T) template.get(response);
     }
 
     /**

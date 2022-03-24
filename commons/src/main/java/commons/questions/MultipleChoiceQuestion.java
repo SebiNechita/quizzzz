@@ -16,6 +16,11 @@ public class MultipleChoiceQuestion extends Question {
     private Activity answer;
 
     /**
+     * Empty Constructor for Jackson
+     */
+    public MultipleChoiceQuestion() {}
+
+    /**
      * Constructor for MultipleChoiceQuestion
      *
      * @param question     String representation of the question

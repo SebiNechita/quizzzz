@@ -8,7 +8,6 @@ import javafx.fxml.FXML;
 import javafx.scene.text.Text;
 
 import java.net.URL;
-import java.util.LinkedList;
 import java.util.ResourceBundle;
 
 public class MainMenuCtrl extends SceneCtrl {
@@ -73,13 +72,8 @@ public class MainMenuCtrl extends SceneCtrl {
      */
     public void showSingleplayer(){
         Main.gameMode = GameMode.SINGLEPLAYER;
-        Main.currentQuestionCount = 0;
-        Main.questions = new LinkedList<>();
-        Main.openQuestions = new LinkedList<>();
-        Main.questionHistory = new LinkedList<>();
-        Main.scoreTotal = 0;
-        main.getQuestions();
-        main.jumpToNextQuestion();
+        main.createNewSingleplayerGame();
+        main.getSingleplayerGame().jumpToNextQuestion();
     }
 
 

@@ -4,7 +4,7 @@ import client.Main;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import commons.questions.Activity;
-import commons.questions.Question;
+import commons.questions.MultipleChoiceQuestion;
 import commons.utils.GameMode;
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
@@ -212,7 +212,7 @@ public class GameMultiChoiceCtrl extends GameCtrl {
 
         boolean correctlyAnswered = selected != null && selected.getKey() == answer;
         showPointsGained(correctlyAnswered ? 100 : 0);
-        Main.questionHistory.add(correctlyAnswered);
+        main.getSingleplayerGame().getQuestionHistory().add(correctlyAnswered);
         generateProgressDots();
     }
 
@@ -227,8 +227,7 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         nextQuestion.setVisible(false);
         hidePointsGained();
 
-        main.jumpToNextQuestion();
-
+        main.getSingleplayerGame().jumpToNextQuestion();
 
         //clean up
         locked = new boolean[]{false, false, false};
@@ -246,12 +245,12 @@ public class GameMultiChoiceCtrl extends GameCtrl {
      */
     protected void retrieveMultipleChoiceQuestion() {
 
-        Question q = Main.questions.poll();
-        Activity answer = q.getAnswer();
-        Activity option2 = q.getActivityList().get(0); // An option that is not the answer
-        Activity option3 = q.getActivityList().get(1); // Another option that is not the answer
+        MultipleChoiceQuestion mcq = main.getSingleplayerGame().getCurrentQuestion(MultipleChoiceQuestion.class);
+        Activity answer = mcq.getAnswer();
+        Activity option2 = mcq.getActivityList().get(0); // An option that is not the answer
+        Activity option3 = mcq.getActivityList().get(1); // Another option that is not the answer
 
-        question.setText(q.getQuestion());
+        question.setText(mcq.getQuestion());
 
         // Generates random int value from 0 to 3
         Random randomGen = new Random();
@@ -352,7 +351,7 @@ public class GameMultiChoiceCtrl extends GameCtrl {
 
             @Override
             protected void interpolate(double frac) {
-                anchorPane.setBackground(new Background(new BackgroundFill(lerp(start.getRed(), start.getGreen(), start.getBlue(), target.getRed(), target.getGreen(), target.getBlue(), frac), new CornerRadii(10), Insets.EMPTY)));
+                anchorPane.setBackground(new Background(new BackgroundFill(lerp(start.getRed(), start.getGreen(), start.getBlue(), target.getRed(), target.getGreen(), target.getBlue(), frac), new CornerRadii(40), Insets.EMPTY)));
             }
         };
     }

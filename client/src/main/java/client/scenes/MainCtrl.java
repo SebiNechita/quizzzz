@@ -15,11 +15,9 @@
  */
 package client.scenes;
 
-import client.Main;
+import client.game.SingleplayerGame;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
-import commons.Game;
-import commons.LeaderboardEntry;
 import commons.utils.LoggerUtil;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -27,7 +25,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Pair;
-import packets.LeaderboardResponsePacket;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -40,6 +37,7 @@ public class MainCtrl {
 
     private final Stage primaryStage;
     private final ServerUtils serverUtils;
+    private SingleplayerGame singleplayerGame;
 
     private final HashMap<Class<?>, SceneCtrl> ctrlClasses = new HashMap<>();
     private final HashMap<Class<?>, Pair<Scene, String>> scenes = new HashMap<>();
@@ -51,45 +49,22 @@ public class MainCtrl {
      */
     public MainCtrl(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        serverUtils = new ServerUtils();
+        this.serverUtils = new ServerUtils();
     }
 
     /**
-     * Retrieves a list of questions and stores it.
+     * Creates a new SingleplayerGame
      */
-    public void getQuestions() {
-        Game game = serverUtils.getGame();
-        Main.questions.addAll(game.getMultipleChoiceQuestions());
-        Main.openQuestions.addAll(game.getOpenQuestions());
+    public void createNewSingleplayerGame() {
+        this.singleplayerGame = new SingleplayerGame(this, serverUtils);
     }
 
     /**
-     * Steps to the next question and displays it.
-     * Or exits if the game is over.
+     * getter for the current SingleplayerGame
+     * @return the current SingleplayerGame
      */
-    public void jumpToNextQuestion() {
-        if (Main.currentQuestionCount < 20) {
-            showQuestion();
-        } else {
-            serverUtils.postRequest("api/leaderboard", new LeaderboardEntry(Main.scoreTotal, Main.USERNAME), LeaderboardResponsePacket.class);
-            showScene(SingleplayerLeaderboardCtrl.class);
-        }
-
-        Main.currentQuestionCount++;
-
-    }
-
-    /**
-     * Decides which type of question to display.
-     */
-    private void showQuestion() {
-        //every nth question is open, the others are multi.
-        //n=5 for now.
-        if (Main.currentQuestionCount % 5 == 0) {
-            showScene(GameOpenQuestionCtrl.class);
-        } else {
-            showScene(GameMultiChoiceCtrl.class);
-        }
+    public SingleplayerGame getSingleplayerGame() {
+        return singleplayerGame;
     }
 
     /**

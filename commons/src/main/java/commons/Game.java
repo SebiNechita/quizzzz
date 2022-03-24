@@ -3,7 +3,6 @@ package commons;
 import commons.questions.Activity;
 import commons.questions.MultipleChoiceQuestion;
 import commons.questions.OpenQuestion;
-import commons.questions.Question;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,12 +13,12 @@ public class Game {
      * List of questions that'll be used in this particular instance of the game
      * The questions are of the type MultipleChoiceQuestion
      */
-    private List<Question> multipleChoiceQuestions;
+    private List<MultipleChoiceQuestion> multipleChoiceQuestions;
     /**
      * List of questions that'll be used in this particular instance of the game
      * The questions are of the type OpenQuestion
      */
-    private List<Question> openQuestions;
+    private List<OpenQuestion> openQuestions;
     /**
      * The number of questions in that game session. Default 20 will be used if not provided.
      */
@@ -78,10 +77,10 @@ public class Game {
      * @param noOfMultipleChoiceQuestions number of questions for that game
      * @return A list of "noOfQuestions" questions. 4/5th of them are Multiple Choice Questions and the remaining are Open Questions
      */
-    private static List<Question> generateMultipleChoiceQuestions(Game game,
+    private static List<MultipleChoiceQuestion> generateMultipleChoiceQuestions(Game game,
                                                                   int noOfMultipleChoiceQuestions) {
 
-        List<Question> multipleChoiceQuestions = new ArrayList<>();
+        List<MultipleChoiceQuestion> multipleChoiceQuestions = new ArrayList<>();
 
         for (int i = 0; i < noOfMultipleChoiceQuestions; i++) {
             multipleChoiceQuestions.add(
@@ -101,9 +100,9 @@ public class Game {
      * @param noOfOpenQuestions number of questions for that game
      * @return A list of "noOfQuestions" questions. 4/5th of them are Multiple Choice Questions and the remaining are Open Questions
      */
-    private static List<Question> generateOpenQuestions(Game game,
+    private static List<OpenQuestion> generateOpenQuestions(Game game,
                                                         int noOfOpenQuestions) {
-        List<Question> openQuestions = new ArrayList<>();
+        List<OpenQuestion> openQuestions = new ArrayList<>();
 
         for(int i = 0; i < noOfOpenQuestions; ++i) {
             openQuestions.add(OpenQuestion.
@@ -122,7 +121,7 @@ public class Game {
      * Getter for MC questions
      * @return the list multiple choice questions
      */
-    public List<Question> getMultipleChoiceQuestions() {
+    public List<MultipleChoiceQuestion> getMultipleChoiceQuestions() {
         return multipleChoiceQuestions;
     }
 
@@ -130,7 +129,7 @@ public class Game {
      * Getter for open questions
      * @return the list open questions
      */
-    public List<Question> getOpenQuestions() {
+    public List<OpenQuestion> getOpenQuestions() {
         return openQuestions;
     }
 

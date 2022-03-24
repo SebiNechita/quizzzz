@@ -11,6 +11,11 @@ public class OpenQuestion extends Question {
     private long answerInWH;
 
     /**
+     * Empty Constructor for Jackson
+     */
+    public OpenQuestion() {}
+
+    /**
      * Constructor for OpenQuestion
      *
      * @param question   String representation of the question
