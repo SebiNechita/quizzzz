@@ -26,7 +26,6 @@ import jakarta.ws.rs.client.*;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
 import javafx.scene.image.Image;
-import org.apache.catalina.Server;
 import org.glassfish.jersey.client.ClientConfig;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
@@ -39,7 +38,6 @@ import packets.*;
 
 import java.io.ByteArrayInputStream;
 import java.lang.reflect.Type;
-import java.net.URL;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
