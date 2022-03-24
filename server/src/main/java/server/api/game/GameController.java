@@ -47,6 +47,11 @@ public class GameController {
         return new GeneralResponsePacket(HttpStatus.OK);
     }
 
+    @PostMapping("/ready")
+    public GeneralResponsePacket onReadyMsg(@RequestBody ReadyRequestPacket request) {
+        gameService.onPlayerReady("Ready", request.getIsReady(), request.getUsername());
+        return new GeneralResponsePacket(HttpStatus.OK);
+    }
 
     public static class EventCaller<T extends ResponsePacket> {
         private final DeferredResult<T> result;

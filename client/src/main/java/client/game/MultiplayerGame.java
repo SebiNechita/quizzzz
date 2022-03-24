@@ -34,6 +34,17 @@ public class MultiplayerGame {
                 GeneralResponsePacket.class);
     }
 
+    public GeneralResponsePacket sendReadyMsg(String username, boolean isReady) {
+        String isReadyStr = "false";
+        if (isReady) {
+            isReadyStr = "true";
+        }
+
+        return server.postRequest("api/game/ready",
+                new ReadyRequestPacket(username, isReadyStr),
+                GeneralResponsePacket.class);
+    }
+
     public void getLobbyUpdate() {
         ServerUtils.LongPollingRequest<LobbyResponsePacket> request
                 = server.longGetRequest("api/game/lobbyEventListener", LobbyResponsePacket.class, new LobbyOnResponse());
@@ -49,11 +60,22 @@ public class MultiplayerGame {
                 Platform.runLater(() ->
                         main.getCtrl(LobbyCtrl.class)
                                 .updateEmoji1(responsePacket.getFrom()));
-            } else if (
-                    responsePacket.getType().equals("Join")) {
+            } else if (responsePacket.getType().equals("Join")) {
                 Platform.runLater(() ->
                         main.getCtrl(LobbyCtrl.class)
                                 .showJoinMsg(responsePacket.getFrom()));
+            } else if (responsePacket.getType().equals("Ready")) {
+                Platform.runLater(() ->
+                        main.getCtrl(LobbyCtrl.class)
+                                .updateReady(responsePacket.getFrom(), responsePacket.getContent()));
+            } else if (responsePacket.getType().equals("AllReady")) {
+                Platform.runLater(() ->
+                        main.getCtrl(LobbyCtrl.class)
+                                .updateReady(responsePacket.getFrom(), responsePacket.getContent()));
+            } else if (responsePacket.getType().equals("NotAllReady")) {
+                Platform.runLater(() ->
+                        main.getCtrl(LobbyCtrl.class)
+                                .updateReady(responsePacket.getFrom(), responsePacket.getContent()));
             }
 
         }

@@ -83,10 +83,11 @@ public class LobbyCtrl extends SceneCtrl {
 
     /**
      * show message when other player joins the game
+     *
      * @param player
      */
     public void showJoinMsg(String player) {
-        chattext = new Text(player + " entered the lobby"+ "\n");
+        chattext = new Text(player + " entered the lobby" + "\n");
         chattext.setFont(Font.font("Comic Sans MS", 30));
         chattextflow.getChildren().add(chattext);
     }
@@ -306,11 +307,26 @@ public class LobbyCtrl extends SceneCtrl {
             buttonReady.setBackground(new Background(new BackgroundFill(Color.GREEN, null, null)));
             playertext.setFill(Color.GREEN);
             ready = true;
+
         } else {
             buttonReady.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
             playertext.setFill(Color.RED);
             ready = false;
         }
+
+        // send ready message to server
+        multiGame.sendReadyMsg(Main.USERNAME, ready);
+    }
+
+    public void updateReady(String player, String isReady) {
+        if (isReady.equals("true")) {
+            chattext = new Text(player + " is ready" + "\n");
+        } else {
+            chattext = new Text(player + " is not ready" + "\n");
+        }
+
+        chattext.setFont(Font.font("Comic Sans MS", 30));
+        chattextflow.getChildren().add(chattext);
     }
 
 }
