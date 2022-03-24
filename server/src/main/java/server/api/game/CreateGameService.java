@@ -6,10 +6,7 @@ import commons.questions.Activity;
 import org.springframework.stereotype.Service;
 import server.database.ActivityRepository;
 
-import java.io.*;
-import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class CreateGameService {
