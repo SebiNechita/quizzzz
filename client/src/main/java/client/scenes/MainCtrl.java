@@ -72,7 +72,7 @@ public class MainCtrl {
             showQuestion();
         } else {
             serverUtils.postRequest("api/leaderboard", new LeaderboardEntry(Main.scoreTotal, Main.USERNAME), LeaderboardResponsePacket.class);
-            showScene(SingleplayerLeaderboardCtrl.class);
+            showScene(EndGameCtrl.class);
         }
 
         Main.currentQuestionCount++;

@@ -5,7 +5,6 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
 <AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.EndGameCtrl">
    <children>
       <AnchorPane layoutY="24.0" prefHeight="185.0" prefWidth="1280.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
@@ -17,7 +16,7 @@
             </Text>
          </children>
       </AnchorPane>
-      <Text fill="WHITE" layoutX="207.0" layoutY="303.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You have obtained: " wrappingWidth="847.17919921875">
+      <Text fx:id="pointsObtained" fill="WHITE" layoutX="136.0" layoutY="294.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You have obtained: " wrappingWidth="1050.9125289916992">
          <font>
             <Font name="Comic Sans MS" size="70.0" />
          </font>
