@@ -76,10 +76,10 @@ public class LobbyCtrl extends SceneCtrl {
         chattext.setFont(Font.font("Comic Sans MS", 30));
         chattextflow.getChildren().add(chattext);
 
+        // the order of bellow methods matters!
         multiGame.join(Main.USERNAME);
-        multiGame.repeatPing(Main.USERNAME);
+        multiGame.startPingThread(Main.USERNAME);
         multiGame.getLobbyUpdate();
-
 
     }
 
@@ -537,6 +537,8 @@ public class LobbyCtrl extends SceneCtrl {
         chattext.setFont(Font.font("Comic Sans MS", 30));
         textflow.getChildren().remove(playertext);
         chattextflow.getChildren().add(chattext);
+        multiGame.stopLobbyUpdate();
+        multiGame.stopPingThread();
         main.showScene(MainMenuCtrl.class);
     }
 

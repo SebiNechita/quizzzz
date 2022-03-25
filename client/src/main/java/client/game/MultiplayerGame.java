@@ -10,10 +10,34 @@ import packets.*;
 public class MultiplayerGame {
     private final MainCtrl main;
     private final ServerUtils server;
+    private Thread pingThread;
+    private ServerUtils.LongPollingRequest longPollingRequest;
 
     public MultiplayerGame(MainCtrl main, ServerUtils server) {
         this.main = main;
         this.server = server;
+    }
+
+    public void startPingThread(String username) {
+        pingThread = new Thread() {
+            public void run() {
+                while (true) {
+                    try {
+                        server.postRequest("api/game/ping",
+                                new PingRequestPacket(username),
+                                GeneralResponsePacket.class);
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+        pingThread.start();
+    }
+
+    public void stopPingThread() {
+        pingThread.interrupt();
     }
 
     /**
@@ -90,7 +114,12 @@ public class MultiplayerGame {
                 LobbyResponsePacket.class, new LobbyOnResponse());
         // set persistent long-polling to true
         request.setPersistent(true);
+        this.longPollingRequest = request;
         request.getRequest();
+    }
+
+    public void stopLobbyUpdate() {
+        this.longPollingRequest.stop();
     }
 
     private class LobbyOnResponse implements ServerUtils.ServerResponse<LobbyResponsePacket> {
@@ -120,7 +149,7 @@ public class MultiplayerGame {
                 Platform.runLater(() ->
                         main.getCtrl(LobbyCtrl.class)
                                 .hideStartButton());
-            } else if(responsePacket.getType().equals("Leave")) {
+            } else if (responsePacket.getType().equals("Leave")) {
                 Platform.runLater(() ->
                         main.getCtrl(LobbyCtrl.class)
                                 .updatePlayerList(responsePacket.getPlayerList()));
