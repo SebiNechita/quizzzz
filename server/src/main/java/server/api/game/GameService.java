@@ -49,7 +49,8 @@ public class GameService {
 
     /**
      * notifies all other players when a player leaves/is disconnected.
-     * @param player
+     *
+     * @param player player who is disconnected/left
      */
     public void onPlayerLeave(String player) {
 
@@ -67,15 +68,17 @@ public class GameService {
 
     /**
      * method for adding a new player to the playerMap with false ready state and localtime
-     * @param player
+     *
+     * @param player player to be added
      */
     public void addPlayer(String player) {
         playerMap.put(player, Map.entry("false", LocalDateTime.now()));
     }
 
     /**
-     * method for removing a player
-     * @param player
+     * method for removing a player from playerList
+     *
+     * @param player player to be removed
      */
     public void removePlayer(String player) {
         playerMap.remove(player);
@@ -83,6 +86,7 @@ public class GameService {
 
     /**
      * get method for playerMap
+     *
      * @return playerMap
      */
     public Map<String, Map.Entry<String, LocalDateTime>> getPlayers() {
@@ -91,6 +95,7 @@ public class GameService {
 
     /**
      * get method for the playerEventList
+     *
      * @return playerEventList
      */
     public List<GameController.EventCaller<LobbyResponsePacket>> getPlayerEventList() {
@@ -99,7 +104,8 @@ public class GameService {
 
     /**
      * add EventCaller to playerEventList
-     * @param eventCaller
+     *
+     * @param eventCaller eventCaller which handles the long polling reqest
      */
     public void waitForPlayerEvent(GameController.EventCaller<LobbyResponsePacket> eventCaller) {
         playerEventList.add(eventCaller);
@@ -107,9 +113,10 @@ public class GameService {
 
     /**
      * send emote to other players
-     * @param type
-     * @param emoteStr
-     * @param from
+     *
+     * @param type     should be "Emote"
+     * @param emoteStr emote name
+     * @param from     sender of the emote
      */
     public void onEmoteReceived(String type, String emoteStr, String from) {
         for (GameController.EventCaller<LobbyResponsePacket> thread : playerEventList) {
@@ -121,6 +128,12 @@ public class GameService {
         clearEventList(from);
     }
 
+    /**
+     * sends join message to all other players in the lobby
+     *
+     * @param from player who just entered the lobby
+     * @return updated player list
+     */
     public Map<String, String> onPlayerJoin(String from) {
         var trimmedMap = trimPlayerList();
 
@@ -137,9 +150,10 @@ public class GameService {
 
     /**
      * update ready message to all players other than the sender
-     * @param type
-     * @param content
-     * @param from
+     *
+     * @param type    should be "Ready"
+     * @param content "true" or "false"
+     * @param from    player who sent this message
      * @return LobbyResponsePacket
      */
     public LobbyResponsePacket onPlayerReady(String type, String content, String from) {
@@ -201,9 +215,9 @@ public class GameService {
     }
 
     /**
-     * clear all long-polling event list except the caller
+     * clear all long-polling event list except the sender
      *
-     * @param player
+     * @param player clears all eventCaller except this player
      */
     public void clearEventList(String player) {
         // clear threads except the caller it itself
@@ -215,6 +229,11 @@ public class GameService {
         }
     }
 
+    /**
+     * trim the playerList (removes the LocalDateTime field from the Map)
+     *
+     * @return the trimmed player list to be sent to the client
+     */
     public Map<String, String> trimPlayerList() {
         Map<String, String> trimmedMap = new HashMap<>();
         for (String player : this.playerMap.keySet()) {
@@ -226,7 +245,7 @@ public class GameService {
     /**
      * update the last time a client ping the server
      *
-     * @param username
+     * @param username the last pinged time of this username will be updated.
      */
     public void updatePlayerTime(String username) {
         String ready = playerMap.get(username).getKey();

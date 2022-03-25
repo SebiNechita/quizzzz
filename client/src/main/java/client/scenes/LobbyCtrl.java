@@ -112,7 +112,7 @@ public class LobbyCtrl extends SceneCtrl {
     /**
      * show message when other player joins the game
      *
-     * @param player
+     * @param player who joined the lobby
      */
     public void showJoinMsg(String player) {
         chattext = new Text(player + " entered the lobby" + "\n");
@@ -120,6 +120,11 @@ public class LobbyCtrl extends SceneCtrl {
         chattextflow.getChildren().add(chattext);
     }
 
+    /**
+     * update the player list
+     *
+     * @param playerList updated player list sent by server
+     */
     public void updatePlayerList(Map<String, String> playerList) {
         // clear all existing players
         textflow.getChildren().clear();
@@ -149,25 +154,12 @@ public class LobbyCtrl extends SceneCtrl {
         buttonStart.setVisible(false);
     }
 
+    /**
+     * method to be invoked whe start is clicked
+     */
     public void onStartClicked() {
         // to be filled
     }
-
-//    /**
-//     * add the Hearts Eye emoji into the chat
-//     */
-//    public void showEmoji1() {
-//        Text text = new Text(Main.USERNAME + ": ");
-//        text.setFont(Font.font("Comic Sans MS", 30));
-//        Text text2 = new Text("\n");
-//        ImageView iv = new ImageView("img/emojis/heart_eyes.png");
-//        iv.setFitHeight(40);
-//        iv.setFitWidth(40);
-//        chattextflow.getChildren().addAll(text, iv, text2);
-//        //send pressed emote to server
-//        multiGame.sendEmote(Main.USERNAME, "1");
-//    }
-
 
     /**
      * Addes the emote to the chatroom
@@ -185,6 +177,12 @@ public class LobbyCtrl extends SceneCtrl {
         multiGame.sendEmote(Main.USERNAME, emote.toString().toLowerCase());
     }
 
+    /**
+     * update emoji sent by other player
+     *
+     * @param from     sender of the emote
+     * @param emoteStr the emote name
+     */
     public void updateEmoji(String from, String emoteStr) {
         Text text = new Text(from + ": ");
         text.setFont(Font.font("Comic Sans MS", 30));
@@ -195,22 +193,9 @@ public class LobbyCtrl extends SceneCtrl {
         chattextflow.getChildren().addAll(text, iv, text2);
     }
 
-
-//    /**
-//     * update emoji sent by other player
-//     *
-//     * @param sender
-//     */
-//    public void updateEmoji10(String sender) {
-//        Text text = new Text(sender + ": ");
-//        text.setFont(Font.font("Comic Sans MS", 30));
-//        Text text2 = new Text("\n");
-//        ImageView iv = new ImageView("img/emojis/trophy.png");
-//        iv.setFitHeight(40);
-//        chattextflow.getChildren().addAll(text, iv, text2);
-//    }
-
-
+    /**
+     * when back button is clicked. Should stop pinging thread and the long polling thread.
+     */
     public void showHome() {
         chattext = new Text(Main.USERNAME + " has left the lobby!" + "\n");
         chattext.setFill(Color.RED);
@@ -239,6 +224,12 @@ public class LobbyCtrl extends SceneCtrl {
         multiGame.sendReadyMsg(Main.USERNAME, ready);
     }
 
+    /**
+     * update ready state message in the chatbox
+     *
+     * @param player  who changed ready state
+     * @param isReady is ready or not
+     */
     public void updateReady(String player, String isReady) {
         if (isReady.equals("true")) {
             chattext = new Text(player + " is ready" + "\n");

@@ -12,6 +12,7 @@ public class EmoteRequestPacket extends RequestPacket {
 
     /**
      * constructor for EmoteRequestPacket
+     *
      * @param username
      * @param emoteStr
      */
@@ -20,15 +21,30 @@ public class EmoteRequestPacket extends RequestPacket {
         this.emoteStr = emoteStr;
     }
 
+    /**
+     * getter for username
+     *
+     * @return username
+     */
     public String getUsername() {
 
         return username;
     }
 
+    /**
+     * getter for emoteStr
+     *
+     * @return emoteStr
+     */
     public String getEmoteStr() {
         return emoteStr;
     }
 
+    /**
+     * to string method
+     *
+     * @return
+     */
     @Override
     public String toString() {
         return "EmoteRequestPacket{" +
@@ -37,6 +53,12 @@ public class EmoteRequestPacket extends RequestPacket {
                 '}';
     }
 
+    /**
+     * equals method
+     *
+     * @param o
+     * @return
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -45,6 +67,11 @@ public class EmoteRequestPacket extends RequestPacket {
         return Objects.equals(username, that.username) && Objects.equals(emoteStr, that.emoteStr);
     }
 
+    /**
+     * hash method
+     *
+     * @return
+     */
     @Override
     public int hashCode() {
         return Objects.hash(username, emoteStr);

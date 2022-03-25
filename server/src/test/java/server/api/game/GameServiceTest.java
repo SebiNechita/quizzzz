@@ -26,11 +26,17 @@ public class GameServiceTest {
 
     GameService gameService;
 
+    /**
+     * initializes gameService before each test case
+     */
     @BeforeEach
     void initService() {
         gameService = new GameService();
     }
 
+    /**
+     * test case for when player leaves, should call the event handler of the long polling request
+     */
     @Test
     public void onPlayerLeaveTest() {
         DeferredResult<LobbyResponsePacket> output1 = new DeferredResult<>();
@@ -49,6 +55,9 @@ public class GameServiceTest {
         verify(spy, times(1)).trimPlayerList();
     }
 
+    /**
+     * test case for adding player to the playerList
+     */
     @Test
     public void addPlayerTest() {
         gameService.addPlayer("Joe");
@@ -117,7 +126,7 @@ public class GameServiceTest {
     }
 
     /**
-     * case fo one of two player clicks ready. Should return correct responsepacket with correct player list
+     * case for when one of two player clicks ready. Should return correct responsepacket with correct player list
      */
     @Test
     public void onPlayerReadyTest() {
@@ -144,6 +153,5 @@ public class GameServiceTest {
         assertEquals("false", responsePacket.getPlayerList().get("Kate"));
 
     }
-
 
 }

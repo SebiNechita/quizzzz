@@ -20,6 +20,11 @@ public class MultiplayerGame {
         this.server = server;
     }
 
+    /**
+     * starts the persistent ping thread, which pings the server every 0.5 second
+     *
+     * @param username this client's username
+     */
     public void startPingThread(String username) {
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         pingThread = executor.scheduleAtFixedRate(() -> {
@@ -29,6 +34,9 @@ public class MultiplayerGame {
         }, 0, 500, TimeUnit.MILLISECONDS);
     }
 
+    /**
+     * stops the ping thread. should be called when 'back' is clicked.
+     */
     public void stopPingThread() {
         pingThread.cancel(false);
     }
@@ -37,7 +45,7 @@ public class MultiplayerGame {
     /**
      * Join a player to a lobby
      *
-     * @param username
+     * @param username this client's username
      */
     public void join(String username) {
 
@@ -49,12 +57,38 @@ public class MultiplayerGame {
                         .updatePlayerList(responsePacket.getPlayerList()));
     }
 
+    /**
+     * send clicked Emote to the server
+     *
+     * @param username this client's username
+     * @param emoteStr emote name
+     * @return GeneralResponsePacket
+     */
     public GeneralResponsePacket sendEmote(String username, String emoteStr) {
         return server.postRequest("api/game/emote",
                 new EmoteRequestPacket(username, emoteStr),
                 GeneralResponsePacket.class);
     }
 
+    /**
+     * updates emote in this client according to updates sent by the server
+     *
+     * @param from  sender of the emote
+     * @param emote emote name
+     */
+    private void updateEmote(String from, String emote) {
+        Platform.runLater(() ->
+                main.getCtrl(LobbyCtrl.class)
+                        .updateEmoji(from, emote));
+
+    }
+
+    /**
+     * send ready message to the server
+     *
+     * @param username this client's username
+     * @param isReady  is ready or not
+     */
     public void sendReadyMsg(String username, boolean isReady) {
         String isReadyStr = "false";
         if (isReady) {
@@ -82,6 +116,9 @@ public class MultiplayerGame {
 
     }
 
+    /**
+     * send persistent long polling request to the server. And it should get updates from the server about other players.
+     */
     public void getLobbyUpdate() {
         ServerUtils.LongPollingRequest<LobbyResponsePacket> request
                 = server.longGetRequest("api/game/lobbyEventListener",
@@ -92,10 +129,16 @@ public class MultiplayerGame {
         request.getRequest();
     }
 
+    /**
+     * stops the long polling request
+     */
     public void stopLobbyUpdate() {
         this.longPollingRequest.stop();
     }
 
+    /**
+     * callback method when the client gets update from the server via the long polling request.
+     */
     private class LobbyOnResponse implements ServerUtils.ServerResponse<LobbyResponsePacket> {
         @Override
         public void run(LobbyResponsePacket responsePacket) {
@@ -133,16 +176,8 @@ public class MultiplayerGame {
                                 .updatePlayerList(responsePacket.getPlayerList()));
             }
 
-
         }
 
-        private void updateEmote(String from, String emote) {
-            Platform.runLater(() ->
-                    main.getCtrl(LobbyCtrl.class)
-                            .updateEmoji(from, emote));
-
-        }
     }
-
 
 }
