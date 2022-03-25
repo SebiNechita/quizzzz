@@ -80,7 +80,7 @@ public class MultipleChoiceQuestion extends Question {
     /**
      * Getter for Answer
      *
-     * @return the activity that is answer
+     * @return the {@link Activity} that is the answer
      */
     public Activity getAnswer() {
         return answer;
@@ -89,16 +89,16 @@ public class MultipleChoiceQuestion extends Question {
     /**
      * Setter for Answer
      *
-     * @param answer the activity that is the answer
+     * @param answer the {@link Activity} that is the answer
      */
     public void setAnswer(Activity answer) {
         this.answer = answer;
     }
 
     /**
-     * String representation of MultipleChoiceAnswer
+     * String representation of MultipleChoiceQuestion
      *
-     * @return String representation of MultipleChoiceAnswer
+     * @return String representation of MultipleChoiceQuestion
      */
     @Override
     public String toString() {

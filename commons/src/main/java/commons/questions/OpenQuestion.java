@@ -11,6 +11,11 @@ public class OpenQuestion extends Question {
     private long answerInWH;
 
     /**
+     * The activity that is used to create this open question
+     */
+    private Activity answer;
+
+    /**
      * Empty Constructor for Jackson
      */
     public OpenQuestion() {}
@@ -34,7 +39,8 @@ public class OpenQuestion extends Question {
      * @param answer Activity instance of this question
      */
     public OpenQuestion(String question, long answerInWH, Activity answer) {
-        super(question, answer);
+        super(question);
+        this.answer = answer;
         this.answerInWH = answerInWH;
     }
 
@@ -54,6 +60,22 @@ public class OpenQuestion extends Question {
      */
     public void setAnswerInWH(long answerInWH) {
         this.answerInWH = answerInWH;
+    }
+
+    /**
+     * Getter for answer
+     * @return the {@link Activity} that is used for this open question
+     */
+    public Activity getAnswer() {
+        return answer;
+    }
+
+    /**
+     * Setter for answer
+     * @param answer the {@link Activity} that is used for this open question
+     */
+    public void setAnswer(Activity answer) {
+        this.answer = answer;
     }
 
     /**
@@ -77,26 +99,14 @@ public class OpenQuestion extends Question {
     }
 
     /**
-     * This simply checks if the provided answer is correct or not
-     *
-     * @param openQuestion   the question that has been answered
-     * @param providedAnswer the answer provided by the user
-     * @return true if correct, else false
-     */
-    public static boolean checkAnswer(OpenQuestion openQuestion, long providedAnswer) {
-        return providedAnswer == openQuestion.getAnswerInWH();
-    }
-
-    /**
      * String representation of OpenQuestion
-     *
      * @return String representation of OpenQuestion
      */
     @Override
     public String toString() {
         return "OpenQuestion{" +
-                "question=" + getQuestion() +
                 "answerInWH=" + answerInWH +
+                ", answer=" + answer +
                 '}';
     }
 }
