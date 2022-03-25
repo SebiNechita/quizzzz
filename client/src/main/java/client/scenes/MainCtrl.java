@@ -15,7 +15,6 @@
  */
 package client.scenes;
 
-import client.Main;
 import client.game.SingleplayerGame;
 import client.game.MultiplayerGame;
 import client.utils.OnShowScene;
@@ -64,7 +63,8 @@ public class MainCtrl {
     }
 
     /**
-     * getter for the current SingleplayerGame
+     * Getter for the current SingleplayerGame
+     *
      * @return the current SingleplayerGame
      */
     public SingleplayerGame getSingleplayerGame() {
