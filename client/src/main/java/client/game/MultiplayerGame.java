@@ -33,25 +33,6 @@ public class MultiplayerGame {
         pingThread.cancel(false);
     }
 
-    /**
-     * repeatedly pings the server
-     *
-     * @param username
-     */
-    public void repeatPing(String username) {
-        new Thread(() -> {
-            while (true) {
-                try {
-                    server.postRequest("api/game/ping",
-                            new PingRequestPacket(username),
-                            GeneralResponsePacket.class);
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
 
     /**
      * Join a player to a lobby
@@ -128,6 +109,10 @@ public class MultiplayerGame {
                 Platform.runLater(() ->
                         main.getCtrl(LobbyCtrl.class)
                                 .updatePlayerList(responsePacket.getPlayerList()));
+                Platform.runLater(() ->
+                        main.getCtrl(LobbyCtrl.class)
+                                .updateReady(responsePacket.getFrom()
+                                        , responsePacket.getContent()));
             } else if (responsePacket.getType().equals("AllReady")) {
                 Platform.runLater(() ->
                         main.getCtrl(LobbyCtrl.class)

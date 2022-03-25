@@ -32,7 +32,10 @@ public class GameController {
         return new GeneralResponsePacket(HttpStatus.OK);
     }
 
-
+    /**
+     * long polling endpoint for updating any lobby information
+     * @return DeferredResult<LobbyResponsePacket>
+     */
     @GetMapping("/lobbyEventListener")
     public DeferredResult<LobbyResponsePacket> playersInLobby() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -44,6 +47,11 @@ public class GameController {
         return output;
     }
 
+    /**
+     * handles join request from player when he/she enters the lobby
+     * @param request
+     * @return JoinResponsePacket
+     */
     @PostMapping("/join")
     public JoinResponsePacket join(@RequestBody JoinRequestPacket request) {
         gameService.addPlayer(request.getUsername());
@@ -52,8 +60,7 @@ public class GameController {
     }
 
     /**
-     * client sends emote to server
-     *
+     * client sends emote to server, server then send it to other players
      * @param request request for sending emote
      * @return LobbyResponsePacket
      */
@@ -65,11 +72,20 @@ public class GameController {
         return new GeneralResponsePacket(HttpStatus.OK);
     }
 
+    /**
+     * receives ready information from player and send it to other players
+     * @param request
+     * @return LobbyResponsePacket
+     */
     @PostMapping("/ready")
     public LobbyResponsePacket onReadyMsg(@RequestBody ReadyRequestPacket request) {
         return gameService.onPlayerReady("Ready", request.getIsReady(), request.getUsername());
     }
 
+    /**
+     * Event handler for giving long polling reponse to client
+     * @param <T>
+     */
     public static class EventCaller<T extends ResponsePacket> {
         private final DeferredResult<T> result;
         private final String username;

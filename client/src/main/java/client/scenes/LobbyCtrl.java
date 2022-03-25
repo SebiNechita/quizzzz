@@ -18,7 +18,6 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
 import java.net.URL;
-import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -244,7 +243,7 @@ public class LobbyCtrl extends SceneCtrl {
         if (isReady.equals("true")) {
             chattext = new Text(player + " is ready" + "\n");
         } else {
-            chattext = new Text(player + " is not ready" + "\n");
+            chattext = new Text(player + " canceled ready" + "\n");
         }
 
         chattext.setFont(Font.font("Comic Sans MS", 30));
