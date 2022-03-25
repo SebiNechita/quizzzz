@@ -1,17 +1,22 @@
 package client.scenes;
 
-import client.Main;
-import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import javafx.fxml.FXML;
+import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
+
+import packets.ActivityRequestPacket;
+import packets.GeneralResponsePacket;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class AdminPanelCtrl extends SceneCtrl {
+public class DeleteActivityCtrl extends SceneCtrl {
     @FXML
-    private Text noOfActivities;
+    private TextField id;
+
+    @FXML
+    private Text error;
 
     /**
      * Constructor for this Ctrl
@@ -19,7 +24,7 @@ public class AdminPanelCtrl extends SceneCtrl {
      * @param mainCtrl    The parent class, which keeps track of all scenes
      * @param serverUtils The server utils, for communicating with the server
      */
-    public AdminPanelCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
+    public DeleteActivityCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
         super(mainCtrl, serverUtils);
     }
 
@@ -38,32 +43,26 @@ public class AdminPanelCtrl extends SceneCtrl {
     }
 
     /**
-     * Show the home screen.
+     * Show the admin panel screen.
      */
-    public void showAddActivity() {
-        main.showScene(AddActivityCtrl.class);
+    public void showAdminPanel() {
+        main.showScene(AdminPanelCtrl.class);
     }
 
     /**
-     * Show the home screen.
+     * Method for clicking the delete activity button
      */
-    public void showDeleteActivity() {
-        main.showScene(DeleteActivityCtrl.class);
-    }
+    public void clickDelete() {
+        if(id.getText() == null) {
+            id.setStyle("-fx-background-color: #FF0000FF; -fx-background-radius: 50");
+            error.setText("Field is mandatory!");
+        } else {
+            String iD = id.getText();
 
-    /**
-     //     * Show the home screen.
-     //     */
-    public void showMainMenu() {
-        main.showScene(MainMenuCtrl.class);
-    }
+            ActivityRequestPacket packet = new ActivityRequestPacket(iD);
 
-    /**
-     * Gets called when the scene is actually shown to the user
-     */
-    @OnShowScene
-    public void onShowScene() {
-        Main.noOfActivities = server.getActivities().size();
-        noOfActivities.setText(Main.noOfActivities == 0 ? "X" : Integer.toString(Main.noOfActivities));
+            server.postRequest("api/activities/delete", packet, GeneralResponsePacket.class);
+            main.showScene(AdminPanelCtrl.class);
+        }
     }
 }

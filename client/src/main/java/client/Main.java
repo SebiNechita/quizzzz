@@ -72,7 +72,7 @@ public class Main extends Application {
         mainCtrl.load("client/scenes/GameOpenQuestion.fxml", "Game Screen");
         mainCtrl.load("client/scenes/AdminPanel.fxml", "Admin Panel Screen");
         mainCtrl.load("client/scenes/AddActivity.fxml","Add Activity Screen");
-        //mainCtrl.load("client/scenes/EditActivity.fxml", "Edit Activity Screen");
+        mainCtrl.load("client/scenes/DeleteActivity.fxml","Delete Activity Screen");
 
         //For testing, I skipped the Connection and Login screens
         if (debug) {

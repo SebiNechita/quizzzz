@@ -9,6 +9,7 @@ import server.database.ActivityRepository;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.nio.file.Path;
 import java.util.Objects;
 
 @Service
@@ -39,10 +40,9 @@ public class AddActivityService {
         );
         try {
             BufferedImage myImage = ImageIO.read(new ByteArrayInputStream(packet.getImageByte()));
-            String filePath = Objects.requireNonNull(getClass().getResource("/activity-bank")).toExternalForm() + "/" + path;
-            System.out.println(filePath);
-            File createdFile = new File(filePath);
-            if (ImageIO.write(myImage, "png", createdFile)) {
+            Path filePath = Path.of(Objects.requireNonNull(getClass().getResource("/activity-bank")).toExternalForm().substring(6) + "/" + path);
+            File createdFile = new File(filePath.toUri());
+            if (createdFile.mkdirs() && ImageIO.write(myImage, "png", createdFile)) {
                 LoggerUtil.infoInline("Successfully Stored Image at: " + filePath);
             } else {
                 LoggerUtil.warnInline("Image could not be stored!");

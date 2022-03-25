@@ -19,6 +19,18 @@ public class ActivityRequestPacket extends RequestPacket {
 
     /**
      * Constructor
+     * @param id Id of the activity
+     */
+    public ActivityRequestPacket(String id) {
+        this.id = id;
+        this.source = null;
+        this.description = null;
+        this.consumption = 0;
+        this.imageByte = null;
+    }
+
+    /**
+     * Constructor
      * @param consumption Consumption in WH
      * @param source The web source
      * @param description The title of the activity

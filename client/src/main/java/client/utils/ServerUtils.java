@@ -160,6 +160,24 @@ public class ServerUtils {
     }
 
     /**
+     * Builds a delete request
+     *
+     * @param path     The path of the endpoint to send the request to
+     * @param response The packet which the server returns
+     * @param <T>      The type of packet which the server should return
+     * @return A packet containing the response of the server
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends ResponsePacket> T deleteRequest(String path, Class<T> response) {
+        Invocation.Builder template = requestTemplate(path);
+        if (template == null) {
+            return (T) new ResponsePacket(HttpStatus.NotFound);
+        }
+
+        return (T) template.delete(response);
+    }
+
+    /**
      * Builds a get request
      *
      * @param path     The path of the endpoint to send the request to

@@ -162,8 +162,8 @@ public class AddActivityCtrl extends SceneCtrl {
     }
 
     /**
-     //     * Show the home screen.
-     //     */
+     * Show the admin panel screen.
+     */
     public void showAdminPanel() {
         main.showScene(AdminPanelCtrl.class);
     }
@@ -202,6 +202,7 @@ public class AddActivityCtrl extends SceneCtrl {
                     imageByteArray
             );
             server.postRequest("api/activities/add", packet, GeneralResponsePacket.class);
+            main.showScene(AdminPanelCtrl.class);
         }
     }
 }
