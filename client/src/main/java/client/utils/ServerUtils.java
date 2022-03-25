@@ -25,10 +25,6 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.client.*;
 import jakarta.ws.rs.core.Response;
 import javafx.scene.image.Image;
-import org.springframework.messaging.converter.MappingJackson2MessageConverter;
-import org.springframework.messaging.simp.stomp.StompFrameHandler;
-import org.springframework.messaging.simp.stomp.StompHeaders;
-import org.glassfish.jersey.client.ClientConfig;
 import org.springframework.messaging.simp.stomp.StompSession;
 import packets.*;
 
@@ -267,44 +263,6 @@ public class ServerUtils {
 
     //THIS IS A TEMPORARY SOLUTION FOR MAKING THE CODE COMPILE, WILL FIX WEBSOCKETS IN NEXT SPRINT
     private StompSession session = null;
-
-    /**
-     * Builds a get request
-     *
-     * @param path     The path of the endpoint to send the request to
-     * @param response The packet which the server returns
-     * @param <T>      The type of packet which the server should return
-     * @return A packet containing the response of the server
-     */
-    @SuppressWarnings("unchecked")
-    public <T extends ResponsePacket> T getRequest(String path, Class<T> response) {
-        Invocation.Builder template = requestTemplate(path);
-        if (template == null) {
-            return (T) new ResponsePacket(HttpStatus.NotFound);
-        }
-
-        return template.get(response);
-    }
-
-    /**
-     * Builds a post request
-     *
-     * @param path     The path of the endpoint to send the request to
-     * @param request  The packet which to send to the server
-     * @param response The packet which the server returns
-     * @param <T>      The type of packet which the server should return
-     * @param <S>      The type of packet which should be sent to the server
-     * @return A packet containing the response of the server
-     */
-    @SuppressWarnings("unchecked")
-    public <T extends ResponsePacket, S extends RequestPacket> T postRequest(String path, S request, Class<T> response) {
-        Invocation.Builder template = requestTemplate(path);
-        if (template == null) {
-            return (T) new ResponsePacket(HttpStatus.NotFound);
-        }
-
-        return template.post(Entity.entity(request, APPLICATION_JSON), response);
-    }
 
     /**
      * Builds a long polling get request which can be called on demand
