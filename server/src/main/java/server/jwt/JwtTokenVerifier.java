@@ -22,10 +22,21 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
 
     private final JwtConfig jwtConfig;
 
+    /**
+     * @param jwtConfig The config for Jwt
+     */
     public JwtTokenVerifier(JwtConfig jwtConfig) {
         this.jwtConfig = jwtConfig;
     }
 
+    /**
+     * Filters out any invalid tokens
+     *
+     * @param request     from which to extract parameters and perform the authentication
+     * @param response    the response, which may be needed if the implementation has to do a
+     *                    redirect as part of a multi-stage authentication process (such as OpenID).
+     * @param filterChain the filter chain
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authorizationHeader = request.getHeader("Authorization");

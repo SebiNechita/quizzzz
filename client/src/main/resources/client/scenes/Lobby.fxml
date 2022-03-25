@@ -155,6 +155,11 @@
                   <Font name="Comic Sans MS" size="22.0" />
                </font>
             </Button>
+            <Button fx:id="buttonStart" layoutX="1171.0" layoutY="13.0" mnemonicParsing="false" onAction="#onStartClicked" prefHeight="46.0" prefWidth="134.0" text="Start">
+               <font>
+                  <Font name="Comic Sans MS" size="22.0" />
+               </font>
+            </Button>
          </children>
       </AnchorPane>
       <AnchorPane layoutX="155.0" layoutY="108.0" prefHeight="464.0" prefWidth="670.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 11;" AnchorPane.leftAnchor="55.0">

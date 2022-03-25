@@ -15,9 +15,23 @@
  */
 package server;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Configuration
 public class Config {
+
+    /**
+     * a singleton player list
+     * @return player list
+     */
+    @Bean
+    public List<String> playerList(){
+        List<String> list = new ArrayList<>();
+        return list;
+    }
 
 }

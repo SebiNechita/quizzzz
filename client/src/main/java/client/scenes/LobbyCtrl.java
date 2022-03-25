@@ -1,6 +1,7 @@
 package client.scenes;
 
 import client.Main;
+import client.game.MultiplayerGame;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import commons.utils.Emote;
@@ -17,6 +18,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
 import java.net.URL;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import static client.utils.EmoteUtility.emoteHoverAnim;
@@ -35,8 +37,11 @@ public class LobbyCtrl extends SceneCtrl {
     private Text chattext;
     @FXML
     protected HBox emoteContainer;
+    @FXML
+    private Button buttonStart;
 
     private Boolean ready;
+    private MultiplayerGame multiGame;
 
     /**
      * Constructor for this Ctrl
@@ -46,6 +51,7 @@ public class LobbyCtrl extends SceneCtrl {
      */
     public LobbyCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
         super(mainCtrl, serverUtils);
+        this.multiGame = mainCtrl.getMultiplayerGame();
     }
 
     /**
@@ -59,24 +65,28 @@ public class LobbyCtrl extends SceneCtrl {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
     }
+
 
     /**
      * Gets called when the scene is actually shown to the user
      */
     @OnShowScene
     public void onShowScene() {
+        buttonStart.setVisible(false);
         buttonReady.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
         ready = false;
-        playertext = new Text(Main.USERNAME + "\n");
-        playertext.setFill(Color.RED);
-        playertext.setFont(Font.font("Comic Sans MS", 27));
-        textflow.getChildren().add(playertext);
-        chattext = new Text("Welcome to the game, " + Main.USERNAME + "! " + "\n");
+
+        chattext = new Text("Quizzzz: Welcome to the game, " + Main.USERNAME + "! " + "\n");
         chattext.setFont(Font.font("Comic Sans MS", 30));
         chattext.setFill(Color.BLUE);
         chattextflow.getChildren().add(chattext);
+
+        // the order of bellow methods matters!
+        multiGame.join(Main.USERNAME);
+        multiGame.startPingThread(Main.USERNAME);
+        multiGame.getLobbyUpdate();
+
         enableListners();
     }
 
@@ -99,9 +109,61 @@ public class LobbyCtrl extends SceneCtrl {
         }
     }
 
+    /**
+     * show message when other player joins the game
+     *
+     * @param player who joined the lobby
+     */
+    public void showJoinMsg(String player) {
+        chattext = new Text(player + " entered the lobby" + "\n");
+        chattext.setFont(Font.font("Comic Sans MS", 30));
+        chattextflow.getChildren().add(chattext);
+    }
+
+    /**
+     * update the player list
+     *
+     * @param playerList updated player list sent by server
+     */
+    public void updatePlayerList(Map<String, String> playerList) {
+        // clear all existing players
+        textflow.getChildren().clear();
+        for (String player : playerList.keySet()) {
+            Text text = new Text(player + "\n");
+            if (playerList.get(player).equals("false")) {
+                text.setFill(Color.RED);
+            } else {
+                text.setFill(Color.GREEN);
+            }
+            text.setFont(Font.font("Comic Sans MS", 27));
+            textflow.getChildren().add(text);
+        }
+    }
+
+    /**
+     * show the Start button
+     */
+    public void showStartButton() {
+        buttonStart.setVisible(true);
+    }
+
+    /**
+     * hide the start button
+     */
+    public void hideStartButton() {
+        buttonStart.setVisible(false);
+    }
+
+    /**
+     * method to be invoked whe start is clicked
+     */
+    public void onStartClicked() {
+        // to be filled
+    }
 
     /**
      * Addes the emote to the chatroom
+     *
      * @param emote emote to be added
      */
     public void showEmoji(Emote emote) {
@@ -112,10 +174,27 @@ public class LobbyCtrl extends SceneCtrl {
         iv.setFitHeight(40);
         iv.setFitWidth(40);
         chattextflow.getChildren().addAll(text, iv, text2);
+        multiGame.sendEmote(Main.USERNAME, emote.toString().toLowerCase());
     }
 
     /**
-     * Show the home screen.
+     * update emoji sent by other player
+     *
+     * @param from     sender of the emote
+     * @param emoteStr the emote name
+     */
+    public void updateEmoji(String from, String emoteStr) {
+        Text text = new Text(from + ": ");
+        text.setFont(Font.font("Comic Sans MS", 30));
+        Text text2 = new Text("\n");
+        ImageView iv = new ImageView("@../../img/emojis/" + emoteStr + ".png");
+        iv.setFitHeight(40);
+        iv.setFitWidth(40);
+        chattextflow.getChildren().addAll(text, iv, text2);
+    }
+
+    /**
+     * when back button is clicked. Should stop pinging thread and the long polling thread.
      */
     public void showHome() {
         chattext = new Text(Main.USERNAME + " has left the lobby!" + "\n");
@@ -123,6 +202,8 @@ public class LobbyCtrl extends SceneCtrl {
         chattext.setFont(Font.font("Comic Sans MS", 30));
         textflow.getChildren().remove(playertext);
         chattextflow.getChildren().add(chattext);
+        multiGame.stopPingThread();
+        multiGame.stopLobbyUpdate();
         main.showScene(MainMenuCtrl.class);
     }
 
@@ -132,13 +213,32 @@ public class LobbyCtrl extends SceneCtrl {
     public void makeButtonReady() {
         if (!ready) {
             buttonReady.setBackground(new Background(new BackgroundFill(Color.GREEN, null, null)));
-            playertext.setFill(Color.GREEN);
             ready = true;
+
         } else {
             buttonReady.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
-            playertext.setFill(Color.RED);
             ready = false;
         }
+
+        // send ready message to server
+        multiGame.sendReadyMsg(Main.USERNAME, ready);
+    }
+
+    /**
+     * update ready state message in the chatbox
+     *
+     * @param player  who changed ready state
+     * @param isReady is ready or not
+     */
+    public void updateReady(String player, String isReady) {
+        if (isReady.equals("true")) {
+            chattext = new Text(player + " is ready" + "\n");
+        } else {
+            chattext = new Text(player + " canceled ready" + "\n");
+        }
+
+        chattext.setFont(Font.font("Comic Sans MS", 30));
+        chattextflow.getChildren().add(chattext);
     }
 
 }
