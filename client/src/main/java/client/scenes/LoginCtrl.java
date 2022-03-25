@@ -55,6 +55,8 @@ public class LoginCtrl extends SceneCtrl {
             password.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 50");
             error.setText("");
             main.showScene(MainMenuCtrl.class);
+            userName.setText("");
+            password.setText("");
         } else {
             userName.setStyle("-fx-background-color: #fc6363; -fx-background-radius: 50");
             password.setStyle("-fx-background-color: #fc6363; -fx-background-radius: 50");
