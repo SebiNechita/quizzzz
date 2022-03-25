@@ -15,7 +15,9 @@
  */
 package client.scenes;
 
+import client.Main;
 import client.game.SingleplayerGame;
+import client.game.MultiplayerGame;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import commons.utils.LoggerUtil;
@@ -38,6 +40,7 @@ public class MainCtrl {
     private final Stage primaryStage;
     private final ServerUtils serverUtils;
     private SingleplayerGame singleplayerGame;
+    private final MultiplayerGame multiplayerGame;
 
     private final HashMap<Class<?>, SceneCtrl> ctrlClasses = new HashMap<>();
     private final HashMap<Class<?>, Pair<Scene, String>> scenes = new HashMap<>();
@@ -50,6 +53,7 @@ public class MainCtrl {
     public MainCtrl(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.serverUtils = new ServerUtils();
+        this.multiplayerGame = new MultiplayerGame(this, serverUtils);
     }
 
     /**
@@ -65,6 +69,15 @@ public class MainCtrl {
      */
     public SingleplayerGame getSingleplayerGame() {
         return singleplayerGame;
+    }
+
+    /**
+     * Getter for the multiplayer game class
+     *
+     * @return The multiplayer game instance
+     */
+    public MultiplayerGame getMultiplayerGame() {
+        return multiplayerGame;
     }
 
     /**
