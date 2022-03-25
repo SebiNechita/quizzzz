@@ -1,0 +1,43 @@
+#gameName {
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-size: 120;
+}
+
+#yourUsername, #username, #passwordLabel, #usernameLabel, #helpTitle {
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-size: 40;
+}
+
+
+#userName, #password, #confirmPassword, #confirmPasswordLabel, #message, #error {
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-size: 30;
+}
+
+#registerText, #url {
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-size: 20;
+}
+
+#registerText:hover {
+    -fx-underline: true;
+}
+
+#loginButton, #backButton, #registerButton, #connectButton, #singlePlayerButton, #multiPlayerButton, #leaderboardButton {
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-size: 35;
+}
+
+#restartButton, #LeaderboardButton, #mainmenuButton {
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-size: 35;
+}
+
+#helpButton:hover {
+    -fx-opacity: 0.1;
+    -fx-background-color: red;
+}
+
+.button:hover {
+    -fx-opacity: 0.8;
+}

@@ -103,6 +103,6 @@ public class SingleplayerLeaderboardCtrl extends SceneCtrl {
      * Show the home screen.
      */
     public void showHome() {
-        main.showScene(MainMenuCtrl.class);
+        main.showScene(EndGameCtrl.class);
     }
 }
