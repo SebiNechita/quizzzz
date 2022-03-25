@@ -89,4 +89,11 @@ public class MainMenuCtrl extends SceneCtrl {
     public void showMultiplayer(){
         main.showScene(LobbyCtrl.class);
     }
+
+    /**
+     * Leads to the Multiplayer Lobby
+     */
+    public void showAdminPanel() {
+        main.showScene(AdminPanelCtrl.class);
+    }
 }

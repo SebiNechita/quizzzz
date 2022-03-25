@@ -42,6 +42,7 @@ public class Main extends Application {
     public static int scoreTotal;
     public static LinkedList<Boolean> questionHistory = new LinkedList<>();
     public static GameMode gameMode;
+    public static int noOfActivities;
 
     /**
      * Gets called when the application is started
@@ -71,6 +72,9 @@ public class Main extends Application {
         mainCtrl.load("client/scenes/GameMultiChoice.fxml", "Game Screen");
         mainCtrl.load("client/scenes/Lobby.fxml", "Lobby  Screen");
         mainCtrl.load("client/scenes/GameOpenQuestion.fxml", "Game Screen");
+        mainCtrl.load("client/scenes/AdminPanel.fxml", "Admin Panel Screen");
+        mainCtrl.load("client/scenes/AddActivity.fxml","Add Activity Screen");
+        mainCtrl.load("client/scenes/DeleteActivity.fxml","Delete Activity Screen");
         mainCtrl.load("client/scenes/EndGame.fxml", "End Game Screen");
 
         //For testing, I skipped the Connection and Login screens
