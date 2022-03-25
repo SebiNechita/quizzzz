@@ -22,7 +22,7 @@ public class Activity {
     /**
      * Path to the corresponding image
      */
-    private String image_path;
+    private String image_path;//replace with byte[] image
     /**
      * Energy consumed in WH
      */

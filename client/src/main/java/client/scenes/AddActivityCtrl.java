@@ -15,6 +15,7 @@ import java.awt.*;
 import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
+import java.util.Base64;
 import java.util.ResourceBundle;
 
 public class AddActivityCtrl extends SceneCtrl {
@@ -109,6 +110,43 @@ public class AddActivityCtrl extends SceneCtrl {
         byte[] imageBytes = getBytes(file);
 
         return new ImageResponsePacket(imageBytes);
+    }
+
+    public void toFile(byte[] data, File destination) {
+        try(FileOutputStream fileOutputStream = new FileOutputStream(destination)) {
+            fileOutputStream.write(data);
+            fileOutputStream.close();
+        }
+        catch (Exception e) {
+            LoggerUtil.warnInline("There was an error!");
+        }
+    }
+
+    public String encoded(String image_path, String savePath) throws IOException {
+        FileInputStream imageStream = new FileInputStream(image_path);
+        byte[] data = imageStream.readAllBytes();
+        String imageString = Base64.getEncoder().encodeToString(data);
+
+        FileWriter fileWriter = new FileWriter(savePath);
+
+        fileWriter.write(imageString);
+
+        fileWriter.close();
+        imageStream.close();
+
+        return imageString;
+    }
+
+    public void decodeImage(String txtPath, String savePath) throws IOException {
+        FileInputStream inputStream = new FileInputStream(txtPath);
+
+        byte[] data = Base64.getDecoder().decode(new String(inputStream.readAllBytes()));
+
+        FileOutputStream fileOutputStream = new FileOutputStream(savePath);
+        fileOutputStream.write(data);
+
+        fileOutputStream.close();
+        inputStream.close();
     }
 
     /**
