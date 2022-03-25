@@ -19,6 +19,19 @@ public class GameController {
         this.gameService = gameService;
     }
 
+    /**
+     * gets pinged by client per 1 second
+     * @param request
+     * @return
+     */
+    @PostMapping("/ping")
+    public GeneralResponsePacket onPing(@RequestBody PingRequestPacket request) {
+        request.getUsername();
+        gameService.updatePlayerTime(request.getUsername());
+        return new GeneralResponsePacket(HttpStatus.OK);
+    }
+
+
     @GetMapping("/lobbyEventListener")
     public DeferredResult<LobbyResponsePacket> playersInLobby() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

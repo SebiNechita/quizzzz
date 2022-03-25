@@ -77,7 +77,9 @@ public class LobbyCtrl extends SceneCtrl {
         chattextflow.getChildren().add(chattext);
 
         multiGame.join(Main.USERNAME);
+        multiGame.repeatPing(Main.USERNAME);
         multiGame.getLobbyUpdate();
+
 
     }
 

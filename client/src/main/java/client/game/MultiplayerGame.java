@@ -17,6 +17,26 @@ public class MultiplayerGame {
     }
 
     /**
+     * repeatedly pings the server
+     *
+     * @param username
+     */
+    public void repeatPing(String username) {
+        new Thread(() -> {
+            while (true) {
+                try {
+                    server.postRequest("api/game/ping",
+                            new PingRequestPacket(username),
+                            GeneralResponsePacket.class);
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    /**
      * Join a player to a lobby
      *
      * @param username
@@ -100,6 +120,10 @@ public class MultiplayerGame {
                 Platform.runLater(() ->
                         main.getCtrl(LobbyCtrl.class)
                                 .hideStartButton());
+            } else if(responsePacket.getType().equals("Leave")) {
+                Platform.runLater(() ->
+                        main.getCtrl(LobbyCtrl.class)
+                                .updatePlayerList(responsePacket.getPlayerList()));
             }
 
 

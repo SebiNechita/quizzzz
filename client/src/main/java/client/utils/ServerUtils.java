@@ -170,9 +170,6 @@ public class ServerUtils {
     }
 
 
-
-
-
     /**
      * Builds a get request
      *
@@ -370,4 +367,6 @@ public class ServerUtils {
          */
         void run(T responsePacket);
     }
+
+
 }
