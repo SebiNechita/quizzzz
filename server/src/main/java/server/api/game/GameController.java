@@ -20,7 +20,7 @@ public class GameController {
     }
 
     /**
-     * gets pinged by client per 1 second
+     * gets pinged by client per 0.5 second
      *
      * @param request
      * @return GeneralResponsePacket
@@ -34,11 +34,15 @@ public class GameController {
 
     /**
      * long polling endpoint for updating any lobby information
+     *
      * @return DeferredResult<LobbyResponsePacket>
      */
     @GetMapping("/lobbyEventListener")
     public DeferredResult<LobbyResponsePacket> playersInLobby() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Authentication auth = SecurityContextHolder
+                .getContext()
+                .getAuthentication();
+
         String username = (String) auth.getPrincipal();
 
         DeferredResult<LobbyResponsePacket> output = new DeferredResult<>();
@@ -49,6 +53,7 @@ public class GameController {
 
     /**
      * handles join request from player when he/she enters the lobby
+     *
      * @param request
      * @return JoinResponsePacket
      */
@@ -61,6 +66,7 @@ public class GameController {
 
     /**
      * client sends emote to server, server then send it to other players
+     *
      * @param request request for sending emote
      * @return LobbyResponsePacket
      */
@@ -74,6 +80,7 @@ public class GameController {
 
     /**
      * receives ready information from player and send it to other players
+     *
      * @param request
      * @return LobbyResponsePacket
      */
@@ -84,6 +91,7 @@ public class GameController {
 
     /**
      * Event handler for giving long polling reponse to client
+     *
      * @param <T>
      */
     public static class EventCaller<T extends ResponsePacket> {

@@ -10,6 +10,11 @@ public class EmoteRequestPacket extends RequestPacket {
     public EmoteRequestPacket() {
     }
 
+    /**
+     * constructor for EmoteRequestPacket
+     * @param username
+     * @param emoteStr
+     */
     public EmoteRequestPacket(String username, String emoteStr) {
         this.username = username;
         this.emoteStr = emoteStr;

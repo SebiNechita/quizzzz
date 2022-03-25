@@ -6,10 +6,17 @@ public class ReadyRequestPacket extends RequestPacket {
     private String username;
     private String isReady;
 
+    /**
+     * default constructor for Jackson to work
+     */
     public ReadyRequestPacket() {
     }
 
-
+    /**
+     * constructor
+     * @param username
+     * @param isReady
+     */
     public ReadyRequestPacket(String username, String isReady) {
         this.username = username;
         this.isReady = isReady;

@@ -26,15 +26,31 @@ public class LobbyResponsePacket extends GeneralResponsePacket {
         return playerList;
     }
 
+    /**
+     * default constructor to make Jackson work properly
+     */
     public LobbyResponsePacket() {
     }
 
-
+    /**
+     * constructor
+     * @param type
+     * @param content
+     * @param from
+     */
     public LobbyResponsePacket(String type, String content, String from) {
         this.type = type;
         this.content = content;
         this.from = from;
     }
+
+    /**
+     * constructor with player list
+     * @param type
+     * @param content
+     * @param from
+     * @param playerList
+     */
     public LobbyResponsePacket(String type, String content, String from, Map<String,String> playerList) {
         this.type = type;
         this.content = content;

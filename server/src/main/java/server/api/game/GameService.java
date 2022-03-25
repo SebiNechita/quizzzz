@@ -71,11 +71,11 @@ public class GameService {
         playerEventList.add(eventCaller);
     }
 
-    public void onEmoteReceived(String type, String emoteNo, String from) {
+    public void onEmoteReceived(String type, String emoteStr, String from) {
         for (GameController.EventCaller<LobbyResponsePacket> thread : playerEventList) {
             // if the user in the list is different from the emote sender
             if (type.equals("Emote") && !thread.getUsername().equals(from)) {
-                thread.run(new LobbyResponsePacket("Emote", emoteNo, from));
+                thread.run(new LobbyResponsePacket("Emote", emoteStr, from));
             }
         }
         clearEventList(from);
