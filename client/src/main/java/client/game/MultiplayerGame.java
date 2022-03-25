@@ -6,11 +6,13 @@ import client.utils.ServerUtils;
 import javafx.application.Platform;
 import packets.*;
 
+import java.util.concurrent.*;
+
 
 public class MultiplayerGame {
     private final MainCtrl main;
     private final ServerUtils server;
-    private Thread pingThread;
+    private ScheduledFuture<?> pingThread;
     private ServerUtils.LongPollingRequest longPollingRequest;
 
     public MultiplayerGame(MainCtrl main, ServerUtils server) {
@@ -19,25 +21,16 @@ public class MultiplayerGame {
     }
 
     public void startPingThread(String username) {
-        pingThread = new Thread() {
-            public void run() {
-                while (true) {
-                    try {
-                        server.postRequest("api/game/ping",
-                                new PingRequestPacket(username),
-                                GeneralResponsePacket.class);
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        };
-        pingThread.start();
+        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+        pingThread = executor.scheduleAtFixedRate(() -> {
+            server.postRequest("api/game/ping",
+                    new PingRequestPacket(username),
+                    GeneralResponsePacket.class);
+        }, 0, 500, TimeUnit.MILLISECONDS);
     }
 
     public void stopPingThread() {
-        pingThread.interrupt();
+        pingThread.cancel(false);
     }
 
     /**

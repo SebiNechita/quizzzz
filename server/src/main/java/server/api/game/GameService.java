@@ -29,7 +29,7 @@ public class GameService {
         while (iter.hasNext()) {
             var entry = iter.next();
             System.out.println(Duration.between(entry.getValue().getValue(), now).toMillis());
-            if (Duration.between(entry.getValue().getValue(), now).toMillis() > 5000) {
+            if (Duration.between(entry.getValue().getValue(), now).toMillis() > 2000) {
                 String username = entry.getKey();
                 iter.remove();
                 onPlayerLeave(username);
