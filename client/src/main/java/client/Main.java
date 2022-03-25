@@ -102,7 +102,7 @@ public class Main extends Application {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Logout");
         alert.setHeaderText("You're about to exit the application!");
-        alert.setContentText("Do you want to save before exiting?");
+        alert.setContentText("Are you sure you want to exit?");
 
         if (alert.showAndWait().get() == ButtonType.OK) {
             System.out.println("You successfully exit the application");
