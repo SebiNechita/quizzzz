@@ -1,4 +1,4 @@
-package server.api;
+package server.api.game;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import commons.utils.HttpStatus;
@@ -16,8 +16,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.context.request.async.DeferredResult;
 import packets.*;
-import server.api.game.GameController;
-import server.api.game.GameService;
 
 import java.util.HashMap;
 import java.util.Map;

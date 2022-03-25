@@ -15,12 +15,18 @@ public class GameService {
     private final List<GameController.EventCaller<LobbyResponsePacket>> playerEventList;
     private boolean allReady;
 
+    /**
+     * constructor for GameService
+     */
     public GameService() {
         this.playerMap = new HashMap<>();
         this.playerEventList = new LinkedList<>();
         this.allReady = false;
     }
 
+    /**
+     * a scheduled task for removing disconnected player from the player list
+     */
     @Scheduled(fixedRate = 2000)
     public void checkLastPing() {
         var now = LocalDateTime.now();
@@ -41,7 +47,11 @@ public class GameService {
         System.out.println("Working");
     }
 
-    private void onPlayerLeave(String player) {
+    /**
+     * notifies all other players when a player leaves/is disconnected.
+     * @param player
+     */
+    public void onPlayerLeave(String player) {
 
         var trimmedMap = trimPlayerList();
 
@@ -55,22 +65,52 @@ public class GameService {
         playerEventList.clear();
     }
 
+    /**
+     * method for adding a new player to the playerMap with false ready state and localtime
+     * @param player
+     */
     public void addPlayer(String player) {
         playerMap.put(player, Map.entry("false", LocalDateTime.now()));
     }
 
+    /**
+     * method for removing a player
+     * @param player
+     */
     public void removePlayer(String player) {
         playerMap.remove(player);
     }
 
+    /**
+     * get method for playerMap
+     * @return playerMap
+     */
     public Map<String, Map.Entry<String, LocalDateTime>> getPlayers() {
         return playerMap;
     }
 
+    /**
+     * get method for the playerEventList
+     * @return playerEventList
+     */
+    public List<GameController.EventCaller<LobbyResponsePacket>> getPlayerEventList() {
+        return this.playerEventList;
+    }
+
+    /**
+     * add EventCaller to playerEventList
+     * @param eventCaller
+     */
     public void waitForPlayerEvent(GameController.EventCaller<LobbyResponsePacket> eventCaller) {
         playerEventList.add(eventCaller);
     }
 
+    /**
+     * send emote to other players
+     * @param type
+     * @param emoteStr
+     * @param from
+     */
     public void onEmoteReceived(String type, String emoteStr, String from) {
         for (GameController.EventCaller<LobbyResponsePacket> thread : playerEventList) {
             // if the user in the list is different from the emote sender
