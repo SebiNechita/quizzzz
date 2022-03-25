@@ -70,6 +70,7 @@ public class Main extends Application {
         mainCtrl.load("client/scenes/Lobby.fxml","Lobby  Screen");
         mainCtrl.load("client/scenes/GameOpenQuestion.fxml", "Game Screen");
 
+        //TODO: Delete this before showcasing the final product. But I still want it for testing.
         //For testing, I skipped the Connection and Login screens
         if (debug) {
             LoginCtrl login = mainCtrl.getCtrl(LoginCtrl.class);

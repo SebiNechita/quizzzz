@@ -6,8 +6,15 @@ import client.utils.ServerUtils;
 import commons.utils.GameMode;
 import javafx.fxml.FXML;
 import javafx.scene.text.Text;
+import packets.ResponsePacket;
+import packets.ZipRequestPacket;
+
+import java.io.IOException;
 
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
 
@@ -44,6 +51,17 @@ public class MainMenuCtrl extends SceneCtrl {
     @OnShowScene
     public void onShowScene() {
         username.setText(Main.USERNAME.equals("") ? "???" : Main.USERNAME);
+    }
+
+    /**
+     * Test method for showcasing sending a zip to the server
+     * @throws IOException
+     */
+    public void sendZip() throws IOException {
+        Path path = Paths.get("client/src/main/resources/20220311-oopp-activity-bank.zip");
+        byte[] bytes = Files.readAllBytes(path);
+        System.out.println(bytes.length);
+        server.postRequest("zip/",new ZipRequestPacket(bytes),ResponsePacket.class);
     }
 
     /**

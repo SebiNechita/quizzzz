@@ -8,9 +8,9 @@ import java.util.zip.ZipInputStream;
 
 @Service
 public class ZipService {
-    public void unzip(String fileName) throws IOException {
+    public void unzip() throws IOException {
         clearActivityBank();
-        String fileZip = "server/src/main/resources/"+fileName;
+        String fileZip = "server/src/main/resources/uploaded.zip";
         File destDir = new File("server/src/main/resources/activity-bank");
         byte[] buffer = new byte[1024];
         ZipInputStream zis = new ZipInputStream(new FileInputStream(fileZip));
