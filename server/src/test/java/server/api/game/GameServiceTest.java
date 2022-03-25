@@ -11,6 +11,9 @@ import org.springframework.web.context.request.async.DeferredResult;
 import packets.LobbyResponsePacket;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.times;
@@ -28,20 +31,22 @@ public class GameServiceTest {
         gameService = new GameService();
     }
 
+    @Test
     public void onPlayerLeaveTest() {
-        gameService.onPlayerLeave("Joe");
+        DeferredResult<LobbyResponsePacket> output1 = new DeferredResult<>();
+        GameController.EventCaller<LobbyResponsePacket> eventCaller1 = new GameController.EventCaller(output1, "Joe");
+        DeferredResult<LobbyResponsePacket> output2 = new DeferredResult<>();
+        GameController.EventCaller<LobbyResponsePacket> eventCaller2 = new GameController.EventCaller(output2, "Kate");
+
         var spy = Mockito.spy(gameService);
-        spy.onPlayerLeave("Joe");
-        gameService.addPlayer("Joe");
-        gameService.addPlayer("Kate");
-        gameService.onPlayerLeave("Joe");
-        assertTrue(gameService.getPlayers().size() == 1);
+        spy.waitForPlayerEvent(eventCaller1);
+        spy.waitForPlayerEvent(eventCaller2);
 
-        for (String player : gameService.getPlayers().keySet()) {
-            assertEquals("Joe", player);
-        }
+        // calls the method, Ted should have already been removed by scheduled task
+        spy.onPlayerLeave("Ted");
 
-
+        assertTrue(gameService.getPlayerEventList().size() == 0);
+        verify(spy, times(1)).trimPlayerList();
     }
 
     @Test
@@ -75,10 +80,70 @@ public class GameServiceTest {
         assertTrue(gameService.getPlayerEventList().size() == 1);
         assertEquals(eventCaller1, gameService.getPlayerEventList().get(0));
 
-        verify(spy,times(1)).clearEventList("Joe");
+        verify(spy, times(1)).clearEventList("Joe");
     }
 
+    /**
+     * test case for a player joins the lobby. should return correct player list.
+     */
+    @Test
+    public void onPlayerJoinTest() {
+        DeferredResult<LobbyResponsePacket> output1 = new DeferredResult<>();
+        GameController.EventCaller<LobbyResponsePacket> eventCaller1 = new GameController.EventCaller(output1, "Ted");
+        DeferredResult<LobbyResponsePacket> output2 = new DeferredResult<>();
+        GameController.EventCaller<LobbyResponsePacket> eventCaller2 = new GameController.EventCaller(output2, "Kate");
 
+        var spy = Mockito.spy(gameService);
+        spy.waitForPlayerEvent(eventCaller1);
+        spy.waitForPlayerEvent(eventCaller2);
+        spy.addPlayer("Ted");
+        spy.addPlayer("Kate");
+        spy.addPlayer("Joe");
+
+        // calls the method
+        var trimmedList = spy.onPlayerJoin("Join");
+        Map<String, String> expectedList = new HashMap<>();
+
+        // two existing eventCaller should be invoked and cleared
+        assertTrue(gameService.getPlayerEventList().size() == 0);
+
+        //assertTrue(Joe != null);
+        assertTrue(trimmedList.get("Joe") != null);
+        assertTrue(trimmedList.get("Ted") != null);
+        assertTrue(trimmedList.get("Kate") != null);
+
+        verify(spy, times(1)).trimPlayerList();
+
+    }
+
+    /**
+     * case fo one of two player clicks ready. Should return correct responsepacket with correct player list
+     */
+    @Test
+    public void onPlayerReadyTest() {
+        DeferredResult<LobbyResponsePacket> output1 = new DeferredResult<>();
+        GameController.EventCaller<LobbyResponsePacket> eventCaller1 = new GameController.EventCaller(output1, "Ted");
+        DeferredResult<LobbyResponsePacket> output2 = new DeferredResult<>();
+        GameController.EventCaller<LobbyResponsePacket> eventCaller2 = new GameController.EventCaller(output2, "Kate");
+
+        var spy = Mockito.spy(gameService);
+        spy.waitForPlayerEvent(eventCaller1);
+        spy.waitForPlayerEvent(eventCaller2);
+        spy.addPlayer("Ted");
+        spy.addPlayer("Kate");
+
+        // calls the method
+        LobbyResponsePacket responsePacket = spy.onPlayerReady("Ready", "true", "Ted");
+
+        // one of two existing eventCaller should be invoked and cleared
+        assertTrue(gameService.getPlayerEventList().size() == 1);
+
+        //assertTrue(Joe != null);
+        assertEquals("Ready", responsePacket.getType());
+        assertEquals("true", responsePacket.getPlayerList().get("Ted"));
+        assertEquals("false", responsePacket.getPlayerList().get("Kate"));
+
+    }
 
 
 }

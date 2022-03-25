@@ -136,12 +136,11 @@ public class GameService {
     }
 
     /**
-     * event handler on receiving player ready message
-     *
+     * update ready message to all players other than the sender
      * @param type
      * @param content
      * @param from
-     * @return return true if all players are ready
+     * @return LobbyResponsePacket
      */
     public LobbyResponsePacket onPlayerReady(String type, String content, String from) {
         Map<String, String> trimmedMap;
