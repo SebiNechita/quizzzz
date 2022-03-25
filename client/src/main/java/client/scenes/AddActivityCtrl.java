@@ -39,6 +39,12 @@ public class AddActivityCtrl extends SceneCtrl {
 
     public String filePath = null;
 
+    /**
+     * Requests an image from the user and returns the path to the image
+     * @param actionEvent Action event
+     * @return A string representing the path to the image
+     * @throws IOException If the file is not found
+     */
     @FXML
     public String singleFilePathChooser(javafx.event.ActionEvent actionEvent) throws IOException {
         FileChooser fileChooser = new FileChooser();
@@ -61,6 +67,12 @@ public class AddActivityCtrl extends SceneCtrl {
         return null;
     }
 
+    /**
+     * Requests an image from the user and returns this image
+     * @param actionEvent Action event
+     * @return The image file
+     * @throws IOException If the file is not found
+     */
     @FXML
     public File singleFileChooser(javafx.event.ActionEvent actionEvent) throws IOException {
         FileChooser fileChooser = new FileChooser();
@@ -88,6 +100,12 @@ public class AddActivityCtrl extends SceneCtrl {
         return null;
     }
 
+    /**
+     * Returns a file represented as an array of bytes
+     * @param file The file to be converted
+     * @return An array of bytes
+     * @throws IOException If the file is not found
+     */
     public byte[] getBytes(File file) throws IOException {
         byte[] buffer = new byte[4096];
 
@@ -106,12 +124,23 @@ public class AddActivityCtrl extends SceneCtrl {
         return byteArrayOutputStream.toByteArray();
     }
 
+    /**
+     * Constructs an ImageResponsePacket from an image file
+     * @param file The image used
+     * @return An ImageResponsePacket
+     * @throws IOException If the file is not found
+     */
     public ImageResponsePacket byteToImage(File file) throws IOException {
         byte[] imageBytes = getBytes(file);
 
         return new ImageResponsePacket(imageBytes);
     }
 
+    /**
+     * Writes data from an array of bytes to a new file
+     * @param data An array of bytes
+     * @param destination The file where the array of bytes is going to be stored
+     */
     public void toFile(byte[] data, File destination) {
         try(FileOutputStream fileOutputStream = new FileOutputStream(destination)) {
             fileOutputStream.write(data);
@@ -122,6 +151,13 @@ public class AddActivityCtrl extends SceneCtrl {
         }
     }
 
+    /**
+     * Returns a Base64 encoding of the image file
+     * @param image_path A String representing the path to the image
+     * @param savePath A String representing the path where the encoding is stored
+     * @return A Base64 encoding of the image file
+     * @throws IOException If the file is not found
+     */
     public String encoded(String image_path, String savePath) throws IOException {
         FileInputStream imageStream = new FileInputStream(image_path);
         byte[] data = imageStream.readAllBytes();
@@ -137,6 +173,12 @@ public class AddActivityCtrl extends SceneCtrl {
         return imageString;
     }
 
+    /**
+     * Decodes a Base64 String back to an image file
+     * @param txtPath The file where the Base64 encoding is stored
+     * @param savePath The path where the new image is stored
+     * @throws IOException If the file is not found
+     */
     public void decodeImage(String txtPath, String savePath) throws IOException {
         FileInputStream inputStream = new FileInputStream(txtPath);
 
