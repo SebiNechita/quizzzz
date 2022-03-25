@@ -1,4 +1,4 @@
-package server.api;
+package server.api.user;
 
 import commons.utils.HttpStatus;
 import org.junit.jupiter.api.BeforeEach;

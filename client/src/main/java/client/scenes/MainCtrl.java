@@ -16,6 +16,7 @@
 package client.scenes;
 
 import client.Main;
+import client.game.MultiplayerGame;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import commons.Game;
@@ -40,6 +41,7 @@ public class MainCtrl {
 
     private final Stage primaryStage;
     private final ServerUtils serverUtils;
+    private final MultiplayerGame multiplayerGame;
 
     private final HashMap<Class<?>, SceneCtrl> ctrlClasses = new HashMap<>();
     private final HashMap<Class<?>, Pair<Scene, String>> scenes = new HashMap<>();
@@ -52,6 +54,7 @@ public class MainCtrl {
     public MainCtrl(Stage primaryStage) {
         this.primaryStage = primaryStage;
         serverUtils = new ServerUtils();
+        multiplayerGame = new MultiplayerGame(this, serverUtils);
     }
 
     /**
@@ -90,6 +93,15 @@ public class MainCtrl {
         } else {
             showScene(GameMultiChoiceCtrl.class);
         }
+    }
+
+    /**
+     * Getter for the multiplayer game class
+     *
+     * @return The multiplayer game instance
+     */
+    public MultiplayerGame getMultiplayerGame() {
+        return multiplayerGame;
     }
 
     /**
