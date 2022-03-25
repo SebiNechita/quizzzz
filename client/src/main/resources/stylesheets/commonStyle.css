@@ -16,15 +16,19 @@
 
 #registerText, #url {
     -fx-font-family: "Comic Sans MS";
-    -fx-font-size: 20
-;
+    -fx-font-size: 20;
 }
 
 #registerText:hover {
     -fx-underline: true;
 }
 
-#loginButton, #backButton, #registerButton, #connectButton, #singlePlayerButton, #multiPlayerButton, #leaderboardButton{
+#loginButton, #backButton, #registerButton, #connectButton, #singlePlayerButton, #multiPlayerButton, #leaderboardButton {
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-size: 35;
+}
+
+#restartButton, #LeaderboardButton, #mainmenuButton {
     -fx-font-family: "Comic Sans MS";
     -fx-font-size: 35;
 }
