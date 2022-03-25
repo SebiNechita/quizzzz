@@ -55,7 +55,7 @@ public class EndGameCtrl extends SceneCtrl {
     public void onShowScene() {
         pointsObtained.setText(Main.scoreTotal + " points!");
         if (Main.scoreTotal < 100)
-            textPerformance.setText("Poor performance, " + Main.USERNAME + "!" + "Try again!");
+            textPerformance.setText("Poor performance, " + Main.USERNAME + "! " + "Try again!");
         else if (Main.scoreTotal > 2000)
             textPerformance.setText("Congratulation, " + Main.USERNAME + "!" + "!");
         else
