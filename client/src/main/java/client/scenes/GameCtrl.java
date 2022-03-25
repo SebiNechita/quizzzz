@@ -137,9 +137,6 @@ public abstract class GameCtrl extends SceneCtrl {
 
         generateProgressDots();
         enableListeners();
-
-        //----- TODO: Everything below this is temporary and for testing/displaying purposes -----
-        gameMode = GameMode.SINGLEPLAYER;
         startTimer();
 
     }

@@ -79,7 +79,6 @@ public class SingleplayerGame {
      */
     public void jumpToNextQuestion() {
         if (currentQuestionCount < 20) {
-            System.out.println(currentQuestionCount);
             showQuestion();
         } else {
             server.postRequest("api/leaderboard", new LeaderboardEntry(this.scoreTotal, Main.USERNAME), LeaderboardResponsePacket.class);

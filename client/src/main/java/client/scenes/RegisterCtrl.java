@@ -1,6 +1,7 @@
 package client.scenes;
 
 import client.Main;
+import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.utils.HttpStatus;
@@ -68,6 +69,14 @@ public class RegisterCtrl extends SceneCtrl {
     }
 
     /**
+     * This method is run when Register scene is displayed
+     */
+    @OnShowScene
+    public void OnShowScene() {
+        userName.requestFocus();
+    }
+
+    /**
      * Shows the login screen.
      */
     public void showLogin() {
@@ -107,8 +116,8 @@ public class RegisterCtrl extends SceneCtrl {
                 error.setText("User exists");
             } else if (response.getCode() == HttpStatus.Created.getCode()) {
                 LoginCtrl login = main.getCtrl(LoginCtrl.class);
-                clearFields();
                 login.login(userName.getText(), password.getText());
+                clearFields();
             }
         }
     }
