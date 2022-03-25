@@ -21,6 +21,7 @@ public class GameController {
 
     /**
      * gets pinged by client per 1 second
+     *
      * @param request
      * @return GeneralResponsePacket
      */
@@ -58,7 +59,9 @@ public class GameController {
      */
     @PostMapping("/emote")
     public GeneralResponsePacket sendEmote(@RequestBody EmoteRequestPacket request) {
-        gameService.onEmoteReceived("Emote", request.getEmoteNo(), request.getUsername());
+        gameService.onEmoteReceived("Emote",
+                request.getEmoteStr(),
+                request.getUsername());
         return new GeneralResponsePacket(HttpStatus.OK);
     }
 

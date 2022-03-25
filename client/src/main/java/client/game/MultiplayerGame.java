@@ -68,9 +68,9 @@ public class MultiplayerGame {
                         .updatePlayerList(responsePacket.getPlayerList()));
     }
 
-    public GeneralResponsePacket sendEmote(String username, String emoteNo) {
+    public GeneralResponsePacket sendEmote(String username, String emoteStr) {
         return server.postRequest("api/game/emote",
-                new EmoteRequestPacket(username, emoteNo),
+                new EmoteRequestPacket(username, emoteStr),
                 GeneralResponsePacket.class);
     }
 
@@ -151,68 +151,13 @@ public class MultiplayerGame {
 
         }
 
-        private void updateEmote(String from, String emoteNo) {
-            if (emoteNo.equals("1")) {
-                Platform.runLater(() ->
-                        main.getCtrl(LobbyCtrl.class)
-                                .updateEmoji1(from));
-            } else if (emoteNo.equals("2")) {
-                Platform.runLater(() ->
-                        main.getCtrl(LobbyCtrl.class)
-                                .updateEmoji2(from));
-            } else if (emoteNo.equals("3")) {
-                Platform.runLater(() ->
-                        main.getCtrl(LobbyCtrl.class)
-                                .updateEmoji3(from));
-            } else if (emoteNo.equals("4")) {
-                Platform.runLater(() ->
-                        main.getCtrl(LobbyCtrl.class)
-                                .updateEmoji4(from));
-            } else if (emoteNo.equals("5")) {
-                Platform.runLater(() ->
-                        main.getCtrl(LobbyCtrl.class)
-                                .updateEmoji5(from));
-            } else if (emoteNo.equals("6")) {
-                Platform.runLater(() ->
-                        main.getCtrl(LobbyCtrl.class)
-                                .updateEmoji6(from));
-            } else if (emoteNo.equals("7")) {
-                Platform.runLater(() ->
-                        main.getCtrl(LobbyCtrl.class)
-                                .updateEmoji7(from));
-            } else if (emoteNo.equals("8")) {
-                Platform.runLater(() ->
-                        main.getCtrl(LobbyCtrl.class)
-                                .updateEmoji8(from));
-            } else if (emoteNo.equals("9")) {
-                Platform.runLater(() ->
-                        main.getCtrl(LobbyCtrl.class)
-                                .updateEmoji9(from));
-            } else if (emoteNo.equals("10")) {
-                Platform.runLater(() ->
-                        main.getCtrl(LobbyCtrl.class)
-                                .updateEmoji10(from));
-            } else if (emoteNo.equals("11")) {
-                Platform.runLater(() ->
-                        main.getCtrl(LobbyCtrl.class)
-                                .updateEmoji11(from));
-            } else if (emoteNo.equals("12")) {
-                Platform.runLater(() ->
-                        main.getCtrl(LobbyCtrl.class)
-                                .updateEmoji12(from));
-            } else if (emoteNo.equals("13")) {
-                Platform.runLater(() ->
-                        main.getCtrl(LobbyCtrl.class)
-                                .updateEmoji13(from));
-            } else if (emoteNo.equals("14")) {
-                Platform.runLater(() ->
-                        main.getCtrl(LobbyCtrl.class)
-                                .updateEmoji14(from));
-            }
+        private void updateEmote(String from, String emote) {
+            Platform.runLater(() ->
+                    main.getCtrl(LobbyCtrl.class)
+                            .updateEmoji(from, emote));
+
         }
-
     }
+
+
 }
-
-
-

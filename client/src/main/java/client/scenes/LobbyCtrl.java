@@ -18,6 +18,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
 import java.net.URL;
+import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -93,6 +94,22 @@ public class LobbyCtrl extends SceneCtrl {
     public void enableListners() {
         for (Node node : emoteContainer.getChildren()) {
             ImageView emote = (ImageView) node;
+
+            emote.setOnMouseEntered(event -> {
+                emoteHoverAnim(emote, false).play();
+            });
+
+            emote.setOnMouseExited(event -> {
+                emoteHoverAnim(emote, true).play();
+            });
+
+            emote.setOnMouseClicked(event -> {
+                emoteUsed(Emote.valueOf(emote.getId()));
+                showEmoji(Emote.valueOf(emote.getId()));
+            });
+        }
+    }
+
     /**
      * show message when other player joins the game
      *
@@ -137,39 +154,25 @@ public class LobbyCtrl extends SceneCtrl {
         // to be filled
     }
 
-    /**
-     * add the Hearts Eye emoji into the chat
-     */
-    public void showEmoji1() {
-        Text text = new Text(Main.USERNAME + ": ");
-        text.setFont(Font.font("Comic Sans MS", 30));
-        Text text2 = new Text("\n");
-        ImageView iv = new ImageView("img/emojis/heart_eyes.png");
-        iv.setFitHeight(40);
-        iv.setFitWidth(40);
-        chattextflow.getChildren().addAll(text, iv, text2);
-        //send pressed emote to server
-        multiGame.sendEmote(Main.USERNAME, "1");
-    }
-
-            emote.setOnMouseEntered(event -> {
-                emoteHoverAnim(emote, false).play();
-            });
-
-            emote.setOnMouseExited(event -> {
-                emoteHoverAnim(emote, true).play();
-            });
-
-            emote.setOnMouseClicked(event -> {
-                emoteUsed(Emote.valueOf(emote.getId()));
-                showEmoji(Emote.valueOf(emote.getId()));
-            });
-        }
-    }
+//    /**
+//     * add the Hearts Eye emoji into the chat
+//     */
+//    public void showEmoji1() {
+//        Text text = new Text(Main.USERNAME + ": ");
+//        text.setFont(Font.font("Comic Sans MS", 30));
+//        Text text2 = new Text("\n");
+//        ImageView iv = new ImageView("img/emojis/heart_eyes.png");
+//        iv.setFitHeight(40);
+//        iv.setFitWidth(40);
+//        chattextflow.getChildren().addAll(text, iv, text2);
+//        //send pressed emote to server
+//        multiGame.sendEmote(Main.USERNAME, "1");
+//    }
 
 
     /**
      * Addes the emote to the chatroom
+     *
      * @param emote emote to be added
      */
     public void showEmoji(Emote emote) {
@@ -180,40 +183,35 @@ public class LobbyCtrl extends SceneCtrl {
         iv.setFitHeight(40);
         iv.setFitWidth(40);
         chattextflow.getChildren().addAll(text, iv, text2);
-        multiGame.sendEmote(Main.USERNAME, "6");
+        multiGame.sendEmote(Main.USERNAME, emote.toString().toLowerCase());
     }
 
-    /**
-    public void showEmoji10() {
-        Text text = new Text(Main.USERNAME + ": ");
+    public void updateEmoji(String from, String emoteStr) {
+        Text text = new Text(from + ": ");
         text.setFont(Font.font("Comic Sans MS", 30));
         Text text2 = new Text("\n");
-        ImageView iv = new ImageView("img/emojis/trophy.png");
+        ImageView iv = new ImageView("@../../img/emojis/" + emoteStr + ".png");
         iv.setFitHeight(40);
         iv.setFitWidth(40);
         chattextflow.getChildren().addAll(text, iv, text2);
-        multiGame.sendEmote(Main.USERNAME, "10");
     }
-     */
-     * add the Trophy emoji into the chat
-    /**
 
-    /**
-     * update emoji sent by other player
-     * @param sender
-     */
-    public void updateEmoji10(String sender) {
-        Text text = new Text(sender + ": ");
-        text.setFont(Font.font("Comic Sans MS", 30));
-        Text text2 = new Text("\n");
-        ImageView iv = new ImageView("img/emojis/trophy.png");
-        iv.setFitHeight(40);
-        chattextflow.getChildren().addAll(text, iv, text2);
-    }
-        iv.setFitWidth(40);
 
-     * Show the home screen.
-     */
+//    /**
+//     * update emoji sent by other player
+//     *
+//     * @param sender
+//     */
+//    public void updateEmoji10(String sender) {
+//        Text text = new Text(sender + ": ");
+//        text.setFont(Font.font("Comic Sans MS", 30));
+//        Text text2 = new Text("\n");
+//        ImageView iv = new ImageView("img/emojis/trophy.png");
+//        iv.setFitHeight(40);
+//        chattextflow.getChildren().addAll(text, iv, text2);
+//    }
+
+
     public void showHome() {
         chattext = new Text(Main.USERNAME + " has left the lobby!" + "\n");
         chattext.setFill(Color.RED);
