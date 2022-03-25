@@ -3,17 +3,21 @@ package commons.questions;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
+@Entity
 public class Activity {
-
     @SuppressWarnings("checkstyle:JavadocVariable")
     /**
      * Id of the activity
      */
+    @Id
     private String id;
     /**
      * Path to the corresponding image
@@ -26,6 +30,7 @@ public class Activity {
     /**
      * Link to source
      */
+    @Column(length = 500)
     private String source;
     /**
      * Description of the activity

@@ -17,21 +17,34 @@ package client.utils;
 
 import client.Main;
 import commons.Game;
+import commons.questions.Activity;
 import commons.utils.HttpStatus;
 import commons.utils.LoggerUtil;
 import jakarta.ws.rs.ProcessingException;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.client.*;
+import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
 import javafx.scene.image.Image;
+import org.glassfish.jersey.client.ClientConfig;
+import org.springframework.messaging.converter.MappingJackson2MessageConverter;
+import org.springframework.messaging.simp.stomp.StompFrameHandler;
+import org.springframework.messaging.simp.stomp.StompHeaders;
+import org.springframework.messaging.simp.stomp.StompSession;
+import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
+import org.springframework.web.socket.client.standard.StandardWebSocketClient;
+import org.springframework.web.socket.messaging.WebSocketStompClient;
 import packets.*;
 
 import java.io.ByteArrayInputStream;
+import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Objects;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 public class ServerUtils {
+    private static final String SERVER = "http://localhost:8080/";
 
     private Client client;
 
@@ -126,7 +139,7 @@ public class ServerUtils {
                 .header("Authorization", Main.TOKEN)
                 .get(ImageResponsePacket.class);
 
-        return new Image(new ByteArrayInputStream(image.getImageByte()));
+        return new Image(new ByteArrayInputStream(image.getImageByte()), 240, 143, false, false);
     }
 
     /**
@@ -169,6 +182,22 @@ public class ServerUtils {
                 RegisterResponsePacket.class);
     }
 
+    /**
+     * Uses an endpoint to retrieve the list of activities from the Server
+     * @return The activities stored
+     */
+    public List<Activity> getActivities() {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/game/activities/list")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(new GenericType<>() {});
+    }
+
+    //private StompSession session = connect("ws://localhost:8080/websocket");
+
+    //THIS IS A TEMPORARY SOLUTION FOR MAKING THE CODE COMPILE, WILL FIX WEBSOCKETS IN NEXT SPRINT
+    private StompSession session = null;
 
     /**
      * Builds a get request

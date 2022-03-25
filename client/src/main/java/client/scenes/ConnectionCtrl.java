@@ -51,9 +51,11 @@ public class ConnectionCtrl extends SceneCtrl {
 
         if (res) {
             main.showScene(LoginCtrl.class);
+            url.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 50");
+            message.setText("");
         } else {
             message.setText("This URL is invalid");
-            url.setStyle("-fx-background-color: #fc6363");
+            url.setStyle("-fx-background-color: #fc6363; -fx-background-radius: 50");
         }
     }
 }
