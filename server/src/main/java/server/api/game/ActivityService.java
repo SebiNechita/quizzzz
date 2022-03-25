@@ -13,7 +13,7 @@ import java.util.List;
 @Service
 public class ActivityService {
     /**
-     * the repository which will be used to stoore activities
+     * the repository which will be used to store activities
      */
     private ActivityRepository activityRepository;
 

@@ -73,6 +73,10 @@ public class ActivitiesResponsePacket extends GeneralResponsePacket {
         return activities;
     }
 
+    public void addActivity(Activity activity) {
+        activities.add(activity);
+    }
+
     /**
      * Set method
      * @param activities Sets the list of activities

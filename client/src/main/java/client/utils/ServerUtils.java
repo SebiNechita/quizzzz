@@ -115,6 +115,21 @@ public class ServerUtils {
         return null;
     }
 
+//    public String getActivityInfo(String image_path, long consumption, String source, String description) {
+//        Response response = getClient().target(Main.URL).path("/api/activities")
+//                .request(APPLICATION_JSON).accept(APPLICATION_JSON)
+//                .post(Entity.entity(new ActivityRequestPacket(image_path, consumption, source, description), APPLICATION_JSON));
+//
+////        if (response.getStatus() == 202) {
+////            return (String) response.getHeaders().get("Authorization").get(0);
+////        } else if (response.getStatus() == 403) {
+////            LoggerUtil.warn("Unable to get token, invalid account:\n\t$HLUsername: " + username + "\n\tPassword: " + "*".repeat(password.length()) + "$");
+////        } else {
+////            LoggerUtil.severeInline("Unknown status $HLHTTP" + response.getStatus() + "$ given while trying to get a token");
+////        }
+//        return null;
+//    }
+
     /**
      * Retrieves an instance of Game from the server using the endpoint made for the same
      *
@@ -226,6 +241,10 @@ public class ServerUtils {
      */
     public List<Activity> getActivities() {
         return getRequest("api/activities/list", ActivitiesResponsePacket.class).getActivities();
+    }
+
+    public void addActivity(Activity activity) {
+        getRequest("api/activities/add", ActivitiesResponsePacket.class).addActivity(activity);
     }
 
     //private StompSession session = connect("ws://localhost:8080/websocket");
