@@ -22,7 +22,7 @@ public class GameController {
     /**
      * gets pinged by client per 1 second
      * @param request
-     * @return
+     * @return GeneralResponsePacket
      */
     @PostMapping("/ping")
     public GeneralResponsePacket onPing(@RequestBody PingRequestPacket request) {
