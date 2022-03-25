@@ -38,7 +38,7 @@
             <font>
                 <Font name="Comic Sans MS" size="26.0" />
             </font></Text>
-        <Button layoutX="636.0" layoutY="491.0" mnemonicParsing="false" onAction="#singleFileChooser" prefHeight="50.0" prefWidth="300.0" style="-fx-background-radius: 40; -fx-background-color: white;" text="upload an image" textAlignment="CENTER" textFill="#bab3b3">
+        <Button fx:id="uploadAnImage" layoutX="636.0" layoutY="491.0" mnemonicParsing="false" onAction="#clickUploadImage" prefHeight="50.0" prefWidth="300.0" style="-fx-background-radius: 40; -fx-background-color: white;" text="upload an image" textAlignment="CENTER" textFill="#bab3b3">
             <font>
                 <Font name="Comic Sans MS" size="26.0" />
             </font></Button>

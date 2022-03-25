@@ -1,11 +1,19 @@
 package server.api.game;
 
 import commons.questions.Activity;
+import commons.utils.LoggerUtil;
 import org.springframework.stereotype.Service;
+import packets.ActivityRequestPacket;
 import server.database.ActivityRepository;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.util.Objects;
 
 @Service
 public class AddActivityService {
+
     private ActivityRepository activityRepository;
 
     /**
@@ -18,9 +26,30 @@ public class AddActivityService {
 
     /**
      * Adds a new activity to the repository
-     * @param activity The activity to be stored
+     * @param packet The activity to be stored
      */
-    public void add(Activity activity) {
+    public void add(ActivityRequestPacket packet) {
+        String path = "extras/" + packet.getId() + ".png";
+        Activity activity = new Activity(
+                packet.getDescription(),
+                packet.getId(),
+                path,
+                packet.getConsumption(),
+                packet.getSource()
+        );
+        try {
+            BufferedImage myImage = ImageIO.read(new ByteArrayInputStream(packet.getImageByte()));
+            String filePath = Objects.requireNonNull(getClass().getResource("/activity-bank")).toExternalForm() + "/" + path;
+            System.out.println(filePath);
+            File createdFile = new File(filePath);
+            if (ImageIO.write(myImage, "png", createdFile)) {
+                LoggerUtil.infoInline("Successfully Stored Image at: " + filePath);
+            } else {
+                LoggerUtil.warnInline("Image could not be stored!");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         activityRepository.save(activity);
     }
 }

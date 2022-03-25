@@ -4,19 +4,26 @@ import client.utils.ServerUtils;
 import commons.utils.LoggerUtil;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import packets.ActivityRequestPacket;
+import packets.GeneralResponsePacket;
 import packets.ImageResponsePacket;
 
-import java.awt.*;
 import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
-import java.util.Base64;
 import java.util.ResourceBundle;
+import java.util.UUID;
 
 public class AddActivityCtrl extends SceneCtrl {
     @FXML
@@ -56,7 +63,7 @@ public class AddActivityCtrl extends SceneCtrl {
 
         String mimetype = Files.probeContentType(file.toPath());
 
-        if(file != null && mimetype.split("/")[0].equals("image")) {
+        if (file != null && mimetype.split("/")[0].equals("image")) {
 //            Desktop desktop = Desktop.getDesktop();
 //            desktop.open(file);
 
@@ -88,7 +95,7 @@ public class AddActivityCtrl extends SceneCtrl {
 //            Desktop desktop = Desktop.getDesktop();
 //            desktop.open(file);
 
-            path = file.getAbsolutePath();
+            filePath = file.getAbsolutePath();
             // put request, post mapping
             LoggerUtil.infoInline(path);
 
@@ -124,71 +131,10 @@ public class AddActivityCtrl extends SceneCtrl {
         return byteArrayOutputStream.toByteArray();
     }
 
-    /**
-     * Constructs an ImageResponsePacket from an image file
-     * @param file The image used
-     * @return An ImageResponsePacket
-     * @throws IOException If the file is not found
-     */
     public ImageResponsePacket byteToImage(File file) throws IOException {
         byte[] imageBytes = getBytes(file);
 
         return new ImageResponsePacket(imageBytes);
-    }
-
-    /**
-     * Writes data from an array of bytes to a new file
-     * @param data An array of bytes
-     * @param destination The file where the array of bytes is going to be stored
-     */
-    public void toFile(byte[] data, File destination) {
-        try(FileOutputStream fileOutputStream = new FileOutputStream(destination)) {
-            fileOutputStream.write(data);
-            fileOutputStream.close();
-        }
-        catch (Exception e) {
-            LoggerUtil.warnInline("There was an error!");
-        }
-    }
-
-    /**
-     * Returns a Base64 encoding of the image file
-     * @param image_path A String representing the path to the image
-     * @param savePath A String representing the path where the encoding is stored
-     * @return A Base64 encoding of the image file
-     * @throws IOException If the file is not found
-     */
-    public String encoded(String image_path, String savePath) throws IOException {
-        FileInputStream imageStream = new FileInputStream(image_path);
-        byte[] data = imageStream.readAllBytes();
-        String imageString = Base64.getEncoder().encodeToString(data);
-
-        FileWriter fileWriter = new FileWriter(savePath);
-
-        fileWriter.write(imageString);
-
-        fileWriter.close();
-        imageStream.close();
-
-        return imageString;
-    }
-
-    /**
-     * Decodes a Base64 String back to an image file
-     * @param txtPath The file where the Base64 encoding is stored
-     * @param savePath The path where the new image is stored
-     * @throws IOException If the file is not found
-     */
-    public void decodeImage(String txtPath, String savePath) throws IOException {
-        FileInputStream inputStream = new FileInputStream(txtPath);
-
-        byte[] data = Base64.getDecoder().decode(new String(inputStream.readAllBytes()));
-
-        FileOutputStream fileOutputStream = new FileOutputStream(savePath);
-        fileOutputStream.write(data);
-
-        fileOutputStream.close();
-        inputStream.close();
     }
 
     /**
@@ -223,22 +169,39 @@ public class AddActivityCtrl extends SceneCtrl {
     }
 
     public void clickUploadImage(ActionEvent e) throws IOException {
-        if(e.getSource() == uploadAnImage) {
+        if(e.getSource().equals(uploadAnImage)) {
             filePath = singleFilePathChooser(e);
         }
     }
 
+    /**
+     * Method for clicking the add activity button
+     */
     public void clickAdd() {
         if(description.getText() == null || consumption.getText() == null || source.getText() == null
-            || filePath == null) {
+                || filePath == null) {
             description.setStyle("-fx-background-color: #FF0000FF; -fx-background-radius: 50");
             consumption.setStyle("-fx-background-color: #FF0000FF; -fx-background-radius: 50");
             source.setStyle("-fx-background-color: #FF0000FF; -fx-background-radius: 50");
             error.setText("All fields are mandatory!");
-            uploadAnImage.setBackground(Color.RED);
+            uploadAnImage.setBackground(new Background(new BackgroundFill(Color.RED, new CornerRadii(40), Insets.EMPTY)));
             //error.setStyle("-fx-background-color: #FF0000FF; -fx-background-radius: 50");
         } else {
-
+            byte[] imageByteArray = null;
+            try {
+                FileInputStream imageStream = new FileInputStream(filePath);
+                imageByteArray = imageStream.readAllBytes();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            ActivityRequestPacket packet = new ActivityRequestPacket(
+                    UUID.randomUUID().toString(),
+                    Long.parseLong(consumption.getText()),
+                    source.getText(),
+                    description.getText(),
+                    imageByteArray
+            );
+            server.postRequest("api/activities/add", packet, GeneralResponsePacket.class);
         }
     }
 }

@@ -1,13 +1,15 @@
 package packets;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 public class ActivityRequestPacket extends RequestPacket {
-    protected String image_path;
+
     protected long consumption;
     protected String source;
     protected String description;
     protected String id;
+    protected byte[] imageByte;
 
     /**
      * Empty constructor
@@ -17,30 +19,45 @@ public class ActivityRequestPacket extends RequestPacket {
 
     /**
      * Constructor
-     * @param image_path The path to the image
      * @param consumption Consumption in WH
      * @param source The web source
      * @param description The title of the activity
+     * @param imageByte The path to the image
      */
-    public ActivityRequestPacket(String image_path, long consumption, String source, String description) {
-        this.image_path = image_path;
+    public ActivityRequestPacket(long consumption, String source, String description, byte[] imageByte) {
         this.consumption = consumption;
         this.source = source;
         this.description = description;
-        this.id = "added - " + image_path;
+        this.imageByte = imageByte;
     }
 
     /**
-     * Getter
-     * @return The image path
+     * Constructor
+     * @param id Id of the activity
+     * @param consumption Consumption in WH
+     * @param source The web source
+     * @param description The title of the activity
+     * @param imageByte The path to the image
      */
-    public String getImage_path() {
-        return image_path;
+    public ActivityRequestPacket(String id, long consumption, String source, String description, byte[] imageByte) {
+        this.consumption = consumption;
+        this.source = source;
+        this.description = description;
+        this.id = id;
+        this.imageByte = imageByte;
+    }
+
+    /**
+     * Returns an image as a byte array
+     * @return The array of bytes representing the image
+     */
+    public byte[] getImageByte() {
+        return imageByte;
     }
 
     /**
      * Getter
-     * @return The consumption in WH
+     * @return The consumption of the activity
      */
     public long getConsumption() {
         return consumption;
@@ -48,7 +65,7 @@ public class ActivityRequestPacket extends RequestPacket {
 
     /**
      * Getter
-     * @return The source
+     * @return The source of the activity
      */
     public String getSource() {
         return source;
@@ -56,7 +73,7 @@ public class ActivityRequestPacket extends RequestPacket {
 
     /**
      * Getter
-     * @return The title of the activity
+     * @return The description of the activity
      */
     public String getDescription() {
         return description;
@@ -80,30 +97,33 @@ public class ActivityRequestPacket extends RequestPacket {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ActivityRequestPacket that = (ActivityRequestPacket) o;
-        return consumption == that.consumption && Objects.equals(image_path, that.image_path) && Objects.equals(source, that.source) && Objects.equals(description, that.description) && Objects.equals(id, that.id);
+        return consumption == that.consumption && Objects.equals(source, that.source) && Objects.equals(description, that.description) && Objects.equals(id, that.id) && Arrays.equals(imageByte, that.imageByte);
     }
 
     /**
-     * Retusrns the hashcode of this
-     * @return The hjashcode of this
+     * Returns the hashcode of this
+     * @return The hashcode of this
      */
     @Override
     public int hashCode() {
-        return Objects.hash(image_path, consumption, source, description, id);
+        int result = Objects.hash(consumption, source, description, id);
+        result = 31 * result + Arrays.hashCode(imageByte);
+        return result;
     }
 
     /**
-     * A String representation of this
-     * @return A String representation of this
+     * Translates the data of this packet into a readable format
+     *
+     * @return A formatted string
      */
     @Override
     public String toString() {
         return "ActivityRequestPacket{" +
-                "image_path='" + image_path + '\'' +
-                ", consumption=" + consumption +
+                "consumption=" + consumption +
                 ", source='" + source + '\'' +
                 ", description='" + description + '\'' +
                 ", id='" + id + '\'' +
+                ", imageByte=" + Arrays.toString(imageByte) +
                 '}';
     }
 }
