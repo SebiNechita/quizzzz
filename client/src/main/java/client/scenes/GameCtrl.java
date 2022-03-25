@@ -476,7 +476,7 @@ public abstract class GameCtrl extends SceneCtrl {
     private Animation timerAnim(AnchorPane anchorPane) {
         return new Transition() {
             {
-                setCycleDuration(Duration.millis(10000 * timeMultiplier));
+                setCycleDuration(Duration.millis(1000 * timeMultiplier));
                 setInterpolator(Interpolator.LINEAR);
             }
 

@@ -1,10 +1,7 @@
 package client.game;
 
 import client.Main;
-import client.scenes.GameMultiChoiceCtrl;
-import client.scenes.GameOpenQuestionCtrl;
-import client.scenes.MainCtrl;
-import client.scenes.SingleplayerLeaderboardCtrl;
+import client.scenes.*;
 import client.utils.ServerUtils;
 import commons.Game;
 import commons.LeaderboardEntry;
@@ -82,7 +79,7 @@ public class SingleplayerGame {
             showQuestion();
         } else {
             server.postRequest("api/leaderboard", new LeaderboardEntry(this.scoreTotal, Main.USERNAME), LeaderboardResponsePacket.class);
-            mainCtrl.showScene(SingleplayerLeaderboardCtrl.class);
+            mainCtrl.showScene(EndGameCtrl.class);
         }
         currentQuestionCount++;
     }
