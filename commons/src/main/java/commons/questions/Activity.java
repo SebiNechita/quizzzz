@@ -3,22 +3,26 @@ package commons.questions;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
+@Entity
 public class Activity {
-
     @SuppressWarnings("checkstyle:JavadocVariable")
     /**
      * Id of the activity
      */
+    @Id
     private String id;
     /**
      * Path to the corresponding image
      */
-    private String image_path;
+    private String image_path;//replace with byte[] image
     /**
      * Energy consumed in WH
      */
@@ -26,6 +30,7 @@ public class Activity {
     /**
      * Link to source
      */
+    @Column(length = 500)
     private String source;
     /**
      * Description of the activity
@@ -53,6 +58,22 @@ public class Activity {
         this.image_path = image_path;
         this.consumption_in_wh = consumption_in_wh;
         this.source = source;
+    }
+
+    /**
+     * Constructor for Activity
+     *
+     * @param title             description of the activity
+     * @param image_path        path to its corresponding image
+     * @param consumption_in_wh energy consumed in wh
+     * @param source            link to source
+     */
+    public Activity(String title, String image_path, long consumption_in_wh, String source) {
+        this.title = title;
+        this.image_path = image_path;
+        this.consumption_in_wh = consumption_in_wh;
+        this.source = source;
+        this.id = "added - " + image_path;
     }
 
     /**

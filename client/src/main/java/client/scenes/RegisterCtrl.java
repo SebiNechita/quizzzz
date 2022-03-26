@@ -1,6 +1,7 @@
 package client.scenes;
 
 import client.Main;
+import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.utils.HttpStatus;
@@ -25,15 +26,27 @@ public class RegisterCtrl extends SceneCtrl {
             if (e.getCode() == KeyCode.ENTER) {
                 registerButtonClicked();
             }
+            if (e.getCode() == KeyCode.DOWN) {
+                password.requestFocus();
+            }
         });
         password.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
                 registerButtonClicked();
             }
+            if (e.getCode() == KeyCode.UP) {
+                userName.requestFocus();
+            }
+            if (e.getCode() == KeyCode.DOWN) {
+                confirmPassword.requestFocus();
+            }
         });
         confirmPassword.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
                 registerButtonClicked();
+            }
+            if (e.getCode() == KeyCode.UP) {
+                password.requestFocus();
             }
         });
     }
@@ -56,6 +69,14 @@ public class RegisterCtrl extends SceneCtrl {
     @Inject
     public RegisterCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
         super(mainCtrl, serverUtils);
+    }
+
+    /**
+     * This method is run when Register scene is displayed
+     */
+    @OnShowScene
+    public void OnShowScene() {
+        userName.requestFocus();
     }
 
     /**
@@ -104,8 +125,8 @@ public class RegisterCtrl extends SceneCtrl {
                 shake(userName).playFromStart();
             } else if (response.getCode() == HttpStatus.Created.getCode()) {
                 LoginCtrl login = main.getCtrl(LoginCtrl.class);
-                clearFields();
                 login.login(userName.getText(), password.getText());
+                clearFields();
             }
         }
     }

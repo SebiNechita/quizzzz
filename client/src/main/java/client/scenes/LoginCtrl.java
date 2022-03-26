@@ -1,6 +1,7 @@
 package client.scenes;
 
 import client.Main;
+import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import javafx.animation.Animation;
 import javafx.animation.TranslateTransition;
@@ -21,10 +22,16 @@ public class LoginCtrl extends SceneCtrl {
             if (e.getCode() == KeyCode.ENTER) {
                 onLoginButtonPressed();
             }
+            if (e.getCode() == KeyCode.DOWN) {
+                password.requestFocus();
+            }
         });
         password.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
                 onLoginButtonPressed();
+            }
+            if (e.getCode() == KeyCode.UP) {
+                userName.requestFocus();
             }
         });
     }
@@ -44,23 +51,36 @@ public class LoginCtrl extends SceneCtrl {
 
     /**
      * Logs in the user with the account data
-     * @param userName - the username of the user
-     * @param password - the password of the user
+     * @param username - the username of the user
+     * @param passwordEntered - the password of the user
      */
-    public void login(String userName, String password) {
-        String result = server.getToken(userName, password);
+    public void login(String username, String passwordEntered) {
+        String result = server.getToken(username, passwordEntered);
         //the return string is null if the login is unsuccessful.
         if (result != null) {
             Main.TOKEN = result;
             //if the result string is not empty this means that userName.getText() is valid
-            Main.USERNAME = userName;
+            Main.USERNAME = username;
+            userName.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 50");
+            password.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 50");
+            error.setText("");
             main.showScene(MainMenuCtrl.class);
+            userName.setText("");
+            password.setText("");
+        } else {
+            userName.setStyle("-fx-background-color: #fc6363; -fx-background-radius: 50");
+            password.setStyle("-fx-background-color: #fc6363; -fx-background-radius: 50");
+            error.setText("Could not log in");
         }
-        else{
-            error.setText("Could not log in.");
-            shake(this.userName).playFromStart();
-            shake(this.password).playFromStart();
-        }
+    }
+
+
+    /**
+     * This method is run when the Login scene is displayed
+     */
+    @OnShowScene
+    public void OnShowScene() {
+        userName.requestFocus();
     }
 
     /**

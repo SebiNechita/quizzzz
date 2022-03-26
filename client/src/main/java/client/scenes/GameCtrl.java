@@ -1,6 +1,5 @@
 package client.scenes;
 
-import client.Main;
 import client.utils.ServerUtils;
 import commons.utils.Emote;
 import commons.utils.GameMode;
@@ -14,15 +13,18 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Button;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -118,7 +120,7 @@ public abstract class GameCtrl extends SceneCtrl {
         answerBonusText.setVisible(false);
         timeBonusText.setVisible(false);
 
-        setScore(Main.scoreTotal);
+        setScore(main.getSingleplayerGame().getScoreTotal());
 
         nextQuestion.setVisible(false);
 
@@ -135,9 +137,6 @@ public abstract class GameCtrl extends SceneCtrl {
 
         generateProgressDots();
         enableListeners();
-
-        //----- TODO: Everything below this is temporary and for testing/displaying purposes -----
-        gameMode = GameMode.SINGLEPLAYER;
         startTimer();
 
     }
@@ -267,7 +266,7 @@ public abstract class GameCtrl extends SceneCtrl {
         dropShadow.setOffsetX(3.0);
         dropShadow.setOffsetY(3.0);
 
-        Iterator<Boolean> history = Main.questionHistory.iterator();
+        Iterator<Boolean> history = main.getSingleplayerGame().getQuestionHistory().iterator();
         if (numberofQuestions == -1) {
             for (int i = 0; i < 20; i++) {
                 Circle circle = generateCircle(Paint.valueOf("#2b2b2b"), dropShadow);
@@ -343,7 +342,7 @@ public abstract class GameCtrl extends SceneCtrl {
 
         timer = timerAnim(timeLeftSlider);
 
-        timeLeftSlider.setBackground(new Background(new BackgroundFill(new Color(0.160, 0.729, 0.901, 1), new CornerRadii(6), Insets.EMPTY)));
+        timeLeftSlider.setBackground(new Background(new BackgroundFill(new Color(0.160, 0.729, 0.901, 1), new CornerRadii(50), Insets.EMPTY)));
         timeMultiplier = 1d;
         timer.playFromStart();
         onTimerEnd();
@@ -388,8 +387,8 @@ public abstract class GameCtrl extends SceneCtrl {
 
         int timeBonus = (int) Math.round(lastAnswerChange * 100 * (answerPoints / 100d));
         int total = (int) (answerPoints + timeBonus * (answerPoints / 100d));
-        Main.scoreTotal += total;
-        setScore(Main.scoreTotal);
+        main.getSingleplayerGame().addToScore(total);
+        setScore(main.getSingleplayerGame().getScoreTotal());
         Paint color;
         if (answerPoints >= 90) {
             color = Paint.valueOf("#6cf06a");
@@ -441,7 +440,7 @@ public abstract class GameCtrl extends SceneCtrl {
 
             @Override
             protected void interpolate(double frac) {
-                anchorPane.setBackground(new Background(new BackgroundFill(lerp(target.getRed(), target.getGreen(), target.getBlue(), inverted ? 1 - frac : frac), new CornerRadii(10), Insets.EMPTY)));
+                anchorPane.setBackground(new Background(new BackgroundFill(lerp(target.getRed(), target.getGreen(), target.getBlue(), inverted ? 1 - frac : frac), new CornerRadii(40), Insets.EMPTY)));
             }
         };
     }
@@ -477,7 +476,7 @@ public abstract class GameCtrl extends SceneCtrl {
     private Animation timerAnim(AnchorPane anchorPane) {
         return new Transition() {
             {
-                setCycleDuration(Duration.millis(10000 * timeMultiplier));
+                setCycleDuration(Duration.millis(1000 * timeMultiplier));
                 setInterpolator(Interpolator.LINEAR);
             }
 
@@ -560,6 +559,35 @@ public abstract class GameCtrl extends SceneCtrl {
      */
     private int lerp(int start, int end, double time) {
         return (int) Math.round(start + (end - start) * time);
+    }
+
+
+    /**
+     * Rounds the image
+     * Source: https://stackoverflow.com/a/56303884/9957954
+     * @param imageView imageView in which the image will be viewed
+     */
+    public void setRoundedImage(ImageView imageView) {
+        Rectangle clip = new Rectangle(
+                imageView.getFitWidth(), imageView.getFitHeight()
+        );
+        clip.setArcWidth(40);
+        clip.setArcHeight(40);
+        imageView.setClip(clip);
+
+        // snapshot the rounded image.
+        SnapshotParameters parameters = new SnapshotParameters();
+        parameters.setFill(Color.TRANSPARENT);
+        WritableImage image = imageView.snapshot(parameters, null);
+
+        // remove the rounding clip so that our effect can show through.
+        imageView.setClip(null);
+
+        // apply a shadow effect.
+        imageView.setEffect(new DropShadow(40, Color.BLACK));
+
+        // store the rounded image in the imageView.
+        imageView.setImage(image);
     }
 
     /**

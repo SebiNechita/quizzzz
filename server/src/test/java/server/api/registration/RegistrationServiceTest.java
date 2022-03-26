@@ -1,4 +1,4 @@
-package server.api;
+package server.api.registration;
 
 import commons.utils.HttpStatus;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +12,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import packets.*;
-import server.api.registration.RegistrationService;
 import server.user.User;
 import server.user.UserService;
 

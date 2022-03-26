@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import javafx.animation.Animation;
 import javafx.animation.TranslateTransition;
@@ -46,6 +47,15 @@ public class ConnectionCtrl extends SceneCtrl {
     }
 
     /**
+     * This method is run when Connection scene is displayed
+     */
+    @OnShowScene
+    public void OnShowScene() {
+        url.requestFocus();
+        url.positionCaret(url.getText().length());
+    }
+
+    /**
      * Event handler for when 'Connect' button is clicked
      */
     public void connectClicked() {
@@ -55,13 +65,11 @@ public class ConnectionCtrl extends SceneCtrl {
 
         if (res) {
             main.showScene(LoginCtrl.class);
-            url.setStyle("-fx-background-color: #green");
-            message.setText("Connected");
-
+            url.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 50");
+            message.setText("");
         } else {
             message.setText("This URL is invalid");
-            url.setStyle("-fx-background-color: #fc6363");
-            shake(url).playFromStart();
+            url.setStyle("-fx-background-color: #fc6363; -fx-background-radius: 50");
         }
     }
 
