@@ -39,7 +39,7 @@ public class MainCtrl {
     private final Stage primaryStage;
     private final ServerUtils serverUtils;
     private SingleplayerGame singleplayerGame;
-    private final MultiplayerGame multiplayerGame;
+    private MultiplayerGame multiplayerGame;
 
     private final HashMap<Class<?>, SceneCtrl> ctrlClasses = new HashMap<>();
     private final HashMap<Class<?>, Pair<Scene, String>> scenes = new HashMap<>();
@@ -52,7 +52,7 @@ public class MainCtrl {
     public MainCtrl(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.serverUtils = new ServerUtils();
-        this.multiplayerGame = new MultiplayerGame(this, serverUtils);
+      // this.multiplayerGame = new MultiplayerGame(this, serverUtils);
     }
 
     /**
@@ -61,6 +61,14 @@ public class MainCtrl {
     public void createNewSingleplayerGame() {
         this.singleplayerGame = new SingleplayerGame(this, serverUtils);
     }
+
+    /**
+     * Creates a new MultiplayerGame
+     */
+    public void createNewMultiplayerGame() {
+        this.multiplayerGame = new MultiplayerGame(this, serverUtils);
+    }
+
 
     /**
      * Getter for the current SingleplayerGame

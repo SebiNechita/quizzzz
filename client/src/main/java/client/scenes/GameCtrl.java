@@ -79,7 +79,7 @@ public abstract class GameCtrl extends SceneCtrl {
     protected static int numberofQuestions = -1;
     protected double timeLeft = 0;
     protected double lastAnswerChange = 0;
-    protected double timeMultiplier = 1d;
+    protected double timeMultiplier = 10d;
 
     /**
      * There are three options visible to the user.

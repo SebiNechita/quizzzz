@@ -244,22 +244,26 @@ public class GameMultiChoiceCtrl extends GameCtrl {
      * Gets the next question.
      */
     protected void retrieveMultipleChoiceQuestion() {
+        MultipleChoiceQuestion mcq = null;
+        if(Main.gameMode == GameMode.SINGLEPLAYER) {
+            mcq = main.getSingleplayerGame().getCurrentQuestion(MultipleChoiceQuestion.class);}
+        else{
+            mcq = main.getMultiplayerGame().getCurrentQuestion(MultipleChoiceQuestion.class);}
+            Activity answer = mcq.getAnswer();
+            Activity option2 = mcq.getActivityList().get(0); // An option that is not the answer
+            Activity option3 = mcq.getActivityList().get(1); // Another option that is not the answer
 
-        MultipleChoiceQuestion mcq = main.getSingleplayerGame().getCurrentQuestion(MultipleChoiceQuestion.class);
-        Activity answer = mcq.getAnswer();
-        Activity option2 = mcq.getActivityList().get(0); // An option that is not the answer
-        Activity option3 = mcq.getActivityList().get(1); // Another option that is not the answer
+            // Generates random int value from 0 to 3
+            Random randomGen = new Random();
+            answerOptionNumber = randomGen.nextInt(3);
 
-        // Generates random int value from 0 to 3
-        Random randomGen = new Random();
-        answerOptionNumber = randomGen.nextInt(3);
+            // This is to ensure that the answers are in different options and are not predictable by the user
+            switch (answerOptionNumber) {
+                case 0 -> setUpQuestion(mcq.getQuestion(), answer, option2, option3);
+                case 1 -> setUpQuestion(mcq.getQuestion(), option2, answer, option3);
+                case 2 -> setUpQuestion(mcq.getQuestion(), option2, option3, answer);
+            }
 
-        // This is to ensure that the answers are in different options and are not predictable by the user
-        switch (answerOptionNumber) {
-            case 0 -> setUpQuestion(mcq.getQuestion(), answer, option2, option3);
-            case 1 -> setUpQuestion(mcq.getQuestion(), option2, answer, option3);
-            case 2 -> setUpQuestion(mcq.getQuestion(), option2, option3, answer);
-        }
     }
 
 
