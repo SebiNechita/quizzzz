@@ -16,9 +16,7 @@
 package client;
 
 import client.scenes.ConnectionCtrl;
-import client.scenes.LoginCtrl;
 import client.scenes.MainCtrl;
-import client.scenes.MainMenuCtrl;
 import commons.utils.GameMode;
 import javafx.application.Application;
 import javafx.scene.control.Alert;
