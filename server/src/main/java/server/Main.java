@@ -41,6 +41,7 @@ public class Main {
      * @param activityService - the activity service
      * @return a lambda expression which parses a json file
      */
+    //TODO: Remove this
     @Bean
     CommandLineRunner runner(ActivityService activityService) {
         return args -> {

@@ -12,7 +12,7 @@ import java.io.*;
 @RequestMapping("/zip")
 public class ZipController {
     private final ZipService zipService;
-    private ActivityService activityService;
+    private final ActivityService activityService;
 
     public ZipController(ZipService zipService, ActivityService activityService) {
         this.zipService = zipService;
@@ -22,9 +22,10 @@ public class ZipController {
     //TODO: Replace ResponsePacket constructors
     //TODO: Remove prints
     @PostMapping("/")
+    //Imports the activities from the zip contained in the given packet
     public ResponsePacket importZip(@RequestBody ZipRequestPacket packet) throws IOException {
         byte[] bytes = packet.getZipBytes();
-        File file = constructFile(bytes);
+        constructFile(bytes);
         FileUtils.cleanDirectory(new File("server/src/main/resources/activity-bank"));
         try {
             zipService.unzip();
@@ -37,14 +38,18 @@ public class ZipController {
 
 
     //TODO: move this method to ZipService
-    public File constructFile(byte[] bytes) throws IOException {
+
+    /**
+     * Creates a zip file out of the given byte array
+     * @param bytes the byte array to create the file out of
+     */
+    public void constructFile(byte[] bytes) throws IOException {
         File file = new File("server/src/main/resources/uploaded.zip");
         OutputStream
                 os
                 = new FileOutputStream(file);
         os.write(bytes);
         os.close();
-        return file;
     }
 
 }

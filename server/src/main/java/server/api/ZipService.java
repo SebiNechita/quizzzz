@@ -8,6 +8,9 @@ import java.util.zip.ZipInputStream;
 
 @Service
 public class ZipService {
+    /**
+     * Unzips uploaded.zip to the activity bank
+     */
     public void unzip() throws IOException {
         String fileZip = "server/src/main/resources/uploaded.zip";
         File destDir = new File("server/src/main/resources/activity-bank");
@@ -41,6 +44,12 @@ public class ZipService {
         zis.close();
     }
 
+    /**
+     * Creates a new empty file in the specified directory, with the name of the given zip entry
+     * @param destinationDir the directory to place the file in
+     * @param zipEntry the zip entry to use the name of
+     * @return the new file
+     */
     public static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
         File destFile = new File(destinationDir, zipEntry.getName());
 
