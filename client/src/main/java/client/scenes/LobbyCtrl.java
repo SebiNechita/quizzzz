@@ -8,6 +8,7 @@ import commons.utils.Emote;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -39,6 +40,8 @@ public class LobbyCtrl extends SceneCtrl {
     protected HBox emoteContainer;
     @FXML
     private Button buttonStart;
+    @FXML
+    private ScrollPane scrollPane;
 
     private Boolean ready;
     private MultiplayerGame multiGame;
@@ -77,20 +80,23 @@ public class LobbyCtrl extends SceneCtrl {
         buttonReady.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
         ready = false;
 
+        // Ensures that the chat text scrolls automatically
+        scrollPane.vvalueProperty().bind(chattextflow.heightProperty());
+
         chattext = new Text("Quizzzz: Welcome to the game, " + Main.USERNAME + "! " + "\n");
         chattext.setFont(Font.font("Comic Sans MS", 30));
         chattext.setFill(Color.BLUE);
         chattextflow.getChildren().add(chattext);
 
-        // the order of bellow methods matters!
+        // the order of below methods matters!
         multiGame.join(Main.USERNAME);
         multiGame.startPingThread(Main.USERNAME);
         multiGame.getLobbyUpdate();
 
-        enableListners();
+        enableListeners();
     }
 
-    public void enableListners() {
+    public void enableListeners() {
         for (Node node : emoteContainer.getChildren()) {
             ImageView emote = (ImageView) node;
 
@@ -162,7 +168,7 @@ public class LobbyCtrl extends SceneCtrl {
     }
 
     /**
-     * Addes the emote to the chatroom
+     * Adds the emote to the chatroom
      *
      * @param emote emote to be added
      */

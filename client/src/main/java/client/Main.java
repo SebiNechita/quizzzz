@@ -16,31 +16,18 @@
 package client;
 
 import client.scenes.ConnectionCtrl;
-import client.scenes.LoginCtrl;
 import client.scenes.MainCtrl;
-import client.scenes.MainMenuCtrl;
-import commons.questions.Question;
 import commons.utils.GameMode;
 import javafx.application.Application;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 
-import java.util.LinkedList;
-import java.util.Queue;
-
 public class Main extends Application {
 
     public static String USERNAME = "";
     public static String URL = "https://localhost:8080/";
     public static String TOKEN = "";
-    //I created the variables which are required by multiple game scenes here:
-    public static Queue<Question> questions = new LinkedList<>();
-    public static Queue<Question> openQuestions = new LinkedList<>();
-    public static int currentQuestionCount;
-    public static Question currentQuestion;
-    public static int scoreTotal;
-    public static LinkedList<Boolean> questionHistory = new LinkedList<>();
     public static GameMode gameMode;
     public static int noOfActivities;
 
@@ -60,7 +47,6 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage primaryStage) {
-        boolean debug = false;
         MainCtrl mainCtrl = new MainCtrl(primaryStage);
 
         mainCtrl.load("client/scenes/Connection.fxml", "Connection page");
@@ -77,14 +63,9 @@ public class Main extends Application {
         mainCtrl.load("client/scenes/DeleteActivity.fxml","Delete Activity Screen");
         mainCtrl.load("client/scenes/EndGame.fxml", "End Game Screen");
 
-        //For testing, I skipped the Connection and Login screens
-        if (debug) {
-            LoginCtrl login = mainCtrl.getCtrl(LoginCtrl.class);
-            login.login("Kristof", "password");
-            mainCtrl.showScene(MainMenuCtrl.class);
-        } else {
-            mainCtrl.showScene(ConnectionCtrl.class);
-        }
+
+        mainCtrl.showScene(ConnectionCtrl.class);
+
         try {
             primaryStage.setOnCloseRequest(event -> {
                 event.consume();
@@ -97,7 +78,7 @@ public class Main extends Application {
     }
 
     /**
-     * Pops up a confirmation alert before existing the application, so the player does not exist unintentional
+     * Pops up a confirmation alert before exiting the application, so the player does not exit unintentional
      *
      * @param stage The stage for the exit
      */
@@ -109,7 +90,7 @@ public class Main extends Application {
         alert.setContentText("Are you sure you want to exit?");
 
         if (alert.showAndWait().get() == ButtonType.OK) {
-            System.out.println("You successfully exit the application");
+            System.out.println("You successfully exited the application");
             stage.close();
         }
     }

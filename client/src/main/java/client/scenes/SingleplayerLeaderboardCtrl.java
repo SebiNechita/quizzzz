@@ -46,6 +46,8 @@ public class SingleplayerLeaderboardCtrl extends SceneCtrl {
     @FXML
     private Text rankInfo;
 
+    protected static boolean fromMainMenu = false;
+
     /**
      * Constructor for this Ctrl
      *
@@ -103,6 +105,10 @@ public class SingleplayerLeaderboardCtrl extends SceneCtrl {
      * Show the home screen.
      */
     public void showHome() {
-        main.showScene(EndGameCtrl.class);
+        if (fromMainMenu) {
+            main.showScene(MainMenuCtrl.class);
+        } else {
+            main.showScene(EndGameCtrl.class);
+        }
     }
 }

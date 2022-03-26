@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
@@ -39,6 +40,15 @@ public class ConnectionCtrl extends SceneCtrl {
     public void initialize(URL location, ResourceBundle resources) {
         // set the default url to make testing easier
         url.setText("https://localhost:8080");
+    }
+
+    /**
+     * This method is run when Connection scene is displayed
+     */
+    @OnShowScene
+    public void OnShowScene() {
+        url.requestFocus();
+        url.positionCaret(url.getText().length());
     }
 
     /**

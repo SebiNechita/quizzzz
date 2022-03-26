@@ -22,7 +22,10 @@ import commons.utils.HttpStatus;
 import commons.utils.LoggerUtil;
 import jakarta.ws.rs.ProcessingException;
 import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.client.*;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.client.Invocation;
 import jakarta.ws.rs.core.Response;
 import javafx.scene.image.Image;
 import org.springframework.messaging.simp.stomp.StompSession;
@@ -106,21 +109,6 @@ public class ServerUtils {
         return null;
     }
 
-//    public String getActivityInfo(String image_path, long consumption, String source, String description) {
-//        Response response = getClient().target(Main.URL).path("/api/activities")
-//                .request(APPLICATION_JSON).accept(APPLICATION_JSON)
-//                .post(Entity.entity(new ActivityRequestPacket(image_path, consumption, source, description), APPLICATION_JSON));
-//
-////        if (response.getStatus() == 202) {
-////            return (String) response.getHeaders().get("Authorization").get(0);
-////        } else if (response.getStatus() == 403) {
-////            LoggerUtil.warn("Unable to get token, invalid account:\n\t$HLUsername: " + username + "\n\tPassword: " + "*".repeat(password.length()) + "$");
-////        } else {
-////            LoggerUtil.severeInline("Unknown status $HLHTTP" + response.getStatus() + "$ given while trying to get a token");
-////        }
-//        return null;
-//    }
-
     /**
      * Retrieves an instance of Game from the server using the endpoint made for the same
      *
@@ -131,7 +119,6 @@ public class ServerUtils {
     }
 
     /**
-<<<<<<< client/src/main/java/client/utils/ServerUtils.java
      * Builds a post request
      *
      * @param path     The path of the endpoint to send the request to
@@ -183,13 +170,10 @@ public class ServerUtils {
         if (template == null) {
             return (T) new ResponsePacket(HttpStatus.NotFound);
         }
-
         return template.get(response);
     }
 
     /**
-=======
->>>>>>> client/src/main/java/client/utils/ServerUtils.java
      * Uses an endpoint to retrieve the image from the Server using the path at which it is stored
      *
      * @param imagePath the path within activity-bank to access the image
@@ -259,9 +243,7 @@ public class ServerUtils {
         getRequest("api/activities/add", ActivitiesResponsePacket.class).addActivity(activity);
     }
 
-    //private StompSession session = connect("ws://localhost:8080/websocket");
-
-    //THIS IS A TEMPORARY SOLUTION FOR MAKING THE CODE COMPILE, WILL FIX WEBSOCKETS IN NEXT SPRINT
+    // THIS IS A TEMPORARY SOLUTION FOR MAKING THE CODE COMPILE, WILL FIX WEBSOCKETS IN NEXT SPRINT
     private StompSession session = null;
 
     /**
@@ -423,6 +405,4 @@ public class ServerUtils {
          */
         void run(T responsePacket);
     }
-
-
 }

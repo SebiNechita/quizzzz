@@ -1,6 +1,7 @@
 package client.scenes;
 
 import client.Main;
+import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
@@ -18,10 +19,16 @@ public class LoginCtrl extends SceneCtrl {
             if (e.getCode() == KeyCode.ENTER) {
                 onLoginButtonPressed();
             }
+            if (e.getCode() == KeyCode.DOWN) {
+                password.requestFocus();
+            }
         });
         password.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
                 onLoginButtonPressed();
+            }
+            if (e.getCode() == KeyCode.UP) {
+                userName.requestFocus();
             }
         });
     }
@@ -62,6 +69,15 @@ public class LoginCtrl extends SceneCtrl {
             password.setStyle("-fx-background-color: #fc6363; -fx-background-radius: 50");
             error.setText("Could not log in");
         }
+    }
+
+
+    /**
+     * This method is run when the Login scene is displayed
+     */
+    @OnShowScene
+    public void OnShowScene() {
+        userName.requestFocus();
     }
 
     /**
