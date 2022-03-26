@@ -1,4 +1,4 @@
-package server.api;
+package server.api.registration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import commons.utils.HttpStatus;
@@ -16,7 +16,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import packets.*;
-import server.api.registration.RegistrationService;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;

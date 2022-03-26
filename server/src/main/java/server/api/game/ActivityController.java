@@ -1,12 +1,12 @@
 package server.api.game;
 
-import commons.questions.Activity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import packets.ActivitiesResponsePacket;
 
 @RestController
-@RequestMapping("/activities")
+@RequestMapping("api/activities")
 public class ActivityController {
     /**
      * Service layer for the ActivityController
@@ -26,7 +26,7 @@ public class ActivityController {
      * @return A list of activities
      */
     @GetMapping("/list")
-    public Iterable<Activity> list() {
+    public ActivitiesResponsePacket list() {
         return activityService.list();
     }
 }

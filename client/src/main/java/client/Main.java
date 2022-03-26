@@ -22,6 +22,8 @@ import client.scenes.MainMenuCtrl;
 import commons.questions.Question;
 import commons.utils.GameMode;
 import javafx.application.Application;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 
 import java.util.LinkedList;
@@ -40,6 +42,7 @@ public class Main extends Application {
     public static int scoreTotal;
     public static LinkedList<Boolean> questionHistory = new LinkedList<>();
     public static GameMode gameMode;
+    public static int noOfActivities;
 
     /**
      * Gets called when the application is started
@@ -67,8 +70,12 @@ public class Main extends Application {
         mainCtrl.load("client/scenes/HomeLeaderboard.fxml", "Singleplayer Leaderboard");
         mainCtrl.load("client/scenes/HelpScreen.fxml", "Help page");
         mainCtrl.load("client/scenes/GameMultiChoice.fxml", "Game Screen");
-        mainCtrl.load("client/scenes/Lobby.fxml","Lobby  Screen");
+        mainCtrl.load("client/scenes/Lobby.fxml", "Lobby  Screen");
         mainCtrl.load("client/scenes/GameOpenQuestion.fxml", "Game Screen");
+        mainCtrl.load("client/scenes/AdminPanel.fxml", "Admin Panel Screen");
+        mainCtrl.load("client/scenes/AddActivity.fxml","Add Activity Screen");
+        mainCtrl.load("client/scenes/DeleteActivity.fxml","Delete Activity Screen");
+        mainCtrl.load("client/scenes/EndGame.fxml", "End Game Screen");
 
         //TODO: Delete this before showcasing the final product. But I still want it for testing.
         //For testing, I skipped the Connection and Login screens
@@ -76,10 +83,35 @@ public class Main extends Application {
             LoginCtrl login = mainCtrl.getCtrl(LoginCtrl.class);
             login.login("Kristof", "password");
             mainCtrl.showScene(MainMenuCtrl.class);
-        }
-        else{
+        } else {
             mainCtrl.showScene(ConnectionCtrl.class);
         }
+        try {
+            primaryStage.setOnCloseRequest(event -> {
+                event.consume();
+                logout(primaryStage);
+            });
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Pops up a confirmation alert before existing the application, so the player does not exist unintentional
+     *
+     * @param stage The stage for the exit
+     */
+    public void logout(Stage stage) {
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Logout");
+        alert.setHeaderText("You're about to exit the application!");
+        alert.setContentText("Are you sure you want to exit?");
+
+        if (alert.showAndWait().get() == ButtonType.OK) {
+            System.out.println("You successfully exit the application");
+            stage.close();
+        }
     }
 }
