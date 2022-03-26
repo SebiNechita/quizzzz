@@ -68,6 +68,7 @@ public class EndGameCtrl extends SceneCtrl {
      * Shows the Registration scene.
      */
     public void showSinglePlayerLeaderboard() {
+        SingleplayerLeaderboardCtrl.fromMainMenu = false;
         main.showScene(SingleplayerLeaderboardCtrl.class);
     }
 

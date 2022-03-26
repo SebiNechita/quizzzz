@@ -26,10 +26,9 @@ import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.client.Invocation;
-import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
 import javafx.scene.image.Image;
-import org.glassfish.jersey.client.ClientConfig;
+import org.springframework.messaging.simp.stomp.StompSession;
 import packets.*;
 
 import java.io.ByteArrayInputStream;
@@ -140,6 +139,24 @@ public class ServerUtils {
     }
 
     /**
+     * Builds a delete request
+     *
+     * @param path     The path of the endpoint to send the request to
+     * @param response The packet which the server returns
+     * @param <T>      The type of packet which the server should return
+     * @return A packet containing the response of the server
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends ResponsePacket> T deleteRequest(String path, Class<T> response) {
+        Invocation.Builder template = requestTemplate(path);
+        if (template == null) {
+            return (T) new ResponsePacket(HttpStatus.NotFound);
+        }
+
+        return (T) template.delete(response);
+    }
+
+    /**
      * Builds a get request
      *
      * @param path     The path of the endpoint to send the request to
@@ -153,8 +170,7 @@ public class ServerUtils {
         if (template == null) {
             return (T) new ResponsePacket(HttpStatus.NotFound);
         }
-
-        return (T) template.get(response);
+        return template.get(response);
     }
 
     /**
@@ -220,12 +236,15 @@ public class ServerUtils {
      * @return The activities stored
      */
     public List<Activity> getActivities() {
-        return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/game/activities/list")
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .get(new GenericType<>() {});
+        return getRequest("api/activities/list", ActivitiesResponsePacket.class).getActivities();
     }
+
+    public void addActivity(Activity activity) {
+        getRequest("api/activities/add", ActivitiesResponsePacket.class).addActivity(activity);
+    }
+
+    // THIS IS A TEMPORARY SOLUTION FOR MAKING THE CODE COMPILE, WILL FIX WEBSOCKETS IN NEXT SPRINT
+    private StompSession session = null;
 
     /**
      * Builds a long polling get request which can be called on demand
