@@ -293,6 +293,15 @@
             <Insets right="15.0" />
          </padding>
       </HBox>
+      <Button fx:id="muteSound" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#onMute" style="-fx-background-color: transparent;">
+         <graphic>
+            <ImageView fitHeight="40.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../img/unmute.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
     </children>
    <stylesheets>
       <URL value="@../../stylesheets/questionStyle.css" />

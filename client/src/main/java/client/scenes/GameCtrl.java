@@ -18,9 +18,12 @@ import javafx.scene.control.Button;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.*;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
@@ -31,6 +34,7 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 import javax.inject.Inject;
+import java.net.URISyntaxException;
 import java.util.*;
 
 import static client.utils.EmoteUtility.emoteHoverAnim;
@@ -56,6 +60,8 @@ public abstract class GameCtrl extends SceneCtrl {
 
     @FXML
     protected Button nextQuestion;
+    @FXML
+    protected Button muteSound;
 
     @FXML
     protected VBox jokers;
@@ -80,6 +86,8 @@ public abstract class GameCtrl extends SceneCtrl {
     protected double timeLeft = 0;
     protected double lastAnswerChange = 0;
     protected double timeMultiplier = 1d;
+
+    protected boolean mute = false;
 
     /**
      * There are three options visible to the user.
@@ -476,7 +484,7 @@ public abstract class GameCtrl extends SceneCtrl {
     private Animation timerAnim(AnchorPane anchorPane) {
         return new Transition() {
             {
-                setCycleDuration(Duration.millis(1000 * timeMultiplier));
+                setCycleDuration(Duration.millis(10000 * timeMultiplier));
                 setInterpolator(Interpolator.LINEAR);
             }
 
@@ -588,6 +596,40 @@ public abstract class GameCtrl extends SceneCtrl {
 
         // store the rounded image in the imageView.
         imageView.setImage(image);
+    }
+
+    @FXML
+    protected void onMute() {
+        String imagePath = mute ? "img/unmute.png" : "img/mute.png";
+        mute = !mute;
+
+        ImageView icon = (ImageView) muteSound.getChildrenUnmodifiable().get(0);
+        icon.setImage(new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(imagePath))));
+    }
+
+    protected void playSound(boolean isCorrect) {
+
+        if (mute) return;
+
+        Media media;
+        MediaPlayer mediaPlayer;
+        String soundFilePath = "";
+        if (isCorrect) {
+            try {
+                soundFilePath = getClass().getResource("/sounds/correct.wav").toURI().toString();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+        } else {
+            try {
+                soundFilePath = getClass().getResource("/sounds/wrong.mp3").toURI().toString();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+        }
+        media = new Media(soundFilePath);
+        mediaPlayer = new MediaPlayer(media);
+        mediaPlayer.play();
     }
 
     /**
