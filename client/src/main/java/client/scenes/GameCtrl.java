@@ -1,6 +1,5 @@
 package client.scenes;
 
-import client.Main;
 import client.utils.ServerUtils;
 import commons.utils.Emote;
 import commons.utils.GameMode;
@@ -121,7 +120,7 @@ public abstract class GameCtrl extends SceneCtrl {
         answerBonusText.setVisible(false);
         timeBonusText.setVisible(false);
 
-        setScore(Main.scoreTotal);
+        setScore(main.getSingleplayerGame().getScoreTotal());
 
         nextQuestion.setVisible(false);
 
@@ -138,9 +137,6 @@ public abstract class GameCtrl extends SceneCtrl {
 
         generateProgressDots();
         enableListeners();
-
-        //----- TODO: Everything below this is temporary and for testing/displaying purposes -----
-        gameMode = GameMode.SINGLEPLAYER;
         startTimer();
 
     }
@@ -270,7 +266,7 @@ public abstract class GameCtrl extends SceneCtrl {
         dropShadow.setOffsetX(3.0);
         dropShadow.setOffsetY(3.0);
 
-        Iterator<Boolean> history = Main.questionHistory.iterator();
+        Iterator<Boolean> history = main.getSingleplayerGame().getQuestionHistory().iterator();
         if (numberofQuestions == -1) {
             for (int i = 0; i < 20; i++) {
                 Circle circle = generateCircle(Paint.valueOf("#2b2b2b"), dropShadow);
@@ -391,8 +387,8 @@ public abstract class GameCtrl extends SceneCtrl {
 
         int timeBonus = (int) Math.round(lastAnswerChange * 100 * (answerPoints / 100d));
         int total = (int) (answerPoints + timeBonus * (answerPoints / 100d));
-        Main.scoreTotal += total;
-        setScore(Main.scoreTotal);
+        main.getSingleplayerGame().addToScore(total);
+        setScore(main.getSingleplayerGame().getScoreTotal());
         Paint color;
         if (answerPoints >= 90) {
             color = Paint.valueOf("#6cf06a");
@@ -480,7 +476,7 @@ public abstract class GameCtrl extends SceneCtrl {
     private Animation timerAnim(AnchorPane anchorPane) {
         return new Transition() {
             {
-                setCycleDuration(Duration.millis(10000 * timeMultiplier));
+                setCycleDuration(Duration.millis(1000 * timeMultiplier));
                 setInterpolator(Interpolator.LINEAR);
             }
 

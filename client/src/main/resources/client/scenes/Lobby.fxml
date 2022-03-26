@@ -178,7 +178,7 @@
       </AnchorPane>
       <AnchorPane layoutX="743.0" layoutY="109.0" prefHeight="464.0" prefWidth="627.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 11;">
          <children>
-            <ScrollPane layoutX="4.0" layoutY="60.0" prefHeight="384.0" prefWidth="619.0">
+            <ScrollPane fx:id="scrollPane" layoutX="4.0" layoutY="60.0" prefHeight="384.0" prefWidth="619.0">
                <content>
                   <TextFlow fx:id="chattextflow" prefHeight="364.0" prefWidth="607.0" />
                </content>

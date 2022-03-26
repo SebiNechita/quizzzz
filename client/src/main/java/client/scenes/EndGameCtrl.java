@@ -11,7 +11,6 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
 import java.net.URL;
-import java.util.LinkedList;
 import java.util.ResourceBundle;
 
 public class EndGameCtrl extends SceneCtrl {
@@ -53,10 +52,11 @@ public class EndGameCtrl extends SceneCtrl {
      */
     @OnShowScene
     public void onShowScene() {
-        pointsObtained.setText(Main.scoreTotal + " points!");
-        if (Main.scoreTotal < 100)
+        int score = main.getSingleplayerGame().getScoreTotal();
+        pointsObtained.setText(main.getSingleplayerGame().getScoreTotal() + " points!");
+        if (main.getSingleplayerGame().getScoreTotal() < 100)
             textPerformance.setText("Poor performance, " + Main.USERNAME + "! " + "Try again!");
-        else if (Main.scoreTotal > 2000)
+        else if (main.getSingleplayerGame().getScoreTotal() > 2000)
             textPerformance.setText("Congratulation, " + Main.USERNAME + "!" + "!");
         else
             textPerformance.setText("Good game, " + Main.USERNAME + "!");
@@ -68,6 +68,7 @@ public class EndGameCtrl extends SceneCtrl {
      * Shows the Registration scene.
      */
     public void showSinglePlayerLeaderboard() {
+        SingleplayerLeaderboardCtrl.fromMainMenu = false;
         main.showScene(SingleplayerLeaderboardCtrl.class);
     }
 
@@ -80,13 +81,8 @@ public class EndGameCtrl extends SceneCtrl {
 
     public void showRestart() {
         Main.gameMode = GameMode.SINGLEPLAYER;
-        Main.currentQuestionCount = 0;
-        Main.questions = new LinkedList<>();
-        Main.openQuestions = new LinkedList<>();
-        Main.questionHistory = new LinkedList<>();
-        Main.scoreTotal = 0;
-        main.getQuestions();
-        main.jumpToNextQuestion();
+        main.createNewSingleplayerGame();
+        main.getSingleplayerGame().jumpToNextQuestion();
     }
 
 }

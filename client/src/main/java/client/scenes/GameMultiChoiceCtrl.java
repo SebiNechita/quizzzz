@@ -4,7 +4,7 @@ import client.Main;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import commons.questions.Activity;
-import commons.questions.Question;
+import commons.questions.MultipleChoiceQuestion;
 import commons.utils.GameMode;
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
@@ -212,7 +212,7 @@ public class GameMultiChoiceCtrl extends GameCtrl {
 
         boolean correctlyAnswered = selected != null && selected.getKey() == answer;
         showPointsGained(correctlyAnswered ? 100 : 0);
-        Main.questionHistory.add(correctlyAnswered);
+        main.getSingleplayerGame().getQuestionHistory().add(correctlyAnswered);
         generateProgressDots();
     }
 
@@ -227,8 +227,7 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         nextQuestion.setVisible(false);
         hidePointsGained();
 
-        main.jumpToNextQuestion();
-
+        main.getSingleplayerGame().jumpToNextQuestion();
 
         //clean up
         locked = new boolean[]{false, false, false};
@@ -246,12 +245,10 @@ public class GameMultiChoiceCtrl extends GameCtrl {
      */
     protected void retrieveMultipleChoiceQuestion() {
 
-        Question q = Main.questions.poll();
-        Activity answer = q.getAnswer();
-        Activity option2 = q.getActivityList().get(0); // An option that is not the answer
-        Activity option3 = q.getActivityList().get(1); // Another option that is not the answer
-
-        question.setText(q.getQuestion());
+        MultipleChoiceQuestion mcq = main.getSingleplayerGame().getCurrentQuestion(MultipleChoiceQuestion.class);
+        Activity answer = mcq.getAnswer();
+        Activity option2 = mcq.getActivityList().get(0); // An option that is not the answer
+        Activity option3 = mcq.getActivityList().get(1); // Another option that is not the answer
 
         // Generates random int value from 0 to 3
         Random randomGen = new Random();
@@ -259,9 +256,9 @@ public class GameMultiChoiceCtrl extends GameCtrl {
 
         // This is to ensure that the answers are in different options and are not predictable by the user
         switch (answerOptionNumber) {
-            case 0 -> setOptions(answer, option2, option3);
-            case 1 -> setOptions(option2, answer, option3);
-            case 2 -> setOptions(option2, option3, answer);
+            case 0 -> setUpQuestion(mcq.getQuestion(), answer, option2, option3);
+            case 1 -> setUpQuestion(mcq.getQuestion(), option2, answer, option3);
+            case 2 -> setUpQuestion(mcq.getQuestion(), option2, option3, answer);
         }
     }
 
@@ -269,11 +266,14 @@ public class GameMultiChoiceCtrl extends GameCtrl {
     /**
      * This method sets the texts and images in the options
      *
+     * @param questionText the question text
      * @param option1 Activity of the text and image that'll be set in the first option
      * @param option2 Activity of the text and image that'll be set in the second option
      * @param option3 Activity of the text and image that'll be set in the third option
      */
-    public void setOptions(Activity option1, Activity option2, Activity option3) {
+    public void setUpQuestion(String questionText, Activity option1, Activity option2, Activity option3) {
+        question.setText(questionText);
+
         choice1.setText(option1.getTitle());
         choice2.setText(option2.getTitle());
         choice3.setText(option3.getTitle());
@@ -281,6 +281,7 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         image1.setImage(server.getImage(option1.getImage_path()));
         image2.setImage(server.getImage(option2.getImage_path()));
         image3.setImage(server.getImage(option3.getImage_path()));
+
         setRoundedImage(image1);
         setRoundedImage(image2);
         setRoundedImage(image3);
@@ -352,7 +353,7 @@ public class GameMultiChoiceCtrl extends GameCtrl {
 
             @Override
             protected void interpolate(double frac) {
-                anchorPane.setBackground(new Background(new BackgroundFill(lerp(start.getRed(), start.getGreen(), start.getBlue(), target.getRed(), target.getGreen(), target.getBlue(), frac), new CornerRadii(10), Insets.EMPTY)));
+                anchorPane.setBackground(new Background(new BackgroundFill(lerp(start.getRed(), start.getGreen(), start.getBlue(), target.getRed(), target.getGreen(), target.getBlue(), frac), new CornerRadii(40), Insets.EMPTY)));
             }
         };
     }
