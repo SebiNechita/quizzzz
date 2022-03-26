@@ -20,12 +20,11 @@ public class ZipController {
     }
 
     //TODO: Replace ResponsePacket constructors
-    //TODO: Remove prints
     @PostMapping("/")
     //Imports the activities from the zip contained in the given packet
     public ResponsePacket importZip(@RequestBody ZipRequestPacket packet) throws IOException {
         byte[] bytes = packet.getZipBytes();
-        constructFile(bytes);
+        zipService.constructFile(bytes);
         FileUtils.cleanDirectory(new File("server/src/main/resources/activity-bank"));
         try {
             zipService.unzip();
@@ -37,19 +36,5 @@ public class ZipController {
     }
 
 
-    //TODO: move this method to ZipService
-
-    /**
-     * Creates a zip file out of the given byte array
-     * @param bytes the byte array to create the file out of
-     */
-    public void constructFile(byte[] bytes) throws IOException {
-        File file = new File("server/src/main/resources/uploaded.zip");
-        OutputStream
-                os
-                = new FileOutputStream(file);
-        os.write(bytes);
-        os.close();
-    }
 
 }

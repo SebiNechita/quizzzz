@@ -62,4 +62,17 @@ public class ZipService {
 
         return destFile;
     }
+
+    /**
+     * Creates a zip file out of the given byte array
+     * @param bytes the byte array to create the file out of
+     */
+    public void constructFile(byte[] bytes) throws IOException {
+        File file = new File("server/src/main/resources/uploaded.zip");
+        OutputStream
+                os
+                = new FileOutputStream(file);
+        os.write(bytes);
+        os.close();
+    }
 }
