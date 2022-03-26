@@ -1,32 +1,37 @@
 package server.api;
 
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.web.bind.annotation.*;
 import packets.ResponsePacket;
 import packets.ZipRequestPacket;
+import server.api.game.ActivityService;
 
 import java.io.*;
 
 @RestController
 @RequestMapping("/zip")
 public class ZipController {
-    private final ZipService service;
+    private final ZipService zipService;
+    private ActivityService activityService;
 
-    public ZipController(ZipService service) {
-        this.service = service;
+    public ZipController(ZipService zipService, ActivityService activityService) {
+        this.zipService = zipService;
+        this.activityService = activityService;
     }
 
     //TODO: Replace ResponsePacket constructors
+    //TODO: Remove prints
     @PostMapping("/")
     public ResponsePacket importZip(@RequestBody ZipRequestPacket packet) throws IOException {
-        System.out.println("Got the request.");
         byte[] bytes = packet.getZipBytes();
         File file = constructFile(bytes);
-        System.out.println(file.toPath());
+        FileUtils.cleanDirectory(new File("server/src/main/resources/activity-bank"));
         try {
-            service.unzip();
+            zipService.unzip();
         } catch (IOException e) {
             return new ResponsePacket(404);
         }
+        activityService.updateRepository();
         return new ResponsePacket(200);
     }
 
