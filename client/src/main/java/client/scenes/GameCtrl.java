@@ -208,22 +208,22 @@ public abstract class GameCtrl extends SceneCtrl {
      */
     protected void disableJoker(JokerType type) {
         jokers.getChildren().stream()
-            .filter(joker -> joker.getId().equalsIgnoreCase(type.toString()))
-            .map(joker -> (AnchorPane) joker)
-            .forEach(joker -> {
-                LoggerUtil.log(joker.getId());
-                ImageView image = (ImageView) joker.getChildren().get(0);
+                .filter(joker -> joker.getId().equalsIgnoreCase(type.toString()))
+                .map(joker -> (AnchorPane) joker)
+                .forEach(joker -> {
+                            LoggerUtil.log(joker.getId());
+                            ImageView image = (ImageView) joker.getChildren().get(0);
 
-                ColorAdjust effect = new ColorAdjust();
-                effect.setBrightness(-0.5);
-                effect.setContrast(-0.5);
-                effect.setSaturation(-1);
+                            ColorAdjust effect = new ColorAdjust();
+                            effect.setBrightness(-0.5);
+                            effect.setContrast(-0.5);
+                            effect.setSaturation(-1);
 
-                image.setEffect(effect);
+                            image.setEffect(effect);
 
-                disabledJokers.add(joker);
-            }
-        );
+                            disabledJokers.add(joker);
+                        }
+                );
     }
 
     /**
@@ -271,6 +271,7 @@ public abstract class GameCtrl extends SceneCtrl {
         if (Main.gameMode == GameMode.MULTIPLAYER)
             history = main.getMultiplayerGame().getQuestionHistory().iterator();
         else history = main.getSingleplayerGame().getQuestionHistory().iterator();
+
         if (numberofQuestions == -1) {
             for (int i = 0; i < 20; i++) {
                 Circle circle = generateCircle(Paint.valueOf("#2b2b2b"), dropShadow);
@@ -342,7 +343,7 @@ public abstract class GameCtrl extends SceneCtrl {
     protected void startTimer() {
         jokerContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
         notificationContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
-        emoteContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
+        //emoteContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
 
         timer = timerAnim(timeLeftSlider);
 
@@ -391,8 +392,13 @@ public abstract class GameCtrl extends SceneCtrl {
 
         int timeBonus = (int) Math.round(lastAnswerChange * 100 * (answerPoints / 100d));
         int total = (int) (answerPoints + timeBonus * (answerPoints / 100d));
-        main.getSingleplayerGame().addToScore(total);
-        setScore(main.getSingleplayerGame().getScoreTotal());
+        if (Main.gameMode == GameMode.MULTIPLAYER) {
+            main.getMultiplayerGame().addToScore(total);
+            setScore(main.getMultiplayerGame().getScoreTotal());
+        } else {
+            main.getSingleplayerGame().addToScore(total);
+            setScore(main.getSingleplayerGame().getScoreTotal());
+        }
         Paint color;
         if (answerPoints >= 90) {
             color = Paint.valueOf("#6cf06a");
@@ -569,6 +575,7 @@ public abstract class GameCtrl extends SceneCtrl {
     /**
      * Rounds the image
      * Source: https://stackoverflow.com/a/56303884/9957954
+     *
      * @param imageView imageView in which the image will be viewed
      */
     public void setRoundedImage(ImageView imageView) {

@@ -182,11 +182,18 @@ public class GameMultiChoiceCtrl extends GameCtrl {
      * When the time's up, shows the correct answer and makes Next visible
      */
     protected void onTimerEnd() {
-        timer.setOnFinished(event -> {
-            showCorrectAnswer(answerOptionNumber);
-
-            nextQuestion.setVisible(Main.gameMode == GameMode.SINGLEPLAYER);
-        });
+        if(Main.gameMode == GameMode.MULTIPLAYER){
+            timer.setOnFinished(event -> {
+                showCorrectAnswer(answerOptionNumber);
+                nextQuestion.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
+            });
+        }
+        else {
+            timer.setOnFinished(event -> {
+                showCorrectAnswer(answerOptionNumber);
+                nextQuestion.setVisible(Main.gameMode == GameMode.SINGLEPLAYER);
+            });
+        }
     }
 
     /**
