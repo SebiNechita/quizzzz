@@ -15,10 +15,12 @@
  */
 package client.scenes;
 
+import client.game.Game;
 import client.game.SingleplayerGame;
 import client.game.MultiplayerGame;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
+import commons.utils.GameMode;
 import commons.utils.LoggerUtil;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -88,6 +90,9 @@ public class MainCtrl {
         return multiplayerGame;
     }
 
+    public <T extends Game> T getGame(Class<T> gameModeClass) {
+        return gameModeClass.equals(MultiplayerGame.class) ? (T) this.multiplayerGame : (T) this.singleplayerGame;
+    }
     /**
      * Loads and initializes a scene
      *

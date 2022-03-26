@@ -1,6 +1,8 @@
 package client.scenes;
 
 import client.Main;
+import client.game.MultiplayerGame;
+import client.game.SingleplayerGame;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import commons.questions.Activity;
@@ -212,7 +214,13 @@ public class GameMultiChoiceCtrl extends GameCtrl {
 
         boolean correctlyAnswered = selected != null && selected.getKey() == answer;
         showPointsGained(correctlyAnswered ? 100 : 0);
-        main.getSingleplayerGame().getQuestionHistory().add(correctlyAnswered);
+
+        if (Main.gameMode == GameMode.MULTIPLAYER) {
+            main.getGame(MultiplayerGame.class).getQuestionHistory().add(correctlyAnswered);;
+        } else {
+            main.getGame(SingleplayerGame.class).getQuestionHistory().add(correctlyAnswered);
+        }
+
         generateProgressDots();
     }
 
@@ -227,7 +235,11 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         nextQuestion.setVisible(false);
         hidePointsGained();
 
-        main.getSingleplayerGame().jumpToNextQuestion();
+        if (Main.gameMode == GameMode.MULTIPLAYER) {
+            main.getGame(MultiplayerGame.class).jumpToNextQuestion();
+        } else {
+            main.getGame(SingleplayerGame.class).jumpToNextQuestion();
+        }
 
         //clean up
         locked = new boolean[]{false, false, false};
@@ -244,25 +256,26 @@ public class GameMultiChoiceCtrl extends GameCtrl {
      * Gets the next question.
      */
     protected void retrieveMultipleChoiceQuestion() {
-        MultipleChoiceQuestion mcq = null;
-        if(Main.gameMode == GameMode.SINGLEPLAYER) {
-            mcq = main.getSingleplayerGame().getCurrentQuestion(MultipleChoiceQuestion.class);}
-        else{
-            mcq = main.getMultiplayerGame().getCurrentQuestion(MultipleChoiceQuestion.class);}
-            Activity answer = mcq.getAnswer();
-            Activity option2 = mcq.getActivityList().get(0); // An option that is not the answer
-            Activity option3 = mcq.getActivityList().get(1); // Another option that is not the answer
+        MultipleChoiceQuestion mcq;
+        if (Main.gameMode == GameMode.SINGLEPLAYER) {
+            mcq = main.getSingleplayerGame().getCurrentQuestion(MultipleChoiceQuestion.class);
+        } else {
+            mcq = main.getMultiplayerGame().getCurrentQuestion(MultipleChoiceQuestion.class);
+        }
+        Activity answer = mcq.getAnswer();
+        Activity option2 = mcq.getActivityList().get(0); // An option that is not the answer
+        Activity option3 = mcq.getActivityList().get(1); // Another option that is not the answer
 
-            // Generates random int value from 0 to 3
-            Random randomGen = new Random();
-            answerOptionNumber = randomGen.nextInt(3);
+        // Generates random int value from 0 to 3
+        Random randomGen = new Random();
+        answerOptionNumber = randomGen.nextInt(3);
 
-            // This is to ensure that the answers are in different options and are not predictable by the user
-            switch (answerOptionNumber) {
-                case 0 -> setUpQuestion(mcq.getQuestion(), answer, option2, option3);
-                case 1 -> setUpQuestion(mcq.getQuestion(), option2, answer, option3);
-                case 2 -> setUpQuestion(mcq.getQuestion(), option2, option3, answer);
-            }
+        // This is to ensure that the answers are in different options and are not predictable by the user
+        switch (answerOptionNumber) {
+            case 0 -> setUpQuestion(mcq.getQuestion(), answer, option2, option3);
+            case 1 -> setUpQuestion(mcq.getQuestion(), option2, answer, option3);
+            case 2 -> setUpQuestion(mcq.getQuestion(), option2, option3, answer);
+        }
 
     }
 
@@ -271,9 +284,9 @@ public class GameMultiChoiceCtrl extends GameCtrl {
      * This method sets the texts and images in the options
      *
      * @param questionText the question text
-     * @param option1 Activity of the text and image that'll be set in the first option
-     * @param option2 Activity of the text and image that'll be set in the second option
-     * @param option3 Activity of the text and image that'll be set in the third option
+     * @param option1      Activity of the text and image that'll be set in the first option
+     * @param option2      Activity of the text and image that'll be set in the second option
+     * @param option3      Activity of the text and image that'll be set in the third option
      */
     public void setUpQuestion(String questionText, Activity option1, Activity option2, Activity option3) {
         question.setText(questionText);

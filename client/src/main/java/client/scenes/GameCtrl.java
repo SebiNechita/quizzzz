@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.Main;
 import client.utils.ServerUtils;
 import commons.utils.Emote;
 import commons.utils.GameMode;
@@ -37,8 +38,6 @@ import static client.utils.EmoteUtility.emoteHoverAnim;
 import static client.utils.EmoteUtility.emoteUsed;
 
 public abstract class GameCtrl extends SceneCtrl {
-
-    private GameMode gameMode;
 
     @FXML
     protected HBox progressBar;
@@ -79,7 +78,7 @@ public abstract class GameCtrl extends SceneCtrl {
     protected static int numberofQuestions = -1;
     protected double timeLeft = 0;
     protected double lastAnswerChange = 0;
-    protected double timeMultiplier = 10d;
+    protected double timeMultiplier = 1d;
 
     /**
      * There are three options visible to the user.
@@ -120,7 +119,9 @@ public abstract class GameCtrl extends SceneCtrl {
         answerBonusText.setVisible(false);
         timeBonusText.setVisible(false);
 
-        setScore(main.getSingleplayerGame().getScoreTotal());
+        if (Main.gameMode == GameMode.SINGLEPLAYER)
+            setScore(main.getSingleplayerGame().getScoreTotal());
+        else setScore(main.getMultiplayerGame().getScoreTotal());
 
         nextQuestion.setVisible(false);
 
@@ -133,7 +134,7 @@ public abstract class GameCtrl extends SceneCtrl {
 
         emoteContainer.setVisible(false);
 
-        notificationContainer.setVisible(gameMode == GameMode.MULTIPLAYER);
+        notificationContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
 
         generateProgressDots();
         enableListeners();
@@ -266,7 +267,10 @@ public abstract class GameCtrl extends SceneCtrl {
         dropShadow.setOffsetX(3.0);
         dropShadow.setOffsetY(3.0);
 
-        Iterator<Boolean> history = main.getSingleplayerGame().getQuestionHistory().iterator();
+        Iterator<Boolean> history;
+        if (Main.gameMode == GameMode.MULTIPLAYER)
+            history = main.getMultiplayerGame().getQuestionHistory().iterator();
+        else history = main.getSingleplayerGame().getQuestionHistory().iterator();
         if (numberofQuestions == -1) {
             for (int i = 0; i < 20; i++) {
                 Circle circle = generateCircle(Paint.valueOf("#2b2b2b"), dropShadow);
@@ -336,9 +340,9 @@ public abstract class GameCtrl extends SceneCtrl {
      * The timer which counts down the amount of time left and also shows the correct answer after the time limit has run out
      */
     protected void startTimer() {
-        jokerContainer.setVisible(gameMode == GameMode.MULTIPLAYER);
-        notificationContainer.setVisible(gameMode == GameMode.MULTIPLAYER);
-        emoteContainer.setVisible(gameMode == GameMode.MULTIPLAYER);
+        jokerContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
+        notificationContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
+        emoteContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
 
         timer = timerAnim(timeLeftSlider);
 
@@ -476,7 +480,7 @@ public abstract class GameCtrl extends SceneCtrl {
     private Animation timerAnim(AnchorPane anchorPane) {
         return new Transition() {
             {
-                setCycleDuration(Duration.millis(1000 * timeMultiplier));
+                setCycleDuration(Duration.millis(10000 * timeMultiplier));
                 setInterpolator(Interpolator.LINEAR);
             }
 

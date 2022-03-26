@@ -168,6 +168,7 @@ public class LobbyCtrl extends SceneCtrl {
     /**
      * method to be invoked whe start is clicked
      */
+    @FXML
     public void onStartClicked() {
         // to be filled
 //        Main.gameMode = GameMode.MULTIPLAYER;

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class SingleplayerGame {
+public class SingleplayerGame implements client.game.Game {
 
     private final MainCtrl mainCtrl;
     private final ServerUtils server;

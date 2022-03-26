@@ -1,6 +1,8 @@
 package client.scenes;
 
 import client.Main;
+import client.game.MultiplayerGame;
+import client.game.SingleplayerGame;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import commons.questions.OpenQuestion;
@@ -123,7 +125,12 @@ public class GameOpenQuestionCtrl extends GameCtrl {
      * Gets the current question and displays it.
      */
     private void displayQuestion() {
-        oq = main.getSingleplayerGame().getCurrentQuestion(OpenQuestion.class);
+        if (Main.gameMode == GameMode.MULTIPLAYER) {
+            oq = main.getMultiplayerGame().getCurrentQuestion(OpenQuestion.class);
+        } else {
+            oq = main.getSingleplayerGame().getCurrentQuestion(OpenQuestion.class);
+        }
+
         setQuestion(oq.getQuestion());
         setActivityImage(oq.getAnswer().getImage_path());
         System.out.println(oq.getAnswerInWH());
@@ -151,8 +158,11 @@ public class GameOpenQuestionCtrl extends GameCtrl {
         nextQuestion.setVisible(false);
         hidePointsGained();
 
-        main.getSingleplayerGame().jumpToNextQuestion();
-
+        if (Main.gameMode == GameMode.MULTIPLAYER) {
+            main.getGame(MultiplayerGame.class).jumpToNextQuestion();
+        } else {
+            main.getGame(SingleplayerGame.class).jumpToNextQuestion();
+        }
 
     }
 
@@ -198,7 +208,11 @@ public class GameOpenQuestionCtrl extends GameCtrl {
         }
 
         showPointsGained(100 - difference);
-        main.getSingleplayerGame().getQuestionHistory().add(difference <= 50);
+        if (Main.gameMode == GameMode.MULTIPLAYER) {
+            main.getGame(MultiplayerGame.class).getQuestionHistory().add(difference <= 50);
+        } else {
+            main.getGame(SingleplayerGame.class).getQuestionHistory().add(difference <= 50);
+        }
         generateProgressDots();
     }
 

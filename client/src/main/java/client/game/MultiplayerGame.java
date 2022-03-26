@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.concurrent.*;
 
 
-public class MultiplayerGame {
+public class MultiplayerGame implements client.game.Game {
     private final MainCtrl main;
     private final ServerUtils server;
 
