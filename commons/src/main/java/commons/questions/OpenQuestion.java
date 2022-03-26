@@ -86,9 +86,11 @@ public class OpenQuestion extends Question {
      */
     public static OpenQuestion generateOpenQuestion(List<Activity> unusedActivities) {
         Random randomGen = new Random();
-        Activity activity = unusedActivities.remove(
-                randomGen.nextInt(unusedActivities.size())
-        );
+        if (unusedActivities.isEmpty()) {
+            return null;
+        }
+        int randInt = randomGen.nextInt(unusedActivities.size());
+        Activity activity = unusedActivities.remove(randInt);
 
         String question = "How much energy in WH does " +
                 activity.getTitle() +
