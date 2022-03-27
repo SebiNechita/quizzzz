@@ -121,7 +121,7 @@ public class ServerUtils {
     /**
      * Retrieves an instance of Game with noOfQuestions from the server using the endpoint made for the same
      * @param noOfQuestions noOfQuestions in the game
-     * @return
+     * @return A game object with a given no of questions
      */
     public Game getGame(int noOfQuestions) {
         return getRequest("api/game/create?noOfQuestions" + noOfQuestions, GameResponsePacket.class).getGame();
