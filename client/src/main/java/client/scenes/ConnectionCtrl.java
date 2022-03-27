@@ -8,6 +8,7 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
@@ -22,6 +23,8 @@ public class ConnectionCtrl extends SceneCtrl {
 
     @FXML
     private Text message;
+    @FXML
+    private Button connectButton;
 
     /**
      * Constructor for this Ctrl
@@ -98,8 +101,10 @@ public class ConnectionCtrl extends SceneCtrl {
         ChangeListener<String> listener = (observable, oldValue, newValue) -> {
             boolean res = server.isValidURL(newValue);
             if (res) {
+                connectButton.setDisable(false);
                 message.setText("");
             } else {
+                connectButton.setDisable(true);
                 message.setText("This URL is invalid");
             }
             url.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 50");
