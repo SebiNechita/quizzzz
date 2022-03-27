@@ -63,6 +63,13 @@ public class MainCtrl {
     }
 
     /**
+     * Called when Singleplayer game is quit
+     */
+    public void quitSingleplayer() {
+        this.singleplayerGame = null;
+    }
+
+    /**
      * Getter for the current SingleplayerGame
      *
      * @return the current SingleplayerGame

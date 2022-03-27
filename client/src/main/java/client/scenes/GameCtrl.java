@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.Main;
 import client.utils.ServerUtils;
 import commons.utils.Emote;
 import commons.utils.GameMode;
@@ -14,13 +15,18 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.*;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
@@ -31,6 +37,7 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 import javax.inject.Inject;
+import java.net.URISyntaxException;
 import java.util.*;
 
 import static client.utils.EmoteUtility.emoteHoverAnim;
@@ -56,6 +63,10 @@ public abstract class GameCtrl extends SceneCtrl {
 
     @FXML
     protected Button nextQuestion;
+    @FXML
+    protected Button muteSound;
+    @FXML
+    protected Button quitButton;
 
     @FXML
     protected VBox jokers;
@@ -80,6 +91,9 @@ public abstract class GameCtrl extends SceneCtrl {
     protected double timeLeft = 0;
     protected double lastAnswerChange = 0;
     protected double timeMultiplier = 1d;
+
+    // static because the state has to be the same between both the question types
+    protected static boolean mute = false;
 
     /**
      * There are three options visible to the user.
@@ -135,6 +149,7 @@ public abstract class GameCtrl extends SceneCtrl {
 
         notificationContainer.setVisible(gameMode == GameMode.MULTIPLAYER);
 
+        setMuteButton();
         generateProgressDots();
         enableListeners();
         startTimer();
@@ -476,7 +491,7 @@ public abstract class GameCtrl extends SceneCtrl {
     private Animation timerAnim(AnchorPane anchorPane) {
         return new Transition() {
             {
-                setCycleDuration(Duration.millis(1000 * timeMultiplier));
+                setCycleDuration(Duration.millis(10000 * timeMultiplier));
                 setInterpolator(Interpolator.LINEAR);
             }
 
@@ -588,6 +603,69 @@ public abstract class GameCtrl extends SceneCtrl {
 
         // store the rounded image in the imageView.
         imageView.setImage(image);
+    }
+
+    @FXML
+    protected void onMute() {
+        String imagePath = mute ? "img/unmute.png" : "img/mute.png";
+        mute = !mute;
+
+        ImageView icon = (ImageView) muteSound.getChildrenUnmodifiable().get(0);
+        icon.setImage(new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(imagePath))));
+    }
+
+    /**
+     * Quits from the current game session. Sets main.singleplayerGame to null and stops the timer which would otherwise continue running.
+     */
+    @FXML
+    protected void quitGame() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Leave Game");
+        alert.setHeaderText("You're about to leave this game!");
+        alert.setContentText("Are you sure you want to leave?");
+
+        if (alert.showAndWait().get() == ButtonType.OK) {
+            LoggerUtil.infoInline(Main.USERNAME + " quit the singleplayer game!");
+            main.showScene(MainMenuCtrl.class);
+            timer.setOnFinished(event -> {});
+            timer = null;
+            main.quitSingleplayer();
+        }
+
+    }
+
+    /**
+     * This method is used to ensure that the mute button is in the same state in both the question types. This must be called onShowScene
+     */
+    protected void setMuteButton() {
+        String imagePath = mute ? "img/mute.png" : "img/unmute.png";
+        ImageView icon = (ImageView) muteSound.getChildrenUnmodifiable().get(0);
+        icon.setImage(new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(imagePath))));
+    }
+
+    protected void playSound(boolean isCorrect) {
+
+        if (mute) return;
+
+        Media media;
+        MediaPlayer mediaPlayer;
+        String soundFilePath = "";
+        if (isCorrect) {
+            try {
+                soundFilePath = getClass().getResource("/sounds/correct.wav").toURI().toString();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+        } else {
+            try {
+                soundFilePath = getClass().getResource("/sounds/wrong.mp3").toURI().toString();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+        }
+        media = new Media(soundFilePath);
+        mediaPlayer = new MediaPlayer(media);
+        mediaPlayer.play();
     }
 
     /**

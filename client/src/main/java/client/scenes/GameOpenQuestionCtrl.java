@@ -61,6 +61,7 @@ public class GameOpenQuestionCtrl extends GameCtrl {
 
     private OpenQuestion oq;
 
+
     /**
      * Constructor for this Ctrl
      *
@@ -198,6 +199,7 @@ public class GameOpenQuestionCtrl extends GameCtrl {
         }
 
         showPointsGained(100 - difference);
+        playSound(difference <= 50);
         main.getSingleplayerGame().getQuestionHistory().add(difference <= 50);
         generateProgressDots();
     }
