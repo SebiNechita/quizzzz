@@ -119,6 +119,15 @@ public class ServerUtils {
     }
 
     /**
+     * Retrieves an instance of Game with noOfQuestions from the server using the endpoint made for the same
+     * @param noOfQuestions noOfQuestions in the game
+     * @return
+     */
+    public Game getGame(int noOfQuestions) {
+        return getRequest("api/game/create?noOfQuestions" + noOfQuestions, GameResponsePacket.class).getGame();
+    }
+
+    /**
      * Builds a post request
      *
      * @param path     The path of the endpoint to send the request to

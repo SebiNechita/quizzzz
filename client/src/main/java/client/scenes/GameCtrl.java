@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.Main;
 import client.utils.ServerUtils;
 import commons.utils.Emote;
 import commons.utils.GameMode;
@@ -14,7 +15,9 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
@@ -62,6 +65,8 @@ public abstract class GameCtrl extends SceneCtrl {
     protected Button nextQuestion;
     @FXML
     protected Button muteSound;
+    @FXML
+    protected Button quitButton;
 
     @FXML
     protected VBox jokers;
@@ -87,7 +92,8 @@ public abstract class GameCtrl extends SceneCtrl {
     protected double lastAnswerChange = 0;
     protected double timeMultiplier = 1d;
 
-    protected boolean mute = false;
+    // static because the state has to be the same between both the question types
+    protected static boolean mute = false;
 
     /**
      * There are three options visible to the user.
@@ -143,6 +149,7 @@ public abstract class GameCtrl extends SceneCtrl {
 
         notificationContainer.setVisible(gameMode == GameMode.MULTIPLAYER);
 
+        setMuteButton();
         generateProgressDots();
         enableListeners();
         startTimer();
@@ -603,6 +610,35 @@ public abstract class GameCtrl extends SceneCtrl {
         String imagePath = mute ? "img/unmute.png" : "img/mute.png";
         mute = !mute;
 
+        ImageView icon = (ImageView) muteSound.getChildrenUnmodifiable().get(0);
+        icon.setImage(new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(imagePath))));
+    }
+
+    /**
+     * Quits from the current game session. Sets main.singleplayerGame to null and stops the timer which would otherwise continue running.
+     */
+    @FXML
+    protected void quitGame() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Leave Game");
+        alert.setHeaderText("You're about to leave this game!");
+        alert.setContentText("Are you sure you want to leave?");
+
+        if (alert.showAndWait().get() == ButtonType.OK) {
+            LoggerUtil.infoInline(Main.USERNAME + " quit the singleplayer game!");
+            main.showScene(MainMenuCtrl.class);
+            timer.setOnFinished(event -> {});
+            timer = null;
+            main.quitSingleplayer();
+        }
+
+    }
+
+    /**
+     * This method is used to ensure that the mute button is in the same state in both the question types. This must be called onShowScene
+     */
+    protected void setMuteButton() {
+        String imagePath = mute ? "img/mute.png" : "img/unmute.png";
         ImageView icon = (ImageView) muteSound.getChildrenUnmodifiable().get(0);
         icon.setImage(new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(imagePath))));
     }

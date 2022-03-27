@@ -76,6 +76,7 @@ public class EndGameCtrl extends SceneCtrl {
      * Show the leaderboard.
      */
     public void showMainMenu() {
+        main.quitSingleplayer();
         main.showScene(MainMenuCtrl.class);
     }
 
