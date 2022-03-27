@@ -20,8 +20,6 @@ import commons.Game;
 import commons.questions.Activity;
 import commons.utils.HttpStatus;
 import commons.utils.LoggerUtil;
-import jakarta.ws.rs.ProcessingException;
-import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;

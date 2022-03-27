@@ -30,6 +30,9 @@ public class ServerUtilsTest {
     private static ClientAndServer mockClientServer;
     private static int port = -1;
 
+    /**
+     * set up some variables before tests
+     */
     @BeforeAll
     public static void startMockServer() {
         HttpsURLConnection.setDefaultSSLSocketFactory(new KeyStoreFactory(new MockServerLogger()).sslContext().getSocketFactory());
@@ -39,22 +42,33 @@ public class ServerUtilsTest {
         Main.TOKEN = "mock token";
     }
 
+    /**
+     * stops the mock server after tests
+     */
     @AfterAll
     public static void stopMockServer() {
         mockClientServer.stop();
     }
 
+    /**
+     * test case for a successful server connection
+     */
     @Test
     public void testConnectionTest() {
         mockClientServer.when(new HttpRequest().withMethod("GET").withPath("/ping"))
                 .respond(new HttpResponse().withStatusCode(HttpStatus.OK.getCode()).withBody("Pong"));
 
         ServerUtils serverUtils = new ServerUtils();
-        assertTrue(serverUtils.testConnection("https://localhost:" + port));
+        assertTrue(serverUtils.testConnection("https://localhost:" + port).equals("true"));
 
         mockClientServer.verify(HttpRequest.request("/ping"), VerificationTimes.once());
     }
 
+    /**
+     * test case for a successful get request
+     *
+     * @throws Exception
+     */
     @Test
     public void getRequestTest() throws Exception {
         mockClientServer.when(
@@ -74,11 +88,15 @@ public class ServerUtilsTest {
             System.out.println("failed");
         }
 
-
         mockClientServer.verify(request("/api/random"), VerificationTimes.once());
 
     }
 
+    /**
+     * test case for a successful registration
+     *
+     * @throws Exception
+     */
     @Test
     public void registerTest() throws Exception {
         ObjectMapper om = new ObjectMapper();
