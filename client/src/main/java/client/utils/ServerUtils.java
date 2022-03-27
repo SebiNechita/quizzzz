@@ -34,6 +34,8 @@ import packets.*;
 import java.io.ByteArrayInputStream;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
@@ -233,6 +235,7 @@ public class ServerUtils {
 
     /**
      * Uses an endpoint to retrieve the list of activities from the Server
+     *
      * @return The activities stored
      */
     public List<Activity> getActivities() {
@@ -404,5 +407,27 @@ public class ServerUtils {
          * @param responsePacket The packet which the server returned
          */
         void run(T responsePacket);
+    }
+
+    /**
+     * function to validate URL
+     *
+     * @param url the URL
+     * @return if the URL is valid
+     */
+    public boolean isValidURL(String url) {
+        // regex string
+        String regex = "https?:\\/\\/(?:w{1,3}\\.)?[^\\s.]+(?:\\.[a-z]+)*(?::\\d+)?(?:\\/\\w+)*\\/?(?![^<]*(?:<\\/\\w+>|\\/?>))";
+
+        Pattern p = Pattern.compile(regex);
+
+        if (url == null) {
+            return false;
+        }
+
+        Matcher m = p.matcher(url);
+
+        // Return true if the string matched the regex
+        return m.matches();
     }
 }
