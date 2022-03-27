@@ -51,7 +51,8 @@ public class LoginCtrl extends SceneCtrl {
 
     /**
      * Logs in the user with the account data
-     * @param username - the username of the user
+     *
+     * @param username        - the username of the user
      * @param passwordEntered - the password of the user
      */
     public void login(String username, String passwordEntered) {
@@ -68,9 +69,16 @@ public class LoginCtrl extends SceneCtrl {
             userName.setText("");
             password.setText("");
         } else {
+            Animation userNameShake = shake(userName);
+            Animation passwordShake = shake(password);
+            userNameShake.play();
+            passwordShake.play();
+
             userName.setStyle("-fx-background-color: #fc6363; -fx-background-radius: 50");
             password.setStyle("-fx-background-color: #fc6363; -fx-background-radius: 50");
             error.setText("Could not log in");
+
+
         }
     }
 
@@ -90,7 +98,7 @@ public class LoginCtrl extends SceneCtrl {
         main.showScene(RegisterCtrl.class);
     }
 
-    public void onLoginButtonPressed(){
+    public void onLoginButtonPressed() {
         login(userName.getText(), password.getText());
     }
 
@@ -102,8 +110,9 @@ public class LoginCtrl extends SceneCtrl {
     }
 
     /**
-     * returns a shaking Animation
-     * @param node
+     * Create and returns a shaking Animation for a given node
+     *
+     * @param node to node to apply shaking animation
      * @return shaking Animation
      */
     protected Animation shake(TextField node) {
