@@ -106,7 +106,7 @@ public abstract class GameCtrl extends SceneCtrl {
      * Gets called after scene has finished loading
      */
     protected void initialize() {
-         doublepoints = 0;
+        doublepoints = 0;
     }
 
     /**
@@ -156,9 +156,8 @@ public abstract class GameCtrl extends SceneCtrl {
             jokerImage.setOnMouseClicked(event -> {
                 if (disabledJokers.contains(joker)) {
                     return;
-                }
-                else {
-                    if(node == jokers.getChildren().get(0)) {
+                } else {
+                    if (node == jokers.getChildren().get(0)) {
                         disableJoker(JokerType.DOUBLE_POINTS);
                         disabledJokers.add(joker);
                         doublepoints = 1;
@@ -217,22 +216,22 @@ public abstract class GameCtrl extends SceneCtrl {
      */
     protected void disableJoker(JokerType type) {
         jokers.getChildren().stream()
-                .filter(joker -> joker.getId().equalsIgnoreCase(type.toString()))
-                .map(joker -> (AnchorPane) joker)
-                .forEach(joker -> {
-                            LoggerUtil.log(joker.getId());
-                            ImageView image = (ImageView) joker.getChildren().get(0);
+            .filter(joker -> joker.getId().equalsIgnoreCase(type.toString()))
+            .map(joker -> (AnchorPane) joker)
+            .forEach(joker -> {
+                LoggerUtil.log(joker.getId());
+                ImageView image = (ImageView) joker.getChildren().get(0);
 
-                            ColorAdjust effect = new ColorAdjust();
-                            effect.setBrightness(-0.5);
-                            effect.setContrast(-0.5);
-                            effect.setSaturation(-1);
+                ColorAdjust effect = new ColorAdjust();
+                effect.setBrightness(-0.5);
+                effect.setContrast(-0.5);
+                effect.setSaturation(-1);
 
-                            image.setEffect(effect);
+                image.setEffect(effect);
 
-                            disabledJokers.add(joker);
-                        }
-                );
+                disabledJokers.add(joker);
+            }
+        );
     }
 
     /**
@@ -400,8 +399,8 @@ public abstract class GameCtrl extends SceneCtrl {
         answerPoints = Math.min(Math.max(answerPoints, 0), 100);
         int timeBonus = (int) Math.round(lastAnswerChange * 100 * (answerPoints / 100d));
         int total = (int) (answerPoints + timeBonus * (answerPoints / 100d));
-        if(doublepoints == 1 && !disabledJokers.contains(JokerType.DOUBLE_POINTS)){
-            total *=2;
+        if (doublepoints == 1 && !disabledJokers.contains(JokerType.DOUBLE_POINTS)) {
+            total *= 2;
             doublepoints = 2;
         }
         if (Main.gameMode == GameMode.MULTIPLAYER) {
