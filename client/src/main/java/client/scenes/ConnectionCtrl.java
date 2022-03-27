@@ -115,7 +115,7 @@ public class ConnectionCtrl extends SceneCtrl {
     public Animation getConnectingAnimation() {
         DoubleProperty startFade = new SimpleDoubleProperty(0);
         url.styleProperty().bind(Bindings.createStringBinding(() -> String.format(
-                "-fx-background-color: linear-gradient(to right, #7FFFD4, #F0FFFF %f%%, #7FFFD4 );",
+                "-fx-background-color: linear-gradient(to right, #7FFFD4, #F0FFFF %f%%, #7FFFD4 ); -fx-background-radius: 50;",
                 startFade.get() * 100
         ), startFade));
 
