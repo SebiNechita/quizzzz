@@ -199,20 +199,33 @@ public class ServerUtils {
      * @param url The URL to test
      * @return If the URL is valid or not
      */
-    public boolean testConnection(String url) {
-        Invocation invocation = getClient()
-                .target(url + "/ping")
-                .request("text/plain").buildGet();
-
-        // Invoke the request
+    public String testConnection(String url) {
         String response;
+        Invocation invocation;
+
+        // build the request
         try {
-            response = invocation.invoke(String.class);
-        } catch (ProcessingException | WebApplicationException ignored) {
-            return false;
+            invocation = getClient()
+                    .target(url + "/ping")
+                    .request("text/plain").buildGet();
+            // invalid URL
+        } catch (Exception exception) {
+            return "URL";
         }
 
-        return response.equals("Pong");
+        // invoke the request
+        try {
+            response = invocation.invoke(String.class);
+            // invalid server
+        } catch (Exception exception) {
+            return "Server";
+        }
+
+        if (response.equals("Pong")) {
+            return "true";
+        } else {
+            return "false";
+        }
     }
 
     /**

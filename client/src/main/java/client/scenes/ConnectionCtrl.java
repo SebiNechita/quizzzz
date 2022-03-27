@@ -82,13 +82,22 @@ public class ConnectionCtrl extends SceneCtrl {
      */
     public void connect() {
         String urlStr = url.getText();
-        boolean res = server.testConnection(urlStr);
-        if (res) {
+        String res = server.testConnection(urlStr);
+        if (res.equals("true")) {
             main.showScene(LoginCtrl.class);
             url.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 50");
             message.setText("");
-        } else {
+        } else if(res.equals("URL")) {
+            message.setText("The URL is invalid");
+            url.setStyle("-fx-background-color: #fc6363; -fx-background-radius: 50");
+            shake(url).play();
+            connectButton.setDisable(true);
+        } else if(res.equals("Server")){
             message.setText("Cannot connect to this server");
+            url.setStyle("-fx-background-color: #fc6363; -fx-background-radius: 50");
+            shake(url).play();
+        } else {
+            message.setText("This is not a game server");
             url.setStyle("-fx-background-color: #fc6363; -fx-background-radius: 50");
             shake(url).play();
         }
