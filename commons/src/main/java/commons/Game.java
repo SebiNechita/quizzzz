@@ -3,6 +3,7 @@ package commons;
 import commons.questions.Activity;
 import commons.questions.MultipleChoiceQuestion;
 import commons.questions.OpenQuestion;
+import commons.utils.LoggerUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,12 +84,16 @@ public class Game {
         List<MultipleChoiceQuestion> multipleChoiceQuestions = new ArrayList<>();
 
         for (int i = 0; i < noOfMultipleChoiceQuestions; i++) {
-            multipleChoiceQuestions.add(
-                    MultipleChoiceQuestion.
-                            generateMultipleChoiceQuestion(
-                                    game.getActivities()
-                            )
+            MultipleChoiceQuestion mcq = MultipleChoiceQuestion.generateMultipleChoiceQuestion(
+                    game.getActivities()
             );
+            if (mcq == null) {
+                game.noOfMultipleChoiceQuestions = multipleChoiceQuestions.size();
+                LoggerUtil.warnInline("Ran out of unused activities while trying to create multiple choice questions. " +
+                        "There are currently "  + multipleChoiceQuestions.size() + " multiple choice questions.");
+                return multipleChoiceQuestions;
+            }
+            multipleChoiceQuestions.add(mcq);
         }
         return multipleChoiceQuestions;
     }
@@ -105,11 +110,17 @@ public class Game {
         List<OpenQuestion> openQuestions = new ArrayList<>();
 
         for(int i = 0; i < noOfOpenQuestions; ++i) {
-            openQuestions.add(OpenQuestion.
+            OpenQuestion oq = OpenQuestion.
                     generateOpenQuestion(
                             game.getActivities()
-                    )
-            );
+                    );
+            if (oq == null) {
+                game.noOfOpenQuestions = openQuestions.size();
+                LoggerUtil.warnInline("Ran out of unused activities while trying to create questions. " +
+                        "There are currently " + openQuestions.size() + " open questions");
+                return openQuestions;
+            }
+            openQuestions.add(oq);
         }
 
         return openQuestions;

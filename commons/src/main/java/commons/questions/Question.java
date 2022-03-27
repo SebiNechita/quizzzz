@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
     @JsonSubTypes.Type(value = OpenQuestion.class, name = "OpenQuestion"),
     @JsonSubTypes.Type(value = MultipleChoiceQuestion.class, name = "MultipleChoiceQuestion")
 })
-public class Question {
+public abstract class Question {
 
     /**
      * String representation of the Question
