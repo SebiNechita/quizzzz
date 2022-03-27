@@ -60,6 +60,7 @@ public abstract class GameCtrl extends SceneCtrl {
     protected VBox jokers;
     private AnchorPane jokerContainer;
     private List<AnchorPane> disabledJokers;
+    private List<AnchorPane> touchNotusedjokers;
 
     @FXML
     protected Text timeLeftText;
@@ -79,6 +80,7 @@ public abstract class GameCtrl extends SceneCtrl {
     protected double timeLeft = 0;
     protected double lastAnswerChange = 0;
     protected double timeMultiplier = 1d;
+    protected static int doublepoints;
 
     /**
      * There are three options visible to the user.
@@ -104,7 +106,7 @@ public abstract class GameCtrl extends SceneCtrl {
      * Gets called after scene has finished loading
      */
     protected void initialize() {
-
+         doublepoints = 0;
     }
 
     /**
@@ -151,28 +153,35 @@ public abstract class GameCtrl extends SceneCtrl {
             ImageView jokerImage = (ImageView) joker.getChildren().get(0);
             AnchorPane tooltip = (AnchorPane) joker.getChildren().get(1);
 
-            jokerImage.setOnMouseEntered(event -> {
-                if (disabledJokers.contains(joker))
+            jokerImage.setOnMouseClicked(event -> {
+                if (disabledJokers.contains(joker)) {
                     return;
-
-                hoverAnim(joker, new Color(0.266, 0.266, 0.266, 1), new Color(1, 1, 1, 1)).play();
-                showJokerTooltip(tooltip);
+                }
+                else {
+                    if(node == jokers.getChildren().get(0)) {
+                        disableJoker(JokerType.DOUBLE_POINTS);
+                        disabledJokers.add(joker);
+                        doublepoints = 1;
+                        hoverAnim(joker, new Color(0.266, 0.266, 0.266, 1), new Color(1, 1, 1, 1)).play();
+                        //showJokerTooltip(tooltip);
+                    }
+                }
             });
 
-            jokerImage.setOnMouseExited(event -> {
+           /* jokerImage.setOnMouseExited(event -> {
                 if (disabledJokers.contains(joker))
                     return;
 
                 hoverAnim(joker, new Color(1, 1, 1, 1), new Color(0.266, 0.266, 0.266, 1)).play();
                 hideJokerTooltip(tooltip);
-            });
+            });*/
 
-            jokerImage.setOnMouseClicked(event -> {
+            /*jokerImage.setOnMouseClicked(event -> {
                 if (disabledJokers.contains(joker))
                     return;
 
                 jokerUsed(JokerType.valueOf(joker.getId().toUpperCase()));
-            });
+            });*/
         }
 
         for (Node node : emoteContainer.getChildren()) {
@@ -389,9 +398,12 @@ public abstract class GameCtrl extends SceneCtrl {
      */
     protected void showPointsGained(int answerPoints) {
         answerPoints = Math.min(Math.max(answerPoints, 0), 100);
-
         int timeBonus = (int) Math.round(lastAnswerChange * 100 * (answerPoints / 100d));
         int total = (int) (answerPoints + timeBonus * (answerPoints / 100d));
+        if(doublepoints == 1 && !disabledJokers.contains(JokerType.DOUBLE_POINTS)){
+            total *=2;
+            doublepoints = 2;
+        }
         if (Main.gameMode == GameMode.MULTIPLAYER) {
             main.getMultiplayerGame().addToScore(total);
             setScore(main.getMultiplayerGame().getScoreTotal());

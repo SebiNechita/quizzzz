@@ -1,7 +1,7 @@
 package client.scenes;
 
 import client.Main;
-import client.game.MultiplayerGame;
+//import client.game.MultiplayerGame;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import commons.utils.Emote;
@@ -173,6 +173,7 @@ public class LobbyCtrl extends SceneCtrl {
         // to be filled
 //        Main.gameMode = GameMode.MULTIPLAYER;
 //        //main.createNewMultiplayerGame();
+
         main.getMultiplayerGame().jumpToNextQuestion();
     }
 

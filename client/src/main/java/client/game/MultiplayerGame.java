@@ -1,10 +1,10 @@
 package client.game;
 
-import client.Main;
+
 import client.scenes.*;
 import client.utils.ServerUtils;
 import commons.Game;
-import commons.LeaderboardEntry;
+//import commons.LeaderboardEntry;
 import commons.questions.MultipleChoiceQuestion;
 import commons.questions.OpenQuestion;
 import commons.questions.Question;
@@ -88,6 +88,7 @@ public class MultiplayerGame implements client.game.Game {
         }
         currentQuestionCount++;
     }
+
 
     /**
      * Decides which type of question to display.

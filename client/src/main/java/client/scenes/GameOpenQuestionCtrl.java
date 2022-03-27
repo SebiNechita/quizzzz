@@ -62,6 +62,7 @@ public class GameOpenQuestionCtrl extends GameCtrl {
     private HBox emoteContainer;
 
     private OpenQuestion oq;
+    protected static int doublepoints;
 
     /**
      * Constructor for this Ctrl

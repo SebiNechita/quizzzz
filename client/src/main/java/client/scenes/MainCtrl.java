@@ -20,7 +20,7 @@ import client.game.SingleplayerGame;
 import client.game.MultiplayerGame;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
-import commons.utils.GameMode;
+//import commons.utils.GameMode;
 import commons.utils.LoggerUtil;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
