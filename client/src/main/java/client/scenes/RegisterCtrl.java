@@ -8,9 +8,14 @@ import commons.utils.HttpStatus;
 import javafx.animation.Animation;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import packets.ResponsePacket;
@@ -61,7 +66,7 @@ public class RegisterCtrl extends SceneCtrl {
     private TextField confirmPassword;
 
     @FXML
-    private Text error;
+    private Text errorText;
 
     @FXML
     private Scene scene;
@@ -98,7 +103,7 @@ public class RegisterCtrl extends SceneCtrl {
             Main.TOKEN = result;
             main.showScene(MainMenuCtrl.class);
         } else {
-            error.setText("Could not log in.");
+            errorText.setText("Could not log in.");
         }
     }
 
@@ -106,23 +111,28 @@ public class RegisterCtrl extends SceneCtrl {
      * Checks if the registration form is filled with correct values and if so, sends a request.
      */
     public void registerButtonClicked() {
-        if (!password.getText().equals(confirmPassword.getText())) {
-            error.setText("Passwords are not matching.");
-            shake(password).playFromStart();
-            shake(confirmPassword).playFromStart();
-        } else if (password.getText().isBlank() || userName.getText().isBlank()) {
-            //the username or password is empty or only consists of whitespaces.
-            error.setText("Password or username is empty.");
+        if (password.getText().isBlank() || userName.getText().isBlank()) {
             shake(userName).playFromStart();
             shake(password).playFromStart();
             shake(confirmPassword).playFromStart();
+            errorText.setText("Password or username is empty.");
+            userName.setBackground(new Background(new BackgroundFill(Color.RED, new CornerRadii(50), Insets.EMPTY)));
+            password.setBackground(new Background(new BackgroundFill(Color.RED, new CornerRadii(50), Insets.EMPTY)));
+        } else if (!password.getText().equals(confirmPassword.getText())) {
+            //the username or password is empty or only consists of whitespaces.
+            shake(password).playFromStart();
+            shake(confirmPassword).playFromStart();
+            errorText.setText("Passwords are not matching.");
+            password.setBackground(new Background(new BackgroundFill(Color.RED, new CornerRadii(50), Insets.EMPTY)));
+            confirmPassword.setBackground(new Background(new BackgroundFill(Color.RED, new CornerRadii(50), Insets.EMPTY)));
         } else {
             //the username and password are sent without any leading or trailing whitespaces.
             //If successful, logs the newly created user in.
             ResponsePacket response = server.register(userName.getText().trim(), password.getText().trim());
             if (response.getCode() == HttpStatus.Conflict.getCode()) {
-                error.setText("User exists");
+                userName.setBackground(new Background(new BackgroundFill(Color.RED, new CornerRadii(50), Insets.EMPTY)));
                 shake(userName).playFromStart();
+                errorText.setText("User exists");
             } else if (response.getCode() == HttpStatus.Created.getCode()) {
                 LoginCtrl login = main.getCtrl(LoginCtrl.class);
                 login.login(userName.getText(), password.getText());
@@ -138,7 +148,10 @@ public class RegisterCtrl extends SceneCtrl {
         userName.clear();
         password.clear();
         confirmPassword.clear();
-        error.setText("");
+        userName.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(50), Insets.EMPTY)));
+        password.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(50), Insets.EMPTY)));
+        confirmPassword.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(50), Insets.EMPTY)));
+        errorText.setText("");
     }
 
     /**
