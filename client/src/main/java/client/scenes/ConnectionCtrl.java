@@ -5,26 +5,15 @@ import client.utils.ServerUtils;
 import javafx.animation.*;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.concurrent.TimeUnit;
 
 public class ConnectionCtrl extends SceneCtrl {
 
@@ -76,7 +65,7 @@ public class ConnectionCtrl extends SceneCtrl {
      */
     public void connectClicked() {
         Animation connectingAni = getConnectingAnimation();
-        connectingAni.setOnFinished((event) -> {
+        connectingAni.setOnFinished(event -> {
             url.styleProperty().unbind();
             url.getStyleClass().clear();
             connect();
@@ -106,7 +95,7 @@ public class ConnectionCtrl extends SceneCtrl {
      * add change event listener to the URL TextField
      */
     public void addChangeListener() {
-        ChangeListener<String> listener = ((observable, oldValue, newValue) -> {
+        ChangeListener<String> listener = (observable, oldValue, newValue) -> {
             boolean res = server.isValidURL(newValue);
             if (res) {
                 message.setText("");
@@ -114,7 +103,7 @@ public class ConnectionCtrl extends SceneCtrl {
                 message.setText("This URL is invalid");
             }
             url.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 50");
-        });
+        };
         url.textProperty().addListener(listener);
     }
 
