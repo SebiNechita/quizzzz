@@ -209,10 +209,13 @@ public class GameMultiChoiceCtrl extends GameCtrl {
 
         fadeOption(correct, (Color) correct.getBackground().getFills().get(0).getFill(), new Color(0.423, 0.941, 0.415, 1)).play();
 
-        for (AnchorPane option : options) {
-            if (option == correct)
-                continue;
+        playSound(selected != null && selected.getValue() == correct);
 
+        for (AnchorPane option : options) {
+
+            if (option == correct) {
+                continue;
+            }
             if (selected != null && selected.getValue() != removedAnswer && option == selected.getValue()) {
                 fadeOption(option, (Color) option.getBackground().getFills().get(0).getFill(), new Color(0.949, 0.423, 0.392, 1)).play();
             } else {

@@ -20,8 +20,6 @@ import commons.Game;
 import commons.questions.Activity;
 import commons.utils.HttpStatus;
 import commons.utils.LoggerUtil;
-import jakarta.ws.rs.ProcessingException;
-import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
@@ -34,6 +32,8 @@ import packets.*;
 import java.io.ByteArrayInputStream;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
@@ -119,6 +119,15 @@ public class ServerUtils {
     }
 
     /**
+     * Retrieves an instance of Game with noOfQuestions from the server using the endpoint made for the same
+     * @param noOfQuestions noOfQuestions in the game
+     * @return A game object with a given no of questions
+     */
+    public Game getGame(int noOfQuestions) {
+        return getRequest("api/game/create?noOfQuestions" + noOfQuestions, GameResponsePacket.class).getGame();
+    }
+
+    /**
      * Builds a post request
      *
      * @param path     The path of the endpoint to send the request to
@@ -197,20 +206,33 @@ public class ServerUtils {
      * @param url The URL to test
      * @return If the URL is valid or not
      */
-    public boolean testConnection(String url) {
-        Invocation invocation = getClient()
-                .target(url + "/ping")
-                .request("text/plain").buildGet();
-
-        // Invoke the request
+    public String testConnection(String url) {
         String response;
+        Invocation invocation;
+
+        // build the request
         try {
-            response = invocation.invoke(String.class);
-        } catch (ProcessingException | WebApplicationException ignored) {
-            return false;
+            invocation = getClient()
+                    .target(url + "/ping")
+                    .request("text/plain").buildGet();
+            // invalid URL
+        } catch (Exception exception) {
+            return "URL";
         }
 
-        return response.equals("Pong");
+        // invoke the request
+        try {
+            response = invocation.invoke(String.class);
+            // invalid server
+        } catch (Exception exception) {
+            return "Server";
+        }
+
+        if (response.equals("Pong")) {
+            return "true";
+        } else {
+            return "false";
+        }
     }
 
     /**
@@ -233,6 +255,7 @@ public class ServerUtils {
 
     /**
      * Uses an endpoint to retrieve the list of activities from the Server
+     *
      * @return The activities stored
      */
     public List<Activity> getActivities() {
@@ -404,5 +427,27 @@ public class ServerUtils {
          * @param responsePacket The packet which the server returned
          */
         void run(T responsePacket);
+    }
+
+    /**
+     * function to validate URL
+     *
+     * @param url the URL
+     * @return if the URL is valid
+     */
+    public boolean isValidURL(String url) {
+        // regex string
+        String regex = "https?:\\/\\/(?:w{1,3}\\.)?[^\\s.]+(?:\\.[a-z]+)*(?::\\d+)?(?:\\/\\w+)*\\/?(?![^<]*(?:<\\/\\w+>|\\/?>))";
+
+        Pattern p = Pattern.compile(regex);
+
+        if (url == null) {
+            return false;
+        }
+
+        Matcher m = p.matcher(url);
+
+        // Return true if the string matched the regex
+        return m.matches();
     }
 }

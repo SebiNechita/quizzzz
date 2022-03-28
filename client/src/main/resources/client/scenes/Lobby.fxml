@@ -24,7 +24,7 @@
             </Text>
          </children>
       </AnchorPane>
-      <AnchorPane layoutX="45.0" layoutY="393.0" prefHeight="70.0" prefWidth="1319.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 50;" AnchorPane.bottomAnchor="55.0" AnchorPane.leftAnchor="55.0" AnchorPane.rightAnchor="55.0">
+      <AnchorPane layoutX="45.0" layoutY="393.0" prefHeight="55.0" prefWidth="1342.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 50;" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="55.0" AnchorPane.rightAnchor="55.0">
          <children>
             <Button fx:id="buttonReady" layoutX="29.0" layoutY="11.0" mnemonicParsing="false" onAction="#makeButtonReady" prefHeight="46.0" prefWidth="134.0" text="Ready" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="12.0">
                <font>

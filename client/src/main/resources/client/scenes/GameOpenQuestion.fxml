@@ -267,9 +267,35 @@
             </TextField>
          </children>
       </AnchorPane>
+      <AnchorPane layoutX="5.0" layoutY="14.0" prefHeight="28.0" prefWidth="115.0" style="-fx-background-color: #bfbcbb#bfbcbb; -fx-background-radius: 50; -fx-opacity: 0.5;">
+         <children>
+            <HBox prefHeight="43.0" prefWidth="115.0">
+               <children>
+                  <Button fx:id="quitButton" mnemonicParsing="false" onAction="#quitGame" prefHeight="42.0" prefWidth="57.0" style="-fx-background-color: transparent;">
+                     <graphic>
+                        <ImageView fitHeight="39.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../img/quit.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="muteSound" mnemonicParsing="false" onAction="#onMute" prefHeight="50.0" prefWidth="49.0" style="-fx-background-color: transparent;">
+                     <graphic>
+                        <ImageView fitHeight="40.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../img/unmute.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+      </AnchorPane>
     </children>
    <stylesheets>
-      <URL value="@../../stylesheets/questionStyle.css" />
       <URL value="@../../stylesheets/commonStyle.css" />
+      <URL value="@../../stylesheets/questionStyle.css" />
    </stylesheets>
 </AnchorPane>

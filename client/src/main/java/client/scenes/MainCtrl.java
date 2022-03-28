@@ -71,6 +71,7 @@ public class MainCtrl {
     }
 
     /**
+
      * Creates a new MultiplayerGame
      * @param game
      */
@@ -81,6 +82,14 @@ public class MainCtrl {
 //            resp = new MultiplayerResponsePacket(HttpStatus.OK, game);
 
 
+    }
+
+
+    /**
+     * Called when Singleplayer game is quit
+     */
+    public void quitSingleplayer() {
+        this.singleplayerGame = null;
     }
 
 

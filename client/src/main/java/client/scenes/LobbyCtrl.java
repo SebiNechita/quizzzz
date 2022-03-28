@@ -219,6 +219,7 @@ public class LobbyCtrl extends SceneCtrl {
     /**
      * when back button is clicked. Should stop pinging thread and the long polling thread.
      */
+    @FXML
     public void showHome() {
         chattext = new Text(Main.USERNAME + " has left the lobby!" + "\n");
         chattext.setFill(Color.RED);
@@ -233,6 +234,7 @@ public class LobbyCtrl extends SceneCtrl {
     /**
      * When pressed it makes the player from the session ready or not ready.
      */
+    @FXML
     public void makeButtonReady() {
         if (!ready) {
             buttonReady.setBackground(new Background(new BackgroundFill(Color.GREEN, null, null)));

@@ -64,6 +64,7 @@ public class GameOpenQuestionCtrl extends GameCtrl {
     private OpenQuestion oq;
     protected static int doublepoints;
 
+
     /**
      * Constructor for this Ctrl
      *
@@ -217,11 +218,15 @@ public class GameOpenQuestionCtrl extends GameCtrl {
         }
 
         showPointsGained(100 - difference);
+
         if (Main.gameMode == GameMode.MULTIPLAYER) {
             main.getMultiplayerGame().getQuestionHistory().add(difference <= 50);
         } else {
             main.getSingleplayerGame().getQuestionHistory().add(difference <= 50);
         }
+        playSound(difference <= 50);
+        
+
         generateProgressDots();
     }
 

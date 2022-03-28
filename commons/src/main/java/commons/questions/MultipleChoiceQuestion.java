@@ -43,11 +43,13 @@ public class MultipleChoiceQuestion extends Question {
     public static MultipleChoiceQuestion generateMultipleChoiceQuestion(List<Activity> unusedActivities) {
         Random randomGen = new Random();
         List<Activity> activityList = new ArrayList<>();
+        if (unusedActivities.size() < 3) {
+            return null;
+        }
         for (int i = 0; i < 3; i++) {
+            int randInt =  randomGen.nextInt(unusedActivities.size());
             activityList.add(
-                    unusedActivities.remove(
-                            randomGen.nextInt(unusedActivities.size())
-                    )
+                    unusedActivities.remove(randInt)
             );
         }
         // Here, the answer is removed from the activity list because this makes it easier to find the non-answer options.
