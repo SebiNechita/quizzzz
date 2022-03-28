@@ -1,10 +1,12 @@
 package client.scenes;
 
 import client.Main;
-import client.game.MultiplayerGame;
+//import client.game.MultiplayerGame;
+//import client.game.MultiplayerGame;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import commons.utils.Emote;
+import commons.utils.GameMode;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -44,7 +46,7 @@ public class LobbyCtrl extends SceneCtrl {
     private ScrollPane scrollPane;
 
     private Boolean ready;
-    private MultiplayerGame multiGame;
+    //private MultiplayerGame multiGame;
 
     /**
      * Constructor for this Ctrl
@@ -54,7 +56,8 @@ public class LobbyCtrl extends SceneCtrl {
      */
     public LobbyCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
         super(mainCtrl, serverUtils);
-        this.multiGame = mainCtrl.getMultiplayerGame();
+        // this.multiGame = mainCtrl.getMultiplayerGame();
+
     }
 
     /**
@@ -76,6 +79,10 @@ public class LobbyCtrl extends SceneCtrl {
      */
     @OnShowScene
     public void onShowScene() {
+        Main.gameMode = GameMode.MULTIPLAYER;
+
+//        main.createNewMultiplayerGame();
+
         buttonStart.setVisible(false);
         buttonReady.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
         ready = false;
@@ -89,9 +96,10 @@ public class LobbyCtrl extends SceneCtrl {
         chattextflow.getChildren().add(chattext);
 
         // the order of below methods matters!
-        multiGame.join(Main.USERNAME);
-        multiGame.startPingThread(Main.USERNAME);
-        multiGame.getLobbyUpdate();
+        main.createNewMultiplayerGame(main.joinGame(Main.USERNAME));
+//        main.getMultiplayerGame().join(Main.USERNAME);
+        main.getMultiplayerGame().startPingThread(Main.USERNAME);
+        main.getMultiplayerGame().getLobbyUpdate();
 
         enableListeners();
     }
@@ -160,11 +168,20 @@ public class LobbyCtrl extends SceneCtrl {
         buttonStart.setVisible(false);
     }
 
+    public void startGame() {
+        main.getMultiplayerGame().jumpToNextQuestion();
+    }
+
     /**
      * method to be invoked whe start is clicked
      */
+    @FXML
     public void onStartClicked() {
         // to be filled
+//        Main.gameMode = GameMode.MULTIPLAYER;
+//        //main.createNewMultiplayerGame();
+
+        main.getMultiplayerGame().sendStartToAllClients(Main.USERNAME);
     }
 
     /**
@@ -180,7 +197,7 @@ public class LobbyCtrl extends SceneCtrl {
         iv.setFitHeight(40);
         iv.setFitWidth(40);
         chattextflow.getChildren().addAll(text, iv, text2);
-        multiGame.sendEmote(Main.USERNAME, emote.toString().toLowerCase());
+        main.getMultiplayerGame().sendEmote(Main.USERNAME, emote.toString().toLowerCase());
     }
 
     /**
@@ -209,8 +226,8 @@ public class LobbyCtrl extends SceneCtrl {
         chattext.setFont(Font.font("Comic Sans MS", 30));
         textflow.getChildren().remove(playertext);
         chattextflow.getChildren().add(chattext);
-        multiGame.stopPingThread();
-        multiGame.stopLobbyUpdate();
+        main.getMultiplayerGame().stopPingThread();
+        main.getMultiplayerGame().stopLobbyUpdate();
         main.showScene(MainMenuCtrl.class);
     }
 
@@ -229,7 +246,7 @@ public class LobbyCtrl extends SceneCtrl {
         }
 
         // send ready message to server
-        multiGame.sendReadyMsg(Main.USERNAME, ready);
+        main.getMultiplayerGame().sendReadyMsg(Main.USERNAME, ready);
     }
 
     /**

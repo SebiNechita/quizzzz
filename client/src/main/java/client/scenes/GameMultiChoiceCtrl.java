@@ -1,6 +1,8 @@
 package client.scenes;
 
 import client.Main;
+//import client.game.MultiplayerGame;
+//import client.game.SingleplayerGame;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import commons.questions.Activity;
@@ -78,6 +80,7 @@ public class GameMultiChoiceCtrl extends GameCtrl {
     private ImageView image2;
     @FXML
     private ImageView image3;
+
 
     /**
      * Constructor for this Ctrl
@@ -180,11 +183,18 @@ public class GameMultiChoiceCtrl extends GameCtrl {
      * When the time's up, shows the correct answer and makes Next visible
      */
     protected void onTimerEnd() {
-        timer.setOnFinished(event -> {
-            showCorrectAnswer(answerOptionNumber);
-
-            nextQuestion.setVisible(Main.gameMode == GameMode.SINGLEPLAYER);
-        });
+        if(Main.gameMode == GameMode.MULTIPLAYER){
+            timer.setOnFinished(event -> {
+                showCorrectAnswer(answerOptionNumber);
+                nextQuestion.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
+            });
+        }
+        else {
+            timer.setOnFinished(event -> {
+                showCorrectAnswer(answerOptionNumber);
+                nextQuestion.setVisible(Main.gameMode == GameMode.SINGLEPLAYER);
+            });
+        }
     }
 
     /**
@@ -215,7 +225,13 @@ public class GameMultiChoiceCtrl extends GameCtrl {
 
         boolean correctlyAnswered = selected != null && selected.getKey() == answer;
         showPointsGained(correctlyAnswered ? 100 : 0);
-        main.getSingleplayerGame().getQuestionHistory().add(correctlyAnswered);
+
+        if (Main.gameMode == GameMode.MULTIPLAYER) {
+            main.getMultiplayerGame().getQuestionHistory().add(correctlyAnswered);;
+        } else {
+            main.getSingleplayerGame().getQuestionHistory().add(correctlyAnswered);
+        }
+
         generateProgressDots();
     }
 
@@ -230,7 +246,11 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         nextQuestion.setVisible(false);
         hidePointsGained();
 
-        main.getSingleplayerGame().jumpToNextQuestion();
+        if (Main.gameMode == GameMode.MULTIPLAYER) {
+            main.getMultiplayerGame().jumpToNextQuestion();
+        } else {
+            main.getSingleplayerGame().jumpToNextQuestion();
+        }
 
         //clean up
         locked = new boolean[]{false, false, false};
@@ -247,8 +267,12 @@ public class GameMultiChoiceCtrl extends GameCtrl {
      * Gets the next question.
      */
     protected void retrieveMultipleChoiceQuestion() {
-
-        MultipleChoiceQuestion mcq = main.getSingleplayerGame().getCurrentQuestion(MultipleChoiceQuestion.class);
+        MultipleChoiceQuestion mcq;
+        if (Main.gameMode == GameMode.SINGLEPLAYER) {
+            mcq = main.getSingleplayerGame().getCurrentQuestion(MultipleChoiceQuestion.class);
+        } else {
+            mcq = main.getMultiplayerGame().getCurrentQuestion(MultipleChoiceQuestion.class);
+        }
         Activity answer = mcq.getAnswer();
         Activity option2 = mcq.getActivityList().get(0); // An option that is not the answer
         Activity option3 = mcq.getActivityList().get(1); // Another option that is not the answer
@@ -263,6 +287,7 @@ public class GameMultiChoiceCtrl extends GameCtrl {
             case 1 -> setUpQuestion(mcq.getQuestion(), option2, answer, option3);
             case 2 -> setUpQuestion(mcq.getQuestion(), option2, option3, answer);
         }
+
     }
 
 
@@ -270,9 +295,9 @@ public class GameMultiChoiceCtrl extends GameCtrl {
      * This method sets the texts and images in the options
      *
      * @param questionText the question text
-     * @param option1 Activity of the text and image that'll be set in the first option
-     * @param option2 Activity of the text and image that'll be set in the second option
-     * @param option3 Activity of the text and image that'll be set in the third option
+     * @param option1      Activity of the text and image that'll be set in the first option
+     * @param option2      Activity of the text and image that'll be set in the second option
+     * @param option3      Activity of the text and image that'll be set in the third option
      */
     public void setUpQuestion(String questionText, Activity option1, Activity option2, Activity option3) {
         question.setText(questionText);

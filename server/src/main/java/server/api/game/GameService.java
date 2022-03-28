@@ -1,8 +1,10 @@
 package server.api.game;
 
+import commons.Game;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import packets.LobbyResponsePacket;
+import packets.StartGameRequestPacket;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -11,17 +13,28 @@ import java.util.*;
 @Service
 public class GameService {
 
+    private final CreateGameService createGameService;
     private final Map<String, Map.Entry<String, LocalDateTime>> playerMap;
+    private Game game;
     private final List<GameController.EventCaller<LobbyResponsePacket>> playerEventList;
     private boolean allReady;
 
     /**
      * constructor for GameService
+     *
+     * @param createGameService
      */
+    public GameService(CreateGameService createGameService) {
+        this.playerMap = new HashMap<>();
+        this.playerEventList = new LinkedList<>();
+        this.allReady = false;
+        this.createGameService = createGameService;
+    }
     public GameService() {
         this.playerMap = new HashMap<>();
         this.playerEventList = new LinkedList<>();
         this.allReady = false;
+        this.createGameService = null;
     }
 
     /**
@@ -250,5 +263,20 @@ public class GameService {
     public void updatePlayerTime(String username) {
         String ready = playerMap.get(username).getKey();
         playerMap.put(username, Map.entry(ready, LocalDateTime.now()));
+    }
+
+    public Game getGameIfExists() {
+        if (game == null) {
+            game = createGameService.createGame(20).getGame();
+        }
+        return game;
+    }
+
+    public LobbyResponsePacket onStartGame(StartGameRequestPacket requestPacket) {
+        Map<String, String> trimmedMap = trimPlayerList();
+        for (GameController.EventCaller<LobbyResponsePacket> thread : playerEventList) {
+            thread.run(new LobbyResponsePacket("Start", "true", requestPacket.getUsername(), trimmedMap));
+        }
+        return new LobbyResponsePacket("Start", "true", requestPacket.getUsername(), trimmedMap);
     }
 }

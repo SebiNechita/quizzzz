@@ -15,17 +15,24 @@
  */
 package client.scenes;
 
+import client.game.Game;
 import client.game.SingleplayerGame;
 import client.game.MultiplayerGame;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
+//import commons.utils.GameMode;
+//import commons.utils.HttpStatus;
 import commons.utils.LoggerUtil;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Pair;
+import packets.JoinRequestPacket;
+import packets.JoinResponsePacket;
+//import packets.MultiplayerResponsePacket;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -39,8 +46,9 @@ public class MainCtrl {
     private final Stage primaryStage;
     private final ServerUtils serverUtils;
     private SingleplayerGame singleplayerGame;
-    private final MultiplayerGame multiplayerGame;
+    private MultiplayerGame multiplayerGame;
 
+//    private MultiplayerResponsePacket resp;
     private final HashMap<Class<?>, SceneCtrl> ctrlClasses = new HashMap<>();
     private final HashMap<Class<?>, Pair<Scene, String>> scenes = new HashMap<>();
 
@@ -52,7 +60,7 @@ public class MainCtrl {
     public MainCtrl(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.serverUtils = new ServerUtils();
-        this.multiplayerGame = new MultiplayerGame(this, serverUtils);
+      // this.multiplayerGame = new MultiplayerGame(this, serverUtils);
     }
 
     /**
@@ -63,11 +71,27 @@ public class MainCtrl {
     }
 
     /**
+
+     * Creates a new MultiplayerGame
+     * @param game
+     */
+    public void createNewMultiplayerGame(commons.Game game) {
+        this.multiplayerGame = new MultiplayerGame(this, serverUtils, game);
+//        commons.Game game = multiplayerGame.getGame();
+//        if (resp == null)
+//            resp = new MultiplayerResponsePacket(HttpStatus.OK, game);
+
+
+    }
+
+
+    /**
      * Called when Singleplayer game is quit
      */
     public void quitSingleplayer() {
         this.singleplayerGame = null;
     }
+
 
     /**
      * Getter for the current SingleplayerGame
@@ -87,6 +111,9 @@ public class MainCtrl {
         return multiplayerGame;
     }
 
+    public <T extends Game> T getGame(Class<T> gameModeClass) {
+        return gameModeClass.equals(MultiplayerGame.class) ? (T) this.multiplayerGame : (T) this.singleplayerGame;
+    }
     /**
      * Loads and initializes a scene
      *
@@ -157,6 +184,17 @@ public class MainCtrl {
             }
         } catch (IllegalAccessException | InvocationTargetException ignored) {
         }
+    }
+
+    public commons.Game joinGame(String username) {
+        JoinResponsePacket responsePacket = serverUtils.postRequest("api/game/join",
+                new JoinRequestPacket(username),
+                JoinResponsePacket.class);
+        commons.Game game = responsePacket.getGame();
+        Platform.runLater(() ->
+                getCtrl(LobbyCtrl.class)
+                        .updatePlayerList(responsePacket.getPlayerList()));
+        return game;
     }
 
     /**
