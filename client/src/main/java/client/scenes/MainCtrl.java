@@ -23,12 +23,15 @@ import client.utils.ServerUtils;
 //import commons.utils.GameMode;
 import commons.utils.HttpStatus;
 import commons.utils.LoggerUtil;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Pair;
+import packets.JoinRequestPacket;
+import packets.JoinResponsePacket;
 import packets.MultiplayerResponsePacket;
 
 import java.io.IOException;
@@ -45,7 +48,7 @@ public class MainCtrl {
     private SingleplayerGame singleplayerGame;
     private MultiplayerGame multiplayerGame;
 
-    private MultiplayerResponsePacket resp;
+//    private MultiplayerResponsePacket resp;
     private final HashMap<Class<?>, SceneCtrl> ctrlClasses = new HashMap<>();
     private final HashMap<Class<?>, Pair<Scene, String>> scenes = new HashMap<>();
 
@@ -69,12 +72,14 @@ public class MainCtrl {
 
     /**
      * Creates a new MultiplayerGame
+     * @param game
      */
-    public void createNewMultiplayerGame() {
-        this.multiplayerGame = new MultiplayerGame(this, serverUtils);
-        commons.Game game = multiplayerGame.getGame();
-        if(resp == null)
-            resp = new MultiplayerResponsePacket(HttpStatus.OK, game);
+    public void createNewMultiplayerGame(commons.Game game) {
+        this.multiplayerGame = new MultiplayerGame(this, serverUtils, game);
+//        commons.Game game = multiplayerGame.getGame();
+//        if (resp == null)
+//            resp = new MultiplayerResponsePacket(HttpStatus.OK, game);
+
 
     }
 
@@ -170,6 +175,17 @@ public class MainCtrl {
             }
         } catch (IllegalAccessException | InvocationTargetException ignored) {
         }
+    }
+
+    public commons.Game joinGame(String username) {
+        JoinResponsePacket responsePacket = serverUtils.postRequest("api/game/join",
+                new JoinRequestPacket(username),
+                JoinResponsePacket.class);
+        commons.Game game = responsePacket.getGame();
+        Platform.runLater(() ->
+                getCtrl(LobbyCtrl.class)
+                        .updatePlayerList(responsePacket.getPlayerList()));
+        return game;
     }
 
     /**

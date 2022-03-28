@@ -1,5 +1,6 @@
 package server.api.game;
 
+import commons.Game;
 import commons.utils.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -60,8 +61,9 @@ public class GameController {
     @PostMapping("/join")
     public JoinResponsePacket join(@RequestBody JoinRequestPacket request) {
         gameService.addPlayer(request.getUsername());
+        Game game = gameService.getGameIfExists();
         Map<String, String> playerMap = gameService.onPlayerJoin(request.getUsername());
-        return new JoinResponsePacket(HttpStatus.OK, playerMap);
+        return new JoinResponsePacket(HttpStatus.OK, playerMap, game);
     }
 
    /* @GetMapping("/multiplayer")
@@ -95,7 +97,7 @@ public class GameController {
     }
 
     /**
-     * Event handler for giving long polling reponse to client
+     * Event handler for giving long polling response to client
      *
      * @param <T>
      */

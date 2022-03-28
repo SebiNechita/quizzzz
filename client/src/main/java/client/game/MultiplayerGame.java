@@ -63,6 +63,32 @@ public class MultiplayerGame implements client.game.Game {
         this.scoreTotal = 0;
     }
 
+
+    public MultiplayerGame(MainCtrl main, ServerUtils server, Game game) {
+        this.main = main;
+        this.server = server;
+        this.game = game;
+        this.scoreTotal = 0;
+        this.currentQuestionCount = 0;
+        this.questions = new ArrayList<>();
+        this.questionHistory = new LinkedList<>();
+
+        List<OpenQuestion> openQuestions = game.getOpenQuestions();
+        List<MultipleChoiceQuestion> multipleChoiceQuestions = game.getMultipleChoiceQuestions();
+
+        int totalQuestions = 20;
+        int currentOQ = 0;
+        int currentMCQ = 0;
+
+        for (int i = 0; i < totalQuestions; i++) {
+            if (i % 5 == 0) {
+                questions.add(openQuestions.get(currentOQ++));
+            } else {
+                questions.add(multipleChoiceQuestions.get(currentMCQ++));
+            }
+        }
+    }
+
     public Game getGame() {
         return game;
     }

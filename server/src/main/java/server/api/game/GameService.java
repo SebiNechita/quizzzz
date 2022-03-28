@@ -1,5 +1,6 @@
 package server.api.game;
 
+import commons.Game;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import packets.LobbyResponsePacket;
@@ -11,17 +12,21 @@ import java.util.*;
 @Service
 public class GameService {
 
+    private final CreateGameService createGameService;
     private final Map<String, Map.Entry<String, LocalDateTime>> playerMap;
+    private Game game;
     private final List<GameController.EventCaller<LobbyResponsePacket>> playerEventList;
     private boolean allReady;
 
     /**
      * constructor for GameService
+     * @param createGameService
      */
-    public GameService() {
+    public GameService(CreateGameService createGameService) {
         this.playerMap = new HashMap<>();
         this.playerEventList = new LinkedList<>();
         this.allReady = false;
+        this.createGameService = createGameService;
     }
 
     /**
@@ -250,5 +255,12 @@ public class GameService {
     public void updatePlayerTime(String username) {
         String ready = playerMap.get(username).getKey();
         playerMap.put(username, Map.entry(ready, LocalDateTime.now()));
+    }
+
+    public Game getGameIfExists() {
+        if (game == null) {
+            game = createGameService.createGame(20).getGame();
+        }
+        return game;
     }
 }

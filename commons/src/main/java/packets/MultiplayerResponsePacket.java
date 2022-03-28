@@ -5,7 +5,6 @@ import commons.Game;
 import commons.utils.HttpStatus;
 
 
-//import java.util.Map;
 
 public class MultiplayerResponsePacket extends GeneralResponsePacket {
 

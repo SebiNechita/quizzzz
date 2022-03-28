@@ -2,6 +2,7 @@ package client.scenes;
 
 import client.Main;
 //import client.game.MultiplayerGame;
+import client.game.MultiplayerGame;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import commons.utils.Emote;
@@ -80,7 +81,7 @@ public class LobbyCtrl extends SceneCtrl {
     public void onShowScene() {
         Main.gameMode = GameMode.MULTIPLAYER;
 
-        main.createNewMultiplayerGame();
+//        main.createNewMultiplayerGame();
 
         buttonStart.setVisible(false);
         buttonReady.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
@@ -95,7 +96,8 @@ public class LobbyCtrl extends SceneCtrl {
         chattextflow.getChildren().add(chattext);
 
         // the order of below methods matters!
-        main.getMultiplayerGame().join(Main.USERNAME);
+        main.createNewMultiplayerGame(main.joinGame(Main.USERNAME));
+//        main.getMultiplayerGame().join(Main.USERNAME);
         main.getMultiplayerGame().startPingThread(Main.USERNAME);
         main.getMultiplayerGame().getLobbyUpdate();
 
