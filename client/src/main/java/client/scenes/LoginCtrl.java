@@ -3,10 +3,13 @@ package client.scenes;
 import client.Main;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
+import javafx.animation.Animation;
+import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -48,7 +51,8 @@ public class LoginCtrl extends SceneCtrl {
 
     /**
      * Logs in the user with the account data
-     * @param username - the username of the user
+     *
+     * @param username        - the username of the user
      * @param passwordEntered - the password of the user
      */
     public void login(String username, String passwordEntered) {
@@ -65,9 +69,16 @@ public class LoginCtrl extends SceneCtrl {
             userName.setText("");
             password.setText("");
         } else {
+            Animation userNameShake = shake(userName);
+            Animation passwordShake = shake(password);
+            userNameShake.play();
+            passwordShake.play();
+
             userName.setStyle("-fx-background-color: #fc6363; -fx-background-radius: 50");
             password.setStyle("-fx-background-color: #fc6363; -fx-background-radius: 50");
             error.setText("Could not log in");
+
+
         }
     }
 
@@ -87,7 +98,7 @@ public class LoginCtrl extends SceneCtrl {
         main.showScene(RegisterCtrl.class);
     }
 
-    public void onLoginButtonPressed(){
+    public void onLoginButtonPressed() {
         login(userName.getText(), password.getText());
     }
 
@@ -96,5 +107,22 @@ public class LoginCtrl extends SceneCtrl {
      */
     public void showConnection() {
         main.showScene(ConnectionCtrl.class);
+    }
+
+    /**
+     * Create and returns a shaking Animation for a given node
+     *
+     * @param node to node to apply shaking animation
+     * @return shaking Animation
+     */
+    protected Animation shake(TextField node) {
+
+        TranslateTransition transition = new TranslateTransition(Duration.millis(50), node);
+        transition.setFromX(0f);
+        transition.setByX(10f);
+        transition.setCycleCount(2);
+        transition.setAutoReverse(true);
+
+        return transition;
     }
 }

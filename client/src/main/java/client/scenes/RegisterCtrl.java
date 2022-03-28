@@ -5,6 +5,8 @@ import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.utils.HttpStatus;
+import javafx.animation.Animation;
+import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -15,6 +17,7 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 import packets.ResponsePacket;
 
 import java.net.URL;
@@ -109,11 +112,16 @@ public class RegisterCtrl extends SceneCtrl {
      */
     public void registerButtonClicked() {
         if (password.getText().isBlank() || userName.getText().isBlank()) {
+            shake(userName).playFromStart();
+            shake(password).playFromStart();
+            shake(confirmPassword).playFromStart();
             errorText.setText("Password or username is empty.");
             userName.setBackground(new Background(new BackgroundFill(Color.RED, new CornerRadii(50), Insets.EMPTY)));
             password.setBackground(new Background(new BackgroundFill(Color.RED, new CornerRadii(50), Insets.EMPTY)));
         } else if (!password.getText().equals(confirmPassword.getText())) {
             //the username or password is empty or only consists of whitespaces.
+            shake(password).playFromStart();
+            shake(confirmPassword).playFromStart();
             errorText.setText("Passwords are not matching.");
             password.setBackground(new Background(new BackgroundFill(Color.RED, new CornerRadii(50), Insets.EMPTY)));
             confirmPassword.setBackground(new Background(new BackgroundFill(Color.RED, new CornerRadii(50), Insets.EMPTY)));
@@ -123,6 +131,7 @@ public class RegisterCtrl extends SceneCtrl {
             ResponsePacket response = server.register(userName.getText().trim(), password.getText().trim());
             if (response.getCode() == HttpStatus.Conflict.getCode()) {
                 userName.setBackground(new Background(new BackgroundFill(Color.RED, new CornerRadii(50), Insets.EMPTY)));
+                shake(userName).playFromStart();
                 errorText.setText("User exists");
             } else if (response.getCode() == HttpStatus.Created.getCode()) {
                 LoginCtrl login = main.getCtrl(LoginCtrl.class);
@@ -143,5 +152,21 @@ public class RegisterCtrl extends SceneCtrl {
         password.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(50), Insets.EMPTY)));
         confirmPassword.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(50), Insets.EMPTY)));
         errorText.setText("");
+    }
+
+    /**
+     * returns a shaking Animation
+     * @param node
+     * @return shaking Animation
+     */
+    protected Animation shake(TextField node) {
+
+        TranslateTransition transition = new TranslateTransition(Duration.millis(50), node);
+        transition.setFromX(0f);
+        transition.setByX(10f);
+        transition.setCycleCount(2);
+        transition.setAutoReverse(true);
+
+        return transition;
     }
 }
