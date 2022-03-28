@@ -68,29 +68,42 @@ public abstract class GameCtrl extends SceneCtrl {
 
     @FXML
     protected VBox jokers;
+
+    @FXML
     private AnchorPane jokerContainer;
-    private List<AnchorPane> disabledJokers;
-    private List<AnchorPane> touchNotusedjokers;
+
+    private static List<AnchorPane> disabledJokers;
+    private List<AnchorPane> touchNotUsedJokers;
 
     @FXML
     protected Text timeLeftText;
     @FXML
     protected AnchorPane timeLeftBar;
+
+    @FXML
     private AnchorPane timeLeftSlider;
 
     @FXML
     protected VBox notificationContainer;
+
     private NotificationRenderer notificationRenderer;
 
     @FXML
     protected HBox emoteContainer;
 
     // Static because it has to be common between both the GameOpenQuestionCtrl and GameMultiChoiceCtrl
-    protected static int numberofQuestions = -1;
+    protected static int numberOfQuestions = -1;
     protected double timeLeft = 0;
     protected double lastAnswerChange = 0;
     protected double timeMultiplier = 1d;
-    protected static int doublepoints;
+    protected static boolean doublePoints;
+    protected static boolean doublePointsUsed;
+    protected static boolean halfTime;
+    protected static boolean halfTimeUsed;
+    protected static boolean removeAnswer;
+    protected static boolean RemoveAnswerUsed;
+
+    public static boolean[] jokersUsed = new boolean[3];
 
     // static because the state has to be the same between both the question types
     protected static boolean mute = false;
@@ -119,7 +132,12 @@ public abstract class GameCtrl extends SceneCtrl {
      * Gets called after scene has finished loading
      */
     protected void initialize() {
-        doublepoints = 0;
+        doublePoints = false;
+        doublePointsUsed = false;
+
+        for(int i = 0; i < 3; ++i) {
+            jokersUsed[i] = false;
+        }
     }
 
     /**
@@ -141,10 +159,10 @@ public abstract class GameCtrl extends SceneCtrl {
         nextQuestion.setVisible(false);
 
         jokerContainer = (AnchorPane) jokers.getParent();
-        jokerContainer.setVisible(false);
+        jokerContainer.setVisible(true);
         jokers.getChildren().forEach(joker -> {
             // Hide the tooltips by default
-            ((AnchorPane) joker).getChildren().get(1).setVisible(false);
+            ((AnchorPane) joker).getChildren().get(1).setVisible(true);
         });
 
         emoteContainer.setVisible(false);
@@ -174,7 +192,22 @@ public abstract class GameCtrl extends SceneCtrl {
                     if (node == jokers.getChildren().get(0)) {
                         disableJoker(JokerType.DOUBLE_POINTS);
                         disabledJokers.add(joker);
-                        doublepoints = 1;
+                        jokersUsed[0] = true;
+                        doublePoints = true;
+                        hoverAnim(joker, new Color(0.266, 0.266, 0.266, 1), new Color(1, 1, 1, 1)).play();
+                        //showJokerTooltip(tooltip);
+                    } else if (node == jokers.getChildren().get(1)) {
+                        disableJoker(JokerType.HALF_TIME);
+                        disabledJokers.add(joker);
+                        jokersUsed[1] = true;
+                        halfTime = true;
+                        hoverAnim(joker, new Color(0.266, 0.266, 0.266, 1), new Color(1, 1, 1, 1)).play();
+                        //showJokerTooltip(tooltip);
+                    } else if (node == jokers.getChildren().get(2)) {
+                        disableJoker(JokerType.REMOVE_ANSWER);
+                        disabledJokers.add(joker);
+                        jokersUsed[1] = true;
+                        halfTime = true;
                         hoverAnim(joker, new Color(0.266, 0.266, 0.266, 1), new Color(1, 1, 1, 1)).play();
                         //showJokerTooltip(tooltip);
                     }
@@ -294,14 +327,14 @@ public abstract class GameCtrl extends SceneCtrl {
             history = main.getMultiplayerGame().getQuestionHistory().iterator();
         else history = main.getSingleplayerGame().getQuestionHistory().iterator();
 
-        if (numberofQuestions == -1) {
+        if (numberOfQuestions == -1) {
             for (int i = 0; i < 20; i++) {
                 Circle circle = generateCircle(Paint.valueOf("#2b2b2b"), dropShadow);
                 children.add(circle);
             }
         } else {
             Circle circle;
-            for (int i = numberofQuestions; i < 20 + numberofQuestions; i++) {
+            for (int i = numberOfQuestions; i < 20 + numberOfQuestions; i++) {
                 if (history.hasNext()) {
                     if (history.next()) {
                         circle = generateCircle(Paint.valueOf("#1ce319"), dropShadow);
@@ -314,7 +347,7 @@ public abstract class GameCtrl extends SceneCtrl {
                 children.add(circle);
             }
         }
-        numberofQuestions++;
+        numberOfQuestions++;
     }
 
     /**
@@ -413,9 +446,10 @@ public abstract class GameCtrl extends SceneCtrl {
         answerPoints = Math.min(Math.max(answerPoints, 0), 100);
         int timeBonus = (int) Math.round(lastAnswerChange * 100 * (answerPoints / 100d));
         int total = (int) (answerPoints + timeBonus * (answerPoints / 100d));
-        if (doublepoints == 1 && !disabledJokers.contains(JokerType.DOUBLE_POINTS)) {
+        if (doublePoints == true && doublePointsUsed == false && !disabledJokers.contains(JokerType.DOUBLE_POINTS)) {
             total *= 2;
-            doublepoints = 2;
+            doublePointsUsed = true;
+            disableJoker(JokerType.DOUBLE_POINTS);
         }
         if (Main.gameMode == GameMode.MULTIPLAYER) {
             main.getMultiplayerGame().addToScore(total);
