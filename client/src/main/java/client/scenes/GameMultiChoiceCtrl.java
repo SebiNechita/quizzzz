@@ -1,8 +1,8 @@
 package client.scenes;
 
 import client.Main;
-import client.game.MultiplayerGame;
-import client.game.SingleplayerGame;
+//import client.game.MultiplayerGame;
+//import client.game.SingleplayerGame;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import commons.questions.Activity;

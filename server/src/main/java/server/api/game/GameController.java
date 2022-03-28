@@ -71,6 +71,7 @@ public class GameController {
          Game x = new MultiplayerResponsePacket()
          request.getLobby().getPlayerList();
     }*/
+
     /**
      * client sends emote to server, server then send it to other players
      *
@@ -117,5 +118,10 @@ public class GameController {
         public void run(T packet) {
             result.setResult(packet);
         }
+    }
+
+    @PostMapping("/start")
+    public LobbyResponsePacket onStart(@RequestBody StartGameRequestPacket requestPacket) {
+        return gameService.onStartGame(requestPacket);
     }
 }

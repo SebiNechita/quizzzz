@@ -21,7 +21,7 @@ import client.game.MultiplayerGame;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 //import commons.utils.GameMode;
-import commons.utils.HttpStatus;
+//import commons.utils.HttpStatus;
 import commons.utils.LoggerUtil;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -32,7 +32,7 @@ import javafx.util.Callback;
 import javafx.util.Pair;
 import packets.JoinRequestPacket;
 import packets.JoinResponsePacket;
-import packets.MultiplayerResponsePacket;
+//import packets.MultiplayerResponsePacket;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;

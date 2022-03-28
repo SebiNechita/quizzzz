@@ -34,8 +34,6 @@ public class MultiplayerGame implements client.game.Game {
     private Game game;
 
 
-
-
     public MultiplayerGame(MainCtrl main, ServerUtils server) {
         this.main = main;
         this.server = server;
@@ -104,6 +102,7 @@ public class MultiplayerGame implements client.game.Game {
 
     /**
      * Retrieves a list of questions and stores it.
+     *
      * @return returns the list of questions
      */
     public List<Question> getQuestions() {
@@ -138,12 +137,13 @@ public class MultiplayerGame implements client.game.Game {
 
     /**
      * Gets the current question to be displayed from the list of questions
+     *
      * @param type Class of the question type. For example, OpenQuestion.class
-     * @param <T> Should be a subclass of Question
+     * @param <T>  Should be a subclass of Question
      * @return returns a subclass of Question (OpenQuestion/MultipleChoiceQuestion)
      */
     public <T extends Question> T getCurrentQuestion(Class<T> type) {
-        if (questions.get(currentQuestionCount) != null)  {
+        if (questions.get(currentQuestionCount) != null) {
             return (T) questions.get(currentQuestionCount);
         }
         return null;
@@ -151,6 +151,7 @@ public class MultiplayerGame implements client.game.Game {
 
     /**
      * Add a number to the current score
+     *
      * @param scoreToBeAdded the number by which score must be incremented
      */
     public void addToScore(int scoreToBeAdded) {
@@ -159,6 +160,7 @@ public class MultiplayerGame implements client.game.Game {
 
     /**
      * Getter for MainCtrl
+     *
      * @return mainCtrl
      */
     public MainCtrl getMainCtrl() {
@@ -167,6 +169,7 @@ public class MultiplayerGame implements client.game.Game {
 
     /**
      * Getter for ServerUtils
+     *
      * @return the serverUtils
      */
     public ServerUtils getServer() {
@@ -175,6 +178,7 @@ public class MultiplayerGame implements client.game.Game {
 
     /**
      * Setter for the list of questions
+     *
      * @param questions the list of questions
      */
     public void setQuestions(List<Question> questions) {
@@ -184,6 +188,7 @@ public class MultiplayerGame implements client.game.Game {
     /**
      * Getter for the current question count.
      * For example, if the game is displaying the 10th question, this will be 10.
+     *
      * @return the current question count
      */
     public Integer getCurrentQuestionCount() {
@@ -193,6 +198,7 @@ public class MultiplayerGame implements client.game.Game {
     /**
      * Setter for the current question count.
      * For example, if the game is displaying the 10th question, this will be 10.
+     *
      * @param currentQuestionCount the current question count
      */
     public void setCurrentQuestionCount(Integer currentQuestionCount) {
@@ -201,6 +207,7 @@ public class MultiplayerGame implements client.game.Game {
 
     /**
      * Getter for the total score
+     *
      * @return the total score
      */
     public Integer getScoreTotal() {
@@ -209,6 +216,7 @@ public class MultiplayerGame implements client.game.Game {
 
     /**
      * Setter for the total score
+     *
      * @param scoreTotal the total score
      */
     public void setScoreTotal(Integer scoreTotal) {
@@ -220,6 +228,7 @@ public class MultiplayerGame implements client.game.Game {
      * This contains a linked list of boolean. True if the question has been answered correctly. False otherwise.
      * For open questions, it is true if the difference between the answer and the input is < 50.
      * This is used in producing the progress bar
+     *
      * @return the question history
      */
     public LinkedList<Boolean> getQuestionHistory() {
@@ -231,6 +240,7 @@ public class MultiplayerGame implements client.game.Game {
      * This contains a linked list of boolean. True if the question has been answered correctly. False otherwise.
      * For open questions, it is true if the difference between the answer and the input is < 50.
      * This is used in producing the progress bar
+     *
      * @param questionHistory the question history
      */
     public void setQuestionHistory(LinkedList<Boolean> questionHistory) {
@@ -341,6 +351,12 @@ public class MultiplayerGame implements client.game.Game {
 
     }
 
+    public void sendStartToAllClients(String username) {
+        LobbyResponsePacket responsePacket = server.postRequest("api/game/start",
+                new StartGameRequestPacket(true, username),
+                LobbyResponsePacket.class);
+    }
+
     /**
      * send persistent long polling request to the server. And it should get updates from the server about other players.
      */
@@ -361,7 +377,7 @@ public class MultiplayerGame implements client.game.Game {
         this.longPollingRequest.stop();
     }
 
-    private class MultiplayerOnResponse implements  ServerUtils.ServerResponse<MultiplayerResponsePacket>{
+    private class MultiplayerOnResponse implements ServerUtils.ServerResponse<MultiplayerResponsePacket> {
 
         /**
          * Will be called when the server response with data to a long polling request
@@ -373,6 +389,7 @@ public class MultiplayerGame implements client.game.Game {
 
         }
     }
+
     /**
      * callback method when the client gets update from the server via the long polling request.
      */
@@ -411,8 +428,11 @@ public class MultiplayerGame implements client.game.Game {
                 Platform.runLater(() ->
                         main.getCtrl(LobbyCtrl.class)
                                 .updatePlayerList(responsePacket.getPlayerList()));
+            } else if (responsePacket.getType().equals("Start")) {
+                Platform.runLater(() -> {
+                    main.getCtrl(LobbyCtrl.class).startGame();
+                });
             }
-
         }
 
     }

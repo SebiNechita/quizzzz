@@ -4,6 +4,7 @@ import commons.Game;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import packets.LobbyResponsePacket;
+import packets.StartGameRequestPacket;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -20,6 +21,7 @@ public class GameService {
 
     /**
      * constructor for GameService
+     *
      * @param createGameService
      */
     public GameService(CreateGameService createGameService) {
@@ -262,5 +264,13 @@ public class GameService {
             game = createGameService.createGame(20).getGame();
         }
         return game;
+    }
+
+    public LobbyResponsePacket onStartGame(StartGameRequestPacket requestPacket) {
+        Map<String, String> trimmedMap = trimPlayerList();
+        for (GameController.EventCaller<LobbyResponsePacket> thread : playerEventList) {
+            thread.run(new LobbyResponsePacket("Start", "true", requestPacket.getUsername(), trimmedMap));
+        }
+        return new LobbyResponsePacket("Start", "true", requestPacket.getUsername(), trimmedMap);
     }
 }

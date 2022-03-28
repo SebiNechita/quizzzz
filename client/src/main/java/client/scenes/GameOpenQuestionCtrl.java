@@ -1,8 +1,8 @@
 package client.scenes;
 
 import client.Main;
-import client.game.MultiplayerGame;
-import client.game.SingleplayerGame;
+//import client.game.MultiplayerGame;
+//import client.game.SingleplayerGame;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import commons.questions.OpenQuestion;
@@ -139,6 +139,7 @@ public class GameOpenQuestionCtrl extends GameCtrl {
 
     /**
      * Sets the ImageView for the open question
+     *
      * @param imagePath path within the activity-bank
      */
     private void setActivityImage(String imagePath) {
@@ -183,16 +184,15 @@ public class GameOpenQuestionCtrl extends GameCtrl {
     /**
      * When the time's up, shows the correct answer and makes Next visible
      */
-    protected void onTimerEnd(){
-        if(Main.gameMode == GameMode.MULTIPLAYER){
+    protected void onTimerEnd() {
+        if (Main.gameMode == GameMode.MULTIPLAYER) {
             timer.setOnFinished(event -> {
-                showCorrectAnswer(answerOptionNumber);
+                showCorrectAnswer((int) oq.getAnswerInWH());
                 nextQuestion.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
             });
-        }
-        else {
+        } else {
             timer.setOnFinished(event -> {
-                showCorrectAnswer(answerOptionNumber);
+                showCorrectAnswer((int) oq.getAnswerInWH());
                 nextQuestion.setVisible(Main.gameMode == GameMode.SINGLEPLAYER);
             });
         }
@@ -229,7 +229,7 @@ public class GameOpenQuestionCtrl extends GameCtrl {
      * Resets the color of the text input field for the next question
      */
     private void resetTextInputColor() {
-        userInput.setBackground(new Background(new BackgroundFill(Color.color(1,1,1,1), new CornerRadii(10), Insets.EMPTY)));
+        userInput.setBackground(new Background(new BackgroundFill(Color.color(1, 1, 1, 1), new CornerRadii(10), Insets.EMPTY)));
     }
 
     /**

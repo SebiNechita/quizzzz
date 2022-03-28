@@ -2,7 +2,7 @@ package client.scenes;
 
 import client.Main;
 //import client.game.MultiplayerGame;
-import client.game.MultiplayerGame;
+//import client.game.MultiplayerGame;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import commons.utils.Emote;
@@ -56,7 +56,7 @@ public class LobbyCtrl extends SceneCtrl {
      */
     public LobbyCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
         super(mainCtrl, serverUtils);
-       // this.multiGame = mainCtrl.getMultiplayerGame();
+        // this.multiGame = mainCtrl.getMultiplayerGame();
 
     }
 
@@ -168,6 +168,10 @@ public class LobbyCtrl extends SceneCtrl {
         buttonStart.setVisible(false);
     }
 
+    public void startGame() {
+        main.getMultiplayerGame().jumpToNextQuestion();
+    }
+
     /**
      * method to be invoked whe start is clicked
      */
@@ -177,7 +181,7 @@ public class LobbyCtrl extends SceneCtrl {
 //        Main.gameMode = GameMode.MULTIPLAYER;
 //        //main.createNewMultiplayerGame();
 
-        main.getMultiplayerGame().jumpToNextQuestion();
+        main.getMultiplayerGame().sendStartToAllClients(Main.USERNAME);
     }
 
     /**

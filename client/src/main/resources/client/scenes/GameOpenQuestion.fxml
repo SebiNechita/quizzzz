@@ -260,7 +260,7 @@
                   <Font name="Comic Sans MS" size="20.0" />
                </font>
             </Text>
-            <TextField fx:id="userInput" alignment="CENTER" layoutX="131.0" layoutY="291.0" prefHeight="45.0" prefWidth="329.0" style="-fx-background-radius: 50;">
+            <TextField fx:id="userInput" alignment="CENTER" layoutX="131.0" layoutY="291.0" prefHeight="45.0" prefWidth="329.0" style="-fx-background-radius: 50; -fx-background-color: #FFFFFF;">
                <font>
                   <Font name="Comic Sans MS" size="22.0" />
                </font>
