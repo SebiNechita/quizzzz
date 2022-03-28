@@ -16,6 +16,11 @@ public class MultipleChoiceQuestion extends Question {
     private Activity answer;
 
     /**
+     * Empty Constructor for Jackson
+     */
+    public MultipleChoiceQuestion() {}
+
+    /**
      * Constructor for MultipleChoiceQuestion
      *
      * @param question     String representation of the question
@@ -38,11 +43,13 @@ public class MultipleChoiceQuestion extends Question {
     public static MultipleChoiceQuestion generateMultipleChoiceQuestion(List<Activity> unusedActivities) {
         Random randomGen = new Random();
         List<Activity> activityList = new ArrayList<>();
+        if (unusedActivities.size() < 3) {
+            return null;
+        }
         for (int i = 0; i < 3; i++) {
+            int randInt =  randomGen.nextInt(unusedActivities.size());
             activityList.add(
-                    unusedActivities.remove(
-                            randomGen.nextInt(unusedActivities.size())
-                    )
+                    unusedActivities.remove(randInt)
             );
         }
         // Here, the answer is removed from the activity list because this makes it easier to find the non-answer options.
@@ -75,7 +82,7 @@ public class MultipleChoiceQuestion extends Question {
     /**
      * Getter for Answer
      *
-     * @return the activity that is answer
+     * @return the {@link Activity} that is the answer
      */
     public Activity getAnswer() {
         return answer;
@@ -84,16 +91,16 @@ public class MultipleChoiceQuestion extends Question {
     /**
      * Setter for Answer
      *
-     * @param answer the activity that is the answer
+     * @param answer the {@link Activity} that is the answer
      */
     public void setAnswer(Activity answer) {
         this.answer = answer;
     }
 
     /**
-     * String representation of MultipleChoiceAnswer
+     * String representation of MultipleChoiceQuestion
      *
-     * @return String representation of MultipleChoiceAnswer
+     * @return String representation of MultipleChoiceQuestion
      */
     @Override
     public String toString() {

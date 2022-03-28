@@ -1,10 +1,16 @@
 package client.scenes;
 
 import client.Main;
+//import client.game.MultiplayerGame;
+//import client.game.MultiplayerGame;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
+import commons.utils.Emote;
+import commons.utils.GameMode;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -15,7 +21,11 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
 import java.net.URL;
+import java.util.Map;
 import java.util.ResourceBundle;
+
+import static client.utils.EmoteUtility.emoteHoverAnim;
+import static client.utils.EmoteUtility.emoteUsed;
 
 public class LobbyCtrl extends SceneCtrl {
     @FXML
@@ -30,8 +40,13 @@ public class LobbyCtrl extends SceneCtrl {
     private Text chattext;
     @FXML
     protected HBox emoteContainer;
+    @FXML
+    private Button buttonStart;
+    @FXML
+    private ScrollPane scrollPane;
 
     private Boolean ready;
+    //private MultiplayerGame multiGame;
 
     /**
      * Constructor for this Ctrl
@@ -41,6 +56,8 @@ public class LobbyCtrl extends SceneCtrl {
      */
     public LobbyCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
         super(mainCtrl, serverUtils);
+        // this.multiGame = mainCtrl.getMultiplayerGame();
+
     }
 
     /**
@@ -54,233 +71,199 @@ public class LobbyCtrl extends SceneCtrl {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
     }
+
 
     /**
      * Gets called when the scene is actually shown to the user
      */
     @OnShowScene
     public void onShowScene() {
+        Main.gameMode = GameMode.MULTIPLAYER;
+
+//        main.createNewMultiplayerGame();
+
+        buttonStart.setVisible(false);
         buttonReady.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
         ready = false;
-        playertext = new Text(Main.USERNAME + "\n");
-        playertext.setFill(Color.RED);
-        playertext.setFont(Font.font("Comic Sans MS", 27));
-        textflow.getChildren().add(playertext);
+
+        // Ensures that the chat text scrolls automatically
+        scrollPane.vvalueProperty().bind(chattextflow.heightProperty());
+
         chattext = new Text("Quizzzz: Welcome to the game, " + Main.USERNAME + "! " + "\n");
+        chattext.setFont(Font.font("Comic Sans MS", 30));
+        chattext.setFill(Color.BLUE);
+        chattextflow.getChildren().add(chattext);
+
+        // the order of below methods matters!
+        main.createNewMultiplayerGame(main.joinGame(Main.USERNAME));
+//        main.getMultiplayerGame().join(Main.USERNAME);
+        main.getMultiplayerGame().startPingThread(Main.USERNAME);
+        main.getMultiplayerGame().getLobbyUpdate();
+
+        enableListeners();
+    }
+
+    public void enableListeners() {
+        for (Node node : emoteContainer.getChildren()) {
+            ImageView emote = (ImageView) node;
+
+            emote.setOnMouseEntered(event -> {
+                emoteHoverAnim(emote, false).play();
+            });
+
+            emote.setOnMouseExited(event -> {
+                emoteHoverAnim(emote, true).play();
+            });
+
+            emote.setOnMouseClicked(event -> {
+                emoteUsed(Emote.valueOf(emote.getId()));
+                showEmoji(Emote.valueOf(emote.getId()));
+            });
+        }
+    }
+
+    /**
+     * show message when other player joins the game
+     *
+     * @param player who joined the lobby
+     */
+    public void showJoinMsg(String player) {
+        chattext = new Text(player + " entered the lobby" + "\n");
         chattext.setFont(Font.font("Comic Sans MS", 30));
         chattextflow.getChildren().add(chattext);
     }
 
     /**
-     * add the Hearts Eye emoji into the chat
+     * update the player list
+     *
+     * @param playerList updated player list sent by server
      */
-    public void showEmoji1() {
-        Text text = new Text(Main.USERNAME + ": ");
-        text.setFont(Font.font("Comic Sans MS", 30));
-        Text text2 = new Text("\n");
-        ImageView iv = new ImageView("img/emojis/heart_eyes.png");
-        iv.setFitHeight(40);
-        iv.setFitWidth(40);
-        chattextflow.getChildren().addAll(text, iv, text2);
-        //chattextflow.getChildren().addAll(text, emoteContainer.getChildren().get(0),text2);
+    public void updatePlayerList(Map<String, String> playerList) {
+        // clear all existing players
+        textflow.getChildren().clear();
+        for (String player : playerList.keySet()) {
+            Text text = new Text(player + "\n");
+            if (playerList.get(player).equals("false")) {
+                text.setFill(Color.RED);
+            } else {
+                text.setFill(Color.GREEN);
+            }
+            text.setFont(Font.font("Comic Sans MS", 27));
+            textflow.getChildren().add(text);
+        }
     }
 
     /**
-     * add the Joy emoji into the chat
+     * show the Start button
      */
-    public void showEmoji2() {
-        Text text = new Text(Main.USERNAME + ": ");
-        text.setFont(Font.font("Comic Sans MS", 30));
-        Text text2 = new Text("\n");
-        ImageView iv = new ImageView("img/emojis/joy.png");
-        iv.setFitHeight(40);
-        iv.setFitWidth(40);
-        chattextflow.getChildren().addAll(text, iv, text2);
+    public void showStartButton() {
+        buttonStart.setVisible(true);
     }
 
     /**
-     * add the Nerd emoji into the chat
+     * hide the start button
      */
-    public void showEmoji3() {
-        Text text = new Text(Main.USERNAME + ": ");
-        text.setFont(Font.font("Comic Sans MS", 30));
-        Text text2 = new Text("\n");
-        ImageView iv = new ImageView("img/emojis/nerd.png");
-        iv.setFitHeight(40);
-        iv.setFitWidth(40);
-        chattextflow.getChildren().addAll(text, iv, text2);
+    public void hideStartButton() {
+        buttonStart.setVisible(false);
+    }
+
+    public void startGame() {
+        main.getMultiplayerGame().jumpToNextQuestion();
     }
 
     /**
-     * add the Smirking emoji into the chat
+     * method to be invoked whe start is clicked
      */
-    public void showEmoji4() {
-        Text text = new Text(Main.USERNAME + ": ");
-        text.setFont(Font.font("Comic Sans MS", 30));
-        Text text2 = new Text("\n");
-        ImageView iv = new ImageView("img/emojis/smirking.png");
-        iv.setFitHeight(40);
-        iv.setFitWidth(40);
-        chattextflow.getChildren().addAll(text, iv, text2);
+    @FXML
+    public void onStartClicked() {
+        // to be filled
+//        Main.gameMode = GameMode.MULTIPLAYER;
+//        //main.createNewMultiplayerGame();
+
+        main.getMultiplayerGame().sendStartToAllClients(Main.USERNAME);
     }
 
     /**
-     * add the Angry emoji into the chat
+     * Adds the emote to the chatroom
+     *
+     * @param emote emote to be added
      */
-    public void showEmoji5() {
+    public void showEmoji(Emote emote) {
         Text text = new Text(Main.USERNAME + ": ");
         text.setFont(Font.font("Comic Sans MS", 30));
         Text text2 = new Text("\n");
-        ImageView iv = new ImageView("img/emojis/annoyed.png");
+        ImageView iv = new ImageView("@../../img/emojis/" + emote.toString().toLowerCase() + ".png");
         iv.setFitHeight(40);
         iv.setFitWidth(40);
         chattextflow.getChildren().addAll(text, iv, text2);
+        main.getMultiplayerGame().sendEmote(Main.USERNAME, emote.toString().toLowerCase());
     }
 
     /**
-     * add the Sunglasses emoji into the chat
+     * update emoji sent by other player
+     *
+     * @param from     sender of the emote
+     * @param emoteStr the emote name
      */
-    public void showEmoji6() {
-        Text text = new Text(Main.USERNAME + ": ");
+    public void updateEmoji(String from, String emoteStr) {
+        Text text = new Text(from + ": ");
         text.setFont(Font.font("Comic Sans MS", 30));
         Text text2 = new Text("\n");
-        ImageView iv = new ImageView("img/emojis/sunglasses.png");
-        iv.setFitHeight(40);
-        iv.setFitWidth(40);
-        chattextflow.getChildren().addAll(text, iv, text2);
-    }
-
-    /**
-     * add the Devil emoji into the chat
-     */
-    public void showEmoji7() {
-        Text text = new Text(Main.USERNAME + ": ");
-        text.setFont(Font.font("Comic Sans MS", 30));
-        Text text2 = new Text("\n");
-        ImageView iv = new ImageView("img/emojis/devil.png");
+        ImageView iv = new ImageView("@../../img/emojis/" + emoteStr + ".png");
         iv.setFitHeight(40);
         iv.setFitWidth(40);
         chattextflow.getChildren().addAll(text, iv, text2);
     }
 
     /**
-     * add the Sad emoji into the chat
+     * when back button is clicked. Should stop pinging thread and the long polling thread.
      */
-    public void showEmoji8() {
-        Text text = new Text(Main.USERNAME + ": ");
-        text.setFont(Font.font("Comic Sans MS", 30));
-        Text text2 = new Text("\n");
-        ImageView iv = new ImageView("img/emojis/sad.png");
-        iv.setFitHeight(40);
-        iv.setFitWidth(40);
-        chattextflow.getChildren().addAll(text, iv, text2);
-    }
-
-    /**
-     * add the Big Heart emoji into the chat
-     */
-    public void showEmoji9() {
-        Text text = new Text(Main.USERNAME + ": ");
-        text.setFont(Font.font("Comic Sans MS", 30));
-        Text text2 = new Text("\n");
-        ImageView iv = new ImageView("img/emojis/love.png");
-        iv.setFitHeight(40);
-        iv.setFitWidth(40);
-        chattextflow.getChildren().addAll(text, iv, text2);
-    }
-
-    /**
-     * add the Trophy emoji into the chat
-     */
-    public void showEmoji10() {
-        Text text = new Text(Main.USERNAME + ": ");
-        text.setFont(Font.font("Comic Sans MS", 30));
-        Text text2 = new Text("\n");
-        ImageView iv = new ImageView("img/emojis/trophy.png");
-        iv.setFitHeight(40);
-        iv.setFitWidth(40);
-        chattextflow.getChildren().addAll(text, iv, text2);
-    }
-
-    /**
-     * add the Thumbs up emoji into the chat
-     */
-    public void showEmoji11() {
-        Text text = new Text(Main.USERNAME + ": ");
-        text.setFont(Font.font("Comic Sans MS", 30));
-        Text text2 = new Text("\n");
-        ImageView iv = new ImageView("img/emojis/thumbup.png");
-        iv.setFitHeight(40);
-        iv.setFitWidth(40);
-        chattextflow.getChildren().addAll(text, iv, text2);
-    }
-
-    /**
-     * add the Exhaler emoji into the chat
-     */
-    public void showEmoji12() {
-        Text text = new Text(Main.USERNAME + ": ");
-        text.setFont(Font.font("Comic Sans MS", 30));
-        Text text2 = new Text("\n");
-        ImageView iv = new ImageView("img/emojis/exhaling.png");
-        iv.setFitHeight(40);
-        iv.setFitWidth(40);
-        chattextflow.getChildren().addAll(text, iv, text2);
-    }
-
-    /**
-     * add the Crying emoji into the chat
-     */
-    public void showEmoji13() {
-        Text text = new Text(Main.USERNAME + ": ");
-        text.setFont(Font.font("Comic Sans MS", 30));
-        Text text2 = new Text("\n");
-        ImageView iv = new ImageView("img/emojis/crying.png");
-        iv.setFitHeight(40);
-        iv.setFitWidth(40);
-        chattextflow.getChildren().addAll(text, iv, text2);
-    }
-
-    /**
-     * add the Thinker emoji into the chat
-     */
-    public void showEmoji14() {
-        Text text = new Text(Main.USERNAME + ": ");
-        text.setFont(Font.font("Comic Sans MS", 30));
-        Text text2 = new Text("\n");
-        ImageView iv = new ImageView("img/emojis/thinking.png");
-        iv.setFitHeight(40);
-        iv.setFitWidth(40);
-        chattextflow.getChildren().addAll(text, iv, text2);
-    }
-
-
-    /**
-     * Show the home screen.
-     */
+    @FXML
     public void showHome() {
-        chattext = new Text("Quizzzz: " + Main.USERNAME + " has left the lobby!" + "\n");
+        chattext = new Text(Main.USERNAME + " has left the lobby!" + "\n");
+        chattext.setFill(Color.RED);
         chattext.setFont(Font.font("Comic Sans MS", 30));
         textflow.getChildren().remove(playertext);
         chattextflow.getChildren().add(chattext);
+        main.getMultiplayerGame().stopPingThread();
+        main.getMultiplayerGame().stopLobbyUpdate();
         main.showScene(MainMenuCtrl.class);
     }
 
     /**
      * When pressed it makes the player from the session ready or not ready.
      */
+    @FXML
     public void makeButtonReady() {
-        if (ready == false) {
+        if (!ready) {
             buttonReady.setBackground(new Background(new BackgroundFill(Color.GREEN, null, null)));
-            playertext.setFill(Color.GREEN);
             ready = true;
+
         } else {
             buttonReady.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
-            playertext.setFill(Color.RED);
             ready = false;
         }
+
+        // send ready message to server
+        main.getMultiplayerGame().sendReadyMsg(Main.USERNAME, ready);
+    }
+
+    /**
+     * update ready state message in the chatbox
+     *
+     * @param player  who changed ready state
+     * @param isReady is ready or not
+     */
+    public void updateReady(String player, String isReady) {
+        if (isReady.equals("true")) {
+            chattext = new Text(player + " is ready" + "\n");
+        } else {
+            chattext = new Text(player + " canceled ready" + "\n");
+        }
+
+        chattext.setFont(Font.font("Comic Sans MS", 30));
+        chattextflow.getChildren().add(chattext);
     }
 
 }

@@ -1,13 +1,12 @@
 package client.scenes;
 
-//import client.Main;
-
 import client.Main;
+//import client.game.MultiplayerGame;
+//import client.game.SingleplayerGame;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
-import commons.Game;
 import commons.questions.Activity;
-import commons.questions.Question;
+import commons.questions.MultipleChoiceQuestion;
 import commons.utils.GameMode;
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
@@ -82,6 +81,7 @@ public class GameMultiChoiceCtrl extends GameCtrl {
     @FXML
     private ImageView image3;
 
+
     /**
      * Constructor for this Ctrl
      *
@@ -137,7 +137,6 @@ public class GameMultiChoiceCtrl extends GameCtrl {
             options[i] = (AnchorPane) optionsContainer.getChildren().get(i);
         }
 
-        generateProgressDots();
         enableListeners();
 
         retrieveMultipleChoiceQuestion();
@@ -183,12 +182,19 @@ public class GameMultiChoiceCtrl extends GameCtrl {
     /**
      * When the time's up, shows the correct answer and makes Next visible
      */
-    protected void onTimerEnd(){
-        timer.setOnFinished(event -> {
-            showCorrectAnswer(answerOptionNumber);
-
-            nextQuestion.setVisible(Main.gameMode == GameMode.SINGLEPLAYER);
-        });
+    protected void onTimerEnd() {
+        if(Main.gameMode == GameMode.MULTIPLAYER){
+            timer.setOnFinished(event -> {
+                showCorrectAnswer(answerOptionNumber);
+                nextQuestion.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
+            });
+        }
+        else {
+            timer.setOnFinished(event -> {
+                showCorrectAnswer(answerOptionNumber);
+                nextQuestion.setVisible(Main.gameMode == GameMode.SINGLEPLAYER);
+            });
+        }
     }
 
     /**
@@ -203,10 +209,13 @@ public class GameMultiChoiceCtrl extends GameCtrl {
 
         fadeOption(correct, (Color) correct.getBackground().getFills().get(0).getFill(), new Color(0.423, 0.941, 0.415, 1)).play();
 
-        for (AnchorPane option : options) {
-            if (option == correct)
-                continue;
+        playSound(selected != null && selected.getValue() == correct);
 
+        for (AnchorPane option : options) {
+
+            if (option == correct) {
+                continue;
+            }
             if (selected != null && selected.getValue() != removedAnswer && option == selected.getValue()) {
                 fadeOption(option, (Color) option.getBackground().getFills().get(0).getFill(), new Color(0.949, 0.423, 0.392, 1)).play();
             } else {
@@ -216,7 +225,13 @@ public class GameMultiChoiceCtrl extends GameCtrl {
 
         boolean correctlyAnswered = selected != null && selected.getKey() == answer;
         showPointsGained(correctlyAnswered ? 100 : 0);
-        Main.questionHistory.add(correctlyAnswered);
+
+        if (Main.gameMode == GameMode.MULTIPLAYER) {
+            main.getMultiplayerGame().getQuestionHistory().add(correctlyAnswered);;
+        } else {
+            main.getSingleplayerGame().getQuestionHistory().add(correctlyAnswered);
+        }
+
         generateProgressDots();
     }
 
@@ -231,9 +246,11 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         nextQuestion.setVisible(false);
         hidePointsGained();
 
-        main.jumpToNextQuestion();
-
-
+        if (Main.gameMode == GameMode.MULTIPLAYER) {
+            main.getMultiplayerGame().jumpToNextQuestion();
+        } else {
+            main.getSingleplayerGame().jumpToNextQuestion();
+        }
 
         //clean up
         locked = new boolean[]{false, false, false};
@@ -250,13 +267,15 @@ public class GameMultiChoiceCtrl extends GameCtrl {
      * Gets the next question.
      */
     protected void retrieveMultipleChoiceQuestion() {
-
-        Question q = Main.questions.poll();
-        Activity answer = q.getAnswer();
-        Activity option2 = q.getActivityList().get(0); // An option that is not the answer
-        Activity option3 = q.getActivityList().get(1); // Another option that is not the answer
-
-        question.setText(q.getQuestion());
+        MultipleChoiceQuestion mcq;
+        if (Main.gameMode == GameMode.SINGLEPLAYER) {
+            mcq = main.getSingleplayerGame().getCurrentQuestion(MultipleChoiceQuestion.class);
+        } else {
+            mcq = main.getMultiplayerGame().getCurrentQuestion(MultipleChoiceQuestion.class);
+        }
+        Activity answer = mcq.getAnswer();
+        Activity option2 = mcq.getActivityList().get(0); // An option that is not the answer
+        Activity option3 = mcq.getActivityList().get(1); // Another option that is not the answer
 
         // Generates random int value from 0 to 3
         Random randomGen = new Random();
@@ -264,21 +283,25 @@ public class GameMultiChoiceCtrl extends GameCtrl {
 
         // This is to ensure that the answers are in different options and are not predictable by the user
         switch (answerOptionNumber) {
-            case 0 -> setOptions(answer, option2, option3);
-            case 1 -> setOptions(option2, answer, option3);
-            case 2 -> setOptions(option2, option3, answer);
+            case 0 -> setUpQuestion(mcq.getQuestion(), answer, option2, option3);
+            case 1 -> setUpQuestion(mcq.getQuestion(), option2, answer, option3);
+            case 2 -> setUpQuestion(mcq.getQuestion(), option2, option3, answer);
         }
+
     }
 
 
     /**
      * This method sets the texts and images in the options
      *
-     * @param option1 Activity of the text and image that'll be set in the first option
-     * @param option2 Activity of the text and image that'll be set in the second option
-     * @param option3 Activity of the text and image that'll be set in the third option
+     * @param questionText the question text
+     * @param option1      Activity of the text and image that'll be set in the first option
+     * @param option2      Activity of the text and image that'll be set in the second option
+     * @param option3      Activity of the text and image that'll be set in the third option
      */
-    public void setOptions(Activity option1, Activity option2, Activity option3) {
+    public void setUpQuestion(String questionText, Activity option1, Activity option2, Activity option3) {
+        question.setText(questionText);
+
         choice1.setText(option1.getTitle());
         choice2.setText(option2.getTitle());
         choice3.setText(option3.getTitle());
@@ -286,15 +309,10 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         image1.setImage(server.getImage(option1.getImage_path()));
         image2.setImage(server.getImage(option2.getImage_path()));
         image3.setImage(server.getImage(option3.getImage_path()));
-    }
 
-
-    /**
-     * Gets the next question.
-     */
-    protected void retrieveOpenQuestion() {
-        Game game = server.getGame();
-        question.setText(game.getOpenQuestions().get(0).getQuestion());
+        setRoundedImage(image1);
+        setRoundedImage(image2);
+        setRoundedImage(image3);
     }
 
     /**
@@ -338,9 +356,9 @@ public class GameMultiChoiceCtrl extends GameCtrl {
             @Override
             protected void interpolate(double frac) {
                 if (inverted) {
-                    anchorPane.setBackground(new Background(new BackgroundFill(lerp(0.698, 0.792, 0.921, 0.243, 0.505, 0.878, frac), new CornerRadii(10), Insets.EMPTY)));
+                    anchorPane.setBackground(new Background(new BackgroundFill(lerp(0.698, 0.792, 0.921, 0.243, 0.505, 0.878, frac), new CornerRadii(40), Insets.EMPTY)));
                 } else {
-                    anchorPane.setBackground(new Background(new BackgroundFill(lerp(0.698, 0.792, 0.921, 1, 1, 1, frac), new CornerRadii(10), Insets.EMPTY)));
+                    anchorPane.setBackground(new Background(new BackgroundFill(lerp(0.698, 0.792, 0.921, 1, 1, 1, frac), new CornerRadii(40), Insets.EMPTY)));
                 }
             }
         };
@@ -363,7 +381,7 @@ public class GameMultiChoiceCtrl extends GameCtrl {
 
             @Override
             protected void interpolate(double frac) {
-                anchorPane.setBackground(new Background(new BackgroundFill(lerp(start.getRed(), start.getGreen(), start.getBlue(), target.getRed(), target.getGreen(), target.getBlue(), frac), new CornerRadii(10), Insets.EMPTY)));
+                anchorPane.setBackground(new Background(new BackgroundFill(lerp(start.getRed(), start.getGreen(), start.getBlue(), target.getRed(), target.getGreen(), target.getBlue(), frac), new CornerRadii(40), Insets.EMPTY)));
             }
         };
     }

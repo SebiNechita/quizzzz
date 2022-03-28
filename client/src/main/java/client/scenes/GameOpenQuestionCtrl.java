@@ -1,9 +1,11 @@
 package client.scenes;
 
 import client.Main;
+//import client.game.MultiplayerGame;
+//import client.game.SingleplayerGame;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
-import commons.questions.Question;
+import commons.questions.OpenQuestion;
 import commons.utils.GameMode;
 import commons.utils.JokerType;
 import javafx.animation.Animation;
@@ -21,8 +23,6 @@ import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-
-import static javafx.scene.paint.Color.*;
 
 public class GameOpenQuestionCtrl extends GameCtrl {
     @FXML
@@ -61,7 +61,9 @@ public class GameOpenQuestionCtrl extends GameCtrl {
     @FXML
     private HBox emoteContainer;
 
-    private Question q;
+    private OpenQuestion oq;
+    protected static int doublepoints;
+
 
     /**
      * Constructor for this Ctrl
@@ -114,9 +116,10 @@ public class GameOpenQuestionCtrl extends GameCtrl {
 
         disableJoker(JokerType.REMOVE_ANSWER);
 
+        userInput.setDisable(false);
+
         displayQuestion();
 
-        generateProgressDots();
         enableListeners();
     }
 
@@ -124,18 +127,25 @@ public class GameOpenQuestionCtrl extends GameCtrl {
      * Gets the current question and displays it.
      */
     private void displayQuestion() {
-        q = Main.openQuestions.poll();
-        setQuestion(q.getQuestion());
-        setActivityImage(q.getAnswer().getImage_path());
-        System.out.println(q.getAnswerInWH());
+        if (Main.gameMode == GameMode.MULTIPLAYER) {
+            oq = main.getMultiplayerGame().getCurrentQuestion(OpenQuestion.class);
+        } else {
+            oq = main.getSingleplayerGame().getCurrentQuestion(OpenQuestion.class);
+        }
+
+        setQuestion(oq.getQuestion());
+        setActivityImage(oq.getAnswer().getImage_path());
+        System.out.println(oq.getAnswerInWH());
     }
 
     /**
      * Sets the ImageView for the open question
+     *
      * @param imagePath path within the activity-bank
      */
     private void setActivityImage(String imagePath) {
         this.image.setImage(server.getImage(imagePath));
+        setRoundedImage(this.image);
     }
 
     /**
@@ -151,8 +161,11 @@ public class GameOpenQuestionCtrl extends GameCtrl {
         nextQuestion.setVisible(false);
         hidePointsGained();
 
-        main.jumpToNextQuestion();
-
+        if (Main.gameMode == GameMode.MULTIPLAYER) {
+            main.getMultiplayerGame().jumpToNextQuestion();
+        } else {
+            main.getSingleplayerGame().jumpToNextQuestion();
+        }
 
     }
 
@@ -172,11 +185,18 @@ public class GameOpenQuestionCtrl extends GameCtrl {
     /**
      * When the time's up, shows the correct answer and makes Next visible
      */
-    protected void onTimerEnd(){
-        timer.setOnFinished(event -> {
-            showCorrectAnswer((int) q.getAnswerInWH());
-            nextQuestion.setVisible(Main.gameMode == GameMode.SINGLEPLAYER);
-        });
+    protected void onTimerEnd() {
+        if (Main.gameMode == GameMode.MULTIPLAYER) {
+            timer.setOnFinished(event -> {
+                showCorrectAnswer((int) oq.getAnswerInWH());
+                nextQuestion.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
+            });
+        } else {
+            timer.setOnFinished(event -> {
+                showCorrectAnswer((int) oq.getAnswerInWH());
+                nextQuestion.setVisible(Main.gameMode == GameMode.SINGLEPLAYER);
+            });
+        }
     }
 
     /**
@@ -198,7 +218,15 @@ public class GameOpenQuestionCtrl extends GameCtrl {
         }
 
         showPointsGained(100 - difference);
-        Main.questionHistory.add(difference <= 50);
+
+        if (Main.gameMode == GameMode.MULTIPLAYER) {
+            main.getMultiplayerGame().getQuestionHistory().add(difference <= 50);
+        } else {
+            main.getSingleplayerGame().getQuestionHistory().add(difference <= 50);
+        }
+        playSound(difference <= 50);
+        
+
         generateProgressDots();
     }
 
@@ -206,16 +234,8 @@ public class GameOpenQuestionCtrl extends GameCtrl {
      * Resets the color of the text input field for the next question
      */
     private void resetTextInputColor() {
-        userInput.setBackground(new Background(new BackgroundFill(Color.color(1,1,1,1), new CornerRadii(10), Insets.EMPTY)));
+        userInput.setBackground(new Background(new BackgroundFill(Color.color(1, 1, 1, 1), new CornerRadii(10), Insets.EMPTY)));
     }
-
-    /**
-     * Detects when the "Next Question" button has been pressed
-     */
-    @FXML
-    private void onNextButton() {
-    }
-
 
     /**
      * Animates the input field of the user
@@ -234,7 +254,7 @@ public class GameOpenQuestionCtrl extends GameCtrl {
 
             @Override
             protected void interpolate(double frac) {
-                textField.setBackground(new Background(new BackgroundFill(lerp(start.getRed(), start.getGreen(), start.getBlue(), target.getRed(), target.getGreen(), target.getBlue(), frac), new CornerRadii(10), Insets.EMPTY)));
+                textField.setBackground(new Background(new BackgroundFill(lerp(start.getRed(), start.getGreen(), start.getBlue(), target.getRed(), target.getGreen(), target.getBlue(), frac), new CornerRadii(50), Insets.EMPTY)));
             }
         };
     }

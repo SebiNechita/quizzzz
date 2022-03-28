@@ -15,19 +15,24 @@
  */
 package client.scenes;
 
-import client.Main;
+import client.game.Game;
+import client.game.SingleplayerGame;
+import client.game.MultiplayerGame;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
-import commons.Game;
-import commons.LeaderboardEntry;
+//import commons.utils.GameMode;
+//import commons.utils.HttpStatus;
 import commons.utils.LoggerUtil;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Pair;
-import packets.LeaderboardResponsePacket;
+import packets.JoinRequestPacket;
+import packets.JoinResponsePacket;
+//import packets.MultiplayerResponsePacket;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -40,7 +45,10 @@ public class MainCtrl {
 
     private final Stage primaryStage;
     private final ServerUtils serverUtils;
+    private SingleplayerGame singleplayerGame;
+    private MultiplayerGame multiplayerGame;
 
+//    private MultiplayerResponsePacket resp;
     private final HashMap<Class<?>, SceneCtrl> ctrlClasses = new HashMap<>();
     private final HashMap<Class<?>, Pair<Scene, String>> scenes = new HashMap<>();
 
@@ -51,57 +59,67 @@ public class MainCtrl {
      */
     public MainCtrl(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        serverUtils = new ServerUtils();
+        this.serverUtils = new ServerUtils();
+      // this.multiplayerGame = new MultiplayerGame(this, serverUtils);
     }
 
     /**
-     * Retrieves a list of questions and stores it.
+     * Creates a new SingleplayerGame
      */
-    public void getQuestions(){
-        Game game = serverUtils.getGame();
-        //Currently, for testing, one game only consists of 3 questions.
-        //TODO: Replace with a full (20-question) game
-        Main.questions.addAll(game.getMultipleChoiceQuestions().subList(0,2));
-        Main.openQuestions.add(game.getOpenQuestions().get(0));
+    public void createNewSingleplayerGame() {
+        this.singleplayerGame = new SingleplayerGame(this, serverUtils);
     }
 
     /**
-     * Steps to the next question and displays it.
-     * Or exits if the game is over.
+
+     * Creates a new MultiplayerGame
+     * @param game
      */
-    public void jumpToNextQuestion(){
-        if (Main.currentQuestionCount <3){
-            showQuestion();
-        }
-        else {
-            serverUtils.postRequest("api/leaderboard", new LeaderboardEntry(Main.scoreTotal,Main.USERNAME), LeaderboardResponsePacket.class);
-            showScene(SingleplayerLeaderboardCtrl.class);
-        }
+    public void createNewMultiplayerGame(commons.Game game) {
+        this.multiplayerGame = new MultiplayerGame(this, serverUtils, game);
+//        commons.Game game = multiplayerGame.getGame();
+//        if (resp == null)
+//            resp = new MultiplayerResponsePacket(HttpStatus.OK, game);
 
-        Main.currentQuestionCount++;
 
+    }
+
+
+    /**
+     * Called when Singleplayer game is quit
+     */
+    public void quitSingleplayer() {
+        this.singleplayerGame = null;
+    }
+
+
+    /**
+     * Getter for the current SingleplayerGame
+     *
+     * @return the current SingleplayerGame
+     */
+    public SingleplayerGame getSingleplayerGame() {
+        return singleplayerGame;
     }
 
     /**
-     * Decides which type of question to display.
+     * Getter for the multiplayer game class
+     *
+     * @return The multiplayer game instance
      */
-    private void showQuestion() {
-        //every nth question is open, the others are multi.
-        //n=3 for now.
-        if (Main.currentQuestionCount % 3 == 0){
-            showScene(GameOpenQuestionCtrl.class);
-        }
-        else{
-            showScene(GameMultiChoiceCtrl.class);
-        }
+    public MultiplayerGame getMultiplayerGame() {
+        return multiplayerGame;
     }
 
+    public <T extends Game> T getGame(Class<T> gameModeClass) {
+        return gameModeClass.equals(MultiplayerGame.class) ? (T) this.multiplayerGame : (T) this.singleplayerGame;
+    }
     /**
      * Loads and initializes a scene
      *
-     * @param path The path of the FXML file which contains the graphics of the scene
+     * @param path  The path of the FXML file which contains the graphics of the scene
      * @param title The title that the window must have when this scene is shown
-     * @param <T> The type of the SceneCtrl
+     * @param <T>   The type of the SceneCtrl
      */
     public <T extends SceneCtrl> void load(String path, String title) {
         try {
@@ -120,10 +138,10 @@ public class MainCtrl {
     /**
      * Will be run when the window is shown to the user, and initializes all the scenes
      *
-     * @param ctrl The Ctrl that should be initialized
+     * @param ctrl   The Ctrl that should be initialized
      * @param parent The parent (the scene) that should be initialized
-     * @param title The title for that scene
-     * @param <T> The type of the SceneCtrl
+     * @param title  The title for that scene
+     * @param <T>    The type of the SceneCtrl
      */
     private <T extends SceneCtrl> void initialize(T ctrl, Parent parent, String title) {
         ctrlClasses.put(ctrl.getClass(), ctrl);
@@ -133,7 +151,7 @@ public class MainCtrl {
     /**
      * Gets the Ctrl object of the specified scene.
      *
-     * @param c The class to get the instance for
+     * @param c   The class to get the instance for
      * @param <T> The type of the SceneCtrl class
      * @return The Ctrl instance
      */
@@ -146,7 +164,7 @@ public class MainCtrl {
      * <p>Any method annotated with the {@link OnShowScene} annotation will be called as soon as
      * the scene is shown to the user.</p>
      *
-     * @param c The SceneCtrl of the class that should be shown
+     * @param c   The SceneCtrl of the class that should be shown
      * @param <T> The type of the SceneCtrl class
      */
     public <T extends SceneCtrl> void showScene(Class<T> c) {
@@ -164,7 +182,19 @@ public class MainCtrl {
                     method.invoke(ctrlClasses.get(c));
                 }
             }
-        } catch (IllegalAccessException | InvocationTargetException ignored) {}
+        } catch (IllegalAccessException | InvocationTargetException ignored) {
+        }
+    }
+
+    public commons.Game joinGame(String username) {
+        JoinResponsePacket responsePacket = serverUtils.postRequest("api/game/join",
+                new JoinRequestPacket(username),
+                JoinResponsePacket.class);
+        commons.Game game = responsePacket.getGame();
+        Platform.runLater(() ->
+                getCtrl(LobbyCtrl.class)
+                        .updatePlayerList(responsePacket.getPlayerList()));
+        return game;
     }
 
     /**

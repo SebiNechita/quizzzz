@@ -17,31 +17,28 @@ package client.utils;
 
 import client.Main;
 import commons.Game;
+import commons.questions.Activity;
 import commons.utils.HttpStatus;
 import commons.utils.LoggerUtil;
-import jakarta.ws.rs.ProcessingException;
-import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.client.*;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.client.Invocation;
 import jakarta.ws.rs.core.Response;
 import javafx.scene.image.Image;
-import org.springframework.messaging.converter.MappingJackson2MessageConverter;
-import org.springframework.messaging.simp.stomp.StompFrameHandler;
-import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
-import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
-import org.springframework.web.socket.client.standard.StandardWebSocketClient;
-import org.springframework.web.socket.messaging.WebSocketStompClient;
 import packets.*;
 
 import java.io.ByteArrayInputStream;
-import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ExecutionException;
-import java.util.function.Consumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 public class ServerUtils {
+    private static final String SERVER = "http://localhost:8080/";
 
     private Client client;
 
@@ -117,8 +114,17 @@ public class ServerUtils {
      *
      * @return Instance of Game with a list of questions
      */
-    public Game getGame(){
+    public Game getGame() {
         return getRequest("api/game/create", GameResponsePacket.class).getGame();
+    }
+
+    /**
+     * Retrieves an instance of Game with noOfQuestions from the server using the endpoint made for the same
+     * @param noOfQuestions noOfQuestions in the game
+     * @return A game object with a given no of questions
+     */
+    public Game getGame(int noOfQuestions) {
+        return getRequest("api/game/create?noOfQuestions" + noOfQuestions, GameResponsePacket.class).getGame();
     }
 
     /**
@@ -142,6 +148,24 @@ public class ServerUtils {
     }
 
     /**
+     * Builds a delete request
+     *
+     * @param path     The path of the endpoint to send the request to
+     * @param response The packet which the server returns
+     * @param <T>      The type of packet which the server should return
+     * @return A packet containing the response of the server
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends ResponsePacket> T deleteRequest(String path, Class<T> response) {
+        Invocation.Builder template = requestTemplate(path);
+        if (template == null) {
+            return (T) new ResponsePacket(HttpStatus.NotFound);
+        }
+
+        return (T) template.delete(response);
+    }
+
+    /**
      * Builds a get request
      *
      * @param path     The path of the endpoint to send the request to
@@ -155,12 +179,12 @@ public class ServerUtils {
         if (template == null) {
             return (T) new ResponsePacket(HttpStatus.NotFound);
         }
-
         return template.get(response);
     }
 
     /**
      * Uses an endpoint to retrieve the image from the Server using the path at which it is stored
+     *
      * @param imagePath the path within activity-bank to access the image
      * @return loaded Image is returned
      */
@@ -173,7 +197,7 @@ public class ServerUtils {
                 .header("Authorization", Main.TOKEN)
                 .get(ImageResponsePacket.class);
 
-        return new Image(new ByteArrayInputStream(image.getImageByte()));
+        return new Image(new ByteArrayInputStream(image.getImageByte()), 240, 143, false, false);
     }
 
     /**
@@ -182,22 +206,34 @@ public class ServerUtils {
      * @param url The URL to test
      * @return If the URL is valid or not
      */
-    public boolean testConnection(String url) {
-        Invocation invocation = getClient()
-                .target(url + "/ping")
-                .request("text/plain").buildGet();
-
-        // Invoke the request
+    public String testConnection(String url) {
         String response;
+        Invocation invocation;
+
+        // build the request
         try {
-            response = invocation.invoke(String.class);
-        } catch (ProcessingException | WebApplicationException ignored) {
-            return false;
+            invocation = getClient()
+                    .target(url + "/ping")
+                    .request("text/plain").buildGet();
+            // invalid URL
+        } catch (Exception exception) {
+            return "URL";
         }
 
-        return response.equals("Pong");
-    }
+        // invoke the request
+        try {
+            response = invocation.invoke(String.class);
+            // invalid server
+        } catch (Exception exception) {
+            return "Server";
+        }
 
+        if (response.equals("Pong")) {
+            return "true";
+        } else {
+            return "false";
+        }
+    }
 
     /**
      * Register a new user on server
@@ -217,67 +253,201 @@ public class ServerUtils {
                 RegisterResponsePacket.class);
     }
 
-    //private StompSession session = connect("ws://localhost:8080/websocket");
+    /**
+     * Uses an endpoint to retrieve the list of activities from the Server
+     *
+     * @return The activities stored
+     */
+    public List<Activity> getActivities() {
+        return getRequest("api/activities/list", ActivitiesResponsePacket.class).getActivities();
+    }
 
-    //THIS IS A TEMPORARY SOLUTION FOR MAKING THE CODE COMPILE, WILL FIX WEBSOCKETS IN NEXT SPRINT
+    public void addActivity(Activity activity) {
+        getRequest("api/activities/add", ActivitiesResponsePacket.class).addActivity(activity);
+    }
+
+    // THIS IS A TEMPORARY SOLUTION FOR MAKING THE CODE COMPILE, WILL FIX WEBSOCKETS IN NEXT SPRINT
     private StompSession session = null;
 
     /**
-     * This method initializes the WebSocket connection between client and server
-     * @param url - the url address for the connection
-     * @return returns a new protocol
+     * Builds a long polling get request which can be called on demand
+     *
+     * @param path       The path of the endpoint to send the request to
+     * @param response   The packet which the server returns
+     * @param onResponse The {@code run} method inside this interface will be called as soon as the server gives a response
+     * @param <T>        The type of packet which the server should return
+     * @return The long polling class which can be started or stopped on demand
      */
-    private StompSession connect(String url) {
-        var client = new StandardWebSocketClient();
-        var stomp = new WebSocketStompClient(client);
+    public <T extends ResponsePacket> LongPollingRequest<T> longGetRequest(String path, Class<T> response, ServerResponse<T> onResponse) {
+        LongPollingRequest<T> longPollingRequest = new ServerUtils.LongPollingRequest<>(path, response);
+        longPollingRequest.setCallback(onResponse);
+        return longPollingRequest;
+    }
 
-        stomp.setMessageConverter(new MappingJackson2MessageConverter());
+    /**
+     * Builds a long polling post request which can be called on demand
+     *
+     * @param path       The path of the endpoint to send the request to
+     * @param request    The packet which to send to the server
+     * @param response   The packet which the server returns
+     * @param onResponse The {@code run} method inside this interface will be called as soon as the server gives a response
+     * @param <T>        The type of packet which the server should return
+     * @param <S>        The type of packet which should be sent to the server
+     * @return The long polling class which can be started or stopped on demand
+     */
+    public <T extends ResponsePacket, S extends RequestPacket> LongPollingRequest<T> longPostRequest(String path, S request, Class<T> response, ServerResponse<T> onResponse) {
+        LongPollingRequest<T> longPollingRequest = new ServerUtils.LongPollingRequest<>(path, response);
+        longPollingRequest.setCallback(onResponse);
+        return longPollingRequest;
+    }
 
-        try {
-            return stomp.connect(url, new StompSessionHandlerAdapter() {}).get();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
+    /**
+     * Class which  handles a long polling request
+     *
+     * @param <T> The type of packet which the server should return
+     */
+    public class LongPollingRequest<T extends ResponsePacket> {
+        private final String path;
+        private final Class<T> response;
+
+        private ServerResponse<T> onResponse;
+
+        private Thread thread = null;
+        private boolean interrupted = false;
+        private boolean persistent = false;
+
+        /**
+         * @param path     The path of the request
+         * @param response The response class of the packet
+         */
+        public LongPollingRequest(String path, Class<T> response) {
+            this.path = path;
+            this.response = response;
         }
-        throw new IllegalStateException();
+
+        /**
+         * Sets the callback for this long polling request
+         *
+         * @param onResponse The callback interface instance
+         */
+        public void setCallback(ServerResponse<T> onResponse) {
+            this.onResponse = onResponse;
+        }
+
+        /**
+         * Set whether the long polling should be persistent or not; if it should open a
+         * new request as soon as the server has handled one.
+         *
+         * @param persistent If it should be persistent or not
+         */
+        public void setPersistent(boolean persistent) {
+            this.persistent = persistent;
+        }
+
+        /**
+         * Constructs and calls a long polling get request
+         */
+        public void getRequest() {
+            Invocation.Builder template = requestTemplate(path);
+            if (template == null) {
+                return;
+            }
+
+            Invocation invocation = template.buildGet();
+            poll(invocation);
+        }
+
+        /**
+         * Constructs and calls a long polling post request
+         *
+         * @param request The packet which to send to the server
+         * @param <S>     The type of packet which should be sent to the server
+         */
+        public <S extends RequestPacket> void postRequest(S request) {
+            Invocation.Builder template = requestTemplate(path);
+            if (template == null) {
+                return;
+            }
+
+            Invocation invocation = template.buildPost(Entity.entity(request, APPLICATION_JSON));
+            poll(invocation);
+        }
+
+        /**
+         * Starts a long polling request
+         *
+         * @param invocation The invocation to instantiate
+         */
+        private void poll(Invocation invocation) {
+            thread = new Thread(() -> callback(invocation.invoke(response), invocation));
+            interrupted = false;
+            thread.start();
+        }
+
+        /**
+         * Used to call the {@code run} method of the callback interface
+         *
+         * @param packet The packet the server returned
+         * @param source The source invocation which got called
+         */
+        private void callback(T packet, Invocation source) {
+            if (!interrupted) {
+                if (onResponse != null) {
+                    onResponse.run(packet);
+                }
+
+                if (persistent) {
+                    poll(source);
+                }
+            }
+        }
+
+        /**
+         * Stops the long polling request
+         */
+        public void stop() {
+            if (thread != null) {
+                thread.interrupt();
+            }
+
+            interrupted = true;
+        }
     }
 
     /**
-     * Subscribes the client for messages from the server
-     * @param dest - the destination address
-     * @param type - the class of the object to be returned by the method
-     * @param consumer - the consumer
-     * @param <T> - generic type
+     * Callback for {@link #longGetRequest(String, Class, ServerResponse)} and {@link #longPostRequest(String, RequestPacket, Class, ServerResponse)}.
+     * Contains a {@code run} method which will be called when the server responds to data to a long polling request.
+     *
+     * @param <T> The type of packet which the server should return
      */
-    public <T> void registerForMessages(String dest, Class<T> type, Consumer<T> consumer) {
-        session.subscribe(dest, new StompFrameHandler() {
-            @Override
-            public Type getPayloadType(StompHeaders headers) {
-                return type;
-            }
-
-            @Override
-            public void handleFrame(StompHeaders headers, Object payload) {
-                consumer.accept((T) payload);
-            }
-        });
+    public interface ServerResponse<T extends ResponsePacket> {
+        /**
+         * Will be called when the server response with data to a long polling request
+         *
+         * @param responsePacket The packet which the server returned
+         */
+        void run(T responsePacket);
     }
 
     /**
-     * This method sends an object to a desired destination
-     * @param dest - the destination address
-     * @param o - the object to be sent
+     * function to validate URL
+     *
+     * @param url the URL
+     * @return if the URL is valid
      */
-    public void send(String dest, Object o) {
-        session.send(dest, o);
+    public boolean isValidURL(String url) {
+        // regex string
+        String regex = "https?:\\/\\/(?:w{1,3}\\.)?[^\\s.]+(?:\\.[a-z]+)*(?::\\d+)?(?:\\/\\w+)*\\/?(?![^<]*(?:<\\/\\w+>|\\/?>))";
+
+        Pattern p = Pattern.compile(regex);
+
+        if (url == null) {
+            return false;
+        }
+
+        Matcher m = p.matcher(url);
+
+        // Return true if the string matched the regex
+        return m.matches();
     }
-
-    //    ADD THIS PIECE OF CODE IN THE INITIALISE METHOD OF A MULTIPLAYER LOGIC CLASS WHEN WE MAKE IT
-    //    server.registerForMessages("/topic/quotes", ResponseEntity.class, q -> {
-    //        data.add(q);
-    //    });
-
-    //    ADD THIS PIECE OF CODE IN THE INITIALISE METHOD OF A MULTIPLAYER LOGIC CLASS WHEN WE MAKE IT
-    //server.send("/app/quotes", getResponse());
 }

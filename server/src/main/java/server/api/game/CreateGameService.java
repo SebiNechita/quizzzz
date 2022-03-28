@@ -4,14 +4,17 @@ import commons.Game;
 import packets.GameResponsePacket;
 import commons.questions.Activity;
 import org.springframework.stereotype.Service;
+import server.database.ActivityRepository;
 
-import java.io.*;
-import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class CreateGameService {
+    private final ActivityRepository repository;
+
+    public CreateGameService(ActivityRepository repository) {
+        this.repository = repository;
+    }
 
     /**
      * Creates a game using noOfQuestions.
@@ -23,11 +26,8 @@ public class CreateGameService {
         List<Activity> activities = null;
 
         try {
-            File source = new File(Objects.requireNonNull(
-                    getClass().getClassLoader().getResource("activity-bank/activities.json")).toURI()
-            );
-            activities = Activity.readActivities(source);
-        } catch (IOException | URISyntaxException e) {
+            activities = repository.findAll();
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

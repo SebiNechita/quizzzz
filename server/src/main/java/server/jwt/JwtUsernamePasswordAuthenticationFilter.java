@@ -21,12 +21,26 @@ public class JwtUsernamePasswordAuthenticationFilter extends UsernamePasswordAut
     private final AuthenticationManager authenticationManager;
     private final JwtConfig jwtConfig;
 
+    /**
+     * @param authenticationManager The authentication manager
+     * @param jwtConfig             The config for Jwt
+     * @param url                   The url which must be used to log in
+     */
     public JwtUsernamePasswordAuthenticationFilter(AuthenticationManager authenticationManager, JwtConfig jwtConfig, String url) {
         this.authenticationManager = authenticationManager;
         this.jwtConfig = jwtConfig;
         setFilterProcessesUrl(url);
     }
 
+    /**
+     * Performs actual authentication.
+     *
+     * @param request  from which to extract parameters and perform the authentication
+     * @param response the response, which may be needed if the implementation has to do a
+     *                 redirect as part of a multi-stage authentication process (such as OpenID).
+     * @return the authenticated user token, or null if authentication is incomplete.
+     * @throws AuthenticationException if authentication fails.
+     */
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         try {
@@ -39,11 +53,29 @@ public class JwtUsernamePasswordAuthenticationFilter extends UsernamePasswordAut
         }
     }
 
+    /**
+     * Called when the authentication is unsuccessful
+     *
+     * @param request  from which to extract parameters and perform the authentication
+     * @param response the response, which may be needed if the implementation has to do a
+     *                 redirect as part of a multi-stage authentication process (such as OpenID).
+     * @param failed   why it failed
+     */
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
         super.unsuccessfulAuthentication(request, response, failed);
     }
 
+    /**
+     * Called when the authentication is successful
+     *
+     * @param request    from which to extract parameters and perform the authentication
+     * @param response   the response, which may be needed if the implementation has to do a
+     *                   redirect as part of a multi-stage authentication process (such as OpenID).
+     * @param chain      the filter chain
+     * @param authResult the object returned from the <tt>attemptAuthentication</tt>
+     *                   method.
+     */
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) {
         String token = Jwts.builder()

@@ -1,0 +1,10 @@
+#timeLeftText, #pointsGainedText, #question, #jokersText, #score {
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-size: 30;
+}
+
+#answerBonusText, #timeBonusText, #typeAnswer, #choice1, #choice2, #choice3 {
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-size: 20;
+}
+

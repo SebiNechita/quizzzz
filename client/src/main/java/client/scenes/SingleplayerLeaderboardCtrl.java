@@ -19,13 +19,20 @@ import client.Main;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import commons.LeaderboardEntry;
+import javafx.animation.FadeTransition;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.XYChart;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 import packets.GeneralResponsePacket;
 import packets.LeaderboardResponsePacket;
 
@@ -42,9 +49,17 @@ public class SingleplayerLeaderboardCtrl extends SceneCtrl {
     @FXML
     private TableColumn<LeaderboardEntry, String> colUsername;
     @FXML
-    private TableColumn<LeaderboardEntry, String> colPoints;
+    private TableColumn<LeaderboardEntry, Integer> colPoints;
     @FXML
     private Text rankInfo;
+    @FXML
+    private Button barChartButton;
+    @FXML
+    private AnchorPane barChartContainer;
+    @FXML
+    private BarChart barChart;
+
+    protected static boolean fromMainMenu = false;
 
     /**
      * Constructor for this Ctrl
@@ -68,18 +83,41 @@ public class SingleplayerLeaderboardCtrl extends SceneCtrl {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         colUsername.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().username));
-        colPoints.setCellValueFactory(q -> new SimpleStringProperty(Integer.toString(q.getValue().points)));
+        colPoints.setCellValueFactory(q -> new SimpleIntegerProperty(q.getValue().points).asObject());
     }
 
     //TODO: Get this to work
     @OnShowScene
-    public void onShowScene(){
+    public void onShowScene() {
+        barChartButton.setOnMouseEntered(event -> {
+            smoothTransition(barChartContainer, true);
+        });
+        barChartButton.setOnMouseExited(event -> {
+            smoothTransition(barChartContainer, false);
+        });
         refresh();
         showPlayerRank();
     }
 
-    public void showPlayerRank(){
-        GeneralResponsePacket packet = server.getRequest("api/leaderboard/"+ Main.USERNAME+"/rank", GeneralResponsePacket.class);
+    private void initializeBarChart(LeaderboardResponsePacket packet) {
+        // We have to clear it so that the same data points don't appear twice when we click on Refresh
+        barChart.getData().clear();
+
+        XYChart.Series<String, Integer> series = new XYChart.Series<>();
+        series.setName("Leaderboard");
+        barChart.setLegendVisible(false);
+
+        List<LeaderboardEntry> leaderboard = packet.getLeaderboard();
+        for (LeaderboardEntry entry : leaderboard) {
+            series.getData().add(new XYChart.Data<>(entry.getUsername(), entry.getPoints()));
+        }
+
+        barChart.getData().add(series);
+        series.getData().stream().filter(data -> data.getXValue().equals(Main.USERNAME)).forEach(data -> data.getNode().setStyle("-fx-background-color: GOLD"));
+    }
+
+    public void showPlayerRank() {
+        GeneralResponsePacket packet = server.getRequest("api/leaderboard/" + Main.USERNAME + "/rank", GeneralResponsePacket.class);
         rankInfo.setText("Your rank is " + packet.getMessage());
     }
 
@@ -93,6 +131,10 @@ public class SingleplayerLeaderboardCtrl extends SceneCtrl {
             List<LeaderboardEntry> leaderboardEntries = packet.getLeaderboard();
             data = FXCollections.observableList(leaderboardEntries);
             table.setItems(data);
+            initializeBarChart(packet);
+            colPoints.setSortType(TableColumn.SortType.DESCENDING);
+            table.getSortOrder().add(colPoints);
+            table.sort();
         }
     }
 
@@ -100,6 +142,25 @@ public class SingleplayerLeaderboardCtrl extends SceneCtrl {
      * Show the home screen.
      */
     public void showHome() {
-        main.showScene(MainMenuCtrl.class);
+        if (fromMainMenu) {
+            main.showScene(MainMenuCtrl.class);
+        } else {
+            main.showScene(EndGameCtrl.class);
+        }
+    }
+
+    /**
+     * Ensures that the pane is displayed/hidden smoothly
+     * @param pane AnchorPane to be displayed/hidden
+     * @param toShow true if the AnchorPane is to be shown; False if it is to be hidden
+     */
+    private void smoothTransition(AnchorPane pane, boolean toShow) {
+        pane.setVisible(toShow);
+        FadeTransition transition = new FadeTransition();
+        transition.setNode(pane);
+        transition.setFromValue(0);
+        transition.setToValue(1);
+        transition.setDuration(Duration.millis(400));
+        transition.playFromStart();
     }
 }
