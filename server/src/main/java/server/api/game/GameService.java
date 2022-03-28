@@ -30,6 +30,12 @@ public class GameService {
         this.allReady = false;
         this.createGameService = createGameService;
     }
+    public GameService() {
+        this.playerMap = new HashMap<>();
+        this.playerEventList = new LinkedList<>();
+        this.allReady = false;
+        this.createGameService = null;
+    }
 
     /**
      * a scheduled task for removing disconnected player from the player list
