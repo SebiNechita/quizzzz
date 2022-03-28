@@ -224,9 +224,9 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         showPointsGained(correctlyAnswered ? 100 : 0);
 
         if (Main.gameMode == GameMode.MULTIPLAYER) {
-            main.getGame(MultiplayerGame.class).getQuestionHistory().add(correctlyAnswered);;
+            main.getMultiplayerGame().getQuestionHistory().add(correctlyAnswered);;
         } else {
-            main.getGame(SingleplayerGame.class).getQuestionHistory().add(correctlyAnswered);
+            main.getSingleplayerGame().getQuestionHistory().add(correctlyAnswered);
         }
 
         generateProgressDots();
@@ -244,9 +244,9 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         hidePointsGained();
 
         if (Main.gameMode == GameMode.MULTIPLAYER) {
-            main.getGame(MultiplayerGame.class).jumpToNextQuestion();
+            main.getMultiplayerGame().jumpToNextQuestion();
         } else {
-            main.getGame(SingleplayerGame.class).jumpToNextQuestion();
+            main.getSingleplayerGame().jumpToNextQuestion();
         }
 
         //clean up

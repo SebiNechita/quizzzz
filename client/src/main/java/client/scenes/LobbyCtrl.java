@@ -79,6 +79,7 @@ public class LobbyCtrl extends SceneCtrl {
     @OnShowScene
     public void onShowScene() {
         Main.gameMode = GameMode.MULTIPLAYER;
+
         main.createNewMultiplayerGame();
 
         buttonStart.setVisible(false);

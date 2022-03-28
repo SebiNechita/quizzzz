@@ -64,6 +64,11 @@ public class GameController {
         return new JoinResponsePacket(HttpStatus.OK, playerMap);
     }
 
+   /* @GetMapping("/multiplayer")
+    public MultiplayerResponsePacket start(@RequestMapping MultiplayerRequestPacket request){
+         Game x = new MultiplayerResponsePacket()
+         request.getLobby().getPlayerList();
+    }*/
     /**
      * client sends emote to server, server then send it to other players
      *

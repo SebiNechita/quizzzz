@@ -160,9 +160,9 @@ public class GameOpenQuestionCtrl extends GameCtrl {
         hidePointsGained();
 
         if (Main.gameMode == GameMode.MULTIPLAYER) {
-            main.getGame(MultiplayerGame.class).jumpToNextQuestion();
+            main.getMultiplayerGame().jumpToNextQuestion();
         } else {
-            main.getGame(SingleplayerGame.class).jumpToNextQuestion();
+            main.getSingleplayerGame().jumpToNextQuestion();
         }
 
     }
@@ -218,9 +218,9 @@ public class GameOpenQuestionCtrl extends GameCtrl {
 
         showPointsGained(100 - difference);
         if (Main.gameMode == GameMode.MULTIPLAYER) {
-            main.getGame(MultiplayerGame.class).getQuestionHistory().add(difference <= 50);
+            main.getMultiplayerGame().getQuestionHistory().add(difference <= 50);
         } else {
-            main.getGame(SingleplayerGame.class).getQuestionHistory().add(difference <= 50);
+            main.getSingleplayerGame().getQuestionHistory().add(difference <= 50);
         }
         generateProgressDots();
     }

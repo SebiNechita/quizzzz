@@ -31,13 +31,18 @@ public class MultiplayerGame implements client.game.Game {
 
     private Integer scoreTotal;
 
+    private Game game;
+
+
+
+
     public MultiplayerGame(MainCtrl main, ServerUtils server) {
         this.main = main;
         this.server = server;
         this.questionHistory = new LinkedList<>();
         this.questions = new ArrayList<>();
 
-        Game game = server.getGame();
+        game = server.getGame();
 
         List<OpenQuestion> openQuestions = game.getOpenQuestions();
         List<MultipleChoiceQuestion> multipleChoiceQuestions = game.getMultipleChoiceQuestions();
@@ -56,6 +61,10 @@ public class MultiplayerGame implements client.game.Game {
 
         this.currentQuestionCount = 0;
         this.scoreTotal = 0;
+    }
+
+    public Game getGame() {
+        return game;
     }
 
     public MultiplayerGame(MainCtrl mainCtrl, ServerUtils server, List<Question> questions) {
@@ -239,6 +248,14 @@ public class MultiplayerGame implements client.game.Game {
                         .updatePlayerList(responsePacket.getPlayerList()));
     }
 
+    /*public void sameMatch(){
+
+    }*/
+   /* public void start(){
+
+        //MultiplayerRequestPacket responsePacket = server.postRequest("api/game/multiplayer", new MultiplayerRequestPacket() )
+    }*/
+
     /**
      * send clicked Emote to the server
      *
@@ -318,6 +335,18 @@ public class MultiplayerGame implements client.game.Game {
         this.longPollingRequest.stop();
     }
 
+    private class MultiplayerOnResponse implements  ServerUtils.ServerResponse<MultiplayerResponsePacket>{
+
+        /**
+         * Will be called when the server response with data to a long polling request
+         *
+         * @param responsePacket The packet which the server returned
+         */
+        @Override
+        public void run(MultiplayerResponsePacket responsePacket) {
+
+        }
+    }
     /**
      * callback method when the client gets update from the server via the long polling request.
      */
