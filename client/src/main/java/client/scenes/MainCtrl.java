@@ -48,9 +48,13 @@ public class MainCtrl {
     private SingleplayerGame singleplayerGame;
     private MultiplayerGame multiplayerGame;
 
-//    private MultiplayerResponsePacket resp;
     private final HashMap<Class<?>, SceneCtrl> ctrlClasses = new HashMap<>();
     private final HashMap<Class<?>, Pair<Scene, String>> scenes = new HashMap<>();
+
+    //I created this to be able to access the stage from AdminPanelCtrl when opening the file dialog.
+    public Stage getPrimaryStage() {
+        return primaryStage;
+    }
 
     /**
      * Constructs a new MainCtrl instance

@@ -5,11 +5,18 @@ import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import javafx.fxml.FXML;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
+import packets.ResponsePacket;
+import packets.ZipRequestPacket;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.ResourceBundle;
 
 public class AdminPanelCtrl extends SceneCtrl {
+    final FileChooser fileChooser;
     @FXML
     private Text noOfActivities;
 
@@ -21,6 +28,7 @@ public class AdminPanelCtrl extends SceneCtrl {
      */
     public AdminPanelCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
         super(mainCtrl, serverUtils);
+        this.fileChooser = new FileChooser();
     }
 
     /**
@@ -36,6 +44,18 @@ public class AdminPanelCtrl extends SceneCtrl {
     public void initialize(URL location, ResourceBundle resources) {
 
     }
+
+    /**
+     * Lets the user choose a ZIP and sends it to the server to import
+     */
+    public void sendZip() throws IOException {
+        File file = fileChooser.showOpenDialog(main.getPrimaryStage());
+        if (file != null) {
+            byte[] bytes = Files.readAllBytes(file.toPath());
+            server.postRequest("zip/",new ZipRequestPacket(bytes), ResponsePacket.class);
+        }
+    }
+
 
     /**
      * Show the home screen.
