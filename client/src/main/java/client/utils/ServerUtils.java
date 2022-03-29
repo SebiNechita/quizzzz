@@ -20,9 +20,10 @@ import commons.Game;
 import commons.questions.Activity;
 import commons.utils.HttpStatus;
 import commons.utils.LoggerUtil;
-import jakarta.ws.rs.ProcessingException;
-import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.client.*;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.client.Invocation;
 import jakarta.ws.rs.core.Response;
 import javafx.scene.image.Image;
 import org.springframework.messaging.simp.stomp.StompSession;
@@ -31,6 +32,8 @@ import packets.*;
 import java.io.ByteArrayInputStream;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
@@ -106,21 +109,6 @@ public class ServerUtils {
         return null;
     }
 
-//    public String getActivityInfo(String image_path, long consumption, String source, String description) {
-//        Response response = getClient().target(Main.URL).path("/api/activities")
-//                .request(APPLICATION_JSON).accept(APPLICATION_JSON)
-//                .post(Entity.entity(new ActivityRequestPacket(image_path, consumption, source, description), APPLICATION_JSON));
-//
-////        if (response.getStatus() == 202) {
-////            return (String) response.getHeaders().get("Authorization").get(0);
-////        } else if (response.getStatus() == 403) {
-////            LoggerUtil.warn("Unable to get token, invalid account:\n\t$HLUsername: " + username + "\n\tPassword: " + "*".repeat(password.length()) + "$");
-////        } else {
-////            LoggerUtil.severeInline("Unknown status $HLHTTP" + response.getStatus() + "$ given while trying to get a token");
-////        }
-//        return null;
-//    }
-
     /**
      * Retrieves an instance of Game from the server using the endpoint made for the same
      *
@@ -131,7 +119,15 @@ public class ServerUtils {
     }
 
     /**
-<<<<<<< client/src/main/java/client/utils/ServerUtils.java
+     * Retrieves an instance of Game with noOfQuestions from the server using the endpoint made for the same
+     * @param noOfQuestions noOfQuestions in the game
+     * @return A game object with a given no of questions
+     */
+    public Game getGame(int noOfQuestions) {
+        return getRequest("api/game/create?noOfQuestions" + noOfQuestions, GameResponsePacket.class).getGame();
+    }
+
+    /**
      * Builds a post request
      *
      * @param path     The path of the endpoint to send the request to
@@ -183,13 +179,10 @@ public class ServerUtils {
         if (template == null) {
             return (T) new ResponsePacket(HttpStatus.NotFound);
         }
-
         return template.get(response);
     }
 
     /**
-=======
->>>>>>> client/src/main/java/client/utils/ServerUtils.java
      * Uses an endpoint to retrieve the image from the Server using the path at which it is stored
      *
      * @param imagePath the path within activity-bank to access the image
@@ -213,20 +206,33 @@ public class ServerUtils {
      * @param url The URL to test
      * @return If the URL is valid or not
      */
-    public boolean testConnection(String url) {
-        Invocation invocation = getClient()
-                .target(url + "/ping")
-                .request("text/plain").buildGet();
-
-        // Invoke the request
+    public String testConnection(String url) {
         String response;
+        Invocation invocation;
+
+        // build the request
         try {
-            response = invocation.invoke(String.class);
-        } catch (ProcessingException | WebApplicationException ignored) {
-            return false;
+            invocation = getClient()
+                    .target(url + "/ping")
+                    .request("text/plain").buildGet();
+            // invalid URL
+        } catch (Exception exception) {
+            return "URL";
         }
 
-        return response.equals("Pong");
+        // invoke the request
+        try {
+            response = invocation.invoke(String.class);
+            // invalid server
+        } catch (Exception exception) {
+            return "Server";
+        }
+
+        if (response.equals("Pong")) {
+            return "true";
+        } else {
+            return "false";
+        }
     }
 
     /**
@@ -249,6 +255,7 @@ public class ServerUtils {
 
     /**
      * Uses an endpoint to retrieve the list of activities from the Server
+     *
      * @return The activities stored
      */
     public List<Activity> getActivities() {
@@ -259,9 +266,7 @@ public class ServerUtils {
         getRequest("api/activities/add", ActivitiesResponsePacket.class).addActivity(activity);
     }
 
-    //private StompSession session = connect("ws://localhost:8080/websocket");
-
-    //THIS IS A TEMPORARY SOLUTION FOR MAKING THE CODE COMPILE, WILL FIX WEBSOCKETS IN NEXT SPRINT
+    // THIS IS A TEMPORARY SOLUTION FOR MAKING THE CODE COMPILE, WILL FIX WEBSOCKETS IN NEXT SPRINT
     private StompSession session = null;
 
     /**
@@ -424,5 +429,25 @@ public class ServerUtils {
         void run(T responsePacket);
     }
 
+    /**
+     * function to validate URL
+     *
+     * @param url the URL
+     * @return if the URL is valid
+     */
+    public boolean isValidURL(String url) {
+        // regex string
+        String regex = "https?:\\/\\/(?:w{1,3}\\.)?[^\\s.]+(?:\\.[a-z]+)*(?::\\d+)?(?:\\/\\w+)*\\/?(?![^<]*(?:<\\/\\w+>|\\/?>))";
 
+        Pattern p = Pattern.compile(regex);
+
+        if (url == null) {
+            return false;
+        }
+
+        Matcher m = p.matcher(url);
+
+        // Return true if the string matched the regex
+        return m.matches();
+    }
 }

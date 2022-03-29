@@ -15,20 +15,24 @@
  */
 package client.scenes;
 
-import client.Main;
+import client.game.Game;
+import client.game.SingleplayerGame;
 import client.game.MultiplayerGame;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
-import commons.Game;
-import commons.LeaderboardEntry;
+//import commons.utils.GameMode;
+//import commons.utils.HttpStatus;
 import commons.utils.LoggerUtil;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Pair;
-import packets.LeaderboardResponsePacket;
+import packets.JoinRequestPacket;
+import packets.JoinResponsePacket;
+//import packets.MultiplayerResponsePacket;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -41,8 +45,10 @@ public class MainCtrl {
 
     private final Stage primaryStage;
     private final ServerUtils serverUtils;
-    private final MultiplayerGame multiplayerGame;
+    private SingleplayerGame singleplayerGame;
+    private MultiplayerGame multiplayerGame;
 
+//    private MultiplayerResponsePacket resp;
     private final HashMap<Class<?>, SceneCtrl> ctrlClasses = new HashMap<>();
     private final HashMap<Class<?>, Pair<Scene, String>> scenes = new HashMap<>();
 
@@ -53,46 +59,47 @@ public class MainCtrl {
      */
     public MainCtrl(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        serverUtils = new ServerUtils();
-        multiplayerGame = new MultiplayerGame(this, serverUtils);
+        this.serverUtils = new ServerUtils();
+      // this.multiplayerGame = new MultiplayerGame(this, serverUtils);
     }
 
     /**
-     * Retrieves a list of questions and stores it.
+     * Creates a new SingleplayerGame
      */
-    public void getQuestions() {
-        Game game = serverUtils.getGame();
-        Main.questions.addAll(game.getMultipleChoiceQuestions());
-        Main.openQuestions.addAll(game.getOpenQuestions());
+    public void createNewSingleplayerGame() {
+        this.singleplayerGame = new SingleplayerGame(this, serverUtils);
     }
 
     /**
-     * Steps to the next question and displays it.
-     * Or exits if the game is over.
-     */
-    public void jumpToNextQuestion() {
-        if (Main.currentQuestionCount < 20) {
-            showQuestion();
-        } else {
-            serverUtils.postRequest("api/leaderboard", new LeaderboardEntry(Main.scoreTotal, Main.USERNAME), LeaderboardResponsePacket.class);
-            showScene(EndGameCtrl.class);
-        }
 
-        Main.currentQuestionCount++;
+     * Creates a new MultiplayerGame
+     * @param game
+     */
+    public void createNewMultiplayerGame(commons.Game game) {
+        this.multiplayerGame = new MultiplayerGame(this, serverUtils, game);
+//        commons.Game game = multiplayerGame.getGame();
+//        if (resp == null)
+//            resp = new MultiplayerResponsePacket(HttpStatus.OK, game);
+
 
     }
 
+
     /**
-     * Decides which type of question to display.
+     * Called when Singleplayer game is quit
      */
-    private void showQuestion() {
-        //every nth question is open, the others are multi.
-        //n=5 for now.
-        if (Main.currentQuestionCount % 5 == 0) {
-            showScene(GameOpenQuestionCtrl.class);
-        } else {
-            showScene(GameMultiChoiceCtrl.class);
-        }
+    public void quitSingleplayer() {
+        this.singleplayerGame = null;
+    }
+
+
+    /**
+     * Getter for the current SingleplayerGame
+     *
+     * @return the current SingleplayerGame
+     */
+    public SingleplayerGame getSingleplayerGame() {
+        return singleplayerGame;
     }
 
     /**
@@ -104,6 +111,9 @@ public class MainCtrl {
         return multiplayerGame;
     }
 
+    public <T extends Game> T getGame(Class<T> gameModeClass) {
+        return gameModeClass.equals(MultiplayerGame.class) ? (T) this.multiplayerGame : (T) this.singleplayerGame;
+    }
     /**
      * Loads and initializes a scene
      *
@@ -174,6 +184,17 @@ public class MainCtrl {
             }
         } catch (IllegalAccessException | InvocationTargetException ignored) {
         }
+    }
+
+    public commons.Game joinGame(String username) {
+        JoinResponsePacket responsePacket = serverUtils.postRequest("api/game/join",
+                new JoinRequestPacket(username),
+                JoinResponsePacket.class);
+        commons.Game game = responsePacket.getGame();
+        Platform.runLater(() ->
+                getCtrl(LobbyCtrl.class)
+                        .updatePlayerList(responsePacket.getPlayerList()));
+        return game;
     }
 
     /**

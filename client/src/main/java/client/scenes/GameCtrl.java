@@ -15,13 +15,18 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.*;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
@@ -32,14 +37,13 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 import javax.inject.Inject;
+import java.net.URISyntaxException;
 import java.util.*;
 
 import static client.utils.EmoteUtility.emoteHoverAnim;
 import static client.utils.EmoteUtility.emoteUsed;
 
 public abstract class GameCtrl extends SceneCtrl {
-
-    private GameMode gameMode;
 
     @FXML
     protected HBox progressBar;
@@ -57,11 +61,16 @@ public abstract class GameCtrl extends SceneCtrl {
 
     @FXML
     protected Button nextQuestion;
+    @FXML
+    protected Button muteSound;
+    @FXML
+    protected Button quitButton;
 
     @FXML
     protected VBox jokers;
     private AnchorPane jokerContainer;
     private List<AnchorPane> disabledJokers;
+    private List<AnchorPane> touchNotusedjokers;
 
     @FXML
     protected Text timeLeftText;
@@ -81,6 +90,10 @@ public abstract class GameCtrl extends SceneCtrl {
     protected double timeLeft = 0;
     protected double lastAnswerChange = 0;
     protected double timeMultiplier = 1d;
+    protected static int doublepoints;
+
+    // static because the state has to be the same between both the question types
+    protected static boolean mute = false;
 
     /**
      * There are three options visible to the user.
@@ -106,7 +119,7 @@ public abstract class GameCtrl extends SceneCtrl {
      * Gets called after scene has finished loading
      */
     protected void initialize() {
-
+        doublepoints = 0;
     }
 
     /**
@@ -121,7 +134,9 @@ public abstract class GameCtrl extends SceneCtrl {
         answerBonusText.setVisible(false);
         timeBonusText.setVisible(false);
 
-        setScore(Main.scoreTotal);
+        if (Main.gameMode == GameMode.SINGLEPLAYER)
+            setScore(main.getSingleplayerGame().getScoreTotal());
+        else setScore(main.getMultiplayerGame().getScoreTotal());
 
         nextQuestion.setVisible(false);
 
@@ -134,13 +149,11 @@ public abstract class GameCtrl extends SceneCtrl {
 
         emoteContainer.setVisible(false);
 
-        notificationContainer.setVisible(gameMode == GameMode.MULTIPLAYER);
+        notificationContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
 
+        setMuteButton();
         generateProgressDots();
         enableListeners();
-
-        //----- TODO: Everything below this is temporary and for testing/displaying purposes -----
-        gameMode = GameMode.SINGLEPLAYER;
         startTimer();
 
     }
@@ -154,28 +167,34 @@ public abstract class GameCtrl extends SceneCtrl {
             ImageView jokerImage = (ImageView) joker.getChildren().get(0);
             AnchorPane tooltip = (AnchorPane) joker.getChildren().get(1);
 
-            jokerImage.setOnMouseEntered(event -> {
-                if (disabledJokers.contains(joker))
+            jokerImage.setOnMouseClicked(event -> {
+                if (disabledJokers.contains(joker)) {
                     return;
-
-                hoverAnim(joker, new Color(0.266, 0.266, 0.266, 1), new Color(1, 1, 1, 1)).play();
-                showJokerTooltip(tooltip);
+                } else {
+                    if (node == jokers.getChildren().get(0)) {
+                        disableJoker(JokerType.DOUBLE_POINTS);
+                        disabledJokers.add(joker);
+                        doublepoints = 1;
+                        hoverAnim(joker, new Color(0.266, 0.266, 0.266, 1), new Color(1, 1, 1, 1)).play();
+                        //showJokerTooltip(tooltip);
+                    }
+                }
             });
 
-            jokerImage.setOnMouseExited(event -> {
+           /* jokerImage.setOnMouseExited(event -> {
                 if (disabledJokers.contains(joker))
                     return;
 
                 hoverAnim(joker, new Color(1, 1, 1, 1), new Color(0.266, 0.266, 0.266, 1)).play();
                 hideJokerTooltip(tooltip);
-            });
+            });*/
 
-            jokerImage.setOnMouseClicked(event -> {
+            /*jokerImage.setOnMouseClicked(event -> {
                 if (disabledJokers.contains(joker))
                     return;
 
                 jokerUsed(JokerType.valueOf(joker.getId().toUpperCase()));
-            });
+            });*/
         }
 
         for (Node node : emoteContainer.getChildren()) {
@@ -270,7 +289,11 @@ public abstract class GameCtrl extends SceneCtrl {
         dropShadow.setOffsetX(3.0);
         dropShadow.setOffsetY(3.0);
 
-        Iterator<Boolean> history = Main.questionHistory.iterator();
+        Iterator<Boolean> history;
+        if (Main.gameMode == GameMode.MULTIPLAYER)
+            history = main.getMultiplayerGame().getQuestionHistory().iterator();
+        else history = main.getSingleplayerGame().getQuestionHistory().iterator();
+
         if (numberofQuestions == -1) {
             for (int i = 0; i < 20; i++) {
                 Circle circle = generateCircle(Paint.valueOf("#2b2b2b"), dropShadow);
@@ -340,9 +363,9 @@ public abstract class GameCtrl extends SceneCtrl {
      * The timer which counts down the amount of time left and also shows the correct answer after the time limit has run out
      */
     protected void startTimer() {
-        jokerContainer.setVisible(gameMode == GameMode.MULTIPLAYER);
-        notificationContainer.setVisible(gameMode == GameMode.MULTIPLAYER);
-        emoteContainer.setVisible(gameMode == GameMode.MULTIPLAYER);
+        jokerContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
+        notificationContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
+        //emoteContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
 
         timer = timerAnim(timeLeftSlider);
 
@@ -388,11 +411,19 @@ public abstract class GameCtrl extends SceneCtrl {
      */
     protected void showPointsGained(int answerPoints) {
         answerPoints = Math.min(Math.max(answerPoints, 0), 100);
-
         int timeBonus = (int) Math.round(lastAnswerChange * 100 * (answerPoints / 100d));
         int total = (int) (answerPoints + timeBonus * (answerPoints / 100d));
-        Main.scoreTotal += total;
-        setScore(Main.scoreTotal);
+        if (doublepoints == 1 && !disabledJokers.contains(JokerType.DOUBLE_POINTS)) {
+            total *= 2;
+            doublepoints = 2;
+        }
+        if (Main.gameMode == GameMode.MULTIPLAYER) {
+            main.getMultiplayerGame().addToScore(total);
+            setScore(main.getMultiplayerGame().getScoreTotal());
+        } else {
+            main.getSingleplayerGame().addToScore(total);
+            setScore(main.getSingleplayerGame().getScoreTotal());
+        }
         Paint color;
         if (answerPoints >= 90) {
             color = Paint.valueOf("#6cf06a");
@@ -569,6 +600,7 @@ public abstract class GameCtrl extends SceneCtrl {
     /**
      * Rounds the image
      * Source: https://stackoverflow.com/a/56303884/9957954
+     *
      * @param imageView imageView in which the image will be viewed
      */
     public void setRoundedImage(ImageView imageView) {
@@ -592,6 +624,69 @@ public abstract class GameCtrl extends SceneCtrl {
 
         // store the rounded image in the imageView.
         imageView.setImage(image);
+    }
+
+    @FXML
+    protected void onMute() {
+        String imagePath = mute ? "img/unmute.png" : "img/mute.png";
+        mute = !mute;
+
+        ImageView icon = (ImageView) muteSound.getChildrenUnmodifiable().get(0);
+        icon.setImage(new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(imagePath))));
+    }
+
+    /**
+     * Quits from the current game session. Sets main.singleplayerGame to null and stops the timer which would otherwise continue running.
+     */
+    @FXML
+    protected void quitGame() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Leave Game");
+        alert.setHeaderText("You're about to leave this game!");
+        alert.setContentText("Are you sure you want to leave?");
+
+        if (alert.showAndWait().get() == ButtonType.OK) {
+            LoggerUtil.infoInline(Main.USERNAME + " quit the singleplayer game!");
+            main.showScene(MainMenuCtrl.class);
+            timer.setOnFinished(event -> {});
+            timer = null;
+            main.quitSingleplayer();
+        }
+
+    }
+
+    /**
+     * This method is used to ensure that the mute button is in the same state in both the question types. This must be called onShowScene
+     */
+    protected void setMuteButton() {
+        String imagePath = mute ? "img/mute.png" : "img/unmute.png";
+        ImageView icon = (ImageView) muteSound.getChildrenUnmodifiable().get(0);
+        icon.setImage(new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(imagePath))));
+    }
+
+    protected void playSound(boolean isCorrect) {
+
+        if (mute) return;
+
+        Media media;
+        MediaPlayer mediaPlayer;
+        String soundFilePath = "";
+        if (isCorrect) {
+            try {
+                soundFilePath = getClass().getResource("/sounds/correct.wav").toURI().toString();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+        } else {
+            try {
+                soundFilePath = getClass().getResource("/sounds/wrong.mp3").toURI().toString();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+        }
+        media = new Media(soundFilePath);
+        mediaPlayer = new MediaPlayer(media);
+        mediaPlayer.play();
     }
 
     /**

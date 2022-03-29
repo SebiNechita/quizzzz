@@ -77,7 +77,6 @@ public class Main extends Application {
         mainCtrl.load("client/scenes/DeleteActivity.fxml","Delete Activity Screen");
         mainCtrl.load("client/scenes/EndGame.fxml", "End Game Screen");
 
-        //TODO: Delete this before showcasing the final product. But I still want it for testing.
         //For testing, I skipped the Connection and Login screens
         if (debug) {
             LoginCtrl login = mainCtrl.getCtrl(LoginCtrl.class);

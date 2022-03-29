@@ -25,13 +25,14 @@ import static org.mockito.Mockito.verify;
 public class GameServiceTest {
 
     GameService gameService;
+    CreateGameService createGameService;
 
     /**
      * initializes gameService before each test case
      */
     @BeforeEach
     void initService() {
-        gameService = new GameService();
+        gameService = new GameService(createGameService);
     }
 
     /**

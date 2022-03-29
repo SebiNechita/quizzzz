@@ -1,9 +1,17 @@
 package client.scenes;
 
+import client.utils.OnShowScene;
 import client.utils.ServerUtils;
+import javafx.animation.*;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -15,6 +23,8 @@ public class ConnectionCtrl extends SceneCtrl {
 
     @FXML
     private Text message;
+    @FXML
+    private Button connectButton;
 
     /**
      * Constructor for this Ctrl
@@ -42,20 +52,112 @@ public class ConnectionCtrl extends SceneCtrl {
     }
 
     /**
-     * Event handler for when 'Connect' button is clicked
+     * This method is run when Connection scene is displayed
+     */
+    @OnShowScene
+    public void OnShowScene() {
+        url.requestFocus();
+        url.positionCaret(url.getText().length());
+        addChangeListener();
+
+    }
+
+    /**
+     * Event handler for when 'Connect' button is clicked.
+     * Should set up and play the connecting animation(for this demo)
      */
     public void connectClicked() {
-        String urlStr = url.getText();
-        // test if the url is valid
-        boolean res = server.testConnection(urlStr);
+        Animation connectingAni = getConnectingAnimation();
+        connectingAni.setOnFinished(event -> {
+            url.styleProperty().unbind();
+            url.getStyleClass().clear();
+            connect();
+        });
 
-        if (res) {
+        connectingAni.play();
+    }
+
+    /**
+     * try to connect to the given URL
+     */
+    public void connect() {
+        String urlStr = url.getText();
+        String res = server.testConnection(urlStr);
+        if (res.equals("true")) {
             main.showScene(LoginCtrl.class);
             url.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 50");
             message.setText("");
-        } else {
-            message.setText("This URL is invalid");
+        } else if(res.equals("URL")) {
+            message.setText("The URL is invalid");
             url.setStyle("-fx-background-color: #fc6363; -fx-background-radius: 50");
+            shake(url).play();
+            connectButton.setDisable(true);
+        } else if(res.equals("Server")){
+            message.setText("Cannot connect to this server");
+            url.setStyle("-fx-background-color: #fc6363; -fx-background-radius: 50");
+            shake(url).play();
+        } else {
+            message.setText("This is not a game server");
+            url.setStyle("-fx-background-color: #fc6363; -fx-background-radius: 50");
+            shake(url).play();
         }
     }
+
+    /**
+     * add change event listener to the URL TextField
+     */
+    public void addChangeListener() {
+        ChangeListener<String> listener = (observable, oldValue, newValue) -> {
+            boolean res = server.isValidURL(newValue);
+            if (res) {
+                connectButton.setDisable(false);
+                message.setText("");
+            } else {
+                connectButton.setDisable(true);
+                message.setText("This URL is invalid");
+            }
+            url.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 50");
+        };
+        url.textProperty().addListener(listener);
+    }
+
+    /**
+     * create a returns a 'connecting' animation
+     *
+     * @return 'connecting' animation
+     */
+    public Animation getConnectingAnimation() {
+        DoubleProperty startFade = new SimpleDoubleProperty(0);
+        url.styleProperty().bind(Bindings.createStringBinding(() -> String.format(
+                "-fx-background-color: linear-gradient(to right, #7FFFD4, #F0FFFF %f%%, #7FFFD4 ); -fx-background-radius: 50;",
+                startFade.get() * 100
+        ), startFade));
+
+
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.ZERO, new KeyValue(startFade, 0)),
+                new KeyFrame(Duration.seconds(0.3), new KeyValue(startFade, 0.4)),
+                new KeyFrame(Duration.seconds(0.6), new KeyValue(startFade, 0.8)));
+//        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.setCycleCount(1);
+        return timeline;
+    }
+
+    /**
+     * Create and returns a shaking Animation for a given node
+     *
+     * @param node to node to apply shaking animation
+     * @return shaking Animation
+     */
+    protected Animation shake(TextField node) {
+
+        TranslateTransition transition = new TranslateTransition(Duration.millis(50), node);
+        transition.setFromX(0f);
+        transition.setByX(10f);
+        transition.setCycleCount(2);
+        transition.setAutoReverse(true);
+
+        return transition;
+    }
+
 }

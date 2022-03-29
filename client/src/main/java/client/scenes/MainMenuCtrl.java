@@ -68,6 +68,7 @@ public class MainMenuCtrl extends SceneCtrl {
      * Show the leaderboard.
      */
     public void showHomeLeaderboard() {
+        SingleplayerLeaderboardCtrl.fromMainMenu = true;
         main.showScene(SingleplayerLeaderboardCtrl.class);
     }
 
@@ -91,13 +92,8 @@ public class MainMenuCtrl extends SceneCtrl {
      */
     public void showSingleplayer(){
         Main.gameMode = GameMode.SINGLEPLAYER;
-        Main.currentQuestionCount = 0;
-        Main.questions = new LinkedList<>();
-        Main.openQuestions = new LinkedList<>();
-        Main.questionHistory = new LinkedList<>();
-        Main.scoreTotal = 0;
-        main.getQuestions();
-        main.jumpToNextQuestion();
+        main.createNewSingleplayerGame();
+        main.getSingleplayerGame().jumpToNextQuestion();
     }
 
 
