@@ -186,7 +186,7 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         if(Main.gameMode == GameMode.MULTIPLAYER){
             timer.setOnFinished(event -> {
                 showCorrectAnswer(answerOptionNumber);
-                nextQuestion.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
+                startWaitTimer();
             });
         }
         else {
@@ -195,6 +195,12 @@ public class GameMultiChoiceCtrl extends GameCtrl {
                 nextQuestion.setVisible(Main.gameMode == GameMode.SINGLEPLAYER);
             });
         }
+    }
+
+    protected void onWaitTimerEnd() {
+        timer.setOnFinished(event -> {
+            main.getCtrl(GameMultiChoiceCtrl.class).initialiseNextQuestion();
+        });
     }
 
     /**

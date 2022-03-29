@@ -365,15 +365,34 @@ public abstract class GameCtrl extends SceneCtrl {
     protected void startTimer() {
         jokerContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
         notificationContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
-        //emoteContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
+       // emoteContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
 
+        timeMultiplier = 1d;
         timer = timerAnim(timeLeftSlider);
 
         timeLeftSlider.setBackground(new Background(new BackgroundFill(new Color(0.160, 0.729, 0.901, 1), new CornerRadii(50), Insets.EMPTY)));
-        timeMultiplier = 1d;
+//        timeMultiplier = 1d;
         timer.playFromStart();
         onTimerEnd();
     }
+
+    protected abstract void onWaitTimerEnd();
+
+    /**
+     * The timer which counts down the amount of time left and also shows the correct answer after the time limit has run out
+     */
+    protected void startWaitTimer() {
+        jokerContainer.setVisible(false);
+        notificationContainer.setVisible(true);
+        //emoteContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
+
+        timer = waitTimerAnim(timeLeftSlider);
+
+        timeLeftSlider.setBackground(new Background(new BackgroundFill(new Color(0.160, 0.729, 0.901, 1), new CornerRadii(50), Insets.EMPTY)));
+        timer.playFromStart();
+        onWaitTimerEnd();
+    }
+
 
     /**
      * Reduces the total amount of time left of the timer
@@ -520,6 +539,28 @@ public abstract class GameCtrl extends SceneCtrl {
                 anchorPane.setPrefWidth(25 + 475 * frac);
                 timeLeft = timeMultiplier * (1 - frac);
                 timeLeftText.setText("Time left: " + (Math.round(100 * timeLeft) / 10d) + "s");
+            }
+        };
+    }
+
+    /**
+     * Animates the timer to fill up its bar
+     *
+     * @param anchorPane The pane which to scroll
+     * @return The animation object which can be played
+     */
+    private Animation waitTimerAnim(AnchorPane anchorPane) {
+        return new Transition() {
+            {
+                setCycleDuration(Duration.millis(5000));
+                setInterpolator(Interpolator.LINEAR);
+            }
+
+            @Override
+            protected void interpolate(double frac) {
+                anchorPane.setPrefWidth(25 + 475 * frac);
+                timeLeft = timeMultiplier * (1 - frac) / 2;
+                timeLeftText.setText("Next Question in: " + (Math.round(100 * timeLeft) / 10d) + "s");
             }
         };
     }
