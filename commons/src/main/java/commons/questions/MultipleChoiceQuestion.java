@@ -35,7 +35,7 @@ public class MultipleChoiceQuestion extends Question {
 
     /**
      * Generate a MultipleChoiceQuestion by randomly picking three activities from the list of unused activities.
-     * It also randomly picks one from the 3 as an answer.
+     * It also picks one from the 3 as an answer.
      *
      * @param unusedActivities list of unused activities
      * @return MultipleChoiceQuestion generated randomly
@@ -52,11 +52,44 @@ public class MultipleChoiceQuestion extends Question {
                     unusedActivities.remove(randInt)
             );
         }
+        if (randomGen.nextBoolean()){
+            return generateSelectMaximumQuestion(activityList);
+        }
+        else{
+            return generateSelectByConsumptionQuestion(activityList, randomGen.nextInt(activityList.size()));
+        }
+
+    }
+
+    /**
+     * Creates a question asking for the activity using the most energy out of the three
+     * @param activityList the three activities
+     * @return the generated question
+     */
+    public static MultipleChoiceQuestion generateSelectMaximumQuestion(List<Activity> activityList){
+        //TODO: Replace with some stream magic?
+        Activity max = activityList.get(0);
+        if (activityList.get(1).getConsumption_in_wh()>max.getConsumption_in_wh()){
+            max = activityList.get(1);
+        }
+        if (activityList.get(2).getConsumption_in_wh()>max.getConsumption_in_wh()){
+            max = activityList.get(2);
+        }
+        activityList.remove(max);
+        String question = "Which of the following activities uses the most energy?";
+        return new MultipleChoiceQuestion(question, activityList, max);
+    }
+
+    /**
+     * Creates a question asking for which activity out of the three uses the given amount of energy.
+     * @param activityList the three activities
+     * @param answerNo the index of the answer activity
+     * @return the generated question
+     */
+    public static MultipleChoiceQuestion generateSelectByConsumptionQuestion(List<Activity> activityList, int answerNo){
         // Here, the answer is removed from the activity list because this makes it easier to find the non-answer options.
         // The answer is rather stores in the variable answer
-        Activity answer = activityList.remove(
-                randomGen.nextInt(activityList.size())
-        );
+        Activity answer = activityList.remove(answerNo);
         String question = "Which of the following activities uses " + answer.getConsumption_in_wh() + "wh of energy?";
         return new MultipleChoiceQuestion(question, activityList, answer);
     }
