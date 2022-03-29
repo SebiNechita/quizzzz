@@ -138,6 +138,23 @@ public class GameService {
     }
 
     /**
+     * send joker notification to other players
+     *
+     * @param type     should be "JokerNotification"
+     * @param jokerNotification joker type
+     * @param from     sender of the emote
+     */
+    public void onJokerNotificationReceived(String type, String jokerNotification, String from) {
+        for (GameController.EventCaller<LobbyResponsePacket> thread : playerEventList) {
+            // if the user in the list is different from the notification sender
+            if (type.equals("JokerNotification") && !thread.getUsername().equals(from)) {
+                thread.run(new LobbyResponsePacket("JokerNotification", jokerNotification, from));
+            }
+        }
+        clearEventList(from);
+    }
+
+    /**
      * sends join message to all other players in the lobby
      *
      * @param from player who just entered the lobby

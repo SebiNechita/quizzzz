@@ -87,7 +87,7 @@ public abstract class GameCtrl extends SceneCtrl {
     @FXML
     protected VBox notificationContainer;
 
-    private NotificationRenderer notificationRenderer;
+    public NotificationRenderer notificationRenderer;
 
     @FXML
     protected HBox emoteContainer;
@@ -208,17 +208,20 @@ public abstract class GameCtrl extends SceneCtrl {
                         jokersUsed.replace(JokerType.DOUBLE_POINTS, true);
                         hideJokerTooltip(tooltip);
                         doublePoints = true;
+                        //notificationRenderer.addJokerNotification(Main.USERNAME, JokerType.DOUBLE_POINTS);
                     } else if (node == jokers.getChildren().get(1)) {
                         disableJoker(JokerType.HALF_TIME);
                         jokersUsed.replace(JokerType.HALF_TIME, true);
                         hideJokerTooltip(tooltip);
                         halfTime = true;
+                        //notificationRenderer.addJokerNotification(Main.USERNAME, JokerType.HALF_TIME);
                         main.getMultiplayerGame().sendJokerClickedToAllClients(JokerType.HALF_TIME, this.getClass());
                     } else if (node == jokers.getChildren().get(2)) {
                         disableJoker(JokerType.REMOVE_ANSWER);
                         jokersUsed.replace(JokerType.REMOVE_ANSWER, true);
                         hideJokerTooltip(tooltip);
                         removeAnswer = true;
+                        //notificationRenderer.addJokerNotification(Main.USERNAME, JokerType.REMOVE_ANSWER);
                     }
 
                     jokerClicked = true;
@@ -740,7 +743,7 @@ public abstract class GameCtrl extends SceneCtrl {
     /**
      * Utility class for rendering the notifications during the game.
      */
-    private class NotificationRenderer {
+    public class NotificationRenderer {
         private final Queue<AnchorPane> notifications = new LinkedList<>();
         private Animation fadingOut = null;
 
@@ -757,7 +760,7 @@ public abstract class GameCtrl extends SceneCtrl {
          * @param username The username who sent the emote
          * @param emote    The emote which was sent
          */
-        private void addEmoteNotification(String username, Emote emote) {
+        public void addEmoteNotification(String username, Emote emote) {
             renderNotification(generateNotification(username + " reacted with:", new Color(1, 1, 1, 1), false, emote));
         }
 
@@ -766,7 +769,7 @@ public abstract class GameCtrl extends SceneCtrl {
          *
          * @param username The username who disconnected
          */
-        private void addDisconnectNotification(String username) {
+        public void addDisconnectNotification(String username) {
             renderNotification(generateNotification(username + " has disconnected", new Color(0.949, 0.423, 0.392, 1), false));
         }
 
@@ -776,7 +779,7 @@ public abstract class GameCtrl extends SceneCtrl {
          * @param username The username who used the joker
          * @param type     The type of joker used
          */
-        private void addJokerNotification(String username, JokerType type) {
+        public void addJokerNotification(String username, JokerType type) {
             renderNotification(generateNotification(username + " has used a " + type.getName() + " joker!", new Color(0.541, 0.929, 1, 1), true));
         }
 

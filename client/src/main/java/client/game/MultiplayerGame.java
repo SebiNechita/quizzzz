@@ -308,6 +308,20 @@ public class MultiplayerGame implements client.game.Game {
     }
 
     /**
+     * send clicked Joker notification to the server
+     *
+     * @param username this client's username
+     * @param jokerType emote name
+     * @return GeneralResponsePacket
+     */
+    public GeneralResponsePacket sendJokerNotification(String username, String jokerType) {
+        return server.postRequest("api/game/jokerNotification",
+                new EmoteRequestPacket(username, jokerType),
+                GeneralResponsePacket.class);
+    }
+
+
+    /**
      * updates emote in this client according to updates sent by the server
      *
      * @param from  sender of the emote
@@ -319,6 +333,19 @@ public class MultiplayerGame implements client.game.Game {
                         .updateEmoji(from, emote));
 
     }
+
+//    /**
+//     * updates joker notification in this client according to updates sent by the server
+//     *
+//     * @param from  sender of the joker notification
+//     * @param jokerType joker type
+//     */
+//    private void updateJokerNotification(String from, String jokerType) {
+//        Platform.runLater(() ->
+//                main.getCtrl(LobbyCtrl.class)
+//                        .updateJokerNotification(from, jokerType));
+//
+//    }
 
     /**
      * send ready message to the server
@@ -449,6 +476,8 @@ public class MultiplayerGame implements client.game.Game {
                     if (((JokerResponsePacket) responsePacket).getJokerType().equals(JokerType.HALF_TIME) && !((JokerResponsePacket) responsePacket).getFrom().equals(Main.USERNAME))
                         main.getCtrl(GameOpenQuestionCtrl.class).reduceTimer(0.5);
                 });
+            } else if (responsePacket.getType().equals("JokerNotification")) {
+                main.getGame().notificationRenderer.addJokerNotification(responsePacket.getFrom(), JokerType.valueOf(responsePacket.getContent()));
             }
         }
 

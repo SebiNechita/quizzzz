@@ -87,6 +87,20 @@ public class GameController {
     }
 
     /**
+     * client sends joker notification to server, server then send it to other players
+     *
+     * @param request request for sending joker notification
+     * @return LobbyResponsePacket
+     */
+    @PostMapping("/jokerNotification")
+    public GeneralResponsePacket sendJokerNotification(@RequestBody JokerNotificationRequestPacket request) {
+        gameService.onJokerNotificationReceived("JokerNotification",
+                request.getJokerType().getName(),
+                request.getUsername());
+        return new GeneralResponsePacket(HttpStatus.OK);
+    }
+
+    /**
      * receives ready information from player and send it to other players
      *
      * @param request
