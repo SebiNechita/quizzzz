@@ -213,6 +213,8 @@ public abstract class GameCtrl extends SceneCtrl {
                         jokersUsed.replace(JokerType.HALF_TIME, true);
                         hideJokerTooltip(tooltip);
                         halfTime = true;
+                        reduceTimer(0.5);
+                        main.getMultiplayerGame().sendJokerClickedToAllClients(JokerType.HALF_TIME);
                     } else if (node == jokers.getChildren().get(2)) {
                         disableJoker(JokerType.REMOVE_ANSWER);
                         jokersUsed.replace(JokerType.REMOVE_ANSWER, true);
@@ -426,7 +428,7 @@ public abstract class GameCtrl extends SceneCtrl {
      *
      * @param multiplier The multiplier to reduce with
      */
-    protected void reduceTimer(double multiplier) {
+    public void reduceTimer(double multiplier) {
         timeMultiplier *= multiplier;
         double timeLeft = timer.getCurrentTime().toMillis();
         timer.stop();

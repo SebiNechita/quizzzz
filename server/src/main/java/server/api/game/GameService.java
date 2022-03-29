@@ -3,6 +3,8 @@ package server.api.game;
 import commons.Game;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import packets.JokerRequestPacket;
+import packets.JokerResponsePacket;
 import packets.LobbyResponsePacket;
 import packets.StartGameRequestPacket;
 
@@ -272,5 +274,14 @@ public class GameService {
             thread.run(new LobbyResponsePacket("Start", "true", requestPacket.getUsername(), trimmedMap));
         }
         return new LobbyResponsePacket("Start", "true", requestPacket.getUsername(), trimmedMap);
+    }
+
+    public JokerResponsePacket onJokerGame(JokerRequestPacket requestPacket) {
+        Map<String, String> trimmedMap = trimPlayerList();
+        for (GameController.EventCaller<LobbyResponsePacket> thread : playerEventList) {
+            thread.run(new JokerResponsePacket("Joker", "true", requestPacket.getUsername(), requestPacket.getJokerType()));
+        }
+
+        return new JokerResponsePacket("Joker", "true", requestPacket.getUsername(), requestPacket.getJokerType());
     }
 }

@@ -124,4 +124,9 @@ public class GameController {
     public LobbyResponsePacket onStart(@RequestBody StartGameRequestPacket requestPacket) {
         return gameService.onStartGame(requestPacket);
     }
+
+    @PostMapping("/joker")
+    public JokerResponsePacket onJoker(@RequestBody JokerRequestPacket requestPacket) {
+        return gameService.onJokerGame(requestPacket);
+    }
 }

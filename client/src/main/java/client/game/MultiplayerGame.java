@@ -1,6 +1,7 @@
 package client.game;
 
 
+import client.Main;
 import client.scenes.*;
 import client.utils.ServerUtils;
 import commons.Game;
@@ -8,6 +9,7 @@ import commons.Game;
 import commons.questions.MultipleChoiceQuestion;
 import commons.questions.OpenQuestion;
 import commons.questions.Question;
+import commons.utils.JokerType;
 import javafx.application.Platform;
 import packets.*;
 
@@ -357,6 +359,10 @@ public class MultiplayerGame implements client.game.Game {
                 LobbyResponsePacket.class);
     }
 
+    public void sendJokerClickedToAllClients(JokerType jokerType) {
+        JokerResponsePacket responsePacket = server.postRequest("api/game/joker", new JokerRequestPacket(jokerType, Main.USERNAME), JokerResponsePacket.class);
+    }
+
     /**
      * send persistent long polling request to the server. And it should get updates from the server about other players.
      */
@@ -431,6 +437,11 @@ public class MultiplayerGame implements client.game.Game {
             } else if (responsePacket.getType().equals("Start")) {
                 Platform.runLater(() -> {
                     main.getCtrl(LobbyCtrl.class).startGame();
+                });
+            } else if (responsePacket.getType().equals("Joker")) {
+                Platform.runLater(() -> {
+                    if (((JokerResponsePacket) responsePacket).getJokerType().equals(JokerType.HALF_TIME) && !((JokerResponsePacket) responsePacket).getFrom().equals(Main.USERNAME))
+                        main.getCtrl(GameCtrl.class).reduceTimer(0.1);
                 });
             }
         }
