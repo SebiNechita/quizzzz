@@ -213,8 +213,7 @@ public abstract class GameCtrl extends SceneCtrl {
                         jokersUsed.replace(JokerType.HALF_TIME, true);
                         hideJokerTooltip(tooltip);
                         halfTime = true;
-                        reduceTimer(0.5);
-                        main.getMultiplayerGame().sendJokerClickedToAllClients(JokerType.HALF_TIME);
+                        main.getMultiplayerGame().sendJokerClickedToAllClients(JokerType.HALF_TIME, this.getClass());
                     } else if (node == jokers.getChildren().get(2)) {
                         disableJoker(JokerType.REMOVE_ANSWER);
                         jokersUsed.replace(JokerType.REMOVE_ANSWER, true);

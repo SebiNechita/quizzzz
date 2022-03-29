@@ -277,9 +277,13 @@ public class GameService {
     }
 
     public JokerResponsePacket onJokerGame(JokerRequestPacket requestPacket) {
-        Map<String, String> trimmedMap = trimPlayerList();
         for (GameController.EventCaller<LobbyResponsePacket> thread : playerEventList) {
-            thread.run(new JokerResponsePacket("Joker", "true", requestPacket.getUsername(), requestPacket.getJokerType()));
+            if (requestPacket.getScene().equals("client.scenes.GameMultiChoiceCtrl")) {
+                thread.run(new JokerResponsePacket("JokerMultiChoice", "true", requestPacket.getUsername(), requestPacket.getJokerType()));
+            } else if (requestPacket.getScene().equals("client.scenes.GameOpenQuestionCtrl")) {
+                thread.run(new JokerResponsePacket("JokerOpenQuestion", "true", requestPacket.getUsername(), requestPacket.getJokerType()));
+            }
+
         }
 
         return new JokerResponsePacket("Joker", "true", requestPacket.getUsername(), requestPacket.getJokerType());

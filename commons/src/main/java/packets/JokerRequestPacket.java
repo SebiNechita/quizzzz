@@ -7,8 +7,15 @@ import java.util.Objects;
 public class JokerRequestPacket extends RequestPacket {
     private JokerType jokerType;
     private String username;
+    private String scene;
 
     public JokerRequestPacket() {
+    }
+
+    public JokerRequestPacket(JokerType jokerType, String username, String scene) {
+        this.jokerType = jokerType;
+        this.username = username;
+        this.scene = scene;
     }
 
     public JokerRequestPacket(JokerType jokerType, String username) {
@@ -30,6 +37,14 @@ public class JokerRequestPacket extends RequestPacket {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getScene() {
+        return scene;
+    }
+
+    public void setScene(String scene) {
+        this.scene = scene;
     }
 
     @Override

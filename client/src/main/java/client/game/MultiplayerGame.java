@@ -359,8 +359,9 @@ public class MultiplayerGame implements client.game.Game {
                 LobbyResponsePacket.class);
     }
 
-    public void sendJokerClickedToAllClients(JokerType jokerType) {
-        JokerResponsePacket responsePacket = server.postRequest("api/game/joker", new JokerRequestPacket(jokerType, Main.USERNAME), JokerResponsePacket.class);
+    public <T extends GameCtrl> void sendJokerClickedToAllClients(JokerType jokerType, Class<T> scene) {
+        System.out.println(scene.getName());
+        JokerResponsePacket responsePacket = server.postRequest("api/game/joker", new JokerRequestPacket(jokerType, Main.USERNAME, scene.getName()), JokerResponsePacket.class);
     }
 
     /**
@@ -438,10 +439,15 @@ public class MultiplayerGame implements client.game.Game {
                 Platform.runLater(() -> {
                     main.getCtrl(LobbyCtrl.class).startGame();
                 });
-            } else if (responsePacket.getType().equals("Joker")) {
+            } else if (responsePacket.getType().equals("JokerMultiChoice")) {
                 Platform.runLater(() -> {
                     if (((JokerResponsePacket) responsePacket).getJokerType().equals(JokerType.HALF_TIME) && !((JokerResponsePacket) responsePacket).getFrom().equals(Main.USERNAME))
-                        main.getCtrl(GameCtrl.class).reduceTimer(0.1);
+                        main.getCtrl(GameMultiChoiceCtrl.class).reduceTimer(0.5);
+                });
+            } else if (responsePacket.getType().equals("JokerOpenQuestion")) {
+                Platform.runLater(() -> {
+                    if (((JokerResponsePacket) responsePacket).getJokerType().equals(JokerType.HALF_TIME) && !((JokerResponsePacket) responsePacket).getFrom().equals(Main.USERNAME))
+                        main.getCtrl(GameOpenQuestionCtrl.class).reduceTimer(0.5);
                 });
             }
         }
