@@ -24,6 +24,7 @@ import javafx.scene.effect.Effect;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -72,7 +73,7 @@ public abstract class GameCtrl extends SceneCtrl {
     @FXML
     private AnchorPane jokerContainer;
 
-    private static List<AnchorPane> disabledJokers;
+    protected static List<AnchorPane> disabledJokers;
     private List<AnchorPane> touchNotUsedJokers;
 
     @FXML
@@ -101,7 +102,9 @@ public abstract class GameCtrl extends SceneCtrl {
     protected static boolean halfTime;
     protected static boolean halfTimeUsed;
     protected static boolean removeAnswer;
-    protected static boolean RemoveAnswerUsed;
+    protected static boolean removeAnswerUsed;
+
+    protected static boolean jokerClicked;
 
     public static Map<JokerType, Boolean> jokersUsed;
 
@@ -138,7 +141,10 @@ public abstract class GameCtrl extends SceneCtrl {
     protected void initialize() {
         doublePoints = false;
         doublePointsUsed = false;
-
+        halfTime = false;
+        halfTimeUsed = false;
+        removeAnswer = false;
+        removeAnswerUsed = false;
     }
 
     /**
@@ -192,7 +198,7 @@ public abstract class GameCtrl extends SceneCtrl {
             ImageView jokerImage = (ImageView) joker.getChildren().get(0);
             AnchorPane tooltip = (AnchorPane) joker.getChildren().get(1);
 
-            jokerImage.setOnMouseClicked(event -> {
+            jokerImage.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
                 if (disabledJokers.contains(joker)) {
                     return;
                 } else {
@@ -201,31 +207,30 @@ public abstract class GameCtrl extends SceneCtrl {
                         disableJoker(JokerType.DOUBLE_POINTS);
                         jokersUsed.replace(JokerType.DOUBLE_POINTS, true);
                         hideJokerTooltip(tooltip);
-//                        jokersUsed[0] = true;
                         doublePoints = true;
                     } else if (node == jokers.getChildren().get(1)) {
                         disableJoker(JokerType.HALF_TIME);
                         jokersUsed.replace(JokerType.HALF_TIME, true);
                         hideJokerTooltip(tooltip);
-//                        jokersUsed[1] = true;
                         halfTime = true;
                     } else if (node == jokers.getChildren().get(2)) {
                         disableJoker(JokerType.REMOVE_ANSWER);
                         jokersUsed.replace(JokerType.REMOVE_ANSWER, true);
                         hideJokerTooltip(tooltip);
-//                        jokersUsed[1] = true;
                         removeAnswer = true;
                     }
 
+                    jokerClicked = true;
                 }
             });
 
             jokerImage.setOnMouseExited(event -> {
-                if (jokersUsed.get(JokerType.valueOf(joker.getId().toUpperCase())))
+                if (!jokerClicked && jokersUsed.get(JokerType.valueOf(joker.getId().toUpperCase())))
                     return;
 
                 hoverAnim(joker, new Color(1, 1, 1, 1), new Color(0.266, 0.266, 0.266, 1)).play();
                 hideJokerTooltip(tooltip);
+                jokerClicked = false;
             });
 
             jokerImage.setOnMouseEntered(event -> {
@@ -260,7 +265,7 @@ public abstract class GameCtrl extends SceneCtrl {
      *
      * @param type What type of joker has been used
      */
-    private void jokerUsed(JokerType type) {
+    protected void jokerUsed(JokerType type) {
         LoggerUtil.infoInline("Clicked on the " + type + " joker.");
     }
 
@@ -309,7 +314,7 @@ public abstract class GameCtrl extends SceneCtrl {
      *
      * @param tooltip The tooltip to hide
      */
-    private void hideJokerTooltip(AnchorPane tooltip) {
+    protected void hideJokerTooltip(AnchorPane tooltip) {
         FadeTransition transition = new FadeTransition();
         transition.setNode(tooltip);
         transition.setFromValue(1);
