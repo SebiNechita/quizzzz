@@ -103,7 +103,7 @@ public abstract class GameCtrl extends SceneCtrl {
     protected static boolean removeAnswer;
     protected static boolean RemoveAnswerUsed;
 
-    public static boolean[] jokersUsed = new boolean[3];
+    public static Map<JokerType, Boolean> jokersUsed;
 
     // static because the state has to be the same between both the question types
     protected static boolean mute = false;
@@ -126,6 +126,10 @@ public abstract class GameCtrl extends SceneCtrl {
     public GameCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
         super(mainCtrl, serverUtils);
         disabledJokers = new LinkedList<>();
+        jokersUsed = new HashMap<>();
+        jokersUsed.put(JokerType.DOUBLE_POINTS, false);
+        jokersUsed.put(JokerType.REMOVE_ANSWER, false);
+        jokersUsed.put(JokerType.HALF_TIME, false);
     }
 
     /**
@@ -135,9 +139,6 @@ public abstract class GameCtrl extends SceneCtrl {
         doublePoints = false;
         doublePointsUsed = false;
 
-        for(int i = 0; i < 3; ++i) {
-            jokersUsed[i] = false;
-        }
     }
 
     /**
@@ -162,12 +163,18 @@ public abstract class GameCtrl extends SceneCtrl {
         jokerContainer.setVisible(true);
         jokers.getChildren().forEach(joker -> {
             // Hide the tooltips by default
-            ((AnchorPane) joker).getChildren().get(1).setVisible(true);
+            ((AnchorPane) joker).getChildren().get(1).setVisible(false);
         });
 
         emoteContainer.setVisible(false);
 
         notificationContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
+
+        for (Map.Entry<JokerType, Boolean> joker : jokersUsed.entrySet()) {
+            if (joker.getValue()) {
+                disableJoker(joker.getKey());
+            }
+        }
 
         setMuteButton();
         generateProgressDots();
@@ -189,45 +196,46 @@ public abstract class GameCtrl extends SceneCtrl {
                 if (disabledJokers.contains(joker)) {
                     return;
                 } else {
+                    jokerUsed(JokerType.valueOf(joker.getId().toUpperCase()));
                     if (node == jokers.getChildren().get(0)) {
                         disableJoker(JokerType.DOUBLE_POINTS);
-                        disabledJokers.add(joker);
-                        jokersUsed[0] = true;
+                        jokersUsed.replace(JokerType.DOUBLE_POINTS, true);
+                        hideJokerTooltip(tooltip);
+//                        jokersUsed[0] = true;
                         doublePoints = true;
-                        hoverAnim(joker, new Color(0.266, 0.266, 0.266, 1), new Color(1, 1, 1, 1)).play();
-                        //showJokerTooltip(tooltip);
                     } else if (node == jokers.getChildren().get(1)) {
                         disableJoker(JokerType.HALF_TIME);
-                        disabledJokers.add(joker);
-                        jokersUsed[1] = true;
+                        jokersUsed.replace(JokerType.HALF_TIME, true);
+                        hideJokerTooltip(tooltip);
+//                        jokersUsed[1] = true;
                         halfTime = true;
-                        hoverAnim(joker, new Color(0.266, 0.266, 0.266, 1), new Color(1, 1, 1, 1)).play();
-                        //showJokerTooltip(tooltip);
                     } else if (node == jokers.getChildren().get(2)) {
                         disableJoker(JokerType.REMOVE_ANSWER);
-                        disabledJokers.add(joker);
-                        jokersUsed[1] = true;
-                        halfTime = true;
-                        hoverAnim(joker, new Color(0.266, 0.266, 0.266, 1), new Color(1, 1, 1, 1)).play();
-                        //showJokerTooltip(tooltip);
+                        jokersUsed.replace(JokerType.REMOVE_ANSWER, true);
+                        hideJokerTooltip(tooltip);
+//                        jokersUsed[1] = true;
+                        removeAnswer = true;
                     }
+
                 }
             });
 
-           /* jokerImage.setOnMouseExited(event -> {
-                if (disabledJokers.contains(joker))
+            jokerImage.setOnMouseExited(event -> {
+                if (jokersUsed.get(JokerType.valueOf(joker.getId().toUpperCase())))
                     return;
 
                 hoverAnim(joker, new Color(1, 1, 1, 1), new Color(0.266, 0.266, 0.266, 1)).play();
                 hideJokerTooltip(tooltip);
-            });*/
+            });
 
-            /*jokerImage.setOnMouseClicked(event -> {
-                if (disabledJokers.contains(joker))
+            jokerImage.setOnMouseEntered(event -> {
+                if (jokersUsed.get(JokerType.valueOf(joker.getId().toUpperCase())))
                     return;
 
-                jokerUsed(JokerType.valueOf(joker.getId().toUpperCase()));
-            });*/
+                hoverAnim(joker,  new Color(0.266, 0.266, 0.266, 1), new Color(1, 1, 1, 1)).play();
+                showJokerTooltip(tooltip);
+
+            });
         }
 
         for (Node node : emoteContainer.getChildren()) {
