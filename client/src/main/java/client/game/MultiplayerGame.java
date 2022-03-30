@@ -314,9 +314,9 @@ public class MultiplayerGame implements client.game.Game {
      * @param jokerType emote name
      * @return GeneralResponsePacket
      */
-    public GeneralResponsePacket sendJokerNotification(String username, String jokerType) {
+    public GeneralResponsePacket sendJokerNotification(String username, JokerType jokerType) {
         return server.postRequest("api/game/jokerNotification",
-                new EmoteRequestPacket(username, jokerType),
+                new JokerNotificationRequestPacket(username, jokerType),
                 GeneralResponsePacket.class);
     }
 

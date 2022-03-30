@@ -209,6 +209,7 @@ public abstract class GameCtrl extends SceneCtrl {
                         hideJokerTooltip(tooltip);
                         doublePoints = true;
                         //notificationRenderer.addJokerNotification(Main.USERNAME, JokerType.DOUBLE_POINTS);
+                        main.getMultiplayerGame().sendJokerNotification(Main.USERNAME, JokerType.DOUBLE_POINTS);
                     } else if (node == jokers.getChildren().get(1)) {
                         disableJoker(JokerType.HALF_TIME);
                         jokersUsed.replace(JokerType.HALF_TIME, true);
@@ -216,12 +217,14 @@ public abstract class GameCtrl extends SceneCtrl {
                         halfTime = true;
                         //notificationRenderer.addJokerNotification(Main.USERNAME, JokerType.HALF_TIME);
                         main.getMultiplayerGame().sendJokerClickedToAllClients(JokerType.HALF_TIME, this.getClass());
+                        main.getMultiplayerGame().sendJokerNotification(Main.USERNAME, JokerType.HALF_TIME);
                     } else if (node == jokers.getChildren().get(2)) {
                         disableJoker(JokerType.REMOVE_ANSWER);
                         jokersUsed.replace(JokerType.REMOVE_ANSWER, true);
                         hideJokerTooltip(tooltip);
                         removeAnswer = true;
                         //notificationRenderer.addJokerNotification(Main.USERNAME, JokerType.REMOVE_ANSWER);
+                        main.getMultiplayerGame().sendJokerNotification(Main.USERNAME, JokerType.REMOVE_ANSWER);
                     }
 
                     jokerClicked = true;
