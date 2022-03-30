@@ -328,6 +328,9 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         setRoundedImage(image3);
     }
 
+    /**
+     * Removes a wrong answer
+     */
     protected void removeWrongAnswer() {
         int[] wrongOptions = new int[2];
         int pos = 0;
