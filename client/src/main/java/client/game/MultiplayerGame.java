@@ -114,7 +114,10 @@ public class MultiplayerGame implements client.game.Game {
      * Or exits if the game is over.
      */
     public void jumpToNextQuestion() {
-        if (currentQuestionCount < 20) {
+        if (currentQuestionCount == 9){
+            main.showScene(MultiplayerLeaderboardCtrl.class);
+        }
+        else if (currentQuestionCount < 20) {
             showQuestion();
         } else {
 //            server.postRequest("api/leaderboard", new LeaderboardEntry(this.scoreTotal, Main.USERNAME), LeaderboardResponsePacket.class);

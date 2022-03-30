@@ -62,6 +62,7 @@ public class Main extends Application {
         mainCtrl.load("client/scenes/AddActivity.fxml","Add Activity Screen");
         mainCtrl.load("client/scenes/DeleteActivity.fxml","Delete Activity Screen");
         mainCtrl.load("client/scenes/EndGame.fxml", "End Game Screen");
+        mainCtrl.load("client/scenes/MultiplayerLeaderboard.fxml", "Match leaderboard");
 
 
         mainCtrl.showScene(ConnectionCtrl.class);
