@@ -1,9 +1,12 @@
 package packets;
 
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+
 import java.util.Map;
 import java.util.Objects;
 
+@JsonSubTypes({@JsonSubTypes.Type(value = JokerResponsePacket.class, name = "JokerResponsePacket")})
 public class LobbyResponsePacket extends GeneralResponsePacket {
     private String type;
     private String content;
