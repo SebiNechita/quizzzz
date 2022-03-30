@@ -217,20 +217,6 @@ public class LobbyCtrl extends SceneCtrl {
     }
 
     /**
-     * update jokerNotification sent by other player
-     *
-     * @param from     sender of the emote
-     * @param jokerType the emote name
-     */
-    public void updateJokerNotification(String from, String jokerType) {
-        Text text = new Text(from + " used a " + jokerType + " joker!");
-        text.setFont(Font.font("Comic Sans MS", 30));
-        Text text2 = new Text("\n");
-
-        chattextflow.getChildren().addAll(text, text2);
-    }
-
-    /**
      * when back button is clicked. Should stop pinging thread and the long polling thread.
      */
     @FXML

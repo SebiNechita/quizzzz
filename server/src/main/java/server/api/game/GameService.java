@@ -278,6 +278,10 @@ public class GameService {
         playerMap.put(username, Map.entry(ready, LocalDateTime.now()));
     }
 
+    /**
+     * Return a game
+     * @return A game
+     */
     public Game getGameIfExists() {
         if (game == null) {
             game = createGameService.createGame(20).getGame();
@@ -285,6 +289,11 @@ public class GameService {
         return game;
     }
 
+    /**
+     * Starts a game when a player presses "start" and informs other players
+     * @param requestPacket The reques packet
+     * @return LobbyResponsePacket
+     */
     public LobbyResponsePacket onStartGame(StartGameRequestPacket requestPacket) {
         Map<String, String> trimmedMap = trimPlayerList();
         for (GameController.EventCaller<LobbyResponsePacket> thread : playerEventList) {
@@ -293,6 +302,11 @@ public class GameService {
         return new LobbyResponsePacket("Start", "true", requestPacket.getUsername(), trimmedMap);
     }
 
+    /**
+     * When a player uses the Half-time joker, other players get the effect from that joker
+     * @param requestPacket The request packet
+     * @return JokerResponsePacket
+     */
     public JokerResponsePacket onJokerGame(JokerRequestPacket requestPacket) {
         for (GameController.EventCaller<LobbyResponsePacket> thread : playerEventList) {
             if (requestPacket.getScene().equals("client.scenes.GameMultiChoiceCtrl")) {

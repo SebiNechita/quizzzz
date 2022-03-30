@@ -48,14 +48,27 @@ public class JokerResponsePacket extends LobbyResponsePacket {
         this.jokerType = jokerType;
     }
 
+    /**
+     * Getter
+     * @return The joker type
+     */
     public JokerType getJokerType() {
         return jokerType;
     }
 
+    /**
+     * Setter
+     * @param jokerType The joker type
+     */
     public void setJokerType(JokerType jokerType) {
         this.jokerType = jokerType;
     }
 
+    /**
+     * Checks whether o is equal to this
+     * @param o Object to be campared to this
+     * @return Whether o is equal to this
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -65,11 +78,19 @@ public class JokerResponsePacket extends LobbyResponsePacket {
         return jokerType == that.jokerType;
     }
 
+    /**
+     * Returns the hash code of this
+     * @return Hash code of this
+     */
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), jokerType);
     }
 
+    /**
+     * String representation of this
+     * @return String representation of this
+     */
     @Override
     public String toString() {
         return "JokerResponsePacket{" +

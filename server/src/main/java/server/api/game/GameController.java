@@ -95,7 +95,7 @@ public class GameController {
     @PostMapping("/jokerNotification")
     public GeneralResponsePacket sendJokerNotification(@RequestBody JokerNotificationRequestPacket request) {
         gameService.onJokerNotificationReceived("JokerNotification",
-                request.getJokerType().getName(),
+                request.getJokerType().toString(),
                 request.getUsername());
         return new GeneralResponsePacket(HttpStatus.OK);
     }
@@ -134,11 +134,21 @@ public class GameController {
         }
     }
 
+    /**
+     * receives start from a player and sends it to other players
+     * @param requestPacket The request packet
+     * @return LobbyResponsePacket
+     */
     @PostMapping("/start")
     public LobbyResponsePacket onStart(@RequestBody StartGameRequestPacket requestPacket) {
         return gameService.onStartGame(requestPacket);
     }
 
+    /**
+     * receives a joker from a player and sends it to other players
+     * @param requestPacket The request packet
+     * @return LobbyResponsePacket
+     */
     @PostMapping("/joker")
     public JokerResponsePacket onJoker(@RequestBody JokerRequestPacket requestPacket) {
         return gameService.onJokerGame(requestPacket);

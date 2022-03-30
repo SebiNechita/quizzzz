@@ -334,19 +334,6 @@ public class MultiplayerGame implements client.game.Game {
 
     }
 
-//    /**
-//     * updates joker notification in this client according to updates sent by the server
-//     *
-//     * @param from  sender of the joker notification
-//     * @param jokerType joker type
-//     */
-//    private void updateJokerNotification(String from, String jokerType) {
-//        Platform.runLater(() ->
-//                main.getCtrl(LobbyCtrl.class)
-//                        .updateJokerNotification(from, jokerType));
-//
-//    }
-
     /**
      * send ready message to the server
      *
@@ -380,12 +367,22 @@ public class MultiplayerGame implements client.game.Game {
 
     }
 
+    /**
+     * Sends start to all clients when starting a game
+     * @param username Username of the player
+     */
     public void sendStartToAllClients(String username) {
         LobbyResponsePacket responsePacket = server.postRequest("api/game/start",
                 new StartGameRequestPacket(true, username),
                 LobbyResponsePacket.class);
     }
 
+    /**
+     * Sends a post request to the server when a player uses a joker
+     * @param jokerType The type of the joker
+     * @param scene The current scene depending on the type of question
+     * @param <T> Generic
+     */
     public <T extends GameCtrl> void sendJokerClickedToAllClients(JokerType jokerType, Class<T> scene) {
         System.out.println(scene.getName());
         JokerResponsePacket responsePacket = server.postRequest("api/game/joker", new JokerRequestPacket(jokerType, Main.USERNAME, scene.getName()), JokerResponsePacket.class);
@@ -477,7 +474,9 @@ public class MultiplayerGame implements client.game.Game {
                         main.getCtrl(GameOpenQuestionCtrl.class).reduceTimer(0.5);
                 });
             } else if (responsePacket.getType().equals("JokerNotification")) {
-                main.getGame().notificationRenderer.addJokerNotification(responsePacket.getFrom(), JokerType.valueOf(responsePacket.getContent()));
+                Platform.runLater(() -> {
+                    main.getGame().notificationRenderer.addJokerNotification(responsePacket.getFrom(), JokerType.valueOf(responsePacket.getContent()));
+                });
             }
         }
 
