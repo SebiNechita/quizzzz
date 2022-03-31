@@ -10,19 +10,18 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Popup;
+import javafx.stage.Stage;
 import packets.ActivitiesResponsePacket;
 
-import javax.swing.text.TabableView;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 
 public class ListActivityCtrl extends SceneCtrl {
     @FXML
@@ -44,6 +43,9 @@ public class ListActivityCtrl extends SceneCtrl {
 
     @FXML
     private TableColumn<ActivityItem, String> title;
+
+    @FXML
+    private AnchorPane anchorPane;
 
     private ObservableList<ActivityItem> items;
 
@@ -89,26 +91,37 @@ public class ListActivityCtrl extends SceneCtrl {
                     super.updateItem(item, empty);
                     //setText(empty ? null : item);
                     if (item != null) {
-                        //setItem(item);
+                        // without this the image won't be displayed
                         setGraphic(item);
                     }
                 }
             };
 
-            cell.setOnMouseClicked(e -> {
-                if (true) {
-                    ActivityItem item = cell.getTableView().getItems().get(cell.getIndex());
-                    // do something with id...
-                    var title = item.getTitle();
+            //cell.setOnMouseClicked(
+            final Popup popup = new Popup();
+            popup.setAutoHide(true);
 
-                    var test = image.getCellFactory();
-                    var test1 = image.getCellValueFactory();
+            cell.setOnMouseEntered(e -> {
 
-                    System.out.println(test1);
-                }
+                ActivityItem item = cell.getTableView().getItems().get(cell.getIndex());
+                // do something with id...
+                var title = item;
+                // clear previous content
+                popup.getContent().clear();
+                // set image
+                Image image = server.getImage(item.getImagePath());
+                popup.getContent().add(new ImageView(image));
 
-
+                Stage stage = (Stage) anchorPane.getScene().getWindow();
+                popup.show(stage, e.getScreenX() - 300, e.getSceneY());
             });
+
+            cell.setOnMouseExited(e -> {
+                popup.getContent().clear();
+                popup.hide();
+            });
+
+
             return cell;
         });
 
@@ -137,7 +150,8 @@ public class ListActivityCtrl extends SceneCtrl {
                     editIcon,
                     activity.getConsumption_in_wh(),
                     activity.getSource(),
-                    activity.getTitle()));
+                    activity.getTitle(),
+                    activity.getImage_path()));
         }
 
         return res;

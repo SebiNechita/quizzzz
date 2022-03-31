@@ -35,33 +35,30 @@ public class ActivityItem {
     private String title;
 
     /**
-     * constructor for ActivityItem
-     *
-     * @param id
-     * @param image
-     * @param consumption
-     * @param source
-     * @param title
+     * path of the image in the server
      */
-    public ActivityItem(String id, ImageView image, ImageView edit, long consumption, String source, String title) {
+    private String imagePath;
+
+    public ActivityItem(String id, ImageView image, ImageView edit, long consumption, String source, String title, String imagePath) {
         this.id = id;
         this.image = image;
         this.edit = edit;
         this.consumption = consumption;
         this.source = source;
         this.title = title;
+        this.imagePath = imagePath;
     }
 
     public String getId() {
         return id;
     }
 
-    public ImageView getEdit() {
-        return edit;
-    }
-
     public ImageView getImage() {
         return image;
+    }
+
+    public ImageView getEdit() {
+        return edit;
     }
 
     public long getConsumption() {
@@ -74,5 +71,9 @@ public class ActivityItem {
 
     public String getTitle() {
         return title;
+    }
+
+    public String getImagePath() {
+        return imagePath;
     }
 }

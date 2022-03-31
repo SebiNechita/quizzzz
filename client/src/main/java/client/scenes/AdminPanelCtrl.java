@@ -3,7 +3,6 @@ package client.scenes;
 import client.Main;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.text.Text;
 

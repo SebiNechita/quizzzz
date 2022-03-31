@@ -1,8 +1,6 @@
 package client.scenes;
 
-import client.utils.ActivityItem;
 import client.utils.ServerUtils;
-import commons.questions.Activity;
 import commons.utils.LoggerUtil;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,7 +15,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import packets.ActivitiesResponsePacket;
 import packets.ActivityRequestPacket;
 import packets.GeneralResponsePacket;
 import packets.ImageResponsePacket;
@@ -25,9 +22,6 @@ import packets.ImageResponsePacket;
 import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
-import java.sql.Array;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
 
