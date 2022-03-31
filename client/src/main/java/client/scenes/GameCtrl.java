@@ -2,6 +2,7 @@ package client.scenes;
 
 import client.Main;
 import client.utils.AnimationUtil;
+import client.utils.ColorPresets;
 import client.utils.NotificationRenderer;
 import client.utils.ServerUtils;
 import com.google.common.util.concurrent.AtomicDouble;
@@ -121,7 +122,7 @@ public abstract class GameCtrl extends SceneCtrl {
     /**
      * This method is called from its subclasses when that scene is displayed
      */
-    public void onShowScene() {
+    protected void onShowScene() {
         notificationRenderer = new NotificationRenderer(notificationContainer);
 
         timeLeftSlider = (AnchorPane) timeLeftBar.getChildren().get(0);
@@ -149,9 +150,12 @@ public abstract class GameCtrl extends SceneCtrl {
 
         notificationContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
 
-        for (JokerType joker : main.getMultiplayerGame().getDisabledJokers()) {
-            disableJoker(joker);
+        if (Main.gameMode == GameMode.MULTIPLAYER) {
+            for (JokerType joker : main.getMultiplayerGame().getDisabledJokers()) {
+                disableJoker(joker);
+            }
         }
+
 
         setMuteButton();
         generateProgressDots();
@@ -188,7 +192,7 @@ public abstract class GameCtrl extends SceneCtrl {
                 if (main.getMultiplayerGame().getDisabledJokers().contains(jokerType))
                     return;
 
-                AnimationUtil.fadeAnim(joker, new Color(1, 1, 1, 1), new Color(0.266, 0.266, 0.266, 1), 200, 10).play();
+                AnimationUtil.fadeAnim(joker, ColorPresets.white, ColorPresets.gray, 200, 10).play();
                 hideJokerTooltip(tooltip);
             });
 
@@ -196,7 +200,7 @@ public abstract class GameCtrl extends SceneCtrl {
                 if (main.getMultiplayerGame().getDisabledJokers().contains(jokerType))
                     return;
 
-                AnimationUtil.fadeAnim(joker, new Color(0.266, 0.266, 0.266, 1), new Color(1, 1, 1, 1), 200, 10).play();
+                AnimationUtil.fadeAnim(joker, ColorPresets.gray, ColorPresets.white, 200, 10).play();
                 showJokerTooltip(tooltip);
             });
         }
@@ -245,7 +249,7 @@ public abstract class GameCtrl extends SceneCtrl {
                 .forEach(joker -> {
                     ImageView image = (ImageView) joker.getChildren().get(0);
 
-                    AnimationUtil.fadeAnim(joker, new Color(1, 1, 1, 1), new Color(0.266, 0.266, 0.266, 1), 200, 10).play();
+                    AnimationUtil.fadeAnim(joker, ColorPresets.white, ColorPresets.gray, 200, 10).play();
                     ColorAdjust effect = new ColorAdjust();
                     effect.setBrightness(-0.5);
                     effect.setContrast(-0.5);
@@ -307,7 +311,7 @@ public abstract class GameCtrl extends SceneCtrl {
 
         if (numberOfQuestions == -1) {
             for (int i = 0; i < 20; i++) {
-                Circle circle = generateCircle(Paint.valueOf("#2b2b2b"), dropShadow);
+                Circle circle = generateCircle(ColorPresets.dark_gray, dropShadow);
                 children.add(circle);
             }
         } else {
@@ -315,12 +319,12 @@ public abstract class GameCtrl extends SceneCtrl {
             for (int i = numberOfQuestions; i < 20 + numberOfQuestions; i++) {
                 if (history.hasNext()) {
                     if (history.next()) {
-                        circle = generateCircle(Paint.valueOf("#1ce319"), dropShadow);
+                        circle = generateCircle(ColorPresets.green, dropShadow);
                     } else {
-                        circle = generateCircle(Paint.valueOf("#e84343"), dropShadow);
+                        circle = generateCircle(ColorPresets.red, dropShadow);
                     }
                 } else {
-                    circle = generateCircle(Paint.valueOf("#2b2b2b"), dropShadow);
+                    circle = generateCircle(ColorPresets.dark_gray, dropShadow);
                 }
                 children.add(circle);
             }
@@ -338,7 +342,7 @@ public abstract class GameCtrl extends SceneCtrl {
     private Circle generateCircle(Paint color, Effect effect) {
         Circle circle = new Circle();
         circle.setEffect(effect);
-        circle.setStroke(Paint.valueOf("#000"));
+        circle.setStroke(ColorPresets.black);
         circle.setRadius(11);
         circle.setCache(true);
         circle.setFill(color);
@@ -371,11 +375,11 @@ public abstract class GameCtrl extends SceneCtrl {
         nextQuestion.setVisible(false);
         hidePointsGained();
 
-        for (JokerType joker : main.getMultiplayerGame().getDisabledJokers()) {
-            disableJoker(joker);
-        }
-
         if (Main.gameMode == GameMode.MULTIPLAYER) {
+            for (JokerType joker : main.getMultiplayerGame().getDisabledJokers()) {
+                disableJoker(joker);
+            }
+
             main.getMultiplayerGame().jumpToNextQuestion();
         } else {
             main.getSingleplayerGame().jumpToNextQuestion();
@@ -386,13 +390,14 @@ public abstract class GameCtrl extends SceneCtrl {
      * The timer which counts down the amount of time left and also shows the correct answer after the time limit has run out
      */
     protected void startTimer() {
+        LoggerUtil.log("test");
         jokerContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
         notificationContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
 //        emoteContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
 
         timer = AnimationUtil.timerAnim(timeLeftSlider, timeLeft, timeMultiplier, timeLeftText);
 
-        timeLeftSlider.setBackground(new Background(new BackgroundFill(new Color(0.160, 0.729, 0.901, 1), new CornerRadii(50), Insets.EMPTY)));
+        timeLeftSlider.setBackground(new Background(new BackgroundFill(ColorPresets.timer_bar_regular, new CornerRadii(50), Insets.EMPTY)));
         timeMultiplier = 1d;
         timer.playFromStart();
         onTimerEnd();
@@ -409,7 +414,7 @@ public abstract class GameCtrl extends SceneCtrl {
         timer.stop();
         timer = AnimationUtil.timerAnim(timeLeftSlider, timeLeft, timeMultiplier, timeLeftText);
 
-        timeLeftSlider.setBackground(new Background(new BackgroundFill(new Color(0.925, 0.552, 0.035, 1), new CornerRadii(6), Insets.EMPTY)));
+        timeLeftSlider.setBackground(new Background(new BackgroundFill(ColorPresets.timer_bar_rushed, new CornerRadii(6), Insets.EMPTY)));
         timer.playFrom(Duration.millis(timeLeft.get() * multiplier));
 
         onTimerEnd();
@@ -437,12 +442,12 @@ public abstract class GameCtrl extends SceneCtrl {
         int timeBonus = (int) Math.round(lastAnswerChange * 100 * (answerPoints / 100d));
         int total = (int) (answerPoints + timeBonus * (answerPoints / 100d));
 
-        if (main.getMultiplayerGame().isJokerActive(JokerType.DOUBLE_POINTS)) {
-            total *= 2;
-        }
-
-        main.getMultiplayerGame().addToScore(total);
         if (Main.gameMode == GameMode.MULTIPLAYER) {
+            if (main.getMultiplayerGame().isJokerActive(JokerType.DOUBLE_POINTS)) {
+                total *= 2;
+            }
+
+            main.getMultiplayerGame().addToScore(total);
             setScore(main.getMultiplayerGame().getScoreTotal());
         } else {
             setScore(main.getSingleplayerGame().getScoreTotal());
@@ -450,11 +455,11 @@ public abstract class GameCtrl extends SceneCtrl {
 
         Paint color;
         if (answerPoints >= 90) {
-            color = Paint.valueOf("#6cf06a");
+            color = ColorPresets.soft_green;
         } else if (answerPoints >= 20) {
-            color = Paint.valueOf("#ffde61");
+            color = ColorPresets.soft_yellow;
         } else {
-            color = Paint.valueOf("#f26c64");
+            color = ColorPresets.soft_red;
         }
 
         pointsGainedText.setText("You gained " + "0".repeat(Integer.toString(total).length()) + " points");

@@ -2,6 +2,7 @@ package client.scenes;
 
 import client.Main;
 import client.utils.AnimationUtil;
+import client.utils.ColorPresets;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import commons.questions.Activity;
@@ -148,14 +149,14 @@ public class GameMultiChoiceCtrl extends GameCtrl {
                 if (locked[index] || selected != null && selected.getValue() == option)
                     return;
 
-                AnimationUtil.fadeAnim(option, new Color(1, 1, 1, 1), new Color(0.698, 0.792, 0.921, 1), 200, 40).play();
+                AnimationUtil.fadeAnim(option, ColorPresets.white, ColorPresets.hover, 200, 40).play();
             });
 
             option.setOnMouseExited(event -> {
                 if (locked[index] || selected != null && selected.getValue() == option)
                     return;
 
-                AnimationUtil.fadeAnim(option, new Color(0.698, 0.792, 0.921, 1), new Color(1, 1, 1, 1), 200, 40).play();
+                AnimationUtil.fadeAnim(option, ColorPresets.hover, ColorPresets.white, 200, 40).play();
             });
 
             option.setOnMouseClicked(event -> {
@@ -163,11 +164,11 @@ public class GameMultiChoiceCtrl extends GameCtrl {
                     return;
 
                 if (selected != null && !locked[selected.getKey()]) {
-                    AnimationUtil.fadeAnim(selected.getValue(), new Color(0.698, 0.792, 0.921, 1), new Color(1, 1, 1, 1), 200, 40).play();
+                    AnimationUtil.fadeAnim(selected.getValue(), ColorPresets.hover, ColorPresets.white, 200, 40).play();
                 }
 
                 selected = new Pair<>(index, option);
-                AnimationUtil.fadeAnim(option, new Color(0.698, 0.792, 0.921, 1), new Color(0.243, 0.505, 0.878, 1), 200, 40).play();
+                AnimationUtil.fadeAnim(option, ColorPresets.hover, ColorPresets.selected, 200, 40).play();
 
                 lastAnswerChange = timeLeft.get();
             });
@@ -204,7 +205,7 @@ public class GameMultiChoiceCtrl extends GameCtrl {
 
         AnchorPane correct = options[answer];
 
-        AnimationUtil.fadeAnim(correct, (Color) correct.getBackground().getFills().get(0).getFill(), new Color(0.423, 0.941, 0.415, 1), 350, 40).play();
+        AnimationUtil.fadeAnim(correct, (Color) correct.getBackground().getFills().get(0).getFill(), ColorPresets.soft_green, 350, 40).play();
 
         playSound(selected != null && selected.getValue() == correct);
 
@@ -214,9 +215,9 @@ public class GameMultiChoiceCtrl extends GameCtrl {
             }
 
             if (selected != null && selected.getValue() != removedAnswer && option == selected.getValue()) {
-                AnimationUtil.fadeAnim(option, (Color) option.getBackground().getFills().get(0).getFill(), new Color(0.949, 0.423, 0.392, 1), 350, 40).play();
+                AnimationUtil.fadeAnim(option, (Color) option.getBackground().getFills().get(0).getFill(), ColorPresets.soft_red, 350, 40).play();
             } else {
-                AnimationUtil.fadeAnim(option, (Color) option.getBackground().getFills().get(0).getFill(), new Color(0.478, 0.478, 0.478, 1), 350, 40).play();
+                AnimationUtil.fadeAnim(option, (Color) option.getBackground().getFills().get(0).getFill(), ColorPresets.light_gray, 350, 40).play();
             }
         }
 
@@ -243,7 +244,7 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         selected = null;
 
         for (AnchorPane option : options) {
-            AnimationUtil.fadeAnim(option, (Color) option.getBackground().getFills().get(0).getFill(), new Color(1, 1, 1, 1), 350, 40).play();
+            AnimationUtil.fadeAnim(option, (Color) option.getBackground().getFills().get(0).getFill(), ColorPresets.white, 350, 40).play();
         }
     }
 
@@ -324,7 +325,7 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         locked[option] = true;
 
         removedAnswer = options[option];
-        AnimationUtil.fadeAnim(removedAnswer, (Color) removedAnswer.getBackground().getFills().get(0).getFill(), new Color(0.478, 0.478, 0.478, 1), 350, 40).play();
+        AnimationUtil.fadeAnim(removedAnswer, (Color) removedAnswer.getBackground().getFills().get(0).getFill(), ColorPresets.light_gray, 350, 40).play();
     }
 }
 

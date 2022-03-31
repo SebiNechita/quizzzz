@@ -46,7 +46,7 @@ public class NotificationRenderer {
      * @param emote    The emote which was sent
      */
     public void addEmoteNotification(String username, Emote emote) {
-        renderNotification(generateNotification(username + " reacted with:", new Color(1, 1, 1, 1), false, emote));
+        renderNotification(generateNotification(username + " reacted with:", ColorPresets.white, false, emote));
     }
 
     /**
@@ -55,7 +55,7 @@ public class NotificationRenderer {
      * @param username The username who disconnected
      */
     public void addDisconnectNotification(String username) {
-        renderNotification(generateNotification(username + " has disconnected", new Color(0.949, 0.423, 0.392, 1), false));
+        renderNotification(generateNotification(username + " has disconnected", ColorPresets.soft_red, false));
     }
 
     /**
@@ -65,7 +65,7 @@ public class NotificationRenderer {
      * @param type     The type of joker used
      */
     public void addJokerNotification(String username, JokerType type) {
-        renderNotification(generateNotification(username + " has used a " + type.getName() + " joker!", new Color(0.541, 0.929, 1, 1), true));
+        renderNotification(generateNotification(username + " has used a " + type.getName() + " joker!", ColorPresets.soft_blue, true));
     }
 
     /**

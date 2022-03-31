@@ -2,6 +2,7 @@ package client.scenes;
 
 import client.Main;
 import client.utils.AnimationUtil;
+import client.utils.ColorPresets;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import commons.questions.OpenQuestion;
@@ -194,11 +195,11 @@ public class GameOpenQuestionCtrl extends GameCtrl {
         int difference = userInput.getText().equals("") ? 100 : Math.abs(Integer.parseInt(userInput.getText()) - answer);
         Color current = (Color) userInput.getBackground().getFills().get(0).getFill();
         if (difference <= 10) {
-            AnimationUtil.fadeTextField(userInput, current, new Color(0.423, 0.941, 0.415, 1)).play();
+            AnimationUtil.fadeTextField(userInput, current, ColorPresets.soft_green).play();
         } else if (difference <= 80) {
-            AnimationUtil.fadeTextField(userInput, current, new Color(1, 0.870, 0.380, 1)).play();
+            AnimationUtil.fadeTextField(userInput, current, ColorPresets.soft_yellow).play();
         } else {
-            AnimationUtil.fadeTextField(userInput, current, new Color(0.949, 0.423, 0.392, 1)).play();
+            AnimationUtil.fadeTextField(userInput, current, ColorPresets.soft_red).play();
         }
 
         showPointsGained(100 - difference);

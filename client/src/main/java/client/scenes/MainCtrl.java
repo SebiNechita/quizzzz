@@ -57,7 +57,7 @@ public class MainCtrl {
     public MainCtrl(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.serverUtils = new ServerUtils();
-      // this.multiplayerGame = new MultiplayerGame(this, serverUtils);
+        // this.multiplayerGame = new MultiplayerGame(this, serverUtils);
     }
 
     /**
@@ -68,8 +68,8 @@ public class MainCtrl {
     }
 
     /**
-
      * Creates a new MultiplayerGame
+     *
      * @param game
      */
     public void createNewMultiplayerGame(commons.Game game) {
@@ -120,7 +120,7 @@ public class MainCtrl {
             return null;
         }
     }
-    
+
     /**
      * Loads and initializes a scene
      *
@@ -191,6 +191,7 @@ public class MainCtrl {
                 }
             }
         } catch (IllegalAccessException | InvocationTargetException ignored) {
+
         }
     }
 

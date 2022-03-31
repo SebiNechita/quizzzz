@@ -227,9 +227,9 @@ public class ServerUtils {
         }
 
         if (response.equals("Pong")) {
-            return "true";
+            return "valid";
         } else {
-            return "false";
+            return "invalid";
         }
     }
 
