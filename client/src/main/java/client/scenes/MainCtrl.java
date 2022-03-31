@@ -15,13 +15,10 @@
  */
 package client.scenes;
 
-import client.game.Game;
-import client.game.SingleplayerGame;
 import client.game.MultiplayerGame;
+import client.game.SingleplayerGame;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
-//import commons.utils.GameMode;
-//import commons.utils.HttpStatus;
 import commons.utils.LoggerUtil;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -32,7 +29,6 @@ import javafx.util.Callback;
 import javafx.util.Pair;
 import packets.JoinRequestPacket;
 import packets.JoinResponsePacket;
-//import packets.MultiplayerResponsePacket;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -47,6 +43,8 @@ public class MainCtrl {
     private final ServerUtils serverUtils;
     private SingleplayerGame singleplayerGame;
     private MultiplayerGame multiplayerGame;
+
+    private SceneCtrl currentlyShowing;
 
     private final HashMap<Class<?>, SceneCtrl> ctrlClasses = new HashMap<>();
     private final HashMap<Class<?>, Pair<Scene, String>> scenes = new HashMap<>();
@@ -115,9 +113,19 @@ public class MainCtrl {
         return multiplayerGame;
     }
 
-    public <T extends Game> T getGame(Class<T> gameModeClass) {
-        return gameModeClass.equals(MultiplayerGame.class) ? (T) this.multiplayerGame : (T) this.singleplayerGame;
+    /**
+     * Returns the active GameCtrl
+     *
+     * @return The game ctrl
+     */
+    public GameCtrl getGame() {
+        if (currentlyShowing != null && currentlyShowing instanceof GameCtrl) {
+            return (GameCtrl) currentlyShowing;
+        } else {
+            return null;
+        }
     }
+
     /**
      * Loads and initializes a scene
      *
@@ -178,6 +186,7 @@ public class MainCtrl {
         Pair<Scene, String> pair = scenes.get(c);
         primaryStage.setScene(pair.getKey());
         primaryStage.setTitle(pair.getValue());
+        currentlyShowing = ctrlClasses.get(c);
 
         try {
             // Runs every method in the SceneCtrl with the "OnShowScene" annotation

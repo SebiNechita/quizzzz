@@ -1,6 +1,7 @@
 package client.game;
 
 
+import client.Main;
 import client.scenes.*;
 import client.utils.ServerUtils;
 import commons.Game;
@@ -8,6 +9,7 @@ import commons.Game;
 import commons.questions.MultipleChoiceQuestion;
 import commons.questions.OpenQuestion;
 import commons.questions.Question;
+import commons.utils.JokerType;
 import javafx.application.Platform;
 import packets.*;
 
@@ -306,6 +308,20 @@ public class MultiplayerGame implements client.game.Game {
     }
 
     /**
+     * send clicked Joker notification to the server
+     *
+     * @param username this client's username
+     * @param jokerType emote name
+     * @return GeneralResponsePacket
+     */
+    public GeneralResponsePacket sendJokerNotification(String username, JokerType jokerType) {
+        return server.postRequest("api/game/jokerNotification",
+                new JokerNotificationRequestPacket(username, jokerType),
+                GeneralResponsePacket.class);
+    }
+
+
+    /**
      * updates emote in this client according to updates sent by the server
      *
      * @param from  sender of the emote
@@ -351,10 +367,25 @@ public class MultiplayerGame implements client.game.Game {
 
     }
 
+    /**
+     * Sends start to all clients when starting a game
+     * @param username Username of the player
+     */
     public void sendStartToAllClients(String username) {
         LobbyResponsePacket responsePacket = server.postRequest("api/game/start",
                 new StartGameRequestPacket(true, username),
                 LobbyResponsePacket.class);
+    }
+
+    /**
+     * Sends a post request to the server when a player uses a joker
+     * @param jokerType The type of the joker
+     * @param scene The current scene depending on the type of question
+     * @param <T> Generic
+     */
+    public <T extends GameCtrl> void sendJokerClickedToAllClients(JokerType jokerType, Class<T> scene) {
+        System.out.println(scene.getName());
+        JokerResponsePacket responsePacket = server.postRequest("api/game/joker", new JokerRequestPacket(jokerType, Main.USERNAME, scene.getName()), JokerResponsePacket.class);
     }
 
     /**
@@ -431,6 +462,20 @@ public class MultiplayerGame implements client.game.Game {
             } else if (responsePacket.getType().equals("Start")) {
                 Platform.runLater(() -> {
                     main.getCtrl(LobbyCtrl.class).startGame();
+                });
+            } else if (responsePacket.getType().equals("JokerMultiChoice")) {
+                Platform.runLater(() -> {
+                    if (((JokerResponsePacket) responsePacket).getJokerType().equals(JokerType.HALF_TIME) && !((JokerResponsePacket) responsePacket).getFrom().equals(Main.USERNAME))
+                        main.getCtrl(GameMultiChoiceCtrl.class).reduceTimer(0.5);
+                });
+            } else if (responsePacket.getType().equals("JokerOpenQuestion")) {
+                Platform.runLater(() -> {
+                    if (((JokerResponsePacket) responsePacket).getJokerType().equals(JokerType.HALF_TIME) && !((JokerResponsePacket) responsePacket).getFrom().equals(Main.USERNAME))
+                        main.getCtrl(GameOpenQuestionCtrl.class).reduceTimer(0.5);
+                });
+            } else if (responsePacket.getType().equals("JokerNotification")) {
+                Platform.runLater(() -> {
+                    main.getGame().notificationRenderer.addJokerNotification(responsePacket.getFrom(), JokerType.valueOf(responsePacket.getContent()));
                 });
             }
         }
