@@ -159,9 +159,7 @@ public abstract class GameCtrl extends SceneCtrl {
         answerBonusText.setVisible(false);
         timeBonusText.setVisible(false);
 
-        if (Main.gameMode == GameMode.SINGLEPLAYER)
-            setScore(main.getSingleplayerGame().getScoreTotal());
-        else setScore(main.getMultiplayerGame().getScoreTotal());
+        setScore(main.getGame(Main.gameMode).getScoreTotal());
 
         nextQuestion.setVisible(false);
 
@@ -339,10 +337,7 @@ public abstract class GameCtrl extends SceneCtrl {
         dropShadow.setOffsetX(3.0);
         dropShadow.setOffsetY(3.0);
 
-        Iterator<Boolean> history;
-        if (Main.gameMode == GameMode.MULTIPLAYER)
-            history = main.getMultiplayerGame().getQuestionHistory().iterator();
-        else history = main.getSingleplayerGame().getQuestionHistory().iterator();
+        Iterator<Boolean> history = main.getGame(Main.gameMode).getQuestionHistory().iterator();
 
         if (numberOfQuestions == -1) {
             for (int i = 0; i < 20; i++) {
@@ -468,13 +463,10 @@ public abstract class GameCtrl extends SceneCtrl {
             doublePointsUsed = true;
             disableJoker(JokerType.DOUBLE_POINTS);
         }
-        if (Main.gameMode == GameMode.MULTIPLAYER) {
-            main.getMultiplayerGame().addToScore(total);
-            setScore(main.getMultiplayerGame().getScoreTotal());
-        } else {
-            main.getSingleplayerGame().addToScore(total);
-            setScore(main.getSingleplayerGame().getScoreTotal());
-        }
+
+        main.getGame(Main.gameMode).addToScore(total);
+        setScore(main.getGame(Main.gameMode).getScoreTotal());
+
         Paint color;
         if (answerPoints >= 90) {
             color = Paint.valueOf("#6cf06a");

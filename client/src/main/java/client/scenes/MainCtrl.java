@@ -15,10 +15,12 @@
  */
 package client.scenes;
 
+import client.game.Game;
 import client.game.MultiplayerGame;
 import client.game.SingleplayerGame;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
+import commons.utils.GameMode;
 import commons.utils.LoggerUtil;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -106,6 +108,16 @@ public class MainCtrl {
      */
     public MultiplayerGame getMultiplayerGame() {
         return multiplayerGame;
+    }
+
+    /**
+     * Getter for game
+     * @param gameMode mode of the game. Singleplayer/Multiplayer
+     * @return the instance of the Game
+     */
+    public Game getGame(GameMode gameMode) {
+        if (gameMode == GameMode.MULTIPLAYER) return getMultiplayerGame();
+        else return getSingleplayerGame();
     }
 
     /**
