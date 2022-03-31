@@ -1,16 +1,3 @@
-## Team roles
-
-Kristof: Plant, coordinator, shaper
-
-Kim: Team-worker, specialist, implementer
-
-Alexandru: Specialist, coordinator, monitor
-
-Sander: Implementer, monitor, team-worker
-
-Kaushik: Specialist, team-worker, complete finisher
-
-Ilia: Implementer, coordinator, specialist
 
 # Starting template
 
@@ -20,6 +7,10 @@ Add your own name (do not add the names for others!) to the section below.
 
 ## Description of project
 
+We have created a Game called **_Quizzzz_**. The main goal of this game it improve the user's _energy awareness_. We also have a Multiplayer mode so that you can have fun with friends while learning about the energy usages of various activities you see in a day-to-day basis.
+There is also a Single Player Mode for more serious users. There is a global leaderboard that contains best-scores of other users.  
+
+We used the **[Spring Framework](https://spring.io)** to build the application. We also used **[JavaFX](https://openjfx.io)** for the GUI. 
 ## Group members
 
 | Profile Picture | Name | Email |
@@ -37,6 +28,32 @@ Add your own name (do not add the names for others!) to the section below.
 <!-- - (please make sure the photos have the same size) --> 
 
 ## How to run it
+
+1) Clone the repo
+   1) With HTTPS
+      ```sh
+       git clone https://gitlab.ewi.tudelft.nl/cse1105/2021-2022/team-repositories/oopp-group-44/repository-template.git
+       ```
+2) Run the application using gradle
+   1) If you have gradle installed
+      1) You can start the server using:
+         ```shell
+          gradle bootRun
+         ```
+      2) You can then open a new Terminal window and start the client using:
+         ```shell
+         gradle run
+         ```
+   2) If you do not have it installed, you can use this:
+      1) You can start the server using:
+         ```shell
+          ./gradlew bootRun
+         ```
+      2) You can then open a new Terminal window and start the client using:
+         ```shell
+         ./gradlew run
+         ```
+
 
 ## How to contribute to it
 
