@@ -89,6 +89,82 @@
             <Font name="Comic Sans MS" size="17.0" />
          </font>
       </Text>
+      <AnchorPane layoutY="160.0" maxHeight="400.0" maxWidth="150.0" minHeight="400.0" minWidth="150.0" prefHeight="400.0" prefWidth="150.0" style="-fx-background-color: #666; -fx-background-radius: 0 30 30 0;">
+         <children>
+            <Text fx:id="jokersText" fill="WHITE" layoutX="25.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Jokers" textAlignment="CENTER">
+               <font>
+                  <Font name="Comic Sans MS" size="28.0" />
+               </font>
+            </Text>
+            <VBox fx:id="jokers" alignment="CENTER" fillWidth="false" layoutY="38.0" prefHeight="362.0" prefWidth="150.0" spacing="10.0">
+               <children>
+                  <AnchorPane fx:id="double_points" maxHeight="110.0" maxWidth="110.0" minHeight="110.0" minWidth="110.0" prefHeight="110.0" prefWidth="110.0" style="-fx-background-color: #444444; -fx-background-radius: 10;">
+                     <children>
+                        <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="6.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../img/jokers/double_points.png" />
+                           </image>
+                        </ImageView>
+                        <AnchorPane layoutX="120.0" layoutY="34.0" opacity="0.0" prefHeight="45.0" prefWidth="458.0" style="-fx-background-color: #444444d0; -fx-background-radius: 10;">
+                           <children>
+                              <Text fill="WHITE" layoutX="14.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Doubles the amount of points you earn">
+                                 <font>
+                                    <Font name="Comic Sans MS" size="24.0" />
+                                 </font>
+                              </Text>
+                           </children>
+                        </AnchorPane>
+                     </children>
+                     <padding>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                     </padding>
+                  </AnchorPane>
+                  <AnchorPane fx:id="half_time" maxHeight="110.0" maxWidth="110.0" minHeight="110.0" minWidth="110.0" prefHeight="110.0" prefWidth="110.0" style="-fx-background-color: #444444; -fx-background-radius: 10;">
+                     <children>
+                        <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="6.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../img/jokers/half_time.png" />
+                           </image>
+                        </ImageView>
+                        <AnchorPane layoutX="120.0" layoutY="34.0" opacity="0.0" prefHeight="45.0" prefWidth="412.0" style="-fx-background-color: #444444d0; -fx-background-radius: 10;">
+                           <children>
+                              <Text fill="WHITE" layoutX="14.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Halves the time of your opponents">
+                                 <font>
+                                    <Font name="Comic Sans MS" size="24.0" />
+                                 </font>
+                              </Text>
+                           </children>
+                        </AnchorPane>
+                     </children>
+                     <padding>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                     </padding>
+                  </AnchorPane>
+                  <AnchorPane fx:id="remove_answer" maxHeight="110.0" maxWidth="110.0" minHeight="110.0" minWidth="110.0" prefHeight="110.0" prefWidth="110.0" style="-fx-background-color: #444444; -fx-background-radius: 10;">
+                     <children>
+                        <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="6.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../img/jokers/remove_answer.png" />
+                           </image>
+                        </ImageView>
+                        <AnchorPane layoutX="120.0" layoutY="34.0" opacity="0.0" prefHeight="45.0" prefWidth="359.0" style="-fx-background-color: #444444d0; -fx-background-radius: 10;">
+                           <children>
+                              <Text fill="WHITE" layoutX="14.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Removes one incorrect option">
+                                 <font>
+                                    <Font name="Comic Sans MS" size="24.0" />
+                                 </font>
+                              </Text>
+                           </children>
+                        </AnchorPane>
+                     </children>
+                     <padding>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                     </padding>
+                  </AnchorPane>
+               </children>
+            </VBox>
+         </children>
+      </AnchorPane>
       <VBox fx:id="notificationContainer" alignment="BOTTOM_CENTER" layoutX="1068.0" layoutY="131.0" prefHeight="500.0" prefWidth="205.0" spacing="10.0">
          <children>
             <AnchorPane prefHeight="85.0" prefWidth="200.0" style="-fx-background-color: rgba(59, 59, 59, 0.8); -fx-background-radius: 8;">
@@ -191,7 +267,7 @@
             </TextField>
          </children>
       </AnchorPane>
-      <AnchorPane layoutX="5.0" layoutY="14.0" prefHeight="28.0" prefWidth="115.0" style="-fx-background-color: #bfbcbb#bfbcbb; -fx-background-radius: 50; -fx-opacity: 0.5;">
+      <AnchorPane prefHeight="28.0" prefWidth="115.0" style="-fx-background-color: #aaa; -fx-background-radius: 50;" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
          <children>
             <HBox prefHeight="43.0" prefWidth="115.0">
                <children>
@@ -215,82 +291,6 @@
                   </Button>
                </children>
             </HBox>
-         </children>
-      </AnchorPane>
-      <AnchorPane layoutY="160.0" maxHeight="400.0" maxWidth="150.0" minHeight="400.0" minWidth="150.0" prefHeight="400.0" prefWidth="150.0" style="-fx-background-color: #666; -fx-background-radius: 0 30 30 0;">
-         <children>
-            <Text fx:id="jokersText" fill="WHITE" layoutX="25.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Jokers" textAlignment="CENTER">
-               <font>
-                  <Font name="Comic Sans MS" size="28.0" />
-               </font>
-            </Text>
-            <VBox fx:id="jokers" alignment="CENTER" fillWidth="false" layoutY="38.0" prefHeight="362.0" prefWidth="150.0" spacing="10.0">
-               <children>
-                  <AnchorPane fx:id="double_points" maxHeight="110.0" maxWidth="110.0" minHeight="110.0" minWidth="110.0" prefHeight="110.0" prefWidth="110.0" style="-fx-background-color: #444444; -fx-background-radius: 10;">
-                     <children>
-                        <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="6.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../img/jokers/double_points.png" />
-                           </image>
-                        </ImageView>
-                        <AnchorPane layoutX="120.0" layoutY="34.0" opacity="0.0" prefHeight="45.0" prefWidth="458.0" style="-fx-background-color: #444444d0; -fx-background-radius: 10;">
-                           <children>
-                              <Text fill="WHITE" layoutX="14.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Doubles the amount of points you earn">
-                                 <font>
-                                    <Font name="Comic Sans MS" size="24.0" />
-                                 </font>
-                              </Text>
-                           </children>
-                        </AnchorPane>
-                     </children>
-                     <padding>
-                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-                     </padding>
-                  </AnchorPane>
-                  <AnchorPane fx:id="half_time" maxHeight="110.0" maxWidth="110.0" minHeight="110.0" minWidth="110.0" prefHeight="110.0" prefWidth="110.0" style="-fx-background-color: #444444; -fx-background-radius: 10;">
-                     <children>
-                        <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="6.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../img/jokers/half_time.png" />
-                           </image>
-                        </ImageView>
-                        <AnchorPane layoutX="120.0" layoutY="34.0" opacity="0.0" prefHeight="45.0" prefWidth="412.0" style="-fx-background-color: #444444d0; -fx-background-radius: 10;">
-                           <children>
-                              <Text fill="WHITE" layoutX="14.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Halves the time of your opponents">
-                                 <font>
-                                    <Font name="Comic Sans MS" size="24.0" />
-                                 </font>
-                              </Text>
-                           </children>
-                        </AnchorPane>
-                     </children>
-                     <padding>
-                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-                     </padding>
-                  </AnchorPane>
-                  <AnchorPane fx:id="remove_answer" maxHeight="110.0" maxWidth="110.0" minHeight="110.0" minWidth="110.0" prefHeight="110.0" prefWidth="110.0" style="-fx-background-color: #444444; -fx-background-radius: 10;">
-                     <children>
-                        <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="6.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../img/jokers/remove_answer.png" />
-                           </image>
-                        </ImageView>
-                        <AnchorPane layoutX="120.0" layoutY="34.0" opacity="0.0" prefHeight="45.0" prefWidth="359.0" style="-fx-background-color: #444444d0; -fx-background-radius: 10;">
-                           <children>
-                              <Text fill="WHITE" layoutX="14.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Removes one incorrect option">
-                                 <font>
-                                    <Font name="Comic Sans MS" size="24.0" />
-                                 </font>
-                              </Text>
-                           </children>
-                        </AnchorPane>
-                     </children>
-                     <padding>
-                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-                     </padding>
-                  </AnchorPane>
-               </children>
-            </VBox>
          </children>
       </AnchorPane>
     </children>

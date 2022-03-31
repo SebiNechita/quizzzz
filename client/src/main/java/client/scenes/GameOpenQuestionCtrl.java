@@ -17,6 +17,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
+import java.math.BigInteger;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -58,7 +59,6 @@ public class GameOpenQuestionCtrl extends GameCtrl {
     private HBox emoteContainer;
 
     private OpenQuestion oq;
-    protected static int doublepoints;
 
 
     /**
@@ -189,7 +189,9 @@ public class GameOpenQuestionCtrl extends GameCtrl {
     @Override
     protected void showCorrectAnswer(int answer) {
         userInput.setDisable(true);
-        int difference = userInput.getText().equals("") ? 100 : Math.abs(Integer.parseInt(userInput.getText()) - answer);
+        BigInteger rawInput = new BigInteger(userInput.getText());
+        int convertedInput = rawInput.compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) > 0 ? Integer.MAX_VALUE : rawInput.intValue();
+        int difference = userInput.getText().equals("") ? 100 : Math.abs(convertedInput - answer);
         Color current = (Color) userInput.getBackground().getFills().get(0).getFill();
         if (difference <= 10) {
             AnimationUtil.fadeTextField(userInput, current, ColorPresets.soft_green).play();

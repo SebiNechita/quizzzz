@@ -13,6 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -24,12 +25,12 @@ import java.util.Random;
 import java.util.ResourceBundle;
 
 public class GameMultiChoiceCtrl extends GameCtrl {
-    @FXML
-    private Text choice1;
-    @FXML
-    private Text choice2;
-    @FXML
-    private Text choice3;
+//    @FXML
+//    private Text choice1;
+//    @FXML
+//    private Text choice2;
+//    @FXML
+//    private Text choice3;
 
     @FXML
     private HBox progressBar;
@@ -69,13 +70,13 @@ public class GameMultiChoiceCtrl extends GameCtrl {
 
     @FXML
     private HBox emoteContainer;
-
-    @FXML
-    private ImageView image1;
-    @FXML
-    private ImageView image2;
-    @FXML
-    private ImageView image3;
+//
+//    @FXML
+//    private ImageView image1;
+//    @FXML
+//    private ImageView image2;
+//    @FXML
+//    private ImageView image3;
 
 
     /**
@@ -247,7 +248,7 @@ public class GameMultiChoiceCtrl extends GameCtrl {
     /**
      * Gets the next question.
      */
-    protected void retrieveMultipleChoiceQuestion() {
+    private void retrieveMultipleChoiceQuestion() {
         MultipleChoiceQuestion mcq = main.getGame(Main.gameMode).getCurrentQuestion(MultipleChoiceQuestion.class);
         Activity answer = mcq.getAnswer();
         Activity option2 = mcq.getActivityList().get(0); // An option that is not the answer
@@ -269,25 +270,23 @@ public class GameMultiChoiceCtrl extends GameCtrl {
     /**
      * This method sets the texts and images in the options
      *
-     * @param questionText the question text
-     * @param option1      Activity of the text and image that'll be set in the first option
-     * @param option2      Activity of the text and image that'll be set in the second option
-     * @param option3      Activity of the text and image that'll be set in the third option
+     * @param questionText The question text
+     * @param activities   Activities' text and image that'll be set for the options
      */
-    public void setUpQuestion(String questionText, Activity option1, Activity option2, Activity option3) {
+    private void setUpQuestion(String questionText, Activity... activities) {
         question.setText(questionText);
 
-        choice1.setText(option1.getTitle());
-        choice2.setText(option2.getTitle());
-        choice3.setText(option3.getTitle());
+        for (int i = 0; i < activities.length; i++) {
+            Activity activity = activities[i];
+            AnchorPane option = options[i];
+            ImageView optionImage = (ImageView) option.getChildren().get(0);
+            Text optionText = (Text) ((Pane) option.getChildren().get(1)).getChildren().get(0);
 
-        image1.setImage(server.getImage(option1.getImage_path()));
-        image2.setImage(server.getImage(option2.getImage_path()));
-        image3.setImage(server.getImage(option3.getImage_path()));
+            optionImage.setImage(server.getImage(activity.getImage_path()));
+            setRoundedImage(optionImage);
 
-        setRoundedImage(image1);
-        setRoundedImage(image2);
-        setRoundedImage(image3);
+            optionText.setText(activity.getTitle());
+        }
     }
 
     /**

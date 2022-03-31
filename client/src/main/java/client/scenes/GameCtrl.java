@@ -87,8 +87,6 @@ public abstract class GameCtrl extends SceneCtrl {
     @FXML
     protected HBox emoteContainer;
 
-    // Static because it has to be common between both the GameOpenQuestionCtrl and GameMultiChoiceCtrl
-    protected static int numberOfQuestions = -1;
     protected AtomicDouble timeLeft = new AtomicDouble(0);
     protected double lastAnswerChange = 0;
     protected double timeMultiplier = 1d;
@@ -151,7 +149,6 @@ public abstract class GameCtrl extends SceneCtrl {
                 disableJoker(joker);
             }
         }
-
 
         setMuteButton();
         generateProgressDots();
@@ -302,27 +299,20 @@ public abstract class GameCtrl extends SceneCtrl {
 
         Iterator<Boolean> history = main.getGame(Main.gameMode).getQuestionHistory().iterator();
 
-        if (numberOfQuestions == -1) {
-            for (int i = 0; i < 20; i++) {
-                Circle circle = generateCircle(ColorPresets.dark_gray, dropShadow);
-                children.add(circle);
-            }
-        } else {
+        for (int i = 0; i < 20; i++) {
             Circle circle;
-            for (int i = numberOfQuestions; i < 20 + numberOfQuestions; i++) {
-                if (history.hasNext()) {
-                    if (history.next()) {
-                        circle = generateCircle(ColorPresets.green, dropShadow);
-                    } else {
-                        circle = generateCircle(ColorPresets.red, dropShadow);
-                    }
+            if (history.hasNext()) {
+                if (history.next()) {
+                    circle = generateCircle(ColorPresets.green, dropShadow);
                 } else {
-                    circle = generateCircle(ColorPresets.dark_gray, dropShadow);
+                    circle = generateCircle(ColorPresets.red, dropShadow);
                 }
-                children.add(circle);
+            } else {
+                circle = generateCircle(ColorPresets.dark_gray, dropShadow);
             }
+
+            children.add(circle);
         }
-        numberOfQuestions++;
     }
 
     /**
@@ -372,11 +362,9 @@ public abstract class GameCtrl extends SceneCtrl {
             for (JokerType joker : main.getMultiplayerGame().getDisabledJokers()) {
                 disableJoker(joker);
             }
-
-            main.getMultiplayerGame().jumpToNextQuestion();
-        } else {
-            main.getSingleplayerGame().jumpToNextQuestion();
         }
+
+        main.getGame(Main.gameMode).jumpToNextQuestion();
     }
 
     /**
@@ -441,10 +429,9 @@ public abstract class GameCtrl extends SceneCtrl {
             }
 
             main.getMultiplayerGame().addToScore(total);
-            setScore(main.getMultiplayerGame().getScoreTotal());
-        } else {
-            setScore(main.getSingleplayerGame().getScoreTotal());
         }
+
+        setScore(main.getGame(Main.gameMode).getScoreTotal());
 
         Paint color;
         if (answerPoints >= 90) {
@@ -501,6 +488,9 @@ public abstract class GameCtrl extends SceneCtrl {
         imageView.setImage(image);
     }
 
+    /**
+     * Gets called when the mute button is pressed
+     */
     @FXML
     protected void onMute() {
         String imagePath = mute ? "img/unmute.png" : "img/mute.png";
@@ -539,6 +529,11 @@ public abstract class GameCtrl extends SceneCtrl {
         icon.setImage(new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(imagePath))));
     }
 
+    /**
+     * Plays a sound to the user when the answer is revealed
+     *
+     * @param isCorrect If the answer was correct or not
+     */
     protected void playSound(boolean isCorrect) {
         if (mute) return;
 
