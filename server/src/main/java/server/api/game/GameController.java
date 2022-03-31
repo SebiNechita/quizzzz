@@ -66,6 +66,17 @@ public class GameController {
         return new JoinResponsePacket(HttpStatus.OK, playerMap, game);
     }
 
+    /**
+     * Update the score of a user
+     * @param request contains the user and the points to add
+     * @return a response with 200
+     */
+    @PostMapping("/score")
+    public GeneralResponsePacket updateScore(@RequestBody LeaderboardRequestPacket request) {
+        gameService.addScore(request.getPlayer(), request.getScore());
+        return new GeneralResponsePacket(HttpStatus.OK);
+    }
+
    /* @GetMapping("/multiplayer")
     public MultiplayerResponsePacket start(@RequestMapping MultiplayerRequestPacket request){
          Game x = new MultiplayerResponsePacket()

@@ -1,6 +1,7 @@
 package server.api.game;
 
 import commons.Game;
+import commons.LeaderboardEntry;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import packets.JokerRequestPacket;
@@ -20,6 +21,7 @@ public class GameService {
     private Game game;
     private final List<GameController.EventCaller<LobbyResponsePacket>> playerEventList;
     private boolean allReady;
+    private List<LeaderboardEntry> scores;
 
     /**
      * constructor for GameService
@@ -31,6 +33,7 @@ public class GameService {
         this.playerEventList = new LinkedList<>();
         this.allReady = false;
         this.createGameService = createGameService;
+        this.scores = new LinkedList<>();
     }
 
     /**
@@ -76,12 +79,28 @@ public class GameService {
     }
 
     /**
-     * method for adding a new player to the playerMap with false ready state and localtime
-     *
+     * Adds a new player to the playerMap with false ready state and localtime
+     * and sets their score to 0
      * @param player player to be added
      */
     public void addPlayer(String player) {
         playerMap.put(player, Map.entry("false", LocalDateTime.now()));
+        scores.add(new LeaderboardEntry(0,player));
+    }
+
+    /**
+     * Adds the specified amount of points to the player's score
+     * @param player the player to update the score of
+     * @param score the number of points to add
+     */
+    public void addScore(String player, int score){
+        //I used a list of leaderboardentries because that is
+        // what's returned in a LeaderboardResponsePacket.
+        for (LeaderboardEntry l : scores){
+            if (l.username.equals(player)){
+                l.points += score;
+            }
+        }
     }
 
     /**
@@ -109,6 +128,10 @@ public class GameService {
      */
     public List<GameController.EventCaller<LobbyResponsePacket>> getPlayerEventList() {
         return this.playerEventList;
+    }
+
+    public List<LeaderboardEntry> getScores() {
+        return scores;
     }
 
     /**
