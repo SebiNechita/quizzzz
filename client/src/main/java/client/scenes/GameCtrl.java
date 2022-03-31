@@ -1,16 +1,16 @@
 package client.scenes;
 
 import client.Main;
+import client.utils.AnimationUtil;
 import client.utils.NotificationRenderer;
 import client.utils.ServerUtils;
+import com.google.common.util.concurrent.AtomicDouble;
 import commons.utils.Emote;
 import commons.utils.GameMode;
 import commons.utils.JokerType;
 import commons.utils.LoggerUtil;
 import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
-import javafx.animation.Interpolator;
-import javafx.animation.Transition;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -93,7 +93,7 @@ public abstract class GameCtrl extends SceneCtrl {
 
     // Static because it has to be common between both the GameOpenQuestionCtrl and GameMultiChoiceCtrl
     protected static int numberOfQuestions = -1;
-    protected double timeLeft = 0;
+    protected AtomicDouble timeLeft = new AtomicDouble(0);
     protected double lastAnswerChange = 0;
     protected double timeMultiplier = 1d;
     protected static boolean doublePoints;
@@ -231,7 +231,7 @@ public abstract class GameCtrl extends SceneCtrl {
                 if (!jokerClicked && jokersUsed.get(JokerType.valueOf(joker.getId().toUpperCase())))
                     return;
 
-                fadeAnim(joker, new Color(1, 1, 1, 1), new Color(0.266, 0.266, 0.266, 1), 200, 10).play();
+                AnimationUtil.fadeAnim(joker, new Color(1, 1, 1, 1), new Color(0.266, 0.266, 0.266, 1), 200, 10).play();
                 hideJokerTooltip(tooltip);
                 jokerClicked = false;
             });
@@ -240,7 +240,7 @@ public abstract class GameCtrl extends SceneCtrl {
                 if (jokersUsed.get(JokerType.valueOf(joker.getId().toUpperCase())))
                     return;
 
-                fadeAnim(joker, new Color(0.266, 0.266, 0.266, 1), new Color(1, 1, 1, 1), 200, 10).play();
+                AnimationUtil.fadeAnim(joker, new Color(0.266, 0.266, 0.266, 1), new Color(1, 1, 1, 1), 200, 10).play();
                 showJokerTooltip(tooltip);
 
             });
@@ -415,7 +415,7 @@ public abstract class GameCtrl extends SceneCtrl {
         notificationContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
         //emoteContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
 
-        timer = timerAnim(timeLeftSlider);
+        timer = AnimationUtil.timerAnim(timeLeftSlider, timeLeft, timeMultiplier, timeLeftText);
 
         timeLeftSlider.setBackground(new Background(new BackgroundFill(new Color(0.160, 0.729, 0.901, 1), new CornerRadii(50), Insets.EMPTY)));
         timeMultiplier = 1d;
@@ -430,12 +430,12 @@ public abstract class GameCtrl extends SceneCtrl {
      */
     public void reduceTimer(double multiplier) {
         timeMultiplier *= multiplier;
-        double timeLeft = timer.getCurrentTime().toMillis();
+        timeLeft.set(timer.getCurrentTime().toMillis());
         timer.stop();
-        timer = timerAnim(timeLeftSlider);
+        timer = AnimationUtil.timerAnim(timeLeftSlider, timeLeft, timeMultiplier, timeLeftText);
 
         timeLeftSlider.setBackground(new Background(new BackgroundFill(new Color(0.925, 0.552, 0.035, 1), new CornerRadii(6), Insets.EMPTY)));
-        timer.playFrom(Duration.millis(timeLeft * multiplier));
+        timer.playFrom(Duration.millis(timeLeft.get() * multiplier));
 
         onTimerEnd();
     }
@@ -494,7 +494,7 @@ public abstract class GameCtrl extends SceneCtrl {
         timeBonusText.setFill(color);
         timeBonusText.setVisible(true);
 
-        Animation pointsAnim = pointsAnim(total, answerPoints, timeBonus);
+        Animation pointsAnim = AnimationUtil.pointsAnim(total, answerPoints, timeBonus, pointsGainedText, answerBonusText, timeBonusText);
         pointsAnim.playFromStart();
     }
 
@@ -505,110 +505,6 @@ public abstract class GameCtrl extends SceneCtrl {
         pointsGainedText.setVisible(false);
         answerBonusText.setVisible(false);
         timeBonusText.setVisible(false);
-    }
-
-    /**
-     * Transitions from a specified start color to a specified end color
-     *
-     * @param anchorPane   The pane which to change the color of
-     * @param start        The color to start from
-     * @param end          The color to go to
-     * @param millis       The time that this animation should take
-     * @param cornerRadius The radius of the corner of the pane
-     * @return The animation object which can be played
-     */
-    protected Animation fadeAnim(AnchorPane anchorPane, Color start, Color end, int millis, int cornerRadius) {
-        return new Transition() {
-            {
-                setCycleDuration(Duration.millis(millis));
-                setInterpolator(Interpolator.EASE_BOTH);
-            }
-
-            @Override
-            protected void interpolate(double frac) {
-                anchorPane.setBackground(new Background(new BackgroundFill(lerp(start.getRed(), start.getGreen(), start.getBlue(), end.getRed(), end.getGreen(), end.getBlue(), frac), new CornerRadii(cornerRadius), Insets.EMPTY)));
-            }
-        };
-    }
-
-    /**
-     * Animates the timer to fill up its bar
-     *
-     * @param anchorPane The pane which to scroll
-     * @return The animation object which can be played
-     */
-    private Animation timerAnim(AnchorPane anchorPane) {
-        return new Transition() {
-            {
-                setCycleDuration(Duration.millis(10000 * timeMultiplier));
-                setInterpolator(Interpolator.LINEAR);
-            }
-
-            @Override
-            protected void interpolate(double frac) {
-                anchorPane.setPrefWidth(25 + 475 * frac);
-                timeLeft = timeMultiplier * (1 - frac);
-                timeLeftText.setText("Time left: " + (Math.round(100 * timeLeft) / 10d) + "s");
-            }
-        };
-    }
-
-    /**
-     * Animates the text to count up when the player is displayed their points
-     *
-     * @param totalPoints  The amount of points to show for the total text
-     * @param answerPoints The amount of points to show for the answer text
-     * @param timePoints   The amount of points to show for the timer text
-     * @return The animation object which can be played
-     */
-    private Animation pointsAnim(int totalPoints, int answerPoints, int timePoints) {
-        return new Transition() {
-            {
-                setCycleDuration(Duration.millis(1000));
-                setInterpolator(new Interpolator() {
-                    @Override
-                    protected double curve(double t) {
-                        return t == 1 ? 1 : 1 - Math.pow(2, -10 * t);
-                    }
-                });
-            }
-
-            @Override
-            protected void interpolate(double frac) {
-                pointsGainedText.setText("You gained " + lerp(0, totalPoints, frac) + " points");
-                answerBonusText.setText("+" + lerp(0, answerPoints, frac) + " for answering");
-                timeBonusText.setText("+" + lerp(0, timePoints, frac) + " time bonus");
-            }
-        };
-    }
-
-    /**
-     * Lerps color from a given color to a given color
-     *
-     * @param r1   The normalized red to start from
-     * @param g1   The normalized green to start from
-     * @param b1   The normalized blue to start from
-     * @param r2   The normalized red to go to
-     * @param g2   The normalized green to go to
-     * @param b2   The normalized  blue to go to
-     * @param frac The time of the lerp
-     * @return An interpolated color
-     */
-    protected Color lerp(double r1, double g1, double b1, double r2, double g2, double b2, double frac) {
-        frac = 1 - frac;
-        return new Color(r2 + ((r1 - r2) * frac), g2 + ((g1 - g2) * frac), b2 + ((b1 - b2) * frac), 1);
-    }
-
-    /**
-     * Lerps an integer from a given value to a given value
-     *
-     * @param start The integer to start form
-     * @param end   The integer to end at
-     * @param time  The time of the lerp
-     * @return An interpolated integer
-     */
-    private int lerp(int start, int end, double time) {
-        return (int) Math.round(start + (end - start) * time);
     }
 
     /**
@@ -667,7 +563,6 @@ public abstract class GameCtrl extends SceneCtrl {
             timer = null;
             main.quitSingleplayer();
         }
-
     }
 
     /**
@@ -680,27 +575,17 @@ public abstract class GameCtrl extends SceneCtrl {
     }
 
     protected void playSound(boolean isCorrect) {
-
         if (mute) return;
 
-        Media media;
-        MediaPlayer mediaPlayer;
         String soundFilePath = "";
-        if (isCorrect) {
-            try {
-                soundFilePath = getClass().getResource("/sounds/correct.wav").toURI().toString();
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
-        } else {
-            try {
-                soundFilePath = getClass().getResource("/sounds/wrong.mp3").toURI().toString();
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
+        try {
+            soundFilePath = Objects.requireNonNull(getClass().getResource(isCorrect ? "/sounds/correct.wav" : "/sounds/wrong.mp3")).toURI().toString();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
         }
-        media = new Media(soundFilePath);
-        mediaPlayer = new MediaPlayer(media);
+
+        Media media = new Media(soundFilePath);
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
         mediaPlayer.play();
     }
 }
