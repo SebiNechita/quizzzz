@@ -152,12 +152,14 @@ public class MultiplayerGame implements client.game.Game {
     }
 
     /**
-     * Add a number to the current score
+     * Add a number to the current score.
+     * Sends the score to add to the server.
      *
      * @param scoreToBeAdded the number by which score must be incremented
      */
     public void addToScore(int scoreToBeAdded) {
         this.scoreTotal += scoreToBeAdded;
+        server.postRequest("api/game/score",new LeaderboardRequestPacket(Main.USERNAME,scoreToBeAdded),GeneralResponsePacket.class);
     }
 
     /**
