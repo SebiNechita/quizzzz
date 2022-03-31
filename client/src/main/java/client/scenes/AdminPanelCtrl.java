@@ -3,6 +3,7 @@ package client.scenes;
 import client.Main;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.text.Text;
 
@@ -52,8 +53,9 @@ public class AdminPanelCtrl extends SceneCtrl {
     }
 
     /**
-     //     * Show the home screen.
-     //     */
+     * //     * Show the home screen.
+     * //
+     */
     public void showMainMenu() {
         main.showScene(MainMenuCtrl.class);
     }
@@ -65,5 +67,9 @@ public class AdminPanelCtrl extends SceneCtrl {
     public void onShowScene() {
         Main.noOfActivities = server.getActivities().size();
         noOfActivities.setText(Main.noOfActivities == 0 ? "X" : Integer.toString(Main.noOfActivities));
+    }
+
+    public void showActivityList() {
+        main.showScene(ListActivityCtrl.class);
     }
 }

@@ -26,7 +26,7 @@
                 <Font name="Comic Sans MS" size="38.0" />
             </font>
         </Text>
-        <Button layoutX="480.0" layoutY="474.0" mnemonicParsing="false" onAction="#showDeleteActivity" prefHeight="70.0" prefWidth="320.0" style="-fx-background-radius: 40; -fx-background-color: white;" text="Delete an activity" textAlignment="CENTER">
+        <Button layoutX="480.0" layoutY="437.0" mnemonicParsing="false" onAction="#showDeleteActivity" prefHeight="70.0" prefWidth="320.0" style="-fx-background-radius: 40; -fx-background-color: white;" text="Delete an activity" textAlignment="CENTER">
             <font>
                 <Font name="Comic Sans MS" size="30.0" />
             </font>
@@ -46,5 +46,10 @@
                 <Font name="Comic Sans MS" size="24.0" />
             </font>
         </Text>
+      <Button layoutX="480.0" layoutY="520.0" mnemonicParsing="false" onAction="#showActivityList" prefHeight="70.0" prefWidth="320.0" style="-fx-background-radius: 40; -fx-background-color: white;" text="List all activities" textAlignment="CENTER">
+         <font>
+            <Font name="Comic Sans MS" size="30.0" />
+         </font>
+      </Button>
     </children>
 </AnchorPane>

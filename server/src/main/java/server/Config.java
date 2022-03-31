@@ -17,6 +17,8 @@ package server;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,10 +28,11 @@ public class Config {
 
     /**
      * a singleton player list
+     *
      * @return player list
      */
     @Bean
-    public List<String> playerList(){
+    public List<String> playerList() {
         List<String> list = new ArrayList<>();
         return list;
     }
