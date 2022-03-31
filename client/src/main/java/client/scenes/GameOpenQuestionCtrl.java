@@ -122,11 +122,8 @@ public class GameOpenQuestionCtrl extends GameCtrl {
      * Gets the current question and displays it.
      */
     private void displayQuestion() {
-        if (Main.gameMode == GameMode.MULTIPLAYER) {
-            oq = main.getMultiplayerGame().getCurrentQuestion(OpenQuestion.class);
-        } else {
-            oq = main.getSingleplayerGame().getCurrentQuestion(OpenQuestion.class);
-        }
+
+        oq = main.getGame(Main.gameMode).getCurrentQuestion(OpenQuestion.class);
 
         setQuestion(oq.getQuestion());
         setActivityImage(oq.getAnswer().getImage_path());
@@ -204,11 +201,7 @@ public class GameOpenQuestionCtrl extends GameCtrl {
 
         showPointsGained(100 - difference);
 
-        if (Main.gameMode == GameMode.MULTIPLAYER) {
-            main.getMultiplayerGame().getQuestionHistory().add(difference <= 50);
-        } else {
-            main.getSingleplayerGame().getQuestionHistory().add(difference <= 50);
-        }
+        main.getGame(Main.gameMode).getQuestionHistory().add(difference <= 50);
         playSound(difference <= 50);
         
 

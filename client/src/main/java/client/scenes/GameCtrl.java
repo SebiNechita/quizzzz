@@ -131,11 +131,7 @@ public abstract class GameCtrl extends SceneCtrl {
         answerBonusText.setVisible(false);
         timeBonusText.setVisible(false);
 
-        if (Main.gameMode == GameMode.SINGLEPLAYER) {
-            setScore(main.getSingleplayerGame().getScoreTotal());
-        } else {
-            setScore(main.getMultiplayerGame().getScoreTotal());
-        }
+        setScore(main.getGame(Main.gameMode).getScoreTotal());
 
         nextQuestion.setVisible(false);
 
@@ -304,10 +300,7 @@ public abstract class GameCtrl extends SceneCtrl {
         dropShadow.setOffsetX(3.0);
         dropShadow.setOffsetY(3.0);
 
-        Iterator<Boolean> history;
-        if (Main.gameMode == GameMode.MULTIPLAYER)
-            history = main.getMultiplayerGame().getQuestionHistory().iterator();
-        else history = main.getSingleplayerGame().getQuestionHistory().iterator();
+        Iterator<Boolean> history = main.getGame(Main.gameMode).getQuestionHistory().iterator();
 
         if (numberOfQuestions == -1) {
             for (int i = 0; i < 20; i++) {

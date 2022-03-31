@@ -1,6 +1,16 @@
 package client.game;
 
+import client.scenes.MainCtrl;
+import client.utils.ServerUtils;
+import commons.questions.Question;
+
+import java.util.List;
+
 public interface Game {
-    void jumpToNextQuestion();
-    Integer getScoreTotal();
+    public void jumpToNextQuestion();
+    public Integer getScoreTotal();
+    public abstract List<Boolean> getQuestionHistory();
+    public abstract <T extends Question> T getCurrentQuestion(Class<T> questionType);
+
+    public abstract void addToScore(int total);
 }

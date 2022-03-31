@@ -224,11 +224,7 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         boolean correctlyAnswered = selected != null && selected.getKey() == answer;
         showPointsGained(correctlyAnswered ? 100 : 0);
 
-        if (Main.gameMode == GameMode.MULTIPLAYER) {
-            main.getMultiplayerGame().getQuestionHistory().add(correctlyAnswered);
-        } else {
-            main.getSingleplayerGame().getQuestionHistory().add(correctlyAnswered);
-        }
+        main.getGame(Main.gameMode).getQuestionHistory().add(correctlyAnswered);
 
         generateProgressDots();
     }
@@ -252,12 +248,7 @@ public class GameMultiChoiceCtrl extends GameCtrl {
      * Gets the next question.
      */
     protected void retrieveMultipleChoiceQuestion() {
-        MultipleChoiceQuestion mcq;
-        if (Main.gameMode == GameMode.SINGLEPLAYER) {
-            mcq = main.getSingleplayerGame().getCurrentQuestion(MultipleChoiceQuestion.class);
-        } else {
-            mcq = main.getMultiplayerGame().getCurrentQuestion(MultipleChoiceQuestion.class);
-        }
+        MultipleChoiceQuestion mcq = main.getGame(Main.gameMode).getCurrentQuestion(MultipleChoiceQuestion.class);
         Activity answer = mcq.getAnswer();
         Activity option2 = mcq.getActivityList().get(0); // An option that is not the answer
         Activity option3 = mcq.getActivityList().get(1); // Another option that is not the answer
