@@ -1,27 +1,22 @@
 package client.scenes;
 
 import client.Main;
-//import client.game.MultiplayerGame;
-//import client.game.SingleplayerGame;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import commons.questions.Activity;
 import commons.questions.MultipleChoiceQuestion;
 import commons.utils.GameMode;
 import commons.utils.JokerType;
-import javafx.animation.Animation;
-import javafx.animation.Interpolator;
-import javafx.animation.Transition;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import javafx.util.Duration;
 import javafx.util.Pair;
 
 import javax.inject.Inject;
@@ -155,14 +150,14 @@ public class GameMultiChoiceCtrl extends GameCtrl {
                 if (locked[index] || selected != null && selected.getValue() == option)
                     return;
 
-                hoverAnim(option, new Color(0.698, 0.792, 0.921, 1), false).play();
+                fadeAnim(option, new Color(1, 1, 1, 1), new Color(0.698, 0.792, 0.921, 1), 200, 40).play();
             });
 
             option.setOnMouseExited(event -> {
                 if (locked[index] || selected != null && selected.getValue() == option)
                     return;
 
-                hoverAnim(option, new Color(0.698, 0.792, 0.921, 1), true).play();
+                fadeAnim(option, new Color(0.698, 0.792, 0.921, 1), new Color(1, 1, 1, 1), 200, 40).play();
             });
 
             option.setOnMouseClicked(event -> {
@@ -170,11 +165,11 @@ public class GameMultiChoiceCtrl extends GameCtrl {
                     return;
 
                 if (selected != null && !locked[selected.getKey()]) {
-                    selectedAnim(selected.getValue(), false).play();
+                    fadeAnim(selected.getValue(), new Color(0.698, 0.792, 0.921, 1), new Color(1, 1, 1, 1), 200, 40);
                 }
 
                 selected = new Pair<>(index, option);
-                selectedAnim(option, true).play();
+                fadeAnim(selected.getValue(), new Color(0.698, 0.792, 0.921, 1), new Color(0.243, 0.505, 0.878, 1), 200, 40);
 
                 lastAnswerChange = timeLeft;
             });
@@ -198,13 +193,12 @@ public class GameMultiChoiceCtrl extends GameCtrl {
      * When the time's up, shows the correct answer and makes Next visible
      */
     protected void onTimerEnd() {
-        if(Main.gameMode == GameMode.MULTIPLAYER){
+        if (Main.gameMode == GameMode.MULTIPLAYER) {
             timer.setOnFinished(event -> {
                 showCorrectAnswer(answerOptionNumber);
                 nextQuestion.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
             });
-        }
-        else {
+        } else {
             timer.setOnFinished(event -> {
                 showCorrectAnswer(answerOptionNumber);
                 nextQuestion.setVisible(Main.gameMode == GameMode.SINGLEPLAYER);
@@ -222,19 +216,19 @@ public class GameMultiChoiceCtrl extends GameCtrl {
 
         AnchorPane correct = options[answer];
 
-        fadeOption(correct, (Color) correct.getBackground().getFills().get(0).getFill(), new Color(0.423, 0.941, 0.415, 1)).play();
+        fadeAnim(correct, (Color) correct.getBackground().getFills().get(0).getFill(), new Color(0.423, 0.941, 0.415, 1), 350, 40).play();
 
         playSound(selected != null && selected.getValue() == correct);
 
         for (AnchorPane option : options) {
-
             if (option == correct) {
                 continue;
             }
+
             if (selected != null && selected.getValue() != removedAnswer && option == selected.getValue()) {
-                fadeOption(option, (Color) option.getBackground().getFills().get(0).getFill(), new Color(0.949, 0.423, 0.392, 1)).play();
+                fadeAnim(option, (Color) option.getBackground().getFills().get(0).getFill(), new Color(0.949, 0.423, 0.392, 1), 350, 40).play();
             } else {
-                fadeOption(option, (Color) option.getBackground().getFills().get(0).getFill(), new Color(0.478, 0.478, 0.478, 1)).play();
+                fadeAnim(option, (Color) option.getBackground().getFills().get(0).getFill(), new Color(0.478, 0.478, 0.478, 1), 350, 40).play();
             }
         }
 
@@ -242,7 +236,8 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         showPointsGained(correctlyAnswered ? 100 : 0);
 
         if (Main.gameMode == GameMode.MULTIPLAYER) {
-            main.getMultiplayerGame().getQuestionHistory().add(correctlyAnswered);;
+            main.getMultiplayerGame().getQuestionHistory().add(correctlyAnswered);
+            ;
         } else {
             main.getSingleplayerGame().getQuestionHistory().add(correctlyAnswered);
         }
@@ -272,7 +267,7 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         selected = null;
 
         for (AnchorPane option : options) {
-            fadeOption(option, (Color) option.getBackground().getFills().get(0).getFill(), new Color(1, 1, 1, 1)).play();
+            fadeAnim(option, (Color) option.getBackground().getFills().get(0).getFill(), new Color(1, 1, 1, 1), 350, 40).play();
         }
     }
 
@@ -302,7 +297,6 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         }
 
     }
-
 
     /**
      * This method sets the texts and images in the options
@@ -335,15 +329,15 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         int[] wrongOptions = new int[2];
         int pos = 0;
 
-        for(int i = 0; i < 3; ++i) {
-            if(i != answerOptionNumber) {
+        for (int i = 0; i < 3; ++i) {
+            if (i != answerOptionNumber) {
                 wrongOptions[pos++] = i;
             }
         }
 
         int num = new Random().nextInt(2);
 
-        if(removeAnswer && removeAnswerUsed == false) {
+        if (removeAnswer && removeAnswerUsed == false) {
             removeOption(wrongOptions[num]);
             removeAnswerUsed = true;
         }
@@ -358,7 +352,7 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         locked[option] = true;
 
         removedAnswer = options[option];
-        fadeOption(removedAnswer, (Color) removedAnswer.getBackground().getFills().get(0).getFill(), new Color(0.478, 0.478, 0.478, 1)).play();
+        fadeAnim(removedAnswer, (Color) removedAnswer.getBackground().getFills().get(0).getFill(), new Color(0.478, 0.478, 0.478, 1), 350, 40).play();
     }
 
     /**
@@ -370,54 +364,6 @@ public class GameMultiChoiceCtrl extends GameCtrl {
     protected void setImage(int option, Image image) {
         ImageView imageView = (ImageView) options[option].getChildren().get(0);
         imageView.setImage(image);
-    }
-
-    /**
-     * Sets the option's color from "hover blue" to "selected blue" (or from "hover blue" to white if inverted is false)
-     * 8
-     *
-     * @param anchorPane The pane to animate
-     * @param inverted   If the animation needs to be reversed or not
-     * @return The animation object which can be played
-     */
-    private Animation selectedAnim(AnchorPane anchorPane, boolean inverted) {
-        return new Transition() {
-            {
-                setCycleDuration(Duration.millis(200));
-                setInterpolator(Interpolator.EASE_BOTH);
-            }
-
-            @Override
-            protected void interpolate(double frac) {
-                if (inverted) {
-                    anchorPane.setBackground(new Background(new BackgroundFill(lerp(0.698, 0.792, 0.921, 0.243, 0.505, 0.878, frac), new CornerRadii(40), Insets.EMPTY)));
-                } else {
-                    anchorPane.setBackground(new Background(new BackgroundFill(lerp(0.698, 0.792, 0.921, 1, 1, 1, frac), new CornerRadii(40), Insets.EMPTY)));
-                }
-            }
-        };
-    }
-
-    /**
-     * Animates the options the user gets
-     *
-     * @param anchorPane The pane to animate
-     * @param start      The color to start from
-     * @param target     The color to end with
-     * @return The animation object which can be played
-     */
-    private Animation fadeOption(AnchorPane anchorPane, Color start, Color target) {
-        return new Transition() {
-            {
-                setCycleDuration(Duration.millis(350));
-                setInterpolator(Interpolator.EASE_BOTH);
-            }
-
-            @Override
-            protected void interpolate(double frac) {
-                anchorPane.setBackground(new Background(new BackgroundFill(lerp(start.getRed(), start.getGreen(), start.getBlue(), target.getRed(), target.getGreen(), target.getBlue(), frac), new CornerRadii(40), Insets.EMPTY)));
-            }
-        };
     }
 }
 

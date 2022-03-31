@@ -231,7 +231,7 @@ public abstract class GameCtrl extends SceneCtrl {
                 if (!jokerClicked && jokersUsed.get(JokerType.valueOf(joker.getId().toUpperCase())))
                     return;
 
-                hoverAnim(joker, new Color(1, 1, 1, 1), new Color(0.266, 0.266, 0.266, 1)).play();
+                fadeAnim(joker, new Color(1, 1, 1, 1), new Color(0.266, 0.266, 0.266, 1), 200, 10).play();
                 hideJokerTooltip(tooltip);
                 jokerClicked = false;
             });
@@ -240,7 +240,7 @@ public abstract class GameCtrl extends SceneCtrl {
                 if (jokersUsed.get(JokerType.valueOf(joker.getId().toUpperCase())))
                     return;
 
-                hoverAnim(joker,  new Color(0.266, 0.266, 0.266, 1), new Color(1, 1, 1, 1)).play();
+                fadeAnim(joker, new Color(0.266, 0.266, 0.266, 1), new Color(1, 1, 1, 1), 200, 10).play();
                 showJokerTooltip(tooltip);
 
             });
@@ -279,22 +279,21 @@ public abstract class GameCtrl extends SceneCtrl {
      */
     protected void disableJoker(JokerType type) {
         jokers.getChildren().stream()
-            .filter(joker -> joker.getId().equalsIgnoreCase(type.toString()))
-            .map(joker -> (AnchorPane) joker)
-            .forEach(joker -> {
-                LoggerUtil.log(joker.getId());
-                ImageView image = (ImageView) joker.getChildren().get(0);
+                .filter(joker -> joker.getId().equalsIgnoreCase(type.toString()))
+                .map(joker -> (AnchorPane) joker)
+                .forEach(joker -> {
+                    LoggerUtil.log(joker.getId());
+                    ImageView image = (ImageView) joker.getChildren().get(0);
 
-                ColorAdjust effect = new ColorAdjust();
-                effect.setBrightness(-0.5);
-                effect.setContrast(-0.5);
-                effect.setSaturation(-1);
+                    ColorAdjust effect = new ColorAdjust();
+                    effect.setBrightness(-0.5);
+                    effect.setContrast(-0.5);
+                    effect.setSaturation(-1);
 
-                image.setEffect(effect);
+                    image.setEffect(effect);
 
-                disabledJokers.add(joker);
-            }
-        );
+                    disabledJokers.add(joker);
+                });
     }
 
     /**
@@ -509,45 +508,25 @@ public abstract class GameCtrl extends SceneCtrl {
     }
 
     /**
-     * Transitions from white to the target color
-     *
-     * @param anchorPane The pane which to change the color of
-     * @param target     The color to go to
-     * @param inverted   If the transition needs to be inverted or not
-     * @return The animation object which can be played
-     */
-    protected Animation hoverAnim(AnchorPane anchorPane, Color target, boolean inverted) {
-        return new Transition() {
-            {
-                setCycleDuration(Duration.millis(200));
-                setInterpolator(Interpolator.EASE_BOTH);
-            }
-
-            @Override
-            protected void interpolate(double frac) {
-                anchorPane.setBackground(new Background(new BackgroundFill(lerp(target.getRed(), target.getGreen(), target.getBlue(), inverted ? 1 - frac : frac), new CornerRadii(40), Insets.EMPTY)));
-            }
-        };
-    }
-
-    /**
      * Transitions from a specified start color to a specified end color
      *
-     * @param anchorPane The pane which to change the color of
-     * @param start      The color to start from
-     * @param end        The color to go to
+     * @param anchorPane   The pane which to change the color of
+     * @param start        The color to start from
+     * @param end          The color to go to
+     * @param millis       The time that this animation should take
+     * @param cornerRadius The radius of the corner of the pane
      * @return The animation object which can be played
      */
-    protected Animation hoverAnim(AnchorPane anchorPane, Color start, Color end) {
+    protected Animation fadeAnim(AnchorPane anchorPane, Color start, Color end, int millis, int cornerRadius) {
         return new Transition() {
             {
-                setCycleDuration(Duration.millis(200));
+                setCycleDuration(Duration.millis(millis));
                 setInterpolator(Interpolator.EASE_BOTH);
             }
 
             @Override
             protected void interpolate(double frac) {
-                anchorPane.setBackground(new Background(new BackgroundFill(lerp(start.getRed(), start.getGreen(), start.getBlue(), end.getRed(), end.getGreen(), end.getBlue(), frac), new CornerRadii(10), Insets.EMPTY)));
+                anchorPane.setBackground(new Background(new BackgroundFill(lerp(start.getRed(), start.getGreen(), start.getBlue(), end.getRed(), end.getGreen(), end.getBlue(), frac), new CornerRadii(cornerRadius), Insets.EMPTY)));
             }
         };
     }
@@ -604,20 +583,6 @@ public abstract class GameCtrl extends SceneCtrl {
     }
 
     /**
-     * Lerps color from white to the given color
-     *
-     * @param r    The normalized red to go to
-     * @param g    The normalized green to go to
-     * @param b    The normalized blue to go to
-     * @param frac The time of the lerp
-     * @return An interpolated color
-     */
-    protected Color lerp(double r, double g, double b, double frac) {
-        frac = 1 - frac;
-        return new Color(r + ((1 - r) * frac), g + ((1 - g) * frac), b + ((1 - b) * frac), 1);
-    }
-
-    /**
      * Lerps color from a given color to a given color
      *
      * @param r1   The normalized red to start from
@@ -645,7 +610,6 @@ public abstract class GameCtrl extends SceneCtrl {
     private int lerp(int start, int end, double time) {
         return (int) Math.round(start + (end - start) * time);
     }
-
 
     /**
      * Rounds the image
@@ -698,7 +662,8 @@ public abstract class GameCtrl extends SceneCtrl {
         if (alert.showAndWait().get() == ButtonType.OK) {
             LoggerUtil.infoInline(Main.USERNAME + " quit the singleplayer game!");
             main.showScene(MainMenuCtrl.class);
-            timer.setOnFinished(event -> {});
+            timer.setOnFinished(event -> {
+            });
             timer = null;
             main.quitSingleplayer();
         }
