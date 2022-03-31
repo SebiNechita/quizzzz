@@ -43,19 +43,26 @@ public class MultipleChoiceQuestion extends Question {
     public static MultipleChoiceQuestion generateMultipleChoiceQuestion(List<Activity> unusedActivities) {
         Random randomGen = new Random();
         List<Activity> activityList = new ArrayList<>();
+        long pivot = -1;
         if (unusedActivities.size() < 3) {
             return null;
         }
-        for (int i = 0; i < 3; i++) {
+
+        while (activityList.size() < 3) {
             int randInt =  randomGen.nextInt(unusedActivities.size());
-            activityList.add(
-                    unusedActivities.remove(randInt)
-            );
+            Activity activity = unusedActivities.get(randInt);
+            if (pivot == -1) pivot = activity.getConsumption_in_wh();
+            if (Math.abs(activity.getConsumption_in_wh() - pivot) <= 5000) {
+                activityList.add(
+                        activity
+                );
+                unusedActivities.remove(randInt);
+            }
         }
         if (randomGen.nextBoolean()){
             return generateSelectMaximumQuestion(activityList);
         }
-        else{
+        else {
             return generateSelectByConsumptionQuestion(activityList, randomGen.nextInt(activityList.size()));
         }
 
