@@ -1,6 +1,5 @@
 package client.utils;
 
-
 import commons.utils.Emote;
 import commons.utils.JokerType;
 import javafx.animation.Animation;

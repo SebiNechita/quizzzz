@@ -7,12 +7,9 @@ import client.utils.ServerUtils;
 import commons.questions.Activity;
 import commons.questions.MultipleChoiceQuestion;
 import commons.utils.GameMode;
-import commons.utils.JokerType;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -178,16 +175,6 @@ public class GameMultiChoiceCtrl extends GameCtrl {
 
         AnchorPane joker = (AnchorPane) jokers.getChildren().get(2);
         ImageView jokerImage = (ImageView) joker.getChildren().get(0);
-
-        jokerImage.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            if (disabledJokers.contains(joker) && !removeAnswer) {
-                return;
-            } else {
-                jokerUsed(JokerType.valueOf(joker.getId().toUpperCase()));
-
-                removeWrongAnswer();
-            }
-        });
     }
 
     /**
@@ -238,7 +225,6 @@ public class GameMultiChoiceCtrl extends GameCtrl {
 
         if (Main.gameMode == GameMode.MULTIPLAYER) {
             main.getMultiplayerGame().getQuestionHistory().add(correctlyAnswered);
-            ;
         } else {
             main.getSingleplayerGame().getQuestionHistory().add(correctlyAnswered);
         }
@@ -250,20 +236,9 @@ public class GameMultiChoiceCtrl extends GameCtrl {
      * Hides point info and next button, gets a new question, resets the options' appearance and the timer.
      */
     @FXML
-    //initialising includes loading the next question, but also cleaning up the screen
-    //TODO: Create a super method for this, because the first three lines are the same
-    // for both types of questions.
     protected void initialiseNextQuestion() {
-        nextQuestion.setVisible(false);
-        hidePointsGained();
+        super.initialiseNextQuestion();
 
-        if (Main.gameMode == GameMode.MULTIPLAYER) {
-            main.getMultiplayerGame().jumpToNextQuestion();
-        } else {
-            main.getSingleplayerGame().jumpToNextQuestion();
-        }
-
-        //clean up
         locked = new boolean[]{false, false, false};
         selected = null;
 
@@ -337,11 +312,7 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         }
 
         int num = new Random().nextInt(2);
-
-        if (removeAnswer && removeAnswerUsed == false) {
-            removeOption(wrongOptions[num]);
-            removeAnswerUsed = true;
-        }
+        removeOption(wrongOptions[num]);
     }
 
     /**
@@ -354,17 +325,6 @@ public class GameMultiChoiceCtrl extends GameCtrl {
 
         removedAnswer = options[option];
         AnimationUtil.fadeAnim(removedAnswer, (Color) removedAnswer.getBackground().getFills().get(0).getFill(), new Color(0.478, 0.478, 0.478, 1), 350, 40).play();
-    }
-
-    /**
-     * Sets the image of one of the options
-     *
-     * @param option The option to set it for
-     * @param image  The image to set
-     */
-    protected void setImage(int option, Image image) {
-        ImageView imageView = (ImageView) options[option].getChildren().get(0);
-        imageView.setImage(image);
     }
 }
 
