@@ -25,12 +25,6 @@ import java.util.Random;
 import java.util.ResourceBundle;
 
 public class GameMultiChoiceCtrl extends GameCtrl {
-//    @FXML
-//    private Text choice1;
-//    @FXML
-//    private Text choice2;
-//    @FXML
-//    private Text choice3;
 
     @FXML
     private HBox progressBar;
@@ -70,13 +64,6 @@ public class GameMultiChoiceCtrl extends GameCtrl {
 
     @FXML
     private HBox emoteContainer;
-//
-//    @FXML
-//    private ImageView image1;
-//    @FXML
-//    private ImageView image2;
-//    @FXML
-//    private ImageView image3;
 
 
     /**
