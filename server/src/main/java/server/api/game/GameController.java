@@ -66,6 +66,17 @@ public class GameController {
         return new JoinResponsePacket(HttpStatus.OK, playerMap, game);
     }
 
+    /**
+     * Update the score of a user
+     * @param request contains the user and the points to add
+     * @return a response with 200
+     */
+    @PostMapping("/score")
+    public GeneralResponsePacket updateScore(@RequestBody LeaderboardRequestPacket request) {
+        gameService.addScore(request.getPlayer(), request.getScore());
+        return new GeneralResponsePacket(HttpStatus.OK);
+    }
+
    /* @GetMapping("/multiplayer")
     public MultiplayerResponsePacket start(@RequestMapping MultiplayerRequestPacket request){
          Game x = new MultiplayerResponsePacket()
@@ -82,6 +93,20 @@ public class GameController {
     public GeneralResponsePacket sendEmote(@RequestBody EmoteRequestPacket request) {
         gameService.onEmoteReceived("Emote",
                 request.getEmoteStr(),
+                request.getUsername());
+        return new GeneralResponsePacket(HttpStatus.OK);
+    }
+
+    /**
+     * client sends joker notification to server, server then send it to other players
+     *
+     * @param request request for sending joker notification
+     * @return LobbyResponsePacket
+     */
+    @PostMapping("/jokerNotification")
+    public GeneralResponsePacket sendJokerNotification(@RequestBody JokerNotificationRequestPacket request) {
+        gameService.onJokerNotificationReceived("JokerNotification",
+                request.getJokerType().toString(),
                 request.getUsername());
         return new GeneralResponsePacket(HttpStatus.OK);
     }
@@ -120,8 +145,23 @@ public class GameController {
         }
     }
 
+    /**
+     * receives start from a player and sends it to other players
+     * @param requestPacket The request packet
+     * @return LobbyResponsePacket
+     */
     @PostMapping("/start")
     public LobbyResponsePacket onStart(@RequestBody StartGameRequestPacket requestPacket) {
         return gameService.onStartGame(requestPacket);
+    }
+
+    /**
+     * receives a joker from a player and sends it to other players
+     * @param requestPacket The request packet
+     * @return LobbyResponsePacket
+     */
+    @PostMapping("/joker")
+    public JokerResponsePacket onJoker(@RequestBody JokerRequestPacket requestPacket) {
+        return gameService.onJokerGame(requestPacket);
     }
 }

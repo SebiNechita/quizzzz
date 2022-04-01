@@ -1,5 +1,6 @@
 package server.api.game;
 
+import commons.LeaderboardEntry;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -155,4 +156,16 @@ public class GameServiceTest {
 
     }
 
+    @Test
+    void addScoreTest() {
+        gameService.addPlayer("A");
+        gameService.addScore("A",50);
+        LeaderboardEntry player = new LeaderboardEntry();
+        for (LeaderboardEntry l : gameService.getScores()){
+            if (l.username.equals("A")){
+                player = l;
+            }
+        }
+        assertEquals(50,player.points);
+    }
 }

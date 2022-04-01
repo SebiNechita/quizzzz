@@ -1,8 +1,11 @@
 package server.api.game;
 
 import commons.Game;
+import commons.LeaderboardEntry;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import packets.JokerRequestPacket;
+import packets.JokerResponsePacket;
 import packets.LobbyResponsePacket;
 import packets.StartGameRequestPacket;
 
@@ -18,6 +21,7 @@ public class GameService {
     private Game game;
     private final List<GameController.EventCaller<LobbyResponsePacket>> playerEventList;
     private boolean allReady;
+    private List<LeaderboardEntry> scores;
 
     /**
      * constructor for GameService
@@ -29,6 +33,7 @@ public class GameService {
         this.playerEventList = new LinkedList<>();
         this.allReady = false;
         this.createGameService = createGameService;
+        this.scores = new LinkedList<>();
     }
 
     /**
@@ -74,12 +79,28 @@ public class GameService {
     }
 
     /**
-     * method for adding a new player to the playerMap with false ready state and localtime
-     *
+     * Adds a new player to the playerMap with false ready state and localtime
+     * and sets their score to 0
      * @param player player to be added
      */
     public void addPlayer(String player) {
         playerMap.put(player, Map.entry("false", LocalDateTime.now()));
+        scores.add(new LeaderboardEntry(0,player));
+    }
+
+    /**
+     * Adds the specified amount of points to the player's score
+     * @param player the player to update the score of
+     * @param score the number of points to add
+     */
+    public void addScore(String player, int score){
+        //I used a list of leaderboardentries because that is
+        // what's returned in a LeaderboardResponsePacket.
+        for (LeaderboardEntry l : scores){
+            if (l.username.equals(player)){
+                l.points += score;
+            }
+        }
     }
 
     /**
@@ -109,6 +130,10 @@ public class GameService {
         return this.playerEventList;
     }
 
+    public List<LeaderboardEntry> getScores() {
+        return scores;
+    }
+
     /**
      * add EventCaller to playerEventList
      *
@@ -130,6 +155,23 @@ public class GameService {
             // if the user in the list is different from the emote sender
             if (type.equals("Emote") && !thread.getUsername().equals(from)) {
                 thread.run(new LobbyResponsePacket("Emote", emoteStr, from));
+            }
+        }
+        clearEventList(from);
+    }
+
+    /**
+     * send joker notification to other players
+     *
+     * @param type     should be "JokerNotification"
+     * @param jokerNotification joker type
+     * @param from     sender of the emote
+     */
+    public void onJokerNotificationReceived(String type, String jokerNotification, String from) {
+        for (GameController.EventCaller<LobbyResponsePacket> thread : playerEventList) {
+            // if the user in the list is different from the notification sender
+            if (type.equals("JokerNotification") && !thread.getUsername().equals(from)) {
+                thread.run(new LobbyResponsePacket("JokerNotification", jokerNotification, from));
             }
         }
         clearEventList(from);
@@ -259,6 +301,10 @@ public class GameService {
         playerMap.put(username, Map.entry(ready, LocalDateTime.now()));
     }
 
+    /**
+     * Return a game
+     * @return A game
+     */
     public Game getGameIfExists() {
         if (game == null) {
             game = createGameService.createGame(20).getGame();
@@ -266,11 +312,34 @@ public class GameService {
         return game;
     }
 
+    /**
+     * Starts a game when a player presses "start" and informs other players
+     * @param requestPacket The reques packet
+     * @return LobbyResponsePacket
+     */
     public LobbyResponsePacket onStartGame(StartGameRequestPacket requestPacket) {
         Map<String, String> trimmedMap = trimPlayerList();
         for (GameController.EventCaller<LobbyResponsePacket> thread : playerEventList) {
             thread.run(new LobbyResponsePacket("Start", "true", requestPacket.getUsername(), trimmedMap));
         }
         return new LobbyResponsePacket("Start", "true", requestPacket.getUsername(), trimmedMap);
+    }
+
+    /**
+     * When a player uses the Half-time joker, other players get the effect from that joker
+     * @param requestPacket The request packet
+     * @return JokerResponsePacket
+     */
+    public JokerResponsePacket onJokerGame(JokerRequestPacket requestPacket) {
+        for (GameController.EventCaller<LobbyResponsePacket> thread : playerEventList) {
+            if (requestPacket.getScene().equals("client.scenes.GameMultiChoiceCtrl")) {
+                thread.run(new JokerResponsePacket("JokerMultiChoice", "true", requestPacket.getUsername(), requestPacket.getJokerType()));
+            } else if (requestPacket.getScene().equals("client.scenes.GameOpenQuestionCtrl")) {
+                thread.run(new JokerResponsePacket("JokerOpenQuestion", "true", requestPacket.getUsername(), requestPacket.getJokerType()));
+            }
+
+        }
+
+        return new JokerResponsePacket("Joker", "true", requestPacket.getUsername(), requestPacket.getJokerType());
     }
 }
