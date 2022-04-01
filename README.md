@@ -30,29 +30,23 @@ We used the **[Spring Framework](https://spring.io)** to build the application. 
 ## How to run it
 
 1) Clone the repo
-   1) With HTTPS
-      ```sh
-       git clone https://gitlab.ewi.tudelft.nl/cse1105/2021-2022/team-repositories/oopp-group-44/repository-template.git
-       ```
+   1) Using HTTPS
+   ```sh
+      git clone https://gitlab.ewi.tudelft.nl/cse1105/2021-2022/team-repositories/oopp-group-44/repository-template.git
+   ```
+   2) Using SSH
+   ```shell
+     git clone git@gitlab.ewi.tudelft.nl:cse1105/2021-2022/team-repositories/oopp-group-44/repository-template.git
+   ```
 2) Run the application using gradle
-   1) If you have gradle installed
-      1) You can start the server using:
-         ```shell
-          gradle bootRun
-         ```
-      2) You can then open a new Terminal window and start the client using:
-         ```shell
-         gradle run
-         ```
-   2) If you do not have it installed, you can use this:
-      1) You can start the server using:
-         ```shell
-          ./gradlew bootRun
-         ```
-      2) You can then open a new Terminal window and start the client using:
-         ```shell
-         ./gradlew run
-         ```
+   1) You can start the server using:
+   ```shell
+       ./gradlew bootRun
+   ```
+   2) You can then open a new Terminal window and start the client using:
+   ```shell
+      ./gradlew run
+   ```
 
 
 ## How to contribute to it
