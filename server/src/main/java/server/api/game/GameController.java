@@ -67,6 +67,16 @@ public class GameController {
     }
 
     /**
+     * Sends the multiplayer leaderboard
+     * @return the packet containing the leaderboard.
+     */
+    @GetMapping("/multiplayerleaderboard")
+    public LeaderboardResponsePacket getMultiplayerLeaderboard (){
+
+        return new LeaderboardResponsePacket(HttpStatus.OK,gameService.getScores());
+    }
+
+    /**
      * Update the score of a user
      * @param request contains the user and the points to add
      * @return a response with 200

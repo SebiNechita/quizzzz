@@ -34,10 +34,6 @@
             <Font name="Comic Sans MS" size="40.0" />
          </font>
       </Text>
-      <Button layoutX="557.0" layoutY="632.0" mnemonicParsing="false" onAction="#showHome" prefHeight="56.0" prefWidth="158.0" style="-fx-background-radius: 50;" text="Next">
-      <font>
-         <Font name="Comic Sans MS" size="30.0" />
-      </font></Button>
    <Text fx:id="rankInfo" layoutX="567.0" layoutY="174.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Your rank:">
       <font>
          <Font name="Comic Sans MS" size="30.0" />
@@ -63,4 +59,14 @@
          </ImageView>
       </graphic>
    </Button>
+   <AnchorPane fx:id="timeLeftBar" layoutX="401.0" layoutY="696.0" prefHeight="20.0" prefWidth="500.0" style="-fx-background-color: #525252; -fx-background-radius: 50;">
+      <children>
+         <AnchorPane prefHeight="20.0" prefWidth="25.0" style="-fx-background-color: #29bae6; -fx-background-radius: 50;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      </children>
+   </AnchorPane>
+   <Text fx:id="timeLeftText" fill="WHITE" layoutX="542.0" layoutY="682.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time left: 10s">
+      <font>
+         <Font name="Comic Sans MS Bold" size="24.0" />
+      </font>
+   </Text>
 </AnchorPane>

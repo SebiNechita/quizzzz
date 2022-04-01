@@ -19,18 +19,26 @@ import client.Main;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import commons.LeaderboardEntry;
+import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
+import javafx.animation.Interpolator;
+import javafx.animation.Transition;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import packets.GeneralResponsePacket;
@@ -59,7 +67,16 @@ public class MultiplayerLeaderboardCtrl extends SceneCtrl {
     @FXML
     private BarChart barChart;
 
+    @FXML
+    protected Text timeLeftText;
+    @FXML
+    protected AnchorPane timeLeftBar;
+    @FXML
+    private AnchorPane timeLeftSlider;
+
     protected static boolean fromMainMenu = false;
+
+    Animation timer = null;
 
     /**
      * Constructor for this Ctrl
@@ -97,6 +114,36 @@ public class MultiplayerLeaderboardCtrl extends SceneCtrl {
         });
         refresh();
         showPlayerRank();
+        startTimer();
+    }
+
+    protected void startTimer() {
+
+        timeLeftSlider = (AnchorPane) timeLeftBar.getChildren().get(0);
+        timer = timerAnim(timeLeftSlider);
+
+        timer.setOnFinished(event -> {
+            main.getMultiplayerGame().showQuestion();
+        });
+
+        timeLeftSlider.setBackground(new Background(new BackgroundFill(new Color(0.160, 0.729, 0.901, 1), new CornerRadii(50), Insets.EMPTY)));
+        timer.playFromStart();
+
+    }
+
+    private Animation timerAnim(AnchorPane anchorPane) {
+        return new Transition() {
+            {
+                setCycleDuration(Duration.millis(3000));
+                setInterpolator(Interpolator.LINEAR);
+            }
+
+            @Override
+            protected void interpolate(double frac) {
+                anchorPane.setPrefWidth(25 + 475 * frac);
+                timeLeftText.setText("Continuing in " + (1 - frac) / 10d + "s");
+            }
+        };
     }
 
     private void initializeBarChart(LeaderboardResponsePacket packet) {
@@ -125,7 +172,7 @@ public class MultiplayerLeaderboardCtrl extends SceneCtrl {
      * Reload the leaderboard.
      */
     public void refresh() {
-        LeaderboardResponsePacket packet = server.getRequest("api/leaderboard", LeaderboardResponsePacket.class);
+        LeaderboardResponsePacket packet = server.getRequest("api/game/multiplayerleaderboard", LeaderboardResponsePacket.class);
         //If the request is unsuccessful, the response is null.
         if (packet != null && packet.getLeaderboard() != null) {
             List<LeaderboardEntry> leaderboardEntries = packet.getLeaderboard();
