@@ -315,8 +315,8 @@ public abstract class GameCtrl extends SceneCtrl {
             }
         }
         numberofQuestions++;
+        if(numberofQuestions  == 10)    main.showScene(MultiplayerLeaderboardCtrl.class);
     }
-
     /**
      * Helper method for {@link #generateProgressDots}, which generates the dots itself
      *
