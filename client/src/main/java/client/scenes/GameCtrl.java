@@ -531,6 +531,18 @@ public abstract class GameCtrl extends SceneCtrl {
         };
     }
 
+    //initialising includes loading the next question, but also cleaning up the screen
+    protected void initialiseNextQuestion(){
+        nextQuestion.setVisible(false);
+        hidePointsGained();
+
+        if (Main.gameMode == GameMode.MULTIPLAYER) {
+            main.getMultiplayerGame().jumpToNextQuestion();
+        } else {
+            main.getSingleplayerGame().jumpToNextQuestion();
+        }
+    }
+
     /**
      * Transitions from a specified start color to a specified end color
      *

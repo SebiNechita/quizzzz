@@ -152,21 +152,12 @@ public class GameOpenQuestionCtrl extends GameCtrl {
      * Hides Next button and point info and jumps to next question
      */
     @FXML
-    //initialising includes loading the next question, but also cleaning up the screen
-    //TODO: Create a super method for this, because the first three lines are the same
-    // for both types of questions.
+
+
     protected void initialiseNextQuestion() {
+        super.initialiseNextQuestion();
         userInput.clear();
         resetTextInputColor();
-        nextQuestion.setVisible(false);
-        hidePointsGained();
-
-        if (Main.gameMode == GameMode.MULTIPLAYER) {
-            main.getMultiplayerGame().jumpToNextQuestion();
-        } else {
-            main.getSingleplayerGame().jumpToNextQuestion();
-        }
-
     }
 
     /**

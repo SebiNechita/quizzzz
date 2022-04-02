@@ -254,20 +254,10 @@ public class GameMultiChoiceCtrl extends GameCtrl {
      * Hides point info and next button, gets a new question, resets the options' appearance and the timer.
      */
     @FXML
-    //initialising includes loading the next question, but also cleaning up the screen
-    //TODO: Create a super method for this, because the first three lines are the same
-    // for both types of questions.
     protected void initialiseNextQuestion() {
-        nextQuestion.setVisible(false);
+        super.initialiseNextQuestion();
         hidePointsGained();
 
-        if (Main.gameMode == GameMode.MULTIPLAYER) {
-            main.getMultiplayerGame().jumpToNextQuestion();
-        } else {
-            main.getSingleplayerGame().jumpToNextQuestion();
-        }
-
-        //clean up
         locked = new boolean[]{false, false, false};
         selected = null;
 
