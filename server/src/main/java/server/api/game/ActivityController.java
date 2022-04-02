@@ -1,9 +1,9 @@
 package server.api.game;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import packets.ActivitiesResponsePacket;
+import packets.ActivityRequestPacket;
+import packets.GeneralResponsePacket;
 
 @RestController
 @RequestMapping("api/activities")
@@ -15,6 +15,7 @@ public class ActivityController {
 
     /**
      * Constructor
+     *
      * @param activityService Service layer for this controller
      */
     public ActivityController(ActivityService activityService) {
@@ -23,10 +24,16 @@ public class ActivityController {
 
     /**
      * Endpoint for creating game
+     *
      * @return A list of activities
      */
     @GetMapping("/list")
     public ActivitiesResponsePacket list() {
         return activityService.list();
+    }
+
+    @PostMapping("/edit")
+    public GeneralResponsePacket edit(@RequestBody ActivityRequestPacket request) {
+        return activityService.edit(request);
     }
 }

@@ -22,6 +22,7 @@ import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 //import commons.utils.GameMode;
 //import commons.utils.HttpStatus;
+import commons.questions.Activity;
 import commons.utils.LoggerUtil;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -48,7 +49,7 @@ public class MainCtrl {
     private SingleplayerGame singleplayerGame;
     private MultiplayerGame multiplayerGame;
 
-//    private MultiplayerResponsePacket resp;
+    //    private MultiplayerResponsePacket resp;
     private final HashMap<Class<?>, SceneCtrl> ctrlClasses = new HashMap<>();
     private final HashMap<Class<?>, Pair<Scene, String>> scenes = new HashMap<>();
 
@@ -60,7 +61,7 @@ public class MainCtrl {
     public MainCtrl(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.serverUtils = new ServerUtils();
-      // this.multiplayerGame = new MultiplayerGame(this, serverUtils);
+        // this.multiplayerGame = new MultiplayerGame(this, serverUtils);
     }
 
     /**
@@ -71,8 +72,8 @@ public class MainCtrl {
     }
 
     /**
-
      * Creates a new MultiplayerGame
+     *
      * @param game
      */
     public void createNewMultiplayerGame(commons.Game game) {
@@ -114,6 +115,7 @@ public class MainCtrl {
     public <T extends Game> T getGame(Class<T> gameModeClass) {
         return gameModeClass.equals(MultiplayerGame.class) ? (T) this.multiplayerGame : (T) this.singleplayerGame;
     }
+
     /**
      * Loads and initializes a scene
      *
@@ -184,6 +186,30 @@ public class MainCtrl {
             }
         } catch (IllegalAccessException | InvocationTargetException ignored) {
         }
+    }
+
+    // test
+    public <T extends SceneCtrl> void showEditActivity(String path, String title, Activity item) {
+
+        try {
+            URL scene = getClass().getClassLoader().getResource(path);
+            FXMLLoader loader = new FXMLLoader(scene, null, null, new ControllerFactory(), StandardCharsets.UTF_8);
+
+            Parent parent = loader.load();
+            // alert
+            EditActivityCtrl ctrl = loader.getController();
+
+            //initialize(ctrl, parent, title);
+            ctrl.initData(item);
+
+            primaryStage.setScene(new Scene(parent));
+            primaryStage.setTitle(title);
+            ctrl.onShowScene();
+        } catch (Exception e) {
+            System.out.println(e.getStackTrace());
+        }
+
+
     }
 
     public commons.Game joinGame(String username) {

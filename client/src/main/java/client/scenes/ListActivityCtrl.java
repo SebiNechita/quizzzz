@@ -8,9 +8,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -18,6 +16,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import packets.ActivitiesResponsePacket;
+import packets.ActivityRequestPacket;
+import packets.GeneralResponsePacket;
 
 import java.net.URL;
 import java.util.List;
@@ -37,6 +37,9 @@ public class ListActivityCtrl extends SceneCtrl {
 
     @FXML
     private TableColumn<ActivityItem, ImageView> edit;
+
+    @FXML
+    private TableColumn<ActivityItem, ImageView> delete;
 
     @FXML
     private TableColumn<ActivityItem, String> source;
@@ -66,24 +69,22 @@ public class ListActivityCtrl extends SceneCtrl {
 
     @OnShowScene
     public void onShowScene() {
-//        ObservableList<ActivityItem> items = FXCollections.observableArrayList();
         this.items = convertToActivityItem(getAllActivity());
 
-
+        // set up columns
         id.setCellValueFactory(new PropertyValueFactory<>("id"));
-
         title.setCellValueFactory(new PropertyValueFactory<>("title"));
-
         consumption.setCellValueFactory(new PropertyValueFactory<>("consumption"));
-
         source.setCellValueFactory(new PropertyValueFactory<>("source"));
-
         image.setCellValueFactory(new PropertyValueFactory<>("image"));
-
         edit.setCellValueFactory(new PropertyValueFactory<>("edit"));
+        delete.setCellValueFactory(new PropertyValueFactory<>("delete"));
+
         // enable cell selection
         table.getSelectionModel().setCellSelectionEnabled(true);
         table.setItems(items);
+
+
         this.image.setCellFactory(tc -> {
             TableCell<ActivityItem, ImageView> cell = new TableCell<ActivityItem, ImageView>() {
                 @Override
@@ -125,6 +126,68 @@ public class ListActivityCtrl extends SceneCtrl {
             return cell;
         });
 
+        this.edit.setCellFactory(tc -> {
+            TableCell<ActivityItem, ImageView> cell = new TableCell<ActivityItem, ImageView>() {
+                @Override
+                protected void updateItem(ImageView item, boolean empty) {
+                    super.updateItem(item, empty);
+                    //setText(empty ? null : item);
+                    if (item != null) {
+                        // without this the image won't be displayed
+                        setGraphic(item);
+                    }
+                }
+            };
+
+            cell.setOnMouseClicked(e -> {
+
+                ActivityItem item = cell.getTableView().getItems().get(cell.getIndex());
+                Activity activity = new Activity(item.getTitle(), item.getId(), item.getImagePath(), item.getConsumption(), item.getSource());
+
+                // do something with the item...
+                main.showEditActivity("client/scenes/EditActivity.fxml", "Edit Activity", activity);
+
+            });
+
+            return cell;
+        });
+
+        this.delete.setCellFactory(tc -> {
+            TableCell<ActivityItem, ImageView> cell = new TableCell<ActivityItem, ImageView>() {
+                @Override
+                protected void updateItem(ImageView item, boolean empty) {
+                    super.updateItem(item, empty);
+                    //setText(empty ? null : item);
+                    if (item != null) {
+                        // without this the image won't be displayed
+                        setGraphic(item);
+                    }
+                }
+            };
+
+            cell.setOnMouseClicked(e -> {
+
+                ActivityItem item = cell.getTableView().getItems().get(cell.getIndex());
+                Activity activity = new Activity(item.getTitle(), item.getId(), item.getImagePath(), item.getConsumption(), item.getSource());
+
+                // do something with the item...
+
+                Alert alert = new Alert(
+                        Alert.AlertType.CONFIRMATION,
+                        "Delete '" + item.getTitle() + "' activity?",
+                        ButtonType.YES, ButtonType.CANCEL);
+                alert.showAndWait();
+
+                if (alert.getResult() == ButtonType.YES) {
+                    ActivityRequestPacket packet = new ActivityRequestPacket(item.getId());
+                    server.postRequest("api/activities/delete", packet, GeneralResponsePacket.class);
+                    main.showScene(ListActivityCtrl.class);
+                }
+            });
+
+            return cell;
+        });
+
 
     }
 
@@ -140,14 +203,16 @@ public class ListActivityCtrl extends SceneCtrl {
         ObservableList<ActivityItem> res = FXCollections.observableArrayList();
         Image image = new Image("@../../img/view.png");
         Image edit = new Image("@../../img/edit.png");
+        Image delete = new Image("@../../img/delete.png");
         for (Activity activity : list) {
             ImageView imageIcon = new ImageView(image);
             ImageView editIcon = new ImageView(edit);
-
+            ImageView deleteIcon = new ImageView(delete);
             res.add(new ActivityItem(
                     activity.getId(),
                     imageIcon,
                     editIcon,
+                    deleteIcon,
                     activity.getConsumption_in_wh(),
                     activity.getSource(),
                     activity.getTitle(),

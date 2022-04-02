@@ -2,6 +2,8 @@ package client.utils;
 
 import javafx.scene.image.ImageView;
 
+import java.util.Objects;
+
 public class ActivityItem {
 
     /**
@@ -12,12 +14,17 @@ public class ActivityItem {
     /**
      * view button
      */
-    private ImageView image;
+    private final ImageView image;
 
     /**
      * edit button
      */
     private final ImageView edit;
+
+    /**
+     * delete button
+     */
+    private final ImageView delete;
 
     /**
      * Energy consumed in WH
@@ -39,10 +46,11 @@ public class ActivityItem {
      */
     private String imagePath;
 
-    public ActivityItem(String id, ImageView image, ImageView edit, long consumption, String source, String title, String imagePath) {
+    public ActivityItem(String id, ImageView image, ImageView edit, ImageView delete, long consumption, String source, String title, String imagePath) {
         this.id = id;
         this.image = image;
         this.edit = edit;
+        this.delete = delete;
         this.consumption = consumption;
         this.source = source;
         this.title = title;
@@ -61,6 +69,10 @@ public class ActivityItem {
         return edit;
     }
 
+    public ImageView getDelete() {
+        return delete;
+    }
+
     public long getConsumption() {
         return consumption;
     }
@@ -75,5 +87,32 @@ public class ActivityItem {
 
     public String getImagePath() {
         return imagePath;
+    }
+
+    @Override
+    public String toString() {
+        return "ActivityItem{" +
+                "id='" + id + '\'' +
+                ", image=" + image +
+                ", edit=" + edit +
+                ", delete=" + delete +
+                ", consumption=" + consumption +
+                ", source='" + source + '\'' +
+                ", title='" + title + '\'' +
+                ", imagePath='" + imagePath + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ActivityItem that = (ActivityItem) o;
+        return consumption == that.consumption && Objects.equals(id, that.id) && Objects.equals(image, that.image) && Objects.equals(edit, that.edit) && Objects.equals(delete, that.delete) && Objects.equals(source, that.source) && Objects.equals(title, that.title) && Objects.equals(imagePath, that.imagePath);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, image, edit, delete, consumption, source, title, imagePath);
     }
 }

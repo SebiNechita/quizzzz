@@ -1,0 +1,163 @@
+package client.scenes;
+
+import client.utils.OnShowScene;
+import client.utils.ServerUtils;
+import commons.questions.Activity;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import packets.ActivityRequestPacket;
+import packets.GeneralResponsePacket;
+
+import java.io.*;
+import java.net.URL;
+import java.nio.file.Files;
+import java.util.ResourceBundle;
+
+public class EditActivityCtrl extends SceneCtrl {
+    @FXML
+    private TextField description;
+
+    @FXML
+    private TextField consumption;
+
+    @FXML
+    private TextField source;
+
+    @FXML
+    private AnchorPane anchorPane;
+
+    @FXML
+    private Button upload;
+
+    @FXML
+    private ImageView imageView;
+
+    @FXML
+    private Text error;
+
+    private String filePath = null;
+
+    byte[] imageByteArray = null;
+
+    private Activity item;
+
+
+    /**
+     * Constructor for this Ctrl
+     *
+     * @param mainCtrl    The parent class, which keeps track of all scenes
+     * @param serverUtils The server utils, for communicating with the server
+     */
+    public EditActivityCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
+        super(mainCtrl, serverUtils);
+    }
+
+    /**
+     * Called to initialize a controller after its root element has been
+     * completely processed.
+     *
+     * @param location  The location used to resolve relative paths for the root object, or
+     *                  {@code null} if the location is not known.
+     * @param resources The resources used to localize the root object, or {@code null} if
+     *                  the root object was not localized.
+     */
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+
+    }
+
+    @OnShowScene
+    public void onShowScene() {
+        source.setText(item.getSource());
+        consumption.setText(Long.toString(item.getConsumption_in_wh()));
+        description.setText(item.getTitle());
+    }
+
+    public void initData(Activity item) {
+        this.item = item;
+        Image image = server.getImage(item.getImage_path());
+        imageView.setImage(image);
+    }
+
+
+    public void clickUploadImage(ActionEvent e) throws IOException {
+        // save local file path
+        filePath = singleFilePathChooser(e);
+
+        try {
+            // get image byte array
+            FileInputStream imageStream = new FileInputStream(filePath);
+            imageByteArray = imageStream.readAllBytes();
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+
+        // update image view
+        imageView.setImage(new Image(new ByteArrayInputStream(imageByteArray), 240, 143, false, false));
+    }
+
+    public void onCancel(ActionEvent actionEvent) {
+        main.showScene(ListActivityCtrl.class);
+    }
+
+    public void onOk(ActionEvent actionEvent) {
+        if (description.getText() == null || consumption.getText() == null || source.getText() == null) {
+            description.setStyle("-fx-background-color: #FF0000FF; -fx-background-radius: 50");
+            consumption.setStyle("-fx-background-color: #FF0000FF; -fx-background-radius: 50");
+            source.setStyle("-fx-background-color: #FF0000FF; -fx-background-radius: 50");
+            error.setText("All fields are mandatory!");
+            upload.setBackground(new Background(new BackgroundFill(Color.RED, new CornerRadii(40), Insets.EMPTY)));
+
+        } else {
+
+            ActivityRequestPacket packet = new ActivityRequestPacket(
+                    item.getId(),
+                    Long.parseLong(consumption.getText()),
+                    source.getText(),
+                    description.getText(),
+                    imageByteArray
+            );
+            server.postRequest("api/activities/edit", packet, GeneralResponsePacket.class);
+            main.showScene(ListActivityCtrl.class);
+        }
+    }
+
+    /**
+     * Requests an image from the user and returns the path to the image
+     *
+     * @param actionEvent Action event
+     * @return A string representing the path to the image
+     * @throws IOException If the file is not found
+     */
+    @FXML
+    public String singleFilePathChooser(javafx.event.ActionEvent actionEvent) throws IOException {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open File Dialog");
+        Stage stage = (Stage) anchorPane.getScene().getWindow();
+
+        File file = fileChooser.showOpenDialog(stage);
+        String path = "";
+
+        String mimetype = Files.probeContentType(file.toPath());
+
+        if (file != null && mimetype.split("/")[0].equals("image")) {
+            path = file.getAbsolutePath();
+            return path;
+        }
+
+        return null;
+    }
+}

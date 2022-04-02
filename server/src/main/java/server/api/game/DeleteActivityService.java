@@ -1,10 +1,7 @@
 package server.api.game;
 
-import commons.questions.Activity;
 import org.springframework.stereotype.Service;
 import server.database.ActivityRepository;
-
-import java.util.List;
 
 @Service
 public class DeleteActivityService {
@@ -23,12 +20,13 @@ public class DeleteActivityService {
      * @param id The id of the activity to be deleted
      */
     public void delete(String id) {
-        List<Activity> activities = activityRepository.findAll();
-
-        for(Activity activity : activities) {
-            if(activity.getId().equals(id)) {
-                activityRepository.delete(activity);
-            }
-        }
+//        List<Activity> activities = activityRepository.findAll();
+//        for(Activity activity : activities) {
+//            if(activity.getId().equals(id)) {
+//                activityRepository.delete(activity);
+//            }
+//        }
+        // I feel this way is easier
+        activityRepository.deleteById(id);
     }
 }

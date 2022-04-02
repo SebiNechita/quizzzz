@@ -14,29 +14,25 @@
                 <Font name="Comic Sans MS" size="120.0" />
             </font>
         </Text>
-        <Text fill="#e08f22" layoutX="522.0" layoutY="227.0" strokeType="OUTSIDE" strokeWidth="0.0" text="List all activities" textAlignment="CENTER">
+        <Text fill="#e08f22" layoutX="522.0" layoutY="215.0" strokeType="OUTSIDE" strokeWidth="0.0" text="All activities" textAlignment="CENTER">
             <font>
                 <Font name="Comic Sans MS" size="36.0" />
             </font>
         </Text>
-        <Button layoutX="462.0" layoutY="602.0" mnemonicParsing="false" onAction="#backClicked" prefHeight="50.0" prefWidth="150.0" style="-fx-background-radius: 40; -fx-background-color: white;" text="Back" textAlignment="CENTER">
+        <Button layoutX="565.0" layoutY="620.0" mnemonicParsing="false" onAction="#backClicked" prefHeight="50.0" prefWidth="150.0" style="-fx-background-radius: 40; -fx-background-color: white;" text="Back" textAlignment="CENTER">
             <font>
                 <Font name="Comic Sans MS" size="28.0" />
             </font>
         </Button>
-        <Button layoutX="668.0" layoutY="602.0" mnemonicParsing="false" onAction="#addClicked" prefHeight="50.0" prefWidth="150.0" style="-fx-background-radius: 40; -fx-background-color: white;" text="Add" textAlignment="CENTER">
-            <font>
-                <Font name="Comic Sans MS" size="28.0" />
-            </font>
-        </Button>
-      <TableView fx:id="table" layoutX="256.0" layoutY="237.0" prefHeight="362.0" prefWidth="843.0">
+      <TableView fx:id="table" layoutX="178.0" layoutY="236.0" prefHeight="362.0" prefWidth="924.0">
         <columns>
-          <TableColumn fx:id="id" prefWidth="83.0" text="Id" />
-          <TableColumn fx:id="title" prefWidth="310.0" text="Title" />
-            <TableColumn fx:id="consumption" minWidth="0.0" prefWidth="182.0" text="Consumption" />
-            <TableColumn fx:id="source" prefWidth="166.0" text="Source" />
-            <TableColumn fx:id="image" prefWidth="49.0" text="Image" />
-            <TableColumn fx:id="edit" prefWidth="52.0" text="Edit" />
+          <TableColumn fx:id="id" prefWidth="118.0" text="Id" />
+          <TableColumn fx:id="title" prefWidth="400.0" text="Title" />
+            <TableColumn fx:id="consumption" minWidth="0.0" prefWidth="139.0" text="Consumption" />
+            <TableColumn fx:id="source" prefWidth="124.0" text="Source" />
+            <TableColumn fx:id="image" prefWidth="46.0" text="Image" />
+            <TableColumn fx:id="edit" minWidth="3.0" prefWidth="44.0" text="Edit" />
+            <TableColumn fx:id="delete" minWidth="3.0" prefWidth="42.0" text="Delete" />
         </columns>
       </TableView>
     </children>
