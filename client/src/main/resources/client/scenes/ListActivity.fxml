@@ -24,11 +24,11 @@
                 <Font name="Comic Sans MS" size="28.0" />
             </font>
         </Button>
-      <TableView fx:id="table" layoutX="178.0" layoutY="236.0" prefHeight="362.0" prefWidth="924.0">
+      <TableView fx:id="table" layoutX="166.0" layoutY="236.0" prefHeight="362.0" prefWidth="937.0">
         <columns>
-          <TableColumn fx:id="id" prefWidth="118.0" text="Id" />
-          <TableColumn fx:id="title" prefWidth="400.0" text="Title" />
-            <TableColumn fx:id="consumption" minWidth="0.0" prefWidth="139.0" text="Consumption" />
+          <TableColumn fx:id="id" prefWidth="140.0" text="Id" />
+          <TableColumn fx:id="title" prefWidth="432.0" text="Title" />
+            <TableColumn fx:id="consumption" minWidth="0.0" prefWidth="85.0" text="Consumption" />
             <TableColumn fx:id="source" prefWidth="124.0" text="Source" />
             <TableColumn fx:id="image" prefWidth="46.0" text="Image" />
             <TableColumn fx:id="edit" minWidth="3.0" prefWidth="44.0" text="Edit" />

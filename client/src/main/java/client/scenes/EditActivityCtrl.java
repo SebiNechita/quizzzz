@@ -26,6 +26,9 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.util.ResourceBundle;
 
+/**
+ * controller class for EditActivity scene
+ */
 public class EditActivityCtrl extends SceneCtrl {
     @FXML
     private TextField description;
@@ -79,20 +82,32 @@ public class EditActivityCtrl extends SceneCtrl {
 
     }
 
-    @OnShowScene
+    /**
+     * populate the text fields with the Activity item
+     */
     public void onShowScene() {
         source.setText(item.getSource());
         consumption.setText(Long.toString(item.getConsumption_in_wh()));
         description.setText(item.getTitle());
     }
 
+    /**
+     * pass Activity object to this controller from ListActivityCtrl
+     *
+     * @param item
+     */
     public void initData(Activity item) {
         this.item = item;
         Image image = server.getImage(item.getImage_path());
         imageView.setImage(image);
     }
 
-
+    /**
+     * display uploaded image and save the image byte array.
+     *
+     * @param e
+     * @throws IOException
+     */
     public void clickUploadImage(ActionEvent e) throws IOException {
         // save local file path
         filePath = singleFilePathChooser(e);
@@ -109,10 +124,20 @@ public class EditActivityCtrl extends SceneCtrl {
         imageView.setImage(new Image(new ByteArrayInputStream(imageByteArray), 240, 143, false, false));
     }
 
+    /**
+     * go back to ListActivityCtrl when 'Cancel' is clicked
+     *
+     * @param actionEvent
+     */
     public void onCancel(ActionEvent actionEvent) {
         main.showScene(ListActivityCtrl.class);
     }
 
+    /**
+     * post edit Activity request to server
+     *
+     * @param actionEvent
+     */
     public void onOk(ActionEvent actionEvent) {
         if (description.getText() == null || consumption.getText() == null || source.getText() == null) {
             description.setStyle("-fx-background-color: #FF0000FF; -fx-background-radius: 50");

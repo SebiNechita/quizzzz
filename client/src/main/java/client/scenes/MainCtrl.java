@@ -188,7 +188,14 @@ public class MainCtrl {
         }
     }
 
-    // test
+    /**
+     * method for showing EditActivity Scene and passing an Activity object to it's controller.
+     *
+     * @param path  path of the EditActivity scene
+     * @param title title of the scene
+     * @param item  Activity object to be edited
+     * @param <T>
+     */
     public <T extends SceneCtrl> void showEditActivity(String path, String title, Activity item) {
 
         try {
@@ -196,20 +203,18 @@ public class MainCtrl {
             FXMLLoader loader = new FXMLLoader(scene, null, null, new ControllerFactory(), StandardCharsets.UTF_8);
 
             Parent parent = loader.load();
-            // alert
-            EditActivityCtrl ctrl = loader.getController();
 
+            EditActivityCtrl ctrl = loader.getController();
             //initialize(ctrl, parent, title);
             ctrl.initData(item);
 
             primaryStage.setScene(new Scene(parent));
             primaryStage.setTitle(title);
             ctrl.onShowScene();
+
         } catch (Exception e) {
             System.out.println(e.getStackTrace());
         }
-
-
     }
 
     public commons.Game joinGame(String username) {
