@@ -1,14 +1,19 @@
 package server.api.game;
 
+import commons.Game;
+import commons.LeaderboardEntry;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.context.request.async.DeferredResult;
+import packets.GameResponsePacket;
 import packets.LobbyResponsePacket;
+import packets.StartGameRequestPacket;
 
 
 import java.util.HashMap;
@@ -16,8 +21,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -25,6 +29,8 @@ import static org.mockito.Mockito.verify;
 public class GameServiceTest {
 
     GameService gameService;
+
+    @MockBean
     CreateGameService createGameService;
 
     /**
@@ -32,7 +38,11 @@ public class GameServiceTest {
      */
     @BeforeEach
     void initService() {
+        //created the mock bean and the when... statement because
+        //the tests are using addPlayer which needs a game to be created
         gameService = new GameService(createGameService);
+        when(createGameService.createGame(20))
+                .thenReturn(new GameResponsePacket(new Game()));
     }
 
     /**
@@ -111,13 +121,12 @@ public class GameServiceTest {
         spy.addPlayer("Joe");
 
         // calls the method
-        var trimmedList = spy.onPlayerJoin("Join");
+        var trimmedList = spy.onPlayerJoin("Joe");
         Map<String, String> expectedList = new HashMap<>();
 
         // two existing eventCaller should be invoked and cleared
         assertTrue(gameService.getPlayerEventList().size() == 0);
 
-        //assertTrue(Joe != null);
         assertTrue(trimmedList.get("Joe") != null);
         assertTrue(trimmedList.get("Ted") != null);
         assertTrue(trimmedList.get("Kate") != null);
@@ -155,4 +164,29 @@ public class GameServiceTest {
 
     }
 
+    @Test
+    void addScoreTest() {
+        gameService.addPlayer("A");
+        gameService.addScore("A",50);
+        LeaderboardEntry player = new LeaderboardEntry();
+        for (LeaderboardEntry l : gameService.getScores()){
+            if (l.username.equals("A")){
+                player = l;
+            }
+        }
+        assertEquals(50,player.points);
+    }
+
+    @Test
+    void onStartGameNewPlayerMapTest() {
+        GameService spy = Mockito.spy(gameService);
+        Map<String, String> expectedMap = new HashMap<>();
+        expectedMap.put("Joe", "false");
+
+        spy.addPlayer("Ted");
+        spy.addPlayer("Kate");
+        spy.onStartGame(new StartGameRequestPacket(true,"Ted"));
+        spy.addPlayer("Joe");
+        assertEquals(expectedMap,spy.trimPlayerList());
+    }
 }

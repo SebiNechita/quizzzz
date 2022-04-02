@@ -1,6 +1,7 @@
 package server.api.game;
 
 import commons.Game;
+import commons.LeaderboardEntry;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import packets.JokerRequestPacket;
@@ -16,10 +17,17 @@ import java.util.*;
 public class GameService {
 
     private final CreateGameService createGameService;
-    private final Map<String, Map.Entry<String, LocalDateTime>> playerMap;
+    private Map<String, Map.Entry<String, LocalDateTime>> currentMatchPlayerMap;
+    //TODO: Can we create two separate maps for this? It seems like we never
+    // use/update BOTH the time and the ready state of a player.
+    // Actually, the ready state is only relevant for the lobby, so we don't
+    // even need to store that for every match, but only for the lobby itself
+    private final Map<String,Map<String, Map.Entry<String, LocalDateTime>>> playerMatchMap;
+    private final List<Map> matches;
     private Game game;
     private final List<GameController.EventCaller<LobbyResponsePacket>> playerEventList;
     private boolean allReady;
+    private List<LeaderboardEntry> scores;
 
     /**
      * constructor for GameService
@@ -27,23 +35,36 @@ public class GameService {
      * @param createGameService
      */
     public GameService(CreateGameService createGameService) {
-        this.playerMap = new HashMap<>();
         this.playerEventList = new LinkedList<>();
         this.allReady = false;
         this.createGameService = createGameService;
+        this.scores = new LinkedList<>();
+        this.playerMatchMap = new HashMap<>();
+        this.matches = new LinkedList<>();
+        //TODO: Remove this. Only using temporarily for tests to pass
+        // because I changed the class structure
+        this.currentMatchPlayerMap = new HashMap<>();
     }
 
     /**
-     * a scheduled task for removing disconnected player from the player list
+     * Scheduled task for removing old players from every match
      */
     @Scheduled(fixedRate = 2000)
     public void checkLastPing() {
-        var now = LocalDateTime.now();
+        for (Map match : matches){
+            removeOldPlayers(match);
+        }
+    }
 
-        var iter = playerMap.entrySet().iterator();
+    /**
+     * Removes players from the given match who didn't respond in 2s
+     * @param playerMatchMap the match
+     */
+    public void removeOldPlayers(Map<String, Map.Entry<String, LocalDateTime>> playerMatchMap){
+        var now = LocalDateTime.now();
+        var iter = playerMatchMap.entrySet().iterator();
         while (iter.hasNext()) {
             var entry = iter.next();
-            System.out.println(Duration.between(entry.getValue().getValue(), now).toMillis());
             if (Duration.between(entry.getValue().getValue(), now).toMillis() > 2000) {
                 String username = entry.getKey();
                 iter.remove();
@@ -52,8 +73,6 @@ public class GameService {
             }
 
         }
-
-        System.out.println("Working");
     }
 
     /**
@@ -75,22 +94,43 @@ public class GameService {
         playerEventList.clear();
     }
 
-    /**
-     * method for adding a new player to the playerMap with false ready state and localtime
-     *
+    /** Adds a new player to the playerMap with false ready state and localtime
+     * and sets their score to 0
      * @param player player to be added
+     * @return the game the player has joined
      */
-    public void addPlayer(String player) {
-        playerMap.put(player, Map.entry("false", LocalDateTime.now()));
+    public Game addPlayer(String player) {
+        Game game = getGameIfExists();
+        currentMatchPlayerMap.put(player, Map.entry("false", LocalDateTime.now()));
+        playerMatchMap.put(player,currentMatchPlayerMap);
+        scores.add(new LeaderboardEntry(0,player));
+        return game;
     }
 
     /**
-     * method for removing a player from playerList
+     * Adds the specified amount of points to the player's score
+     * @param player the player to update the score of
+     * @param score the number of points to add
+     */
+    public void addScore(String player, int score){
+        //I used a list of leaderboardentries because that is
+        // what's returned in a LeaderboardResponsePacket.
+        for (LeaderboardEntry l : scores){
+            if (l.username.equals(player)){
+                l.points += score;
+            }
+        }
+    }
+
+    /**
+     * Removes a player from playerList of the match the player is in
      *
      * @param player player to be removed
      */
     public void removePlayer(String player) {
-        playerMap.remove(player);
+        playerMatchMap.get(player).remove(player);
+        //also remove the information that the user is currently in a match
+        playerMatchMap.remove(player);
     }
 
     /**
@@ -98,8 +138,9 @@ public class GameService {
      *
      * @return playerMap
      */
+    //TODO: replace with finding the match based on the name of the player who sent the request
     public Map<String, Map.Entry<String, LocalDateTime>> getPlayers() {
-        return playerMap;
+        return currentMatchPlayerMap;
     }
 
     /**
@@ -109,6 +150,10 @@ public class GameService {
      */
     public List<GameController.EventCaller<LobbyResponsePacket>> getPlayerEventList() {
         return this.playerEventList;
+    }
+
+    public List<LeaderboardEntry> getScores() {
+        return scores;
     }
 
     /**
@@ -187,17 +232,17 @@ public class GameService {
         // if not all ready currently (before the request)
         if (!allReady) {
             // update sender ready state
-            playerMap.put(from, Map.entry(content, LocalDateTime.now()));
+            currentMatchPlayerMap.put(from, Map.entry(content, LocalDateTime.now()));
             trimmedMap = trimPlayerList();
             int readyCount = 0;
-            for (Map.Entry<String, LocalDateTime> value : playerMap.values()) {
+            for (Map.Entry<String, LocalDateTime> value : currentMatchPlayerMap.values()) {
                 if (value.getKey().equals("true")) {
                     readyCount += 1;
                 }
             }
 
             //if all players are ready
-            if (readyCount == playerMap.size()) {
+            if (readyCount == currentMatchPlayerMap.size()) {
                 allReady = true;
                 for (GameController.EventCaller<LobbyResponsePacket> thread : playerEventList) {
                     if (!thread.getUsername().equals(from)) {
@@ -225,7 +270,7 @@ public class GameService {
         } else {
             allReady = false;
             // update sender ready state
-            playerMap.put(from, Map.entry(content, LocalDateTime.now()));
+            currentMatchPlayerMap.put(from, Map.entry(content, LocalDateTime.now()));
             trimmedMap = trimPlayerList();
             // send ready message to other player
 
@@ -260,10 +305,11 @@ public class GameService {
      *
      * @return the trimmed player list to be sent to the client
      */
+    //TODO: replace with finding the match based on the name of the player who sent the request
     public Map<String, String> trimPlayerList() {
         Map<String, String> trimmedMap = new HashMap<>();
-        for (String player : this.playerMap.keySet()) {
-            trimmedMap.put(player, this.playerMap.get(player).getKey());
+        for (String player : this.currentMatchPlayerMap.keySet()) {
+            trimmedMap.put(player, this.currentMatchPlayerMap.get(player).getKey());
         }
         return trimmedMap;
     }
@@ -274,27 +320,33 @@ public class GameService {
      * @param username the last pinged time of this username will be updated.
      */
     public void updatePlayerTime(String username) {
+        Map<String, Map.Entry<String, LocalDateTime>> playerMap = playerMatchMap.get(username);
+        //Puts an entry with the ready state and time with the name as key
         String ready = playerMap.get(username).getKey();
         playerMap.put(username, Map.entry(ready, LocalDateTime.now()));
     }
 
     /**
-     * Return a game
+     * Returns current game, or creates a new one.
      * @return A game
      */
     public Game getGameIfExists() {
         if (game == null) {
+            currentMatchPlayerMap = new HashMap<>();
+            //I used this list when checking for disconnected players in all running matches
+            matches.add(currentMatchPlayerMap);
             game = createGameService.createGame(20).getGame();
         }
         return game;
     }
 
     /**
-     * Starts a game when a player presses "start" and informs other players
+     * Starts a game and informs players. Resets the game.
      * @param requestPacket The reques packet
      * @return LobbyResponsePacket
      */
     public LobbyResponsePacket onStartGame(StartGameRequestPacket requestPacket) {
+        game = null;
         Map<String, String> trimmedMap = trimPlayerList();
         for (GameController.EventCaller<LobbyResponsePacket> thread : playerEventList) {
             thread.run(new LobbyResponsePacket("Start", "true", requestPacket.getUsername(), trimmedMap));
