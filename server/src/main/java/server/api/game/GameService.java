@@ -3,6 +3,8 @@ package server.api.game;
 import commons.Game;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import packets.JokerRequestPacket;
+import packets.JokerResponsePacket;
 import packets.LobbyResponsePacket;
 import packets.StartGameRequestPacket;
 
@@ -136,6 +138,23 @@ public class GameService {
     }
 
     /**
+     * send joker notification to other players
+     *
+     * @param type     should be "JokerNotification"
+     * @param jokerNotification joker type
+     * @param from     sender of the emote
+     */
+    public void onJokerNotificationReceived(String type, String jokerNotification, String from) {
+        for (GameController.EventCaller<LobbyResponsePacket> thread : playerEventList) {
+            // if the user in the list is different from the notification sender
+            if (type.equals("JokerNotification") && !thread.getUsername().equals(from)) {
+                thread.run(new LobbyResponsePacket("JokerNotification", jokerNotification, from));
+            }
+        }
+        clearEventList(from);
+    }
+
+    /**
      * sends join message to all other players in the lobby
      *
      * @param from player who just entered the lobby
@@ -259,6 +278,10 @@ public class GameService {
         playerMap.put(username, Map.entry(ready, LocalDateTime.now()));
     }
 
+    /**
+     * Return a game
+     * @return A game
+     */
     public Game getGameIfExists() {
         if (game == null) {
             game = createGameService.createGame(20).getGame();
@@ -266,11 +289,34 @@ public class GameService {
         return game;
     }
 
+    /**
+     * Starts a game when a player presses "start" and informs other players
+     * @param requestPacket The reques packet
+     * @return LobbyResponsePacket
+     */
     public LobbyResponsePacket onStartGame(StartGameRequestPacket requestPacket) {
         Map<String, String> trimmedMap = trimPlayerList();
         for (GameController.EventCaller<LobbyResponsePacket> thread : playerEventList) {
             thread.run(new LobbyResponsePacket("Start", "true", requestPacket.getUsername(), trimmedMap));
         }
         return new LobbyResponsePacket("Start", "true", requestPacket.getUsername(), trimmedMap);
+    }
+
+    /**
+     * When a player uses the Half-time joker, other players get the effect from that joker
+     * @param requestPacket The request packet
+     * @return JokerResponsePacket
+     */
+    public JokerResponsePacket onJokerGame(JokerRequestPacket requestPacket) {
+        for (GameController.EventCaller<LobbyResponsePacket> thread : playerEventList) {
+            if (requestPacket.getScene().equals("client.scenes.GameMultiChoiceCtrl")) {
+                thread.run(new JokerResponsePacket("JokerMultiChoice", "true", requestPacket.getUsername(), requestPacket.getJokerType()));
+            } else if (requestPacket.getScene().equals("client.scenes.GameOpenQuestionCtrl")) {
+                thread.run(new JokerResponsePacket("JokerOpenQuestion", "true", requestPacket.getUsername(), requestPacket.getJokerType()));
+            }
+
+        }
+
+        return new JokerResponsePacket("Joker", "true", requestPacket.getUsername(), requestPacket.getJokerType());
     }
 }
