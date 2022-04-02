@@ -22,6 +22,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * services related to retrieving activity and updating activity
+ */
 @Service
 public class ActivityService {
     /**
@@ -75,6 +78,12 @@ public class ActivityService {
         return savedActivities;
     }
 
+    /**
+     * retrieve corresponding activity by ID and update it.
+     *
+     * @param request ActivityRequestPacket
+     * @return returns OK if operation is successful. returns 404 if the entity doesn't exist.
+     */
     public GeneralResponsePacket edit(ActivityRequestPacket request) {
 
         Optional<Activity> optional = activityRepository.findById(request.getId());
@@ -97,6 +106,12 @@ public class ActivityService {
         return new GeneralResponsePacket(HttpStatus.OK);
     }
 
+    /**
+     * overwrite existing image with new one
+     *
+     * @param imageByteArray image byte array
+     * @param path           image path
+     */
     public void writeImage(byte[] imageByteArray, String path) {
         try {
             BufferedImage myImage = ImageIO.read(new ByteArrayInputStream(imageByteArray));

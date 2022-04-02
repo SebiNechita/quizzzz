@@ -5,6 +5,9 @@ import packets.ActivitiesResponsePacket;
 import packets.ActivityRequestPacket;
 import packets.GeneralResponsePacket;
 
+/**
+ * Controller for retrieving and updating activity
+ */
 @RestController
 @RequestMapping("api/activities")
 public class ActivityController {
@@ -32,6 +35,12 @@ public class ActivityController {
         return activityService.list();
     }
 
+    /**
+     * Endpoint for editing an activity
+     *
+     * @param request ActivityRequestPacket
+     * @return returns general response packet
+     */
     @PostMapping("/edit")
     public GeneralResponsePacket edit(@RequestBody ActivityRequestPacket request) {
         return activityService.edit(request);

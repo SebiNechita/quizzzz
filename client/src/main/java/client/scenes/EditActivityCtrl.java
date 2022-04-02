@@ -1,6 +1,5 @@
 package client.scenes;
 
-import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import commons.questions.Activity;
 import javafx.event.ActionEvent;
@@ -27,7 +26,7 @@ import java.nio.file.Files;
 import java.util.ResourceBundle;
 
 /**
- * controller class for EditActivity scene
+ * controller for EditActivity scene
  */
 public class EditActivityCtrl extends SceneCtrl {
     @FXML
@@ -94,7 +93,7 @@ public class EditActivityCtrl extends SceneCtrl {
     /**
      * pass Activity object to this controller from ListActivityCtrl
      *
-     * @param item
+     * @param item Activity object
      */
     public void initData(Activity item) {
         this.item = item;

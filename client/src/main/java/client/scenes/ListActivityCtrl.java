@@ -106,7 +106,7 @@ public class ListActivityCtrl extends SceneCtrl {
     /**
      * get all activities from database
      *
-     * @return
+     * @return returns all Activities in the database
      */
     public List<Activity> getAllActivity() {
         ActivitiesResponsePacket reponse = server.getRequest("api/activities/list", ActivitiesResponsePacket.class);
@@ -117,8 +117,8 @@ public class ListActivityCtrl extends SceneCtrl {
     /**
      * prepare ObservableList object for the TableView
      *
-     * @param list
-     * @return
+     * @param list activity list
+     * @return returns an ObservableList of ActivityItem
      */
     public ObservableList<ActivityItem> convertToActivityItem(List<Activity> list) {
 
