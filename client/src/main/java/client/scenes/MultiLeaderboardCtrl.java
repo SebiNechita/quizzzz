@@ -24,7 +24,7 @@ import javafx.util.Duration;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class MultiplayerLeaderboardCtrl extends SceneCtrl{
+public class MultiLeaderboardCtrl extends SceneCtrl{
 
     @FXML
     private TableView<LeaderboardEntry> table;
@@ -51,7 +51,7 @@ public class MultiplayerLeaderboardCtrl extends SceneCtrl{
     private double timeMultiplier = 1d;
     Animation timer = null;
 
-    public MultiplayerLeaderboardCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
+    public MultiLeaderboardCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
         super(mainCtrl, serverUtils);
     }
 
