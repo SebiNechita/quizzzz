@@ -78,7 +78,7 @@ public class ListActivityCtrl extends SceneCtrl {
     }
 
     /**
-     * display table and added event listenerss
+     * display table and added event listeners
      */
     @OnShowScene
     public void onShowScene() {
@@ -109,9 +109,9 @@ public class ListActivityCtrl extends SceneCtrl {
      * @return returns all Activities in the database
      */
     public List<Activity> getAllActivity() {
-        ActivitiesResponsePacket reponse = server.getRequest("api/activities/list", ActivitiesResponsePacket.class);
+        ActivitiesResponsePacket response = server.getRequest("api/activities/list", ActivitiesResponsePacket.class);
 
-        return reponse.getActivities();
+        return response.getActivities();
     }
 
     /**

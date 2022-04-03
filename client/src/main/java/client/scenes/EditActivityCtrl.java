@@ -2,6 +2,7 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import commons.questions.Activity;
+import commons.utils.LoggerUtil;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -111,6 +112,10 @@ public class EditActivityCtrl extends SceneCtrl {
         // save local file path
         filePath = singleFilePathChooser(e);
 
+        if (filePath == null) {
+            LoggerUtil.warnInline("No image was selected!");
+        }
+
         try {
             // get image byte array
             FileInputStream imageStream = new FileInputStream(filePath);
@@ -138,13 +143,14 @@ public class EditActivityCtrl extends SceneCtrl {
      * @param actionEvent
      */
     public void onOk(ActionEvent actionEvent) {
-        if (description.getText() == null || consumption.getText() == null || source.getText() == null) {
-            description.setStyle("-fx-background-color: #FF0000FF; -fx-background-radius: 50");
-            consumption.setStyle("-fx-background-color: #FF0000FF; -fx-background-radius: 50");
-            source.setStyle("-fx-background-color: #FF0000FF; -fx-background-radius: 50");
+        if (description.getText() == null || description.getText().equals("") ||
+                consumption.getText() == null || consumption.getText().equals("") ||
+                source.getText() == null || source.getText().equals("")) {
+            description.setStyle("-fx-background-color: #fc6363; -fx-background-radius: 50");
+            consumption.setStyle("-fx-background-color: #fc6363; -fx-background-radius: 50");
+            source.setStyle("-fx-background-color: #fc6363; -fx-background-radius: 50");
             error.setText("All fields are mandatory!");
-            upload.setBackground(new Background(new BackgroundFill(Color.RED, new CornerRadii(40), Insets.EMPTY)));
-
+            upload.setBackground(new Background(new BackgroundFill(Color.web("#fc6363"), new CornerRadii(40), Insets.EMPTY)));
         } else {
 
             ActivityRequestPacket packet = new ActivityRequestPacket(
@@ -169,6 +175,8 @@ public class EditActivityCtrl extends SceneCtrl {
     @FXML
     public String singleFilePathChooser(javafx.event.ActionEvent actionEvent) throws IOException {
         FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("Images Files", "*.jpg", "*.png");
+        fileChooser.getExtensionFilters().add(extensionFilter);
         fileChooser.setTitle("Open File Dialog");
         Stage stage = (Stage) anchorPane.getScene().getWindow();
 
