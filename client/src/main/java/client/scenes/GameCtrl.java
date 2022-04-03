@@ -365,7 +365,7 @@ public abstract class GameCtrl extends SceneCtrl {
             }
         }
 
-        numberofQuestions++;
+        numberOfQuestions++;
         //if(numberofQuestions  == 10)    main.showScene(MultiLeaderboardCtrl.class);
     }
     /**
