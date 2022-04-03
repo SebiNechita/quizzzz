@@ -47,6 +47,8 @@ We used the **[Spring Framework](https://spring.io)** to build the application. 
       ./gradlew run
    ```
 
+![til](readMeResources/howToInstall.gif)
+
 
 ## How to contribute to it
 
