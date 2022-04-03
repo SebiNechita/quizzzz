@@ -8,6 +8,7 @@ import client.utils.ServerUtils;
 import commons.questions.Activity;
 import commons.questions.MultipleChoiceQuestion;
 import commons.utils.GameMode;
+import commons.utils.JokerType;
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.Transition;
@@ -16,6 +17,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -177,6 +179,19 @@ public class GameMultiChoiceCtrl extends GameCtrl {
                 lastAnswerChange = timeLeft;
             });
         }
+
+        AnchorPane joker = (AnchorPane) jokers.getChildren().get(2);
+        ImageView jokerImage = (ImageView) joker.getChildren().get(0);
+
+        jokerImage.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            if (disabledJokers.contains(joker) && !removeAnswer) {
+                return;
+            } else {
+                jokerUsed(JokerType.valueOf(joker.getId().toUpperCase()));
+
+                removeWrongAnswer();
+            }
+        });
     }
 
     /**
@@ -265,8 +280,6 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         for (AnchorPane option : options) {
             fadeOption(option, (Color) option.getBackground().getFills().get(0).getFill(), new Color(1, 1, 1, 1)).play();
         }
-
-
     }
 
     /**
@@ -319,6 +332,27 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         setRoundedImage(image1);
         setRoundedImage(image2);
         setRoundedImage(image3);
+    }
+
+    /**
+     * Removes a wrong answer
+     */
+    protected void removeWrongAnswer() {
+        int[] wrongOptions = new int[2];
+        int pos = 0;
+
+        for(int i = 0; i < 3; ++i) {
+            if(i != answerOptionNumber) {
+                wrongOptions[pos++] = i;
+            }
+        }
+
+        int num = new Random().nextInt(2);
+
+        if(removeAnswer && removeAnswerUsed == false) {
+            removeOption(wrongOptions[num]);
+            removeAnswerUsed = true;
+        }
     }
 
     /**
