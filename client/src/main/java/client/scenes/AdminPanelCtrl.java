@@ -3,7 +3,10 @@ package client.scenes;
 import client.Main;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
+import commons.utils.HttpStatus;
 import javafx.fxml.FXML;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import packets.ResponsePacket;
@@ -19,6 +22,12 @@ public class AdminPanelCtrl extends SceneCtrl {
     final FileChooser fileChooser;
     @FXML
     private Text noOfActivities;
+
+    @FXML
+    private VBox buttons;
+
+    @FXML
+    private Text infoText;
 
     /**
      * Constructor for this Ctrl
@@ -42,18 +51,58 @@ public class AdminPanelCtrl extends SceneCtrl {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("ZIP files (*.zip)", "*.zip");
+        this.fileChooser.getExtensionFilters().add(extFilter);
     }
 
     /**
-     * Lets the user choose a ZIP and sends it to the server to import
+     * Lets the user choose a ZIP and sends it to the server to import.
+     * Handles the UI changes while uploading.
      */
     public void sendZip() throws IOException {
         File file = fileChooser.showOpenDialog(main.getPrimaryStage());
         if (file != null) {
+            changeUIUploading();
             byte[] bytes = Files.readAllBytes(file.toPath());
-            server.postRequest("zip/",new ZipRequestPacket(bytes), ResponsePacket.class);
+            ResponsePacket responsePacket = server.postRequest("zip/",new ZipRequestPacket(bytes), ResponsePacket.class);
+            if (responsePacket.getResponseStatus() == HttpStatus.OK){
+                changeUIUploadSuccess();
+            }
+            else{
+                changeUIUploadFail();
+            }
         }
+    }
+
+    /**
+     * Notifies user about successful upload
+     */
+    private void changeUIUploadSuccess() {
+        changeUIUploadEnd();
+        infoText.setFill(Paint.valueOf("WHITE"));
+        infoText.setText("Uploaded the activities.");
+    }
+
+    /**
+     * Shows the buttons
+     */
+    private void changeUIUploadEnd() {
+        buttons.setVisible(true);
+    }
+
+    /**
+     * Notifies user about failed upload
+     */
+    private void changeUIUploadFail() {
+        infoText.setFill(Paint.valueOf("#fc6363"));
+        infoText.setText("Failed to upload the activities.");
+    }
+
+    /**
+     * Hides the buttons
+     */
+    private void changeUIUploading() {
+        buttons.setVisible(false);
     }
 
 
@@ -85,5 +134,6 @@ public class AdminPanelCtrl extends SceneCtrl {
     public void onShowScene() {
         Main.noOfActivities = server.getActivities().size();
         noOfActivities.setText(Main.noOfActivities == 0 ? "X" : Integer.toString(Main.noOfActivities));
+        infoText.setText("");
     }
 }
