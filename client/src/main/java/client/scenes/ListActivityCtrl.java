@@ -250,7 +250,6 @@ public class ListActivityCtrl extends SceneCtrl {
                 if (alert.getResult() == ButtonType.YES) {
                     ActivityRequestPacket packet = new ActivityRequestPacket(item.getId());
                     server.postRequest("api/activities/delete", packet, GeneralResponsePacket.class);
-                    main.showScene(ListActivityCtrl.class);
                 }
             });
 

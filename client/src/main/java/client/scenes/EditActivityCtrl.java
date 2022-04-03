@@ -2,6 +2,7 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import commons.questions.Activity;
+import commons.utils.HttpStatus;
 import commons.utils.LoggerUtil;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -198,7 +199,12 @@ public class EditActivityCtrl extends SceneCtrl {
                     description.getText(),
                     imageByteArray
             );
-            server.postRequest("api/activities/edit", packet, GeneralResponsePacket.class);
+            GeneralResponsePacket response = server.postRequest("api/activities/edit", packet, GeneralResponsePacket.class);
+            if (response.getResponseStatus() == HttpStatus.OK) {
+                main.showScene(ListActivityCtrl.class);
+            } else {
+                error.setText("edit operation failed.");
+            }
         }
     }
 
