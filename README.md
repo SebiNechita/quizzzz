@@ -1,16 +1,15 @@
-
-# Starting template
-
-This README will need to contain a description of your project, how to run it, how to set up the development environment, and who worked on it.
-This information can be added throughout the course, except for the names of the group members.
-Add your own name (do not add the names for others!) to the section below.
-
 ## Description of project
 
 We have created a Game called **_Quizzzz_**. The main goal of this game it improve the user's _energy awareness_. We also have a Multiplayer mode so that you can have fun with friends while learning about the energy usages of various activities you see in a day-to-day basis.
 There is also a Single Player Mode for more serious users. There is a global leaderboard that contains best-scores of other users.  
 
-We used the **[Spring Framework](https://spring.io)** to build the application. We also used **[JavaFX](https://openjfx.io)** for the GUI. 
+We used the **[Spring Framework](https://spring.io)** to build the application. We also used **[JavaFX](https://openjfx.io)** for the GUI.
+
+### How to add activities to the game
+1) Once you log in, you can click on the settings button in the bottom left corner.
+2) Then, you can click on "Add an Activity" button to add activities.
+
+![til](readMeResources/activityGIF.gif)
 ## Group members
 
 | Profile Picture | Name | Email |
