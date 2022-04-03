@@ -18,7 +18,8 @@ public class MultipleChoiceQuestion extends Question {
     /**
      * Empty Constructor for Jackson
      */
-    public MultipleChoiceQuestion() {}
+    public MultipleChoiceQuestion() {
+    }
 
     /**
      * Constructor for MultipleChoiceQuestion
@@ -49,7 +50,7 @@ public class MultipleChoiceQuestion extends Question {
         }
 
         while (activityList.size() < 3) {
-            int randInt =  randomGen.nextInt(unusedActivities.size());
+            int randInt = randomGen.nextInt(unusedActivities.size());
             Activity activity = unusedActivities.get(randInt);
             if (pivot == -1) pivot = activity.getConsumption_in_wh();
             if (Math.abs(activity.getConsumption_in_wh() - pivot) <= 5000) {
@@ -59,10 +60,9 @@ public class MultipleChoiceQuestion extends Question {
                 unusedActivities.remove(randInt);
             }
         }
-        if (randomGen.nextBoolean()){
+        if (randomGen.nextBoolean()) {
             return generateSelectMaximumQuestion(activityList);
-        }
-        else {
+        } else {
             return generateSelectByConsumptionQuestion(activityList, randomGen.nextInt(activityList.size()));
         }
 
@@ -70,16 +70,17 @@ public class MultipleChoiceQuestion extends Question {
 
     /**
      * Creates a question asking for the activity using the most energy out of the three
+     *
      * @param activityList the three activities
      * @return the generated question
      */
-    public static MultipleChoiceQuestion generateSelectMaximumQuestion(List<Activity> activityList){
+    public static MultipleChoiceQuestion generateSelectMaximumQuestion(List<Activity> activityList) {
         //TODO: Replace with some stream magic?
         Activity max = activityList.get(0);
-        if (activityList.get(1).getConsumption_in_wh()>max.getConsumption_in_wh()){
+        if (activityList.get(1).getConsumption_in_wh() > max.getConsumption_in_wh()) {
             max = activityList.get(1);
         }
-        if (activityList.get(2).getConsumption_in_wh()>max.getConsumption_in_wh()){
+        if (activityList.get(2).getConsumption_in_wh() > max.getConsumption_in_wh()) {
             max = activityList.get(2);
         }
         activityList.remove(max);
@@ -89,11 +90,12 @@ public class MultipleChoiceQuestion extends Question {
 
     /**
      * Creates a question asking for which activity out of the three uses the given amount of energy.
+     *
      * @param activityList the three activities
-     * @param answerNo the index of the answer activity
+     * @param answerNo     the index of the answer activity
      * @return the generated question
      */
-    public static MultipleChoiceQuestion generateSelectByConsumptionQuestion(List<Activity> activityList, int answerNo){
+    public static MultipleChoiceQuestion generateSelectByConsumptionQuestion(List<Activity> activityList, int answerNo) {
         // Here, the answer is removed from the activity list because this makes it easier to find the non-answer options.
         // The answer is rather stores in the variable answer
         Activity answer = activityList.remove(answerNo);
