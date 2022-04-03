@@ -2,6 +2,8 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import commons.utils.LoggerUtil;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -161,7 +163,7 @@ public class AddActivityCtrl extends SceneCtrl {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        limitToNumbers();
     }
 
     /**
@@ -171,6 +173,12 @@ public class AddActivityCtrl extends SceneCtrl {
         main.showScene(AdminPanelCtrl.class);
     }
 
+    /**
+     * get file path from file chooser
+     *
+     * @param e
+     * @throws IOException
+     */
     public void clickUploadImage(ActionEvent e) throws IOException {
         if (e.getSource().equals(uploadAnImage)) {
             filePath = singleFilePathChooser(e);
@@ -209,5 +217,19 @@ public class AddActivityCtrl extends SceneCtrl {
         }
     }
 
+    /**
+     * make consumption text field only takes numbers
+     */
+    public void limitToNumbers() {
+        consumption.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                                String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    consumption.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
+    }
 
 }

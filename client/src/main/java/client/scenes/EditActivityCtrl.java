@@ -3,6 +3,8 @@ package client.scenes;
 import client.utils.ServerUtils;
 import commons.questions.Activity;
 import commons.utils.LoggerUtil;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -109,6 +111,22 @@ public class EditActivityCtrl extends SceneCtrl {
         source.setText(item.getSource());
         consumption.setText(Long.toString(item.getConsumption_in_wh()));
         description.setText(item.getTitle());
+        limitToNumbers();
+    }
+
+    /**
+     * make consumption text field only takes numbers
+     */
+    public void limitToNumbers() {
+        consumption.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                                String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    consumption.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
     }
 
     /**
@@ -181,7 +199,6 @@ public class EditActivityCtrl extends SceneCtrl {
                     imageByteArray
             );
             server.postRequest("api/activities/edit", packet, GeneralResponsePacket.class);
-            main.showScene(ListActivityCtrl.class);
         }
     }
 
