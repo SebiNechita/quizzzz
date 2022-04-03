@@ -18,8 +18,9 @@ public class DeleteActivityService {
     /**
      * Deletes an activity from the repository
      * @param id The id of the activity to be deleted
+     * @return true if delete was successful; false otherwise
      */
-    public void delete(String id) {
+    public boolean delete(String id) {
 //        List<Activity> activities = activityRepository.findAll();
 //        for(Activity activity : activities) {
 //            if(activity.getId().equals(id)) {
@@ -27,6 +28,10 @@ public class DeleteActivityService {
 //            }
 //        }
         // I feel this way is easier
-        activityRepository.deleteById(id);
+        if (activityRepository.existsById(id)) {
+            activityRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }

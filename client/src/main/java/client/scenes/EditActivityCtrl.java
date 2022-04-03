@@ -10,6 +10,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -79,13 +80,32 @@ public class EditActivityCtrl extends SceneCtrl {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        description.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.DOWN) {
+                consumption.requestFocus();
+            }
+        });
+        consumption.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.UP) {
+                description.requestFocus();
+            }
+            if (e.getCode() == KeyCode.DOWN) {
+                source.requestFocus();
+            }
+        });
+        source.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.UP) {
+                consumption.requestFocus();
+            }
+        });
     }
 
     /**
      * populate the text fields with the Activity item
      */
     public void onShowScene() {
+        description.requestFocus();
+        description.positionCaret(source.getText().length());
         source.setText(item.getSource());
         consumption.setText(Long.toString(item.getConsumption_in_wh()));
         description.setText(item.getTitle());
