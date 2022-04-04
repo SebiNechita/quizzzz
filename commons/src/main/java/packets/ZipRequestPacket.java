@@ -2,7 +2,7 @@ package packets;
 
 import java.util.Arrays;
 
-public class ZipRequestPacket extends RequestPacket{
+public class ZipRequestPacket extends RequestPacket {
 
     protected byte[] zipBytes;
 

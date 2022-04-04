@@ -65,12 +65,13 @@ public class AdminPanelCtrl extends SceneCtrl {
             changeUIUploading();
             byte[] bytes = Files.readAllBytes(file.toPath());
             ResponsePacket responsePacket = server.postRequest("zip/",new ZipRequestPacket(bytes), ResponsePacket.class);
-            if (responsePacket.getResponseStatus() == HttpStatus.OK){
+            if (responsePacket.getResponseStatus() == HttpStatus.Created){
                 changeUIUploadSuccess();
             }
-            else{
+            else {
                 changeUIUploadFail();
             }
+            updateActivitiesCount();
         }
     }
 
@@ -105,6 +106,14 @@ public class AdminPanelCtrl extends SceneCtrl {
         buttons.setVisible(false);
     }
 
+    /**
+     * Updates activities count
+     */
+    private void updateActivitiesCount() {
+        Main.noOfActivities = server.getActivities().size();
+        noOfActivities.setText(Main.noOfActivities == 0 ? "X" : Integer.toString(Main.noOfActivities));
+    }
+
 
     /**
      * Show the home screen.
@@ -121,8 +130,8 @@ public class AdminPanelCtrl extends SceneCtrl {
     }
 
     /**
-     //     * Show the home screen.
-     //     */
+     * Show the home screen.
+     */
     public void showMainMenu() {
         main.showScene(MainMenuCtrl.class);
     }
@@ -132,8 +141,7 @@ public class AdminPanelCtrl extends SceneCtrl {
      */
     @OnShowScene
     public void onShowScene() {
-        Main.noOfActivities = server.getActivities().size();
-        noOfActivities.setText(Main.noOfActivities == 0 ? "X" : Integer.toString(Main.noOfActivities));
+        updateActivitiesCount();
         infoText.setText("");
     }
 }
