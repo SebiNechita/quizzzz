@@ -1,5 +1,7 @@
 package server.api.game;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import commons.questions.Activity;
 import commons.utils.HttpStatus;
 import commons.utils.LoggerUtil;
@@ -17,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -133,4 +136,31 @@ public class ActivityService {
     }
 
 
+
+    /**
+     * Clears the repository and adds every activity from activities.json to the repository
+     */
+    public void updateRepository(){
+        activityRepository.deleteAll();
+        // read json and write to db
+        ObjectMapper mapper = new ObjectMapper();
+
+        TypeReference<List<Activity>> typeReference = new TypeReference<List<Activity>>() {};
+
+        InputStream inputStream = TypeReference.class.getResourceAsStream("/activity-bank/activities.json");
+
+        if (inputStream == null) {
+            LoggerUtil.warnInline("The file '/activity-bank/activities.json' does not exist in the resources directory!" +
+                    "\nThe reason could be that it is included in .gitignore and hence not available in the remote repository");
+            return;
+        }
+
+        try {
+            List<Activity> activities = mapper.readValue(inputStream, typeReference);
+            save(activities);
+            LoggerUtil.infoInline("Activities Saved!");
+        } catch (IOException e) {
+            LoggerUtil.warnInline("Unable to save activities: " + e.getMessage());
+        }
+    }
 }

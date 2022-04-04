@@ -52,6 +52,11 @@ public class MainCtrl {
     private final HashMap<Class<?>, SceneCtrl> ctrlClasses = new HashMap<>();
     private final HashMap<Class<?>, Pair<Scene, String>> scenes = new HashMap<>();
 
+    //I created this to be able to access the stage from AdminPanelCtrl when opening the file dialog.
+    public Stage getPrimaryStage() {
+        return primaryStage;
+    }
+
     /**
      * Constructs a new MainCtrl instance
      *
@@ -123,7 +128,7 @@ public class MainCtrl {
             return null;
         }
     }
-    
+
     /**
      * Loads and initializes a scene
      *
@@ -226,6 +231,11 @@ public class MainCtrl {
         }
     }
 
+    /**
+     * Joins the player to a match and retrieves the game and player list of the match
+     * @param username the player's username
+     * @return the game the user has joined
+     */
     public commons.Game joinGame(String username) {
         JoinResponsePacket responsePacket = serverUtils.postRequest("api/game/join",
                 new JoinRequestPacket(username),
