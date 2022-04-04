@@ -94,6 +94,29 @@ public class GameServiceTest {
     }
 
     /**
+     * test if eventCallers other than from the joker notification sender got invoked
+     */
+    @Test
+    public void onJokerNotificationReceivedTest() {
+        DeferredResult<LobbyResponsePacket> output1 = new DeferredResult<>();
+        GameController.EventCaller<LobbyResponsePacket> eventCaller1 = new GameController.EventCaller(output1, "Joe");
+        DeferredResult<LobbyResponsePacket> output2 = new DeferredResult<>();
+        GameController.EventCaller<LobbyResponsePacket> eventCaller2 = new GameController.EventCaller(output2, "Kate");
+
+        var spy = Mockito.spy(gameService);
+        spy.waitForPlayerEvent(eventCaller1);
+        spy.waitForPlayerEvent(eventCaller2);
+
+        // calls the method
+        spy.onJokerNotificationReceived("JokerNotification", "REMOVE_ANSWER", "Joe");
+
+        assertTrue(gameService.getPlayerEventList().size() == 1);
+        assertEquals(eventCaller1, gameService.getPlayerEventList().get(0));
+
+        verify(spy, times(1)).clearEventList("Joe");
+    }
+
+    /**
      * test case for a player joins the lobby. should return correct player list.
      */
     @Test
