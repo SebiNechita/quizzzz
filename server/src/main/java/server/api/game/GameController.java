@@ -71,8 +71,12 @@ public class GameController {
      */
     @GetMapping("/multiplayerleaderboard")
     public LeaderboardResponsePacket getMultiplayerLeaderboard (){
+        Authentication auth = SecurityContextHolder
+                .getContext()
+                .getAuthentication();
 
-        return new LeaderboardResponsePacket(HttpStatus.OK,gameService.getScores());
+        String username = (String) auth.getPrincipal();
+        return new LeaderboardResponsePacket(HttpStatus.OK,gameService.getScoresByUser(username));
     }
 
     /**
@@ -85,12 +89,6 @@ public class GameController {
         gameService.addScore(request.getPlayer(), request.getScore());
         return new GeneralResponsePacket(HttpStatus.OK);
     }
-
-   /* @GetMapping("/multiplayer")
-    public MultiplayerResponsePacket start(@RequestMapping MultiplayerRequestPacket request){
-         Game x = new MultiplayerResponsePacket()
-         request.getLobby().getPlayerList();
-    }*/
 
     /**
      * client sends emote to server, server then send it to other players
