@@ -2,6 +2,7 @@ package server.api;
 
 import commons.LeaderboardEntry;
 import commons.utils.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import packets.GeneralResponsePacket;
 import packets.LeaderboardResponsePacket;
@@ -50,10 +51,13 @@ public class LeaderboardController {
 
     @PostMapping(path = {"/leaderboard"})
     public LeaderboardResponsePacket add(@RequestBody LeaderboardEntry leaderboardEntry) {
-
-        if (leaderboardEntry.points < 0
-                || isNullOrEmpty(leaderboardEntry.username)) {
+        if (leaderboardEntry.points < 0 || isNullOrEmpty(leaderboardEntry.username)) {
             return new LeaderboardResponsePacket(HttpStatus.BadRequest);
+        }
+
+        String tokenUsername = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!leaderboardEntry.username.equals(tokenUsername)) {
+            return new LeaderboardResponsePacket(HttpStatus.Forbidden);
         }
 
         if (repo.findByUsername(leaderboardEntry.username) == null) {

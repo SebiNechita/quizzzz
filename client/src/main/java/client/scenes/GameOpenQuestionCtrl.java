@@ -182,7 +182,7 @@ public class GameOpenQuestionCtrl extends GameCtrl {
     }
 
     /**
-     * Shows the correct answer to the user
+     * Shows the correct answer to the user and updates the score
      *
      * @param answer The correct answer (in case of multi-choice, the index of which of the options that is)
      */
@@ -191,20 +191,21 @@ public class GameOpenQuestionCtrl extends GameCtrl {
         userInput.setDisable(true);
         BigInteger rawInput = new BigInteger(userInput.getText());
         int convertedInput = rawInput.compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) > 0 ? Integer.MAX_VALUE : rawInput.intValue();
-        int difference = userInput.getText().equals("") ? 100 : Math.abs(convertedInput - answer);
+        double difference = userInput.getText().equals("") ? 0.5 : Math.abs(1-convertedInput / answer);
         Color current = (Color) userInput.getBackground().getFills().get(0).getFill();
-        if (difference <= 10) {
+        if (difference <= 0.1) {
             AnimationUtil.fadeTextField(userInput, current, ColorPresets.soft_green).play();
-        } else if (difference <= 80) {
+        } else if (difference <= 0.3) {
             AnimationUtil.fadeTextField(userInput, current, ColorPresets.soft_yellow).play();
         } else {
             AnimationUtil.fadeTextField(userInput, current, ColorPresets.soft_red).play();
         }
 
-        showPointsGained(100 - difference);
+        int points = (difference <= 0.3) ? (int) (100.0 * (1.0 - difference)) : 0;
+        showPointsGained(points);
 
-        main.getGame(Main.gameMode).getQuestionHistory().add(difference <= 50);
-        playSound(difference <= 50);
+        main.getGame(Main.gameMode).getQuestionHistory().add(difference <= 0.3);
+        playSound(difference <= 0.3);
         
 
         generateProgressDots();
