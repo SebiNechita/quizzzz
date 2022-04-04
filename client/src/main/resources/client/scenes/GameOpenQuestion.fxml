@@ -42,7 +42,7 @@
                 <Circle fill="WHITE" radius="12.0" stroke="BLACK" strokeType="INSIDE" />
             </children>
         </HBox>
-        <Text fx:id="question" fill="WHITE" layoutX="199.0" layoutY="107.0" strokeType="OUTSIDE" strokeWidth="0.0" text="The quick brown fox jumps over the lazy dog?" textAlignment="CENTER" wrappingWidth="895.0">
+        <Text fx:id="question" fill="WHITE" layoutX="199.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="The quick brown fox jumps over the lazy dog?" textAlignment="CENTER" wrappingWidth="895.0">
             <font>
                 <Font name="Comic Sans MS" size="29.0" />
             </font>
@@ -248,7 +248,7 @@
             <Insets right="15.0" />
          </padding>
       </HBox>
-      <AnchorPane layoutX="358.0" layoutY="185.0" prefHeight="327.0" prefWidth="564.0">
+      <AnchorPane layoutX="358.0" layoutY="158.0" prefHeight="327.0" prefWidth="564.0">
          <children>
             <AnchorPane layoutX="112.0" prefHeight="253.0" prefWidth="371.0" style="-fx-background-color: rgba(59, 59, 59, 0.8); -fx-background-radius: 40;">
                <children>
@@ -293,6 +293,11 @@
             </HBox>
          </children>
       </AnchorPane>
+      <Text fx:id="correctAnswer" fill="WHITE" layoutX="201.0" layoutY="519.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Answer: 0" textAlignment="CENTER" wrappingWidth="895.0">
+         <font>
+            <Font name="Comic Sans MS Bold" size="25.0" />
+         </font>
+      </Text>
     </children>
    <stylesheets>
       <URL value="@../../stylesheets/commonStyle.css" />
