@@ -1,7 +1,10 @@
 package client.game;
 
 import client.Main;
-import client.scenes.*;
+import client.scenes.EndGameCtrl;
+import client.scenes.GameMultiChoiceCtrl;
+import client.scenes.GameOpenQuestionCtrl;
+import client.scenes.MainCtrl;
 import client.utils.ServerUtils;
 import commons.Game;
 import commons.LeaderboardEntry;
