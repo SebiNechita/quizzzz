@@ -376,12 +376,22 @@ public abstract class GameCtrl extends SceneCtrl {
         notificationContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
 //        emoteContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
 
-        timer = AnimationUtil.timerAnim(timeLeftSlider, timeLeft, timeMultiplier, timeLeftText);
+        timer = AnimationUtil.timerAnim(timeLeftSlider, timeLeft, timeMultiplier, timeLeftText, "Time left: ");
 
         timeLeftSlider.setBackground(new Background(new BackgroundFill(ColorPresets.timer_bar_regular, new CornerRadii(50), Insets.EMPTY)));
         timeMultiplier = 1d;
         timer.playFromStart();
         onTimerEnd();
+    }
+
+    /**
+     * Start the timer when showing the answer (multiplayer)
+     */
+    protected void startWaitTimer(){
+        jokerContainer.setVisible(false);
+        timer = AnimationUtil.timerAnim(timeLeftSlider, new AtomicDouble(0.5), timeMultiplier, timeLeftText, "Next question in: ");
+        timer.playFromStart();
+        onWaitTimerEnd();
     }
 
     /**
@@ -393,7 +403,7 @@ public abstract class GameCtrl extends SceneCtrl {
         timeMultiplier *= multiplier;
         timeLeft.set(timer.getCurrentTime().toMillis());
         timer.stop();
-        timer = AnimationUtil.timerAnim(timeLeftSlider, timeLeft, timeMultiplier, timeLeftText);
+        timer = AnimationUtil.timerAnim(timeLeftSlider, timeLeft, timeMultiplier, timeLeftText, "Time left: ");
 
         timeLeftSlider.setBackground(new Background(new BackgroundFill(ColorPresets.timer_bar_rushed, new CornerRadii(6), Insets.EMPTY)));
         timer.playFrom(Duration.millis(timeLeft.get() * multiplier));
@@ -402,9 +412,18 @@ public abstract class GameCtrl extends SceneCtrl {
     }
 
     /**
-     * Sets up the events for when the timer runs out
+     * Sets up the events for when the question timer runs out
      */
     protected abstract void onTimerEnd();
+
+    /**
+     * Sets up the events for when the answer timer runs out
+     */
+    protected void onWaitTimerEnd(){
+        timer.setOnFinished(event -> {
+            initialiseNextQuestion();
+        });
+    }
 
     /**
      * Shows the correct answer to the user

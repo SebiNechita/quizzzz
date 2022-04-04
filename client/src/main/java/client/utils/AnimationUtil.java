@@ -47,9 +47,10 @@ public class AnimationUtil {
      * @param timeLeft       The amount of time left
      * @param timeMultiplier The multiplier of the time
      * @param timeLeftText   The text field which displays the time
+     * @param timeLeftMessage The string to display above the time slider
      * @return The animation object which can be played
      */
-    public static Animation timerAnim(AnchorPane anchorPane, AtomicDouble timeLeft, double timeMultiplier, Text timeLeftText) {
+    public static Animation timerAnim(AnchorPane anchorPane, AtomicDouble timeLeft, double timeMultiplier, Text timeLeftText, String timeLeftMessage) {
         return new Transition() {
             {
                 setCycleDuration(Duration.millis(10000 * timeMultiplier));
@@ -60,7 +61,7 @@ public class AnimationUtil {
             protected void interpolate(double frac) {
                 anchorPane.setPrefWidth(25 + 475 * frac);
                 timeLeft.set(timeMultiplier * (1 - frac));
-                timeLeftText.setText("Time left: " + (Math.round(100 * timeLeft.get()) / 10d) + "s");
+                timeLeftText.setText( timeLeftMessage + (Math.round(100 * timeLeft.get()) / 10d) + "s");
             }
         };
     }

@@ -8,9 +8,6 @@ import client.utils.ServerUtils;
 import commons.questions.OpenQuestion;
 import commons.utils.GameMode;
 import commons.utils.JokerType;
-import javafx.animation.Animation;
-import javafx.animation.Interpolator;
-import javafx.animation.Transition;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
@@ -19,8 +16,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import javafx.util.Duration;
 
+import java.math.BigInteger;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -64,7 +61,6 @@ public class GameOpenQuestionCtrl extends GameCtrl {
     private HBox emoteContainer;
 
     private OpenQuestion oq;
-    protected static int doublepoints;
 
 
     /**
@@ -179,7 +175,7 @@ public class GameOpenQuestionCtrl extends GameCtrl {
         if (Main.gameMode == GameMode.MULTIPLAYER) {
             timer.setOnFinished(event -> {
                 showCorrectAnswer((int) oq.getAnswerInWH());
-                nextQuestion.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
+                startWaitTimer();
             });
         } else {
             timer.setOnFinished(event -> {
@@ -200,8 +196,8 @@ public class GameOpenQuestionCtrl extends GameCtrl {
         correctAnswer.setVisible(true);
         correctAnswer.setText("Answer: " + answer);
 
-        double difference = userInput.getText().equals("") ? 0.5 : Math.abs(1-Integer.parseInt(userInput.getText()) / answer);
-        BigInteger rawInput = new BigInteger(userInput.getText());
+        //Check for whether the user entered anything at all
+        BigInteger rawInput = (userInput.getText().isEmpty()) ? new BigInteger("0") : new BigInteger(userInput.getText());
         int convertedInput = rawInput.compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) > 0 ? Integer.MAX_VALUE : rawInput.intValue();
         double difference = userInput.getText().equals("") ? 0.5 : Math.abs(1-convertedInput / answer);
         Color current = (Color) userInput.getBackground().getFills().get(0).getFill();

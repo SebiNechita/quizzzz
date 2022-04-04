@@ -144,14 +144,16 @@ public class GameServiceTest {
         GameController.EventCaller<LobbyResponsePacket> eventCaller2 = new GameController.EventCaller(output2, "Kate");
 
         var spy = Mockito.spy(gameService);
+        spy.addPlayer("Joe");
+        spy.addPlayer("Kate");
         spy.waitForPlayerEvent(eventCaller1);
         spy.waitForPlayerEvent(eventCaller2);
 
         // calls the method
         spy.onJokerNotificationReceived("JokerNotification", "REMOVE_ANSWER", "Joe");
 
-        assertTrue(gameService.getPlayerEventList().size() == 1);
-        assertEquals(eventCaller1, gameService.getPlayerEventList().get(0));
+        assertTrue(spy.getCurrentMatch().getPlayerEventList().size() == 1);
+        assertEquals(eventCaller1, spy.getCurrentMatch().getPlayerEventList().get(0));
 
         verify(spy, times(1)).clearEventList("Joe");
     }

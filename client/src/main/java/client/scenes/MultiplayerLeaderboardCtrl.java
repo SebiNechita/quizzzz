@@ -16,13 +16,13 @@
 package client.scenes;
 
 import client.Main;
+import client.utils.AnimationUtil;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
+import com.google.common.util.concurrent.AtomicDouble;
 import commons.LeaderboardEntry;
 import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
-import javafx.animation.Interpolator;
-import javafx.animation.Transition;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -41,7 +41,6 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
-import packets.GeneralResponsePacket;
 import packets.LeaderboardResponsePacket;
 
 import java.net.URL;
@@ -58,8 +57,6 @@ public class MultiplayerLeaderboardCtrl extends SceneCtrl {
     private TableColumn<LeaderboardEntry, String> colUsername;
     @FXML
     private TableColumn<LeaderboardEntry, Integer> colPoints;
-    @FXML
-    private Text rankInfo;
     @FXML
     private Button barChartButton;
     @FXML
@@ -113,37 +110,37 @@ public class MultiplayerLeaderboardCtrl extends SceneCtrl {
             smoothTransition(barChartContainer, false);
         });
         refresh();
-        showPlayerRank();
         startTimer();
     }
 
+    /**
+     * Starts the timer slider animation
+     */
     protected void startTimer() {
 
         timeLeftSlider = (AnchorPane) timeLeftBar.getChildren().get(0);
-        timer = timerAnim(timeLeftSlider);
+        timer = AnimationUtil.timerAnim(timeLeftSlider, new AtomicDouble(0.3), 1d, timeLeftText, "Time left: ");
 
-        timer.setOnFinished(event -> {
-            main.getMultiplayerGame().showQuestion();
-        });
+        onTimerEnd();
 
         timeLeftSlider.setBackground(new Background(new BackgroundFill(new Color(0.160, 0.729, 0.901, 1), new CornerRadii(50), Insets.EMPTY)));
         timer.playFromStart();
 
     }
 
-    private Animation timerAnim(AnchorPane anchorPane) {
-        return new Transition() {
-            {
-                setCycleDuration(Duration.millis(3000));
-                setInterpolator(Interpolator.LINEAR);
+    /**
+     * When the timer times out, the scene is automatically changed
+     */
+    protected void onTimerEnd(){
+        timer.setOnFinished(event -> {
+            //This is after jumpToNextQuestion has been run after the 20th question.
+            if (main.getMultiplayerGame().getCurrentQuestionCount() == 21){
+                main.showScene(EndGameCtrl.class);
             }
-
-            @Override
-            protected void interpolate(double frac) {
-                anchorPane.setPrefWidth(25 + 475 * frac);
-                timeLeftText.setText("Continuing in " + (1 - frac) / 10d + "s");
+            else{
+                main.getMultiplayerGame().showQuestion();
             }
-        };
+        });
     }
 
     private void initializeBarChart(LeaderboardResponsePacket packet) {
@@ -163,11 +160,6 @@ public class MultiplayerLeaderboardCtrl extends SceneCtrl {
         series.getData().stream().filter(data -> data.getXValue().equals(Main.USERNAME)).forEach(data -> data.getNode().setStyle("-fx-background-color: GOLD"));
     }
 
-    public void showPlayerRank() {
-        GeneralResponsePacket packet = server.getRequest("api/leaderboard/" + Main.USERNAME + "/rank", GeneralResponsePacket.class);
-        rankInfo.setText("Your rank is " + packet.getMessage());
-    }
-
     /**
      * Reload the leaderboard.
      */
@@ -182,17 +174,6 @@ public class MultiplayerLeaderboardCtrl extends SceneCtrl {
             colPoints.setSortType(TableColumn.SortType.DESCENDING);
             table.getSortOrder().add(colPoints);
             table.sort();
-        }
-    }
-
-    /**
-     * Show the home screen.
-     */
-    public void showHome() {
-        if (fromMainMenu) {
-            main.showScene(MainMenuCtrl.class);
-        } else {
-            main.showScene(EndGameCtrl.class);
         }
     }
 
