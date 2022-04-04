@@ -19,28 +19,17 @@ import client.scenes.ConnectionCtrl;
 import client.scenes.LoginCtrl;
 import client.scenes.MainCtrl;
 import client.scenes.MainMenuCtrl;
-import commons.questions.Question;
 import commons.utils.GameMode;
 import javafx.application.Application;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 
-import java.util.LinkedList;
-import java.util.Queue;
-
 public class Main extends Application {
 
     public static String USERNAME = "";
     public static String URL = "https://localhost:8080/";
     public static String TOKEN = "";
-    //I created the variables which are required by multiple game scenes here:
-    public static Queue<Question> questions = new LinkedList<>();
-    public static Queue<Question> openQuestions = new LinkedList<>();
-    public static int currentQuestionCount;
-    public static Question currentQuestion;
-    public static int scoreTotal;
-    public static LinkedList<Boolean> questionHistory = new LinkedList<>();
     public static GameMode gameMode;
     public static int noOfActivities;
 
