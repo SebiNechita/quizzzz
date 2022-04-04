@@ -144,4 +144,8 @@ public class AdminPanelCtrl extends SceneCtrl {
         updateActivitiesCount();
         infoText.setText("");
     }
+
+    public void showActivityList() {
+        main.showScene(ListActivityCtrl.class);
+    }
 }

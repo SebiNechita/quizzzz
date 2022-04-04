@@ -116,21 +116,21 @@ public class RegisterCtrl extends SceneCtrl {
             shake(password).playFromStart();
             shake(confirmPassword).playFromStart();
             errorText.setText("Password or username is empty.");
-            userName.setBackground(new Background(new BackgroundFill(Color.RED, new CornerRadii(50), Insets.EMPTY)));
-            password.setBackground(new Background(new BackgroundFill(Color.RED, new CornerRadii(50), Insets.EMPTY)));
+            userName.setBackground(new Background(new BackgroundFill(Color.web("#fc6363"), new CornerRadii(50), Insets.EMPTY)));
+            password.setBackground(new Background(new BackgroundFill(Color.web("#fc6363"), new CornerRadii(50), Insets.EMPTY)));
         } else if (!password.getText().equals(confirmPassword.getText())) {
             //the username or password is empty or only consists of whitespaces.
             shake(password).playFromStart();
             shake(confirmPassword).playFromStart();
             errorText.setText("Passwords are not matching.");
-            password.setBackground(new Background(new BackgroundFill(Color.RED, new CornerRadii(50), Insets.EMPTY)));
-            confirmPassword.setBackground(new Background(new BackgroundFill(Color.RED, new CornerRadii(50), Insets.EMPTY)));
+            password.setBackground(new Background(new BackgroundFill(Color.web("#fc6363"), new CornerRadii(50), Insets.EMPTY)));
+            confirmPassword.setBackground(new Background(new BackgroundFill(Color.web("#fc6363"), new CornerRadii(50), Insets.EMPTY)));
         } else {
             //the username and password are sent without any leading or trailing whitespaces.
             //If successful, logs the newly created user in.
             ResponsePacket response = server.register(userName.getText().trim(), password.getText().trim());
             if (response.getCode() == HttpStatus.Conflict.getCode()) {
-                userName.setBackground(new Background(new BackgroundFill(Color.RED, new CornerRadii(50), Insets.EMPTY)));
+                userName.setBackground(new Background(new BackgroundFill(Color.web("#fc6363"), new CornerRadii(50), Insets.EMPTY)));
                 shake(userName).playFromStart();
                 errorText.setText("User exists");
             } else if (response.getCode() == HttpStatus.Created.getCode()) {

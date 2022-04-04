@@ -19,6 +19,9 @@ import client.game.MultiplayerGame;
 import client.game.SingleplayerGame;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
+//import commons.utils.GameMode;
+//import commons.utils.HttpStatus;
+import commons.questions.Activity;
 import commons.utils.LoggerUtil;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -62,7 +65,7 @@ public class MainCtrl {
     public MainCtrl(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.serverUtils = new ServerUtils();
-      // this.multiplayerGame = new MultiplayerGame(this, serverUtils);
+        // this.multiplayerGame = new MultiplayerGame(this, serverUtils);
     }
 
     /**
@@ -73,8 +76,8 @@ public class MainCtrl {
     }
 
     /**
-
      * Creates a new MultiplayerGame
+     *
      * @param game
      */
     public void createNewMultiplayerGame(commons.Game game) {
@@ -196,6 +199,35 @@ public class MainCtrl {
                 }
             }
         } catch (IllegalAccessException | InvocationTargetException ignored) {
+        }
+    }
+
+    /**
+     * method for showing EditActivity Scene and passing an Activity object to it's controller.
+     *
+     * @param path  path of the EditActivity scene
+     * @param title title of the scene
+     * @param item  Activity object to be edited
+     * @param <T>
+     */
+    public <T extends SceneCtrl> void showEditActivity(String path, String title, Activity item) {
+
+        try {
+            URL scene = getClass().getClassLoader().getResource(path);
+            FXMLLoader loader = new FXMLLoader(scene, null, null, new ControllerFactory(), StandardCharsets.UTF_8);
+
+            Parent parent = loader.load();
+
+            EditActivityCtrl ctrl = loader.getController();
+            //initialize(ctrl, parent, title);
+            ctrl.initData(item);
+
+            primaryStage.setScene(new Scene(parent));
+            primaryStage.setTitle(title);
+            ctrl.onShowScene();
+
+        } catch (Exception e) {
+            System.out.println(e.getStackTrace());
         }
     }
 

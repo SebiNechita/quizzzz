@@ -1,6 +1,8 @@
 package client.scenes;
 
+import client.utils.OnShowScene;
 import client.utils.ServerUtils;
+import commons.utils.HttpStatus;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
@@ -42,6 +44,14 @@ public class DeleteActivityCtrl extends SceneCtrl {
 
     }
 
+    @OnShowScene
+    public void onShowScene() {
+        id.requestFocus();
+        id.clear();
+        id.setStyle("-fx-background-color: #fff; -fx-background-radius: 50");
+        error.setText("");
+    }
+
     /**
      * Show the admin panel screen.
      */
@@ -53,16 +63,22 @@ public class DeleteActivityCtrl extends SceneCtrl {
      * Method for clicking the delete activity button
      */
     public void clickDelete() {
-        if(id.getText() == null) {
-            id.setStyle("-fx-background-color: #FF0000FF; -fx-background-radius: 50");
+        if (id.getText() == null || id.getText().equals("")) {
+            id.setStyle("-fx-background-color: #fc6363; -fx-background-radius: 50");
             error.setText("Field is mandatory!");
         } else {
             String iD = id.getText();
 
             ActivityRequestPacket packet = new ActivityRequestPacket(iD);
 
-            server.postRequest("api/activities/delete", packet, GeneralResponsePacket.class);
-            main.showScene(AdminPanelCtrl.class);
+            GeneralResponsePacket response = server.postRequest("api/activities/delete", packet, GeneralResponsePacket.class);
+            if (response.getResponseStatus().equals(HttpStatus.NotFound)) {
+                id.setStyle("-fx-background-color: #fc6363; -fx-background-radius: 50");
+                error.setText("No activity with id: " + id.getText());
+            } else {
+                main.showScene(AdminPanelCtrl.class);
+            }
+
         }
     }
 }
