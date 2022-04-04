@@ -15,10 +15,6 @@ public class Match {
     private final Game game;
     private final List<LeaderboardEntry> scores;
     private final List<GameController.EventCaller<LobbyResponsePacket>> playerEventList;
-    //TODO: Can we create two separate maps for this? It seems like we never
-    // use/update BOTH the time and the ready state of a player.
-    // Actually, the ready state is only relevant for the lobby, so we don't
-    // even need to store that for every match, but only for the lobby itself
     private final Map<String, Map.Entry<String, LocalDateTime>> playerMap;
     private boolean allReady;
 
@@ -30,26 +26,50 @@ public class Match {
         this.allReady = false;
     }
 
+    /**
+     * Tells whether every player in this match is ready
+     * @return true iff every player in this match is ready
+     */
     public boolean isAllReady() {
         return allReady;
     }
 
+    /**
+     * Gets the game associated with this match
+     * @return the game associated with this match
+     */
     public Game getGame() {
         return game;
     }
 
+    /**
+     * Gets the scores of users in this match
+     * @return a leaderboard with scores of users in this match
+     */
     public List<LeaderboardEntry> getScores() {
         return scores;
     }
 
+    /**
+     * Gets the event callers for this match
+     * @return the list of event callers for this match
+     */
     public List<GameController.EventCaller<LobbyResponsePacket>> getPlayerEventList() {
         return playerEventList;
     }
 
+    /**
+     * Gets the players, their ready state and ping time for this match
+     * @return the map containing players' ready state and ping time for this match
+     */
     public Map<String, Map.Entry<String, LocalDateTime>> getPlayerMap() {
         return playerMap;
     }
 
+    /**
+     * Asserts whether every player in this game is ready
+     * @param allReady whether every player in this game is ready
+     */
     public void setAllReady(boolean allReady) {
         this.allReady = allReady;
     }
@@ -74,7 +94,6 @@ public class Match {
      *
      * @return the trimmed player list to be sent to the client
      */
-    //TODO: replace with finding the match based on the name of the player who sent the request
     public Map<String, String> trimPlayerList() {
         Map<String, String> trimmedMap = new HashMap<>();
         for (String player : playerMap.keySet()) {
