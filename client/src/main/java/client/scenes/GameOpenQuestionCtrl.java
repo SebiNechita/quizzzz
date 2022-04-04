@@ -8,6 +8,9 @@ import client.utils.ServerUtils;
 import commons.questions.OpenQuestion;
 import commons.utils.GameMode;
 import commons.utils.JokerType;
+import javafx.animation.Animation;
+import javafx.animation.Interpolator;
+import javafx.animation.Transition;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
@@ -16,8 +19,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 
-import java.math.BigInteger;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -28,6 +31,8 @@ public class GameOpenQuestionCtrl extends GameCtrl {
     private Text score;
     @FXML
     private Text question;
+    @FXML
+    private Text correctAnswer;
     @FXML
     private ImageView image;
 
@@ -59,6 +64,7 @@ public class GameOpenQuestionCtrl extends GameCtrl {
     private HBox emoteContainer;
 
     private OpenQuestion oq;
+    protected static int doublepoints;
 
 
     /**
@@ -110,11 +116,12 @@ public class GameOpenQuestionCtrl extends GameCtrl {
     public void onShowScene() {
         super.onShowScene();
 
+        disableJoker(JokerType.REMOVE_ANSWER);
+
         userInput.setDisable(false);
 
         displayQuestion();
 
-        disableJoker(JokerType.REMOVE_ANSWER, true);
         enableListeners();
     }
 
@@ -126,6 +133,7 @@ public class GameOpenQuestionCtrl extends GameCtrl {
         oq = main.getGame(Main.gameMode).getCurrentQuestion(OpenQuestion.class);
 
         setQuestion(oq.getQuestion());
+        correctAnswer.setVisible(false);
         setActivityImage(oq.getAnswer().getImage_path());
         System.out.println(oq.getAnswerInWH());
     }
@@ -189,6 +197,10 @@ public class GameOpenQuestionCtrl extends GameCtrl {
     @Override
     protected void showCorrectAnswer(int answer) {
         userInput.setDisable(true);
+        correctAnswer.setVisible(true);
+        correctAnswer.setText("Answer: " + answer);
+
+        double difference = userInput.getText().equals("") ? 0.5 : Math.abs(1-Integer.parseInt(userInput.getText()) / answer);
         BigInteger rawInput = new BigInteger(userInput.getText());
         int convertedInput = rawInput.compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) > 0 ? Integer.MAX_VALUE : rawInput.intValue();
         double difference = userInput.getText().equals("") ? 0.5 : Math.abs(1-convertedInput / answer);
