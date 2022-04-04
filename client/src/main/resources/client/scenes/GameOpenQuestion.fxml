@@ -57,11 +57,6 @@
                 <AnchorPane prefHeight="20.0" prefWidth="25.0" style="-fx-background-color: #29bae6; -fx-background-radius: 50;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
             </children>
         </AnchorPane>
-        <Text fx:id="timeLeftText" fill="WHITE" layoutX="542.0" layoutY="672.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time left: 10s">
-            <font>
-                <Font name="Comic Sans MS Bold" size="24.0" />
-            </font>
-        </Text>
         <Button fx:id="nextQuestion" alignment="CENTER" layoutX="1099.0" layoutY="650.0" mnemonicParsing="false" onAction="#initialiseNextQuestion" prefHeight="56.0" prefWidth="166.0" style="-fx-background-color: #616161; -fx-skin: 'client.skins.MinimalButtonSkin'; -fx-background-radius: 10;" text="Next" textFill="WHITE">
             <font>
                 <Font name="Comic Sans MS Bold" size="26.0" />
@@ -298,6 +293,15 @@
             <Font name="Comic Sans MS Bold" size="25.0" />
          </font>
       </Text>
+      <HBox alignment="CENTER" layoutX="394.0" layoutY="645.0" prefHeight="40.0" prefWidth="500.0">
+         <children>
+              <Text fx:id="timeLeftText" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Time left: 10s">
+                  <font>
+                      <Font name="Comic Sans MS Bold" size="24.0" />
+                  </font>
+              </Text>
+         </children>
+      </HBox>
     </children>
    <stylesheets>
       <URL value="@../../stylesheets/commonStyle.css" />

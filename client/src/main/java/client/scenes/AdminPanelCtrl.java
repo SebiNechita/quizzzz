@@ -5,7 +5,6 @@ import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import commons.utils.HttpStatus;
 import javafx.fxml.FXML;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
@@ -22,9 +21,6 @@ public class AdminPanelCtrl extends SceneCtrl {
     final FileChooser fileChooser;
     @FXML
     private Text noOfActivities;
-
-    @FXML
-    private VBox buttons;
 
     @FXML
     private Text infoText;
@@ -62,7 +58,6 @@ public class AdminPanelCtrl extends SceneCtrl {
     public void sendZip() throws IOException {
         File file = fileChooser.showOpenDialog(main.getPrimaryStage());
         if (file != null) {
-            changeUIUploading();
             byte[] bytes = Files.readAllBytes(file.toPath());
             ResponsePacket responsePacket = server.postRequest("zip/",new ZipRequestPacket(bytes), ResponsePacket.class);
             if (responsePacket.getResponseStatus() == HttpStatus.Created){
@@ -79,16 +74,8 @@ public class AdminPanelCtrl extends SceneCtrl {
      * Notifies user about successful upload
      */
     private void changeUIUploadSuccess() {
-        changeUIUploadEnd();
         infoText.setFill(Paint.valueOf("WHITE"));
         infoText.setText("Uploaded the activities.");
-    }
-
-    /**
-     * Shows the buttons
-     */
-    private void changeUIUploadEnd() {
-        buttons.setVisible(true);
     }
 
     /**
@@ -97,13 +84,6 @@ public class AdminPanelCtrl extends SceneCtrl {
     private void changeUIUploadFail() {
         infoText.setFill(Paint.valueOf("#fc6363"));
         infoText.setText("Failed to upload the activities.");
-    }
-
-    /**
-     * Hides the buttons
-     */
-    private void changeUIUploading() {
-        buttons.setVisible(false);
     }
 
     /**
