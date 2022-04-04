@@ -48,6 +48,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         MainCtrl mainCtrl = new MainCtrl(primaryStage);
+        primaryStage.setResizable(false);
 
         mainCtrl.load("client/scenes/Connection.fxml", "Connection page");
         mainCtrl.load("client/scenes/Login.fxml", "Login page");
