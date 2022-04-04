@@ -46,6 +46,7 @@ We used the **[Spring Framework](https://spring.io)** to build the application. 
    ```shell
       ./gradlew run
    ```
+<span style="color:red">Note: Java 17 is required for the application to run. You can install it [here](https://www.oracle.com/java/technologies/downloads/#jdk17-linux) </span>
 
 ![til](readMeResources/howToInstall.gif)
 
