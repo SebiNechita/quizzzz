@@ -32,6 +32,8 @@ public class GameOpenQuestionCtrl extends GameCtrl {
     @FXML
     private Text question;
     @FXML
+    private Text correctAnswer;
+    @FXML
     private ImageView image;
 
     @FXML
@@ -134,6 +136,7 @@ public class GameOpenQuestionCtrl extends GameCtrl {
         }
 
         setQuestion(oq.getQuestion());
+        correctAnswer.setVisible(false);
         setActivityImage(oq.getAnswer().getImage_path());
         System.out.println(oq.getAnswerInWH());
     }
@@ -189,14 +192,21 @@ public class GameOpenQuestionCtrl extends GameCtrl {
         if (Main.gameMode == GameMode.MULTIPLAYER) {
             timer.setOnFinished(event -> {
                 showCorrectAnswer((int) oq.getAnswerInWH());
-                nextQuestion.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
+                startWaitTimer();
             });
+
         } else {
             timer.setOnFinished(event -> {
                 showCorrectAnswer((int) oq.getAnswerInWH());
                 nextQuestion.setVisible(Main.gameMode == GameMode.SINGLEPLAYER);
             });
         }
+    }
+
+    protected void onWaitTimerEnd() {
+        timer.setOnFinished(event -> {
+            main.getCtrl(GameOpenQuestionCtrl.class).initialiseNextQuestion();
+        });
     }
 
     /**
@@ -207,6 +217,9 @@ public class GameOpenQuestionCtrl extends GameCtrl {
     @Override
     protected void showCorrectAnswer(int answer) {
         userInput.setDisable(true);
+        correctAnswer.setVisible(true);
+        correctAnswer.setText("Answer: " + answer);
+
         double difference = userInput.getText().equals("") ? 0.5 : Math.abs(1-Integer.parseInt(userInput.getText()) / answer);
         Color current = (Color) userInput.getBackground().getFills().get(0).getFill();
         if (difference <= 0.1) {

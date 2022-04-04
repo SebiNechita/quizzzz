@@ -48,17 +48,11 @@ public class MultipleChoiceQuestion extends Question {
         if (unusedActivities.size() < 3) {
             return null;
         }
-
         while (activityList.size() < 3) {
             int randInt = randomGen.nextInt(unusedActivities.size());
-            Activity activity = unusedActivities.get(randInt);
-            if (pivot == -1) pivot = activity.getConsumption_in_wh();
-            if (Math.abs(activity.getConsumption_in_wh() - pivot) <= 5000) {
-                activityList.add(
-                        activity
-                );
-                unusedActivities.remove(randInt);
-            }
+            activityList.add(
+                    unusedActivities.remove(randInt)
+            );
         }
         if (randomGen.nextBoolean()) {
             return generateSelectMaximumQuestion(activityList);
