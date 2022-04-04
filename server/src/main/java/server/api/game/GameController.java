@@ -60,8 +60,7 @@ public class GameController {
      */
     @PostMapping("/join")
     public JoinResponsePacket join(@RequestBody JoinRequestPacket request) {
-        gameService.addPlayer(request.getUsername());
-        Game game = gameService.getGameIfExists();
+        Game game = gameService.addPlayer(request.getUsername());
         Map<String, String> playerMap = gameService.onPlayerJoin(request.getUsername());
         return new JoinResponsePacket(HttpStatus.OK, playerMap, game);
     }

@@ -194,6 +194,11 @@ public class MainCtrl {
         }
     }
 
+    /**
+     * Joins the player to a match and retrieves the game and player list of the match
+     * @param username the player's username
+     * @return the game the user has joined
+     */
     public commons.Game joinGame(String username) {
         JoinResponsePacket responsePacket = serverUtils.postRequest("api/game/join",
                 new JoinRequestPacket(username),

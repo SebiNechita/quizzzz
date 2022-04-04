@@ -81,8 +81,6 @@ public class LobbyCtrl extends SceneCtrl {
     public void onShowScene() {
         Main.gameMode = GameMode.MULTIPLAYER;
 
-//        main.createNewMultiplayerGame();
-
         buttonStart.setVisible(false);
         buttonReady.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
         ready = false;
@@ -95,10 +93,11 @@ public class LobbyCtrl extends SceneCtrl {
         chattext.setFill(Color.BLUE);
         chattextflow.getChildren().add(chattext);
 
-        // the order of below methods matters!
+        // retreives player list and joins player to the game
         main.createNewMultiplayerGame(main.joinGame(Main.USERNAME));
-//        main.getMultiplayerGame().join(Main.USERNAME);
+        //starts pinging the server to sign to the server that the client is active
         main.getMultiplayerGame().startPingThread(Main.USERNAME);
+        //starts long polling
         main.getMultiplayerGame().getLobbyUpdate();
 
         enableListeners();
