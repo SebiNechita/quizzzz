@@ -189,14 +189,21 @@ public class GameOpenQuestionCtrl extends GameCtrl {
         if (Main.gameMode == GameMode.MULTIPLAYER) {
             timer.setOnFinished(event -> {
                 showCorrectAnswer((int) oq.getAnswerInWH());
-                nextQuestion.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
+                startWaitTimer();
             });
+
         } else {
             timer.setOnFinished(event -> {
                 showCorrectAnswer((int) oq.getAnswerInWH());
                 nextQuestion.setVisible(Main.gameMode == GameMode.SINGLEPLAYER);
             });
         }
+    }
+
+    protected void onWaitTimerEnd() {
+        timer.setOnFinished(event -> {
+            main.getCtrl(GameOpenQuestionCtrl.class).initialiseNextQuestion();
+        });
     }
 
     /**
