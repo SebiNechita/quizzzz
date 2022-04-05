@@ -284,10 +284,11 @@ public class MultiplayerGame implements client.game.Game {
     }
 
     /**
-     * stops the ping thread. should be called when 'back' is clicked.
+     * Stops pinging and leaves the game
      */
-    public void stopPingThread() {
+    public void leave() {
         pingThread.cancel(false);
+        server.getRequest("api/game/leave",GeneralResponsePacket.class);
     }
 
 

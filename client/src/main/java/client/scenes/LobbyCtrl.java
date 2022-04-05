@@ -225,7 +225,7 @@ public class LobbyCtrl extends SceneCtrl {
         chattext.setFont(Font.font("Comic Sans MS", 30));
         textflow.getChildren().remove(playertext);
         chattextflow.getChildren().add(chattext);
-        main.getMultiplayerGame().stopPingThread();
+        main.getMultiplayerGame().leave();
         main.getMultiplayerGame().stopLobbyUpdate();
         main.showScene(MainMenuCtrl.class);
     }

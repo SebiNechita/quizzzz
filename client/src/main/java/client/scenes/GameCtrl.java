@@ -526,13 +526,28 @@ public abstract class GameCtrl extends SceneCtrl {
         alert.setContentText("Are you sure you want to leave?");
 
         if (alert.showAndWait().get() == ButtonType.OK) {
-            LoggerUtil.infoInline(Main.USERNAME + " quit the singleplayer game!");
+            if (Main.gameMode == GameMode.MULTIPLAYER){
+                quitMultiplayer();
+            }
+            else{
+                quitSingleplayer();
+            }
             main.showScene(MainMenuCtrl.class);
             timer.setOnFinished(event -> {
             });
             timer = null;
-            main.quitSingleplayer();
         }
+
+
+    }
+
+    private void quitMultiplayer() {
+        main.getMultiplayerGame().leave();
+    }
+
+    protected void quitSingleplayer(){
+        LoggerUtil.infoInline(Main.USERNAME + " quit the singleplayer game!");
+        main.quitSingleplayer();
     }
 
     /**

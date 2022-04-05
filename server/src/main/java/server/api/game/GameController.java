@@ -28,7 +28,6 @@ public class GameController {
      */
     @PostMapping("/ping")
     public GeneralResponsePacket onPing(@RequestBody PingRequestPacket request) {
-        request.getUsername();
         gameService.updatePlayerTime(request.getUsername());
         return new GeneralResponsePacket(HttpStatus.OK);
     }
@@ -40,14 +39,8 @@ public class GameController {
      */
     @GetMapping("/lobbyEventListener")
     public DeferredResult<LobbyResponsePacket> playersInLobby() {
-        Authentication auth = SecurityContextHolder
-                .getContext()
-                .getAuthentication();
-
-        String username = (String) auth.getPrincipal();
-
         DeferredResult<LobbyResponsePacket> output = new DeferredResult<>();
-        EventCaller<LobbyResponsePacket> eventCaller = new EventCaller(output, username);
+        EventCaller<LobbyResponsePacket> eventCaller = new EventCaller(output, getPlayerInSession());
         gameService.waitForPlayerEvent(eventCaller);
         return output;
     }
@@ -63,6 +56,27 @@ public class GameController {
         Game game = gameService.addPlayer(request.getUsername());
         Map<String, String> playerMap = gameService.onPlayerJoin(request.getUsername());
         return new JoinResponsePacket(HttpStatus.OK, playerMap, game);
+    }
+
+    /**
+     * Removes the player from the game they're in
+     * @return OK status
+     */
+    @GetMapping("/leave")
+    public GeneralResponsePacket leave() {
+        gameService.removePlayer(getPlayerInSession());
+        return new GeneralResponsePacket(HttpStatus.OK);
+    }
+
+    /**
+     * Gets the player who's making requests from Spring
+     * @return the player
+     */
+    private String getPlayerInSession() {
+        Authentication auth = SecurityContextHolder
+                .getContext()
+                .getAuthentication();
+        return (String) auth.getPrincipal();
     }
 
     /**

@@ -54,11 +54,8 @@ public class GameService {
             var entry = iter.next();
             if (Duration.between(entry.getValue().getValue(), now).toMillis() > 2000) {
                 String username = entry.getKey();
-                onPlayerLeave(username);
                 removePlayer(username);
-                System.out.println("removed player");
             }
-
         }
     }
 
@@ -104,6 +101,8 @@ public class GameService {
      * @param player player to be removed
      */
     public void removePlayer(String player) {
+        //notifies other players
+        onPlayerLeave(player);
         //gets the game associated with the user and removes them from the playermap
         playerMatchMap.get(player).getPlayerMap().remove(player);
         //also remove the information that the user is currently in a match
