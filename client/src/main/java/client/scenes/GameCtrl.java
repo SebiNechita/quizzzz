@@ -389,7 +389,7 @@ public abstract class GameCtrl extends SceneCtrl {
      */
     protected void startWaitTimer(){
         jokerContainer.setVisible(false);
-        timer = AnimationUtil.timerAnim(timeLeftSlider, new AtomicDouble(0), 0.5, timeLeftText, "Next question in: ");
+        timer = AnimationUtil.timerAnim(timeLeftSlider, new AtomicDouble(0), 5000, 1d, timeLeftText, "Next question in: ");
         timer.playFromStart();
         onWaitTimerEnd();
     }
@@ -403,7 +403,7 @@ public abstract class GameCtrl extends SceneCtrl {
         timeMultiplier *= multiplier;
         timeLeft.set(timer.getCurrentTime().toMillis());
         timer.stop();
-        timer = AnimationUtil.timerAnim(timeLeftSlider, timeLeft, timeMultiplier, timeLeftText, "Time left: ");
+        timer = AnimationUtil.timerAnim(timeLeftSlider, timeLeft, 10000, timeMultiplier, timeLeftText, "Time left: ");
 
         timeLeftSlider.setBackground(new Background(new BackgroundFill(ColorPresets.timer_bar_rushed, new CornerRadii(6), Insets.EMPTY)));
         timer.playFrom(Duration.millis(timeLeft.get() * multiplier));

@@ -120,7 +120,7 @@ public class MultiplayerGame implements client.game.Game {
         currentActiveJokers.clear();
 
         //This is after the 10th and 20th questions.
-        if (currentQuestionCount == 10 || currentQuestionCount == 20){
+        if (currentQuestionCount == 0 || currentQuestionCount == 20){
             main.showScene(MultiplayerLeaderboardCtrl.class);
         }
         else if (currentQuestionCount < 20) {

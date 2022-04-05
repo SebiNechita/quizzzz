@@ -62,7 +62,7 @@ public class AnimationUtil {
             protected void interpolate(double frac) {
                 anchorPane.setPrefWidth(25 + 475 * frac);
                 timeLeft.set(timeMultiplier * (1 - frac));
-                timeLeftText.setText(textPrefix + " " + (Math.round(100 * timeLeft.get()) / 10d) + "s");
+                timeLeftText.setText(textPrefix + " " + (Math.round(totalTime * timeLeft.get()) / 100 / 10d) + "s");
             }
         };
     }

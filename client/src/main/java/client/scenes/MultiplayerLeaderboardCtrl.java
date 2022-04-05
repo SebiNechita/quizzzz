@@ -119,7 +119,7 @@ public class MultiplayerLeaderboardCtrl extends SceneCtrl {
     protected void startTimer() {
 
         timeLeftSlider = (AnchorPane) timeLeftBar.getChildren().get(0);
-        timer = AnimationUtil.timerAnim(timeLeftSlider, new AtomicDouble(0), 0.5, timeLeftText, "Time left: ");
+        timer = AnimationUtil.timerAnim(timeLeftSlider, new AtomicDouble(0), 5000, 1d, timeLeftText, "Time left: ");
 
         onTimerEnd();
 
