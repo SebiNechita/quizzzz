@@ -21,6 +21,7 @@ import client.game.SingleplayerGame;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import commons.utils.GameMode;
+import commons.questions.Activity;
 import commons.utils.LoggerUtil;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -50,6 +51,11 @@ public class MainCtrl {
 
     private final HashMap<Class<?>, SceneCtrl> ctrlClasses = new HashMap<>();
     private final HashMap<Class<?>, Pair<Scene, String>> scenes = new HashMap<>();
+
+    //I created this to be able to access the stage from AdminPanelCtrl when opening the file dialog.
+    public Stage getPrimaryStage() {
+        return primaryStage;
+    }
 
     /**
      * Constructs a new MainCtrl instance
@@ -207,6 +213,40 @@ public class MainCtrl {
         }
     }
 
+    /**
+     * method for showing EditActivity Scene and passing an Activity object to it's controller.
+     *
+     * @param path  path of the EditActivity scene
+     * @param title title of the scene
+     * @param item  Activity object to be edited
+     * @param <T>
+     */
+    public <T extends SceneCtrl> void showEditActivity(String path, String title, Activity item) {
+
+        try {
+            URL scene = getClass().getClassLoader().getResource(path);
+            FXMLLoader loader = new FXMLLoader(scene, null, null, new ControllerFactory(), StandardCharsets.UTF_8);
+
+            Parent parent = loader.load();
+
+            EditActivityCtrl ctrl = loader.getController();
+            //initialize(ctrl, parent, title);
+            ctrl.initData(item);
+
+            primaryStage.setScene(new Scene(parent));
+            primaryStage.setTitle(title);
+            ctrl.onShowScene();
+
+        } catch (Exception e) {
+            System.out.println(e.getStackTrace());
+        }
+    }
+
+    /**
+     * Joins the player to a match and retrieves the game and player list of the match
+     * @param username the player's username
+     * @return the game the user has joined
+     */
     public commons.Game joinGame(String username) {
         JoinResponsePacket responsePacket = serverUtils.postRequest("api/game/join",
                 new JoinRequestPacket(username),

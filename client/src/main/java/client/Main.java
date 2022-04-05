@@ -16,7 +16,9 @@
 package client;
 
 import client.scenes.ConnectionCtrl;
+import client.scenes.LoginCtrl;
 import client.scenes.MainCtrl;
+import client.scenes.MainMenuCtrl;
 import commons.utils.GameMode;
 import javafx.application.Application;
 import javafx.scene.control.Alert;
@@ -47,6 +49,7 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage primaryStage) {
+        boolean debug = false;
         MainCtrl mainCtrl = new MainCtrl(primaryStage);
         primaryStage.setResizable(false);
 
@@ -62,11 +65,18 @@ public class Main extends Application {
         mainCtrl.load("client/scenes/AdminPanel.fxml", "Admin Panel Screen");
         mainCtrl.load("client/scenes/AddActivity.fxml","Add Activity Screen");
         mainCtrl.load("client/scenes/DeleteActivity.fxml","Delete Activity Screen");
+        mainCtrl.load("client/scenes/ListActivity.fxml","List Activities Screen");
         mainCtrl.load("client/scenes/EndGame.fxml", "End Game Screen");
+        mainCtrl.load("client/scenes/MultiLeaderboard.fxml","Multiplayer Leaderboard");
 
-
-        mainCtrl.showScene(ConnectionCtrl.class);
-
+        //For testing, I skipped the Connection and Login screens
+        if (debug) {
+            LoginCtrl login = mainCtrl.getCtrl(LoginCtrl.class);
+            login.login("Kristof", "password");
+            mainCtrl.showScene(MainMenuCtrl.class);
+        } else {
+            mainCtrl.showScene(ConnectionCtrl.class);
+        }
         try {
             primaryStage.setOnCloseRequest(event -> {
                 event.consume();
@@ -79,7 +89,7 @@ public class Main extends Application {
     }
 
     /**
-     * Pops up a confirmation alert before exiting the application, so the player does not exit unintentional
+     * Pops up a confirmation alert before existing the application, so the player does not exist unintentional
      *
      * @param stage The stage for the exit
      */
@@ -91,7 +101,7 @@ public class Main extends Application {
         alert.setContentText("Are you sure you want to exit?");
 
         if (alert.showAndWait().get() == ButtonType.OK) {
-            System.out.println("You successfully exited the application");
+            System.out.println("You successfully exit the application");
             stage.close();
         }
     }
