@@ -24,11 +24,13 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
@@ -82,6 +84,16 @@ public class SingleplayerLeaderboardCtrl extends SceneCtrl {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        table.setRowFactory(tableView -> {
+            PseudoClass pseudoClass = PseudoClass.getPseudoClass("highlighted");
+            return new TableRow<LeaderboardEntry>() {
+                {
+                    itemProperty().addListener((ob, oldValue, newValue) -> {
+                        pseudoClassStateChanged(pseudoClass, newValue != null && newValue.getUsername().equals(Main.USERNAME));
+                    });
+                }
+            };
+        });
         colUsername.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().username));
         colPoints.setCellValueFactory(q -> new SimpleIntegerProperty(q.getValue().points).asObject());
     }

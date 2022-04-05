@@ -2,6 +2,8 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import commons.utils.LoggerUtil;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -48,6 +50,7 @@ public class AddActivityCtrl extends SceneCtrl {
 
     /**
      * Requests an image from the user and returns the path to the image
+     *
      * @param actionEvent Action event
      * @return A string representing the path to the image
      * @throws IOException If the file is not found
@@ -76,6 +79,7 @@ public class AddActivityCtrl extends SceneCtrl {
 
     /**
      * Requests an image from the user and returns this image
+     *
      * @param actionEvent Action event
      * @return The image file
      * @throws IOException If the file is not found
@@ -91,7 +95,7 @@ public class AddActivityCtrl extends SceneCtrl {
 
         String mimetype = Files.probeContentType(file.toPath());
 
-        if(file != null && mimetype.split("/")[0].equals("image")) {
+        if (file != null && mimetype.split("/")[0].equals("image")) {
 //            Desktop desktop = Desktop.getDesktop();
 //            desktop.open(file);
 
@@ -109,6 +113,7 @@ public class AddActivityCtrl extends SceneCtrl {
 
     /**
      * Returns a file represented as an array of bytes
+     *
      * @param file The file to be converted
      * @return An array of bytes
      * @throws IOException If the file is not found
@@ -121,7 +126,7 @@ public class AddActivityCtrl extends SceneCtrl {
 
         int read;
 
-        while((read = fileInputStream.read(buffer)) != -1) {
+        while ((read = fileInputStream.read(buffer)) != -1) {
             byteArrayOutputStream.write(buffer, 0, read);
         }
 
@@ -158,7 +163,7 @@ public class AddActivityCtrl extends SceneCtrl {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        limitToNumbers();
     }
 
     /**
@@ -168,8 +173,14 @@ public class AddActivityCtrl extends SceneCtrl {
         main.showScene(AdminPanelCtrl.class);
     }
 
+    /**
+     * get file path from file chooser
+     *
+     * @param e
+     * @throws IOException
+     */
     public void clickUploadImage(ActionEvent e) throws IOException {
-        if(e.getSource().equals(uploadAnImage)) {
+        if (e.getSource().equals(uploadAnImage)) {
             filePath = singleFilePathChooser(e);
         }
     }
@@ -178,7 +189,7 @@ public class AddActivityCtrl extends SceneCtrl {
      * Method for clicking the add activity button
      */
     public void clickAdd() {
-        if(description.getText() == null || consumption.getText() == null || source.getText() == null
+        if (description.getText() == null || consumption.getText() == null || source.getText() == null
                 || filePath == null) {
             description.setStyle("-fx-background-color: #FF0000FF; -fx-background-radius: 50");
             consumption.setStyle("-fx-background-color: #FF0000FF; -fx-background-radius: 50");
@@ -205,4 +216,20 @@ public class AddActivityCtrl extends SceneCtrl {
             main.showScene(AdminPanelCtrl.class);
         }
     }
+
+    /**
+     * make consumption text field only takes numbers
+     */
+    public void limitToNumbers() {
+        consumption.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                                String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    consumption.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
+    }
+
 }
