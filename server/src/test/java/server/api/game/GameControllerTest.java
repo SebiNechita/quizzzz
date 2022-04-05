@@ -2,6 +2,7 @@ package server.api.game;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import commons.utils.HttpStatus;
+import commons.utils.JokerType;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -139,6 +140,31 @@ public class GameControllerTest {
 
         verify(gameService, times(1))
                 .onEmoteReceived("Emote", "angry", "Joe");
+    }
+
+    /**
+     * test case for receiving a joker notification, should invoke correct service method with correct parameters
+     *
+     * @throws Exception
+     */
+    @Test
+    @WithMockUser(username = "someone")
+    public void sendJokerNotificationTest()
+            throws Exception {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        mvc.perform(post("/api/game/jokerNotification")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new JokerNotificationRequestPacket("Joe", JokerType.REMOVE_ANSWER)))
+                        .secure(true)
+                )
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.GeneralResponsePacket.code")
+                        .value(HttpStatus.OK.getCode()));
+
+        verify(gameService, times(1))
+                .onJokerNotificationReceived("JokerNotification", "REMOVE_ANSWER", "Joe");
     }
 
     /**

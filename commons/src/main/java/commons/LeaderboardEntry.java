@@ -113,7 +113,7 @@ public class LeaderboardEntry extends RequestPacket {
         return "LeaderboardEntry{" +
                 "id=" + id +
                 ", points=" + points +
-                ", username='" + username + '\'' +
+                ", username=" + username + '\'' +
                 '}';
     }
 }

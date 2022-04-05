@@ -1,4 +1,4 @@
-package server.api.user;
+package server.user;
 
 import commons.utils.HttpStatus;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,8 +12,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 import packets.RegisterResponsePacket;
 import server.database.UserRepository;
-import server.user.User;
-import server.user.UserService;
 
 import java.util.Optional;
 

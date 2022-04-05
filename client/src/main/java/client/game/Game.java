@@ -1,11 +1,17 @@
 package client.game;
 
-import client.scenes.MainCtrl;
-import client.utils.ServerUtils;
+import commons.questions.Question;
+
+import java.util.List;
 
 public interface Game {
-    public void jumpToNextQuestion();
-    public MainCtrl getMainCtrl();
-    public ServerUtils getServer();
-    public Integer getScoreTotal();
+    void jumpToNextQuestion();
+
+    Integer getScoreTotal();
+
+    List<Boolean> getQuestionHistory();
+
+    <T extends Question> T getCurrentQuestion(Class<T> questionType);
+
+    void addToScore(int total);
 }

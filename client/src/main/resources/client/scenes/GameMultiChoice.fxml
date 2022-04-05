@@ -102,11 +102,6 @@
                 <AnchorPane prefHeight="20.0" prefWidth="25.0" style="-fx-background-color: #29bae6; -fx-background-radius: 50;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
             </children>
         </AnchorPane>
-        <Text fx:id="timeLeftText" fill="WHITE" layoutX="532.0" layoutY="672.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time left: 10s">
-            <font>
-                <Font name="Comic Sans MS Bold" size="24.0" />
-            </font>
-        </Text>
         <Button fx:id="nextQuestion" alignment="CENTER" layoutX="1099.0" layoutY="650.0" mnemonicParsing="false" onAction="#initialiseNextQuestion" prefHeight="56.0" prefWidth="166.0" style="-fx-background-color: #616161; -fx-skin: 'client.skins.MinimalButtonSkin'; -fx-background-radius: 10;" text="Next" textFill="WHITE">
             <font>
                 <Font name="Comic Sans MS Bold" size="26.0" />
@@ -293,7 +288,7 @@
             <Insets right="15.0" />
          </padding>
       </HBox>
-      <AnchorPane layoutX="15.0" layoutY="24.0" prefHeight="28.0" prefWidth="115.0" style="-fx-background-color: #bfbcbb#bfbcbb; -fx-background-radius: 50; -fx-opacity: 0.5;">
+      <AnchorPane prefHeight="28.0" prefWidth="115.0" style="-fx-background-color: #aaa; -fx-background-radius: 50;" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
          <children>
             <HBox prefHeight="43.0" prefWidth="115.0">
                <children>
@@ -319,6 +314,15 @@
             </HBox>
          </children>
       </AnchorPane>
+      <HBox alignment="CENTER" layoutX="393.0" layoutY="644.0" prefHeight="40.0" prefWidth="500.0">
+         <children>
+              <Text fx:id="timeLeftText" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Time left: 10s" textAlignment="CENTER">
+                  <font>
+                      <Font name="Comic Sans MS Bold" size="24.0" />
+                  </font>
+              </Text>
+         </children>
+      </HBox>
     </children>
    <stylesheets>
       <URL value="@../../stylesheets/questionStyle.css" />

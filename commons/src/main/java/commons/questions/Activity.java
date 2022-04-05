@@ -18,6 +18,7 @@ public class Activity {
      * Id of the activity
      */
     @Id
+    @Column(name="ID", unique=true)
     private String id;
     /**
      * Path to the corresponding image

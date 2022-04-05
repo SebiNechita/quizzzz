@@ -1,8 +1,10 @@
 package client.scenes;
 
+import client.utils.ColorPresets;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import javafx.animation.*;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -25,6 +27,8 @@ public class ConnectionCtrl extends SceneCtrl {
     private Text message;
     @FXML
     private Button connectButton;
+
+    private Animation connectingAnimation;
 
     /**
      * Constructor for this Ctrl
@@ -67,40 +71,48 @@ public class ConnectionCtrl extends SceneCtrl {
      * Should set up and play the connecting animation(for this demo)
      */
     public void connectClicked() {
-        Animation connectingAni = getConnectingAnimation();
-        connectingAni.setOnFinished(event -> {
-            url.styleProperty().unbind();
-            url.getStyleClass().clear();
-            connect();
-        });
-
-        connectingAni.play();
+        connectingAnimation = getConnectingAnimation();
+        connectingAnimation.play();
+        connect();
     }
 
     /**
      * try to connect to the given URL
      */
     public void connect() {
-        String urlStr = url.getText();
-        String res = server.testConnection(urlStr);
-        if (res.equals("true")) {
-            main.showScene(LoginCtrl.class);
-            url.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 50");
-            message.setText("");
-        } else if(res.equals("URL")) {
-            message.setText("The URL is invalid");
-            url.setStyle("-fx-background-color: #fc6363; -fx-background-radius: 50");
-            shake(url).play();
-            connectButton.setDisable(true);
-        } else if(res.equals("Server")){
-            message.setText("Cannot connect to this server");
-            url.setStyle("-fx-background-color: #fc6363; -fx-background-radius: 50");
-            shake(url).play();
-        } else {
-            message.setText("This is not a game server");
-            url.setStyle("-fx-background-color: #fc6363; -fx-background-radius: 50");
-            shake(url).play();
-        }
+        new Thread(() -> {
+            String res = server.testConnection(url.getText());
+
+            connectingAnimation.stop();
+            url.styleProperty().unbind();
+            url.getStyleClass().clear();
+
+            Platform.runLater(() -> {
+                switch (res) {
+                    case "valid" -> {
+                        main.showScene(LoginCtrl.class);
+                        url.setStyle("-fx-background-color: " + ColorPresets.toHex(ColorPresets.white) + "; -fx-background-radius: 50");
+                        message.setText("");
+                    }
+                    case "URL" -> {
+                        message.setText("The URL is invalid");
+                        url.setStyle("-fx-background-color: " + ColorPresets.toHex(ColorPresets.soft_red) + "; -fx-background-radius: 50");
+                        shake(url).play();
+                        connectButton.setDisable(true);
+                    }
+                    case "Server" -> {
+                        message.setText("Cannot connect to this server");
+                        url.setStyle("-fx-background-color: " + ColorPresets.toHex(ColorPresets.soft_red) + "; -fx-background-radius: 50");
+                        shake(url).play();
+                    }
+                    default -> {
+                        message.setText("This is not a game server");
+                        url.setStyle("-fx-background-color: " + ColorPresets.toHex(ColorPresets.soft_red) + "; -fx-background-radius: 50");
+                        shake(url).play();
+                    }
+                }
+            });
+        }).start();
     }
 
     /**
@@ -133,13 +145,12 @@ public class ConnectionCtrl extends SceneCtrl {
                 startFade.get() * 100
         ), startFade));
 
-
         Timeline timeline = new Timeline(
                 new KeyFrame(Duration.ZERO, new KeyValue(startFade, 0)),
-                new KeyFrame(Duration.seconds(0.3), new KeyValue(startFade, 0.4)),
-                new KeyFrame(Duration.seconds(0.6), new KeyValue(startFade, 0.8)));
-//        timeline.setCycleCount(Timeline.INDEFINITE);
-        timeline.setCycleCount(1);
+                new KeyFrame(Duration.seconds(0.5), new KeyValue(startFade, 1)),
+                new KeyFrame(Duration.seconds(1), new KeyValue(startFade, 0)));
+        timeline.setCycleCount(Timeline.INDEFINITE);
+
         return timeline;
     }
 
@@ -150,7 +161,6 @@ public class ConnectionCtrl extends SceneCtrl {
      * @return shaking Animation
      */
     protected Animation shake(TextField node) {
-
         TranslateTransition transition = new TranslateTransition(Duration.millis(50), node);
         transition.setFromX(0f);
         transition.setByX(10f);

@@ -8,15 +8,10 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.MainMenuCtrl">
+<AnchorPane maxHeight="720.0" maxWidth="1280.0" minHeight="720.0" minWidth="1280.0" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #212121;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.MainMenuCtrl">
     <children>
-        <AnchorPane layoutY="-14.0" prefWidth="1299.0" style="-fx-background-color: #212121;" stylesheets="@../../stylesheets/commonStyle.css" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-14.0">
+        <AnchorPane maxHeight="726.0" maxWidth="1280.0" minHeight="720.0" minWidth="1280.0" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #212121;" stylesheets="@../../stylesheets/commonStyle.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
-                <Button layoutX="480.0" layoutY="624.3333333333333" mnemonicParsing="false" onAction="#showLogin" prefHeight="90.0" prefWidth="339.0" style="-fx-background-radius: 40; -fx-background-color: WHITE;" text="Logout" AnchorPane.bottomAnchor="28.666666666666742" AnchorPane.leftAnchor="480.0" AnchorPane.rightAnchor="480.0">
-                    <font>
-                        <Font name="Comic Sans MS" size="44.0" />
-                    </font>
-                </Button>
                 <Text fx:id="gameName" fill="WHITE" layoutX="210.0" layoutY="146.0" strokeType="OUTSIDE" strokeWidth="0.0" text="QUIZZZZ" textAlignment="CENTER" wrappingWidth="859.3333435058594">
                     <font>
                         <Font name="Comic Sans MS" size="120.0" />
@@ -41,17 +36,22 @@
                         <Font name="Comic Sans MS" size="44.0" />
                     </font>
                 </Button>
-                <Button layoutX="480.0" layoutY="398.0" mnemonicParsing="false" onAction="#showMultiplayer" prefHeight="90.0" prefWidth="339.0" style="-fx-background-color: WHITE; -fx-background-radius: 40;" text="Multiplayer" textAlignment="CENTER" AnchorPane.leftAnchor="480.0" AnchorPane.rightAnchor="480.0" AnchorPane.topAnchor="398.0">
+                <Button layoutX="480.0" layoutY="394.0" mnemonicParsing="false" onAction="#showMultiplayer" prefHeight="90.0" prefWidth="339.0" style="-fx-background-color: WHITE; -fx-background-radius: 40;" text="Multiplayer" textAlignment="CENTER" AnchorPane.leftAnchor="480.0" AnchorPane.rightAnchor="480.0" AnchorPane.topAnchor="394.0">
                     <font>
                         <Font name="Comic Sans MS" size="44.0" />
                     </font>
                 </Button>
-                <Button fx:id="leaderboardButton" cancelButton="true" layoutX="480.0" layoutY="513.0" mnemonicParsing="false" onAction="#showHomeLeaderboard" prefHeight="90.0" prefWidth="339.0" style="-fx-background-color: WHITE; -fx-background-radius: 40;" text="Leaderboard" textAlignment="CENTER" AnchorPane.leftAnchor="480.0" AnchorPane.rightAnchor="480.0" AnchorPane.topAnchor="513.0">
+                <Button fx:id="leaderboardButton" cancelButton="true" layoutX="480.0" layoutY="507.0" mnemonicParsing="false" onAction="#showHomeLeaderboard" prefHeight="90.0" prefWidth="339.0" style="-fx-background-color: WHITE; -fx-background-radius: 40;" text="Leaderboard" textAlignment="CENTER" AnchorPane.leftAnchor="480.0" AnchorPane.rightAnchor="480.0" AnchorPane.topAnchor="507.0">
                     <font>
                         <Font name="Comic Sans MS" size="44.0" />
                     </font>
                 </Button>
-            <Button fx:id="helpButton1" layoutX="14.0" layoutY="672.0" mnemonicParsing="false" onAction="#showAdminPanel" prefHeight="74.0" prefWidth="81.0" style="-fx-background-radius: 70; -fx-background-color: white;">
+                <Button layoutX="480.0" layoutY="614.3333333333333" mnemonicParsing="false" onAction="#showLogin" prefHeight="90.0" prefWidth="339.0" style="-fx-background-radius: 40; -fx-background-color: WHITE;" text="Logout" AnchorPane.bottomAnchor="12.666666666666742" AnchorPane.leftAnchor="480.0" AnchorPane.rightAnchor="480.0">
+                    <font>
+                        <Font name="Comic Sans MS" size="44.0" />
+                    </font>
+                </Button>
+            <Button fx:id="helpButton1" layoutX="12.0" layoutY="635.0" mnemonicParsing="false" onAction="#showAdminPanel" prefHeight="74.0" prefWidth="81.0" style="-fx-background-radius: 70; -fx-background-color: white;">
                <font>
                   <Font name="Comic Sans MS" size="35.0" />
                </font>
@@ -63,7 +63,7 @@
                   </ImageView>
                </graphic>
             </Button>
-            <Button fx:id="helpButton11" layoutX="1184.0" layoutY="672.0" mnemonicParsing="false" onAction="#showHelp" prefHeight="74.0" prefWidth="81.0" style="-fx-background-radius: 70; -fx-background-color: white;">
+            <Button fx:id="helpButton11" layoutX="1168.0" layoutY="632.0" mnemonicParsing="false" onAction="#showHelp" prefHeight="74.0" prefWidth="81.0" style="-fx-background-radius: 70; -fx-background-color: white;">
                <font>
                   <Font name="Comic Sans MS" size="35.0" />
                </font>

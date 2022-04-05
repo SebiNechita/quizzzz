@@ -29,12 +29,14 @@ public class MultiplayerGame implements client.game.Game {
     private List<Question> questions;
     private LinkedList<Boolean> questionHistory;
 
+    private final List<JokerType> usedJokers = new LinkedList<>();
+    private final List<JokerType> currentActiveJokers = new LinkedList<>();
+
     private Integer currentQuestionCount;
 
     private Integer scoreTotal;
 
     private Game game;
-
 
     public MultiplayerGame(MainCtrl main, ServerUtils server) {
         this.main = main;
@@ -62,7 +64,6 @@ public class MultiplayerGame implements client.game.Game {
         this.currentQuestionCount = 0;
         this.scoreTotal = 0;
     }
-
 
     public MultiplayerGame(MainCtrl main, ServerUtils server, Game game) {
         this.main = main;
@@ -116,6 +117,8 @@ public class MultiplayerGame implements client.game.Game {
      * Or exits if the game is over.
      */
     public void jumpToNextQuestion() {
+        currentActiveJokers.clear();
+
         if (currentQuestionCount < 20) {
             showQuestion();
         } else {
@@ -124,7 +127,6 @@ public class MultiplayerGame implements client.game.Game {
         }
         currentQuestionCount++;
     }
-
 
     /**
      * Decides which type of question to display.
@@ -135,6 +137,37 @@ public class MultiplayerGame implements client.game.Game {
         } else {
             main.showScene(GameMultiChoiceCtrl.class);
         }
+    }
+
+    /**
+     * Adds a joker to the used list
+     *
+     * @param joker The tpye of joker
+     */
+    public void addJokerUsed(JokerType joker) {
+        if (!usedJokers.contains(joker)) {
+            usedJokers.add(joker);
+            currentActiveJokers.add(joker);
+        }
+    }
+
+    /**
+     * If a joker is active or not
+     *
+     * @param type The type of joker
+     * @return If the joker is active or not
+     */
+    public boolean isJokerActive(JokerType type) {
+        return currentActiveJokers.contains(type);
+    }
+
+    /**
+     * Gets a list of disabled jokers
+     *
+     * @return The list of disabled jokers
+     */
+    public List<JokerType> getDisabledJokers() {
+        return usedJokers;
     }
 
     /**
@@ -160,24 +193,6 @@ public class MultiplayerGame implements client.game.Game {
     public void addToScore(int scoreToBeAdded) {
         this.scoreTotal += scoreToBeAdded;
         server.postRequest("api/game/score",new LeaderboardRequestPacket(Main.USERNAME,scoreToBeAdded),GeneralResponsePacket.class);
-    }
-
-    /**
-     * Getter for MainCtrl
-     *
-     * @return mainCtrl
-     */
-    public MainCtrl getMainCtrl() {
-        return main;
-    }
-
-    /**
-     * Getter for ServerUtils
-     *
-     * @return the serverUtils
-     */
-    public ServerUtils getServer() {
-        return server;
     }
 
     /**
@@ -279,22 +294,14 @@ public class MultiplayerGame implements client.game.Game {
      * @param username this client's username
      */
     public void join(String username) {
-
         JoinResponsePacket responsePacket = server.postRequest("api/game/join",
                 new JoinRequestPacket(username),
                 JoinResponsePacket.class);
+
         Platform.runLater(() ->
-                main.getCtrl(LobbyCtrl.class)
-                        .updatePlayerList(responsePacket.getPlayerList()));
+                main.getCtrl(LobbyCtrl.class).updatePlayerList(responsePacket.getPlayerList())
+        );
     }
-
-    /*public void sameMatch(){
-
-    }*/
-   /* public void start(){
-
-        //MultiplayerRequestPacket responsePacket = server.postRequest("api/game/multiplayer", new MultiplayerRequestPacket() )
-    }*/
 
     /**
      * send clicked Emote to the server
@@ -312,7 +319,7 @@ public class MultiplayerGame implements client.game.Game {
     /**
      * send clicked Joker notification to the server
      *
-     * @param username this client's username
+     * @param username  this client's username
      * @param jokerType emote name
      * @return GeneralResponsePacket
      */
@@ -321,7 +328,6 @@ public class MultiplayerGame implements client.game.Game {
                 new JokerNotificationRequestPacket(username, jokerType),
                 GeneralResponsePacket.class);
     }
-
 
     /**
      * updates emote in this client according to updates sent by the server
@@ -366,11 +372,11 @@ public class MultiplayerGame implements client.game.Game {
                     main.getCtrl(LobbyCtrl.class)
                             .hideStartButton());
         }
-
     }
 
     /**
      * Sends start to all clients when starting a game
+     *
      * @param username Username of the player
      */
     public void sendStartToAllClients(String username) {
@@ -381,13 +387,13 @@ public class MultiplayerGame implements client.game.Game {
 
     /**
      * Sends a post request to the server when a player uses a joker
+     *
      * @param jokerType The type of the joker
-     * @param scene The current scene depending on the type of question
-     * @param <T> Generic
+     * @param scene     The current scene depending on the type of question
+     * @param <T>       Generic
      */
     public <T extends GameCtrl> void sendJokerClickedToAllClients(JokerType jokerType, Class<T> scene) {
-        System.out.println(scene.getName());
-        JokerResponsePacket responsePacket = server.postRequest("api/game/joker", new JokerRequestPacket(jokerType, Main.USERNAME, scene.getName()), JokerResponsePacket.class);
+        server.postRequest("api/game/joker", new JokerRequestPacket(jokerType, Main.USERNAME, scene.getName()), JokerResponsePacket.class);
     }
 
     /**
@@ -410,78 +416,49 @@ public class MultiplayerGame implements client.game.Game {
         this.longPollingRequest.stop();
     }
 
-    private class MultiplayerOnResponse implements ServerUtils.ServerResponse<MultiplayerResponsePacket> {
-
-        /**
-         * Will be called when the server response with data to a long polling request
-         *
-         * @param responsePacket The packet which the server returned
-         */
-        @Override
-        public void run(MultiplayerResponsePacket responsePacket) {
-
-        }
-    }
-
     /**
      * callback method when the client gets update from the server via the long polling request.
      */
     private class LobbyOnResponse implements ServerUtils.ServerResponse<LobbyResponsePacket> {
         @Override
         public void run(LobbyResponsePacket responsePacket) {
-            if (responsePacket.getType().equals("Emote")) {
-                updateEmote(responsePacket.getFrom(), responsePacket.getContent());
-            } else if (responsePacket.getType().equals("Join")) {
-                Platform.runLater(() ->
-                        main.getCtrl(LobbyCtrl.class)
-                                .updatePlayerList(responsePacket.getPlayerList()));
-            } else if (responsePacket.getType().equals("Ready")) {
-                Platform.runLater(() ->
-                        main.getCtrl(LobbyCtrl.class)
-                                .updatePlayerList(responsePacket.getPlayerList()));
-                Platform.runLater(() ->
-                        main.getCtrl(LobbyCtrl.class)
-                                .updateReady(responsePacket.getFrom()
-                                        , responsePacket.getContent()));
-            } else if (responsePacket.getType().equals("AllReady")) {
-                Platform.runLater(() ->
-                        main.getCtrl(LobbyCtrl.class)
-                                .updatePlayerList(responsePacket.getPlayerList()));
-                Platform.runLater(() ->
-                        main.getCtrl(LobbyCtrl.class)
-                                .showStartButton());
-            } else if (responsePacket.getType().equals("CancelAllReady")) {
-                Platform.runLater(() ->
-                        main.getCtrl(LobbyCtrl.class)
-                                .updatePlayerList(responsePacket.getPlayerList()));
-                Platform.runLater(() ->
-                        main.getCtrl(LobbyCtrl.class)
-                                .hideStartButton());
-            } else if (responsePacket.getType().equals("Leave")) {
-                Platform.runLater(() ->
-                        main.getCtrl(LobbyCtrl.class)
-                                .updatePlayerList(responsePacket.getPlayerList()));
-            } else if (responsePacket.getType().equals("Start")) {
-                Platform.runLater(() -> {
+            switch (responsePacket.getType()) {
+                case "Emote" -> updateEmote(responsePacket.getFrom(), responsePacket.getContent());
+                case "Join", "Leave" -> Platform.runLater(() -> {
+                    main.getCtrl(LobbyCtrl.class).updatePlayerList(responsePacket.getPlayerList());
+                });
+                case "Ready" -> Platform.runLater(() -> {
+                    LobbyCtrl lobbyCtrl = main.getCtrl(LobbyCtrl.class);
+                    lobbyCtrl.updatePlayerList(responsePacket.getPlayerList());
+                    lobbyCtrl.updateReady(responsePacket.getFrom(), responsePacket.getContent());
+                });
+                case "AllReady" -> Platform.runLater(() -> {
+                    LobbyCtrl lobbyCtrl = main.getCtrl(LobbyCtrl.class);
+                    lobbyCtrl.updatePlayerList(responsePacket.getPlayerList());
+                    lobbyCtrl.showStartButton();
+                });
+                case "CancelAllReady" -> {
+                    Platform.runLater(() -> {
+                        LobbyCtrl lobbyCtrl = main.getCtrl(LobbyCtrl.class);
+                        lobbyCtrl.updatePlayerList(responsePacket.getPlayerList());
+                        lobbyCtrl.hideStartButton();
+                    });
+                }
+                case "Start" -> Platform.runLater(() -> {
                     main.getCtrl(LobbyCtrl.class).startGame();
                 });
-            } else if (responsePacket.getType().equals("JokerMultiChoice")) {
-                Platform.runLater(() -> {
-                    if (((JokerResponsePacket) responsePacket).getJokerType().equals(JokerType.HALF_TIME) && !((JokerResponsePacket) responsePacket).getFrom().equals(Main.USERNAME))
+                case "JokerMultiChoice" -> Platform.runLater(() -> {
+                    if (((JokerResponsePacket) responsePacket).getJokerType().equals(JokerType.HALF_TIME) && !responsePacket.getFrom().equals(Main.USERNAME))
                         main.getCtrl(GameMultiChoiceCtrl.class).reduceTimer(0.5);
                 });
-            } else if (responsePacket.getType().equals("JokerOpenQuestion")) {
-                Platform.runLater(() -> {
-                    if (((JokerResponsePacket) responsePacket).getJokerType().equals(JokerType.HALF_TIME) && !((JokerResponsePacket) responsePacket).getFrom().equals(Main.USERNAME))
+                case "JokerOpenQuestion" -> Platform.runLater(() -> {
+                    if (((JokerResponsePacket) responsePacket).getJokerType().equals(JokerType.HALF_TIME) && !responsePacket.getFrom().equals(Main.USERNAME))
                         main.getCtrl(GameOpenQuestionCtrl.class).reduceTimer(0.5);
                 });
-            } else if (responsePacket.getType().equals("JokerNotification")) {
-                Platform.runLater(() -> {
+                case "JokerNotification" -> Platform.runLater(() -> {
                     main.getGame().notificationRenderer.addJokerNotification(responsePacket.getFrom(), JokerType.valueOf(responsePacket.getContent()));
                 });
             }
         }
-
     }
-
 }

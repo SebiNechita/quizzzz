@@ -37,7 +37,7 @@
 }
 
 .table-row-cell:focused {
-    -fx-text-background-color: #2b2bdc;
+    -fx-text-background-color: #100f0f;
 }
 
 .table-row-cell:odd{
@@ -71,4 +71,9 @@
 }
 .table-view .virtual-flow .scroll-bar:horizontal .thumb {
     -fx-background-color:  linear-gradient(to right, rgba(59, 59, 59, 0.27), rgba(121, 121, 121, 0.27));
+}
+
+.table-row-cell:highlighted {
+    -fx-background-color: #d3a13b;
+    -fx-background-radius: 15px;
 }
