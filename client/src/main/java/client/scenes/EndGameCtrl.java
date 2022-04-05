@@ -5,10 +5,9 @@ import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import commons.utils.GameMode;
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -22,6 +21,12 @@ public class EndGameCtrl extends SceneCtrl {
     private Text textPerformance;
     @FXML
     private HBox hboxText;
+    @FXML
+    private Button restartButton;
+    @FXML
+    private Button LeaderboardButton;
+    @FXML
+    private Button mainmenuButton;
 
     /**
      * Constructor for this Ctrl
@@ -52,16 +57,39 @@ public class EndGameCtrl extends SceneCtrl {
      */
     @OnShowScene
     public void onShowScene() {
-        int score = main.getSingleplayerGame().getScoreTotal();
-        pointsObtained.setText(main.getSingleplayerGame().getScoreTotal() + " points!");
-        if (main.getSingleplayerGame().getScoreTotal() < 100)
+        if (Main.gameMode==GameMode.MULTIPLAYER){
+            onShowSceneMultiplayer();
+        }
+        int score = (Main.gameMode == GameMode.MULTIPLAYER) ?
+                main.getMultiplayerGame().getScoreTotal() :
+                main.getSingleplayerGame().getScoreTotal();
+
+        pointsObtained.setText(score + " points!");
+        if (score < 100)
             textPerformance.setText("Poor performance, " + Main.USERNAME + "! " + "Try again!");
-        else if (main.getSingleplayerGame().getScoreTotal() > 2000)
-            textPerformance.setText("Congratulation, " + Main.USERNAME + "!" + "!");
+        else if (score > 2000)
+            textPerformance.setText("Congratulations, " + Main.USERNAME + "!" + "!");
         else
             textPerformance.setText("Good game, " + Main.USERNAME + "!");
-        textPerformance.setTextAlignment(TextAlignment.CENTER);
-        hboxText.setAlignment(Pos.CENTER);
+    }
+
+    /**
+     * Leaves the game and tailors the scene for multiplayer
+     */
+    private void onShowSceneMultiplayer() {
+
+        restartButton.setText("Rejoin lobby");
+        restartButton.setOnAction(event->{
+            main.getMultiplayerGame().leave();
+            main.showScene(LobbyCtrl.class);
+        });
+        LeaderboardButton.setOnAction(event->{
+            main.showScene(MultiplayerLeaderboardCtrl.class);
+        });
+        mainmenuButton.setOnAction(event -> {
+            main.getMultiplayerGame().leave();
+            main.quitMultiplayer();
+        });
     }
 
     /**

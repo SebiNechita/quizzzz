@@ -3,6 +3,8 @@ package server.api.game;
 import commons.Game;
 import commons.LeaderboardEntry;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import packets.JokerRequestPacket;
 import packets.JokerResponsePacket;
@@ -54,11 +56,8 @@ public class GameService {
             var entry = iter.next();
             if (Duration.between(entry.getValue().getValue(), now).toMillis() > 2000) {
                 String username = entry.getKey();
-                onPlayerLeave(username);
                 removePlayer(username);
-                System.out.println("removed player");
             }
-
         }
     }
 
@@ -104,6 +103,8 @@ public class GameService {
      * @param player player to be removed
      */
     public void removePlayer(String player) {
+        //notifies other players
+        onPlayerLeave(player);
         //gets the game associated with the user and removes them from the playermap
         playerMatchMap.get(player).getPlayerMap().remove(player);
         //also remove the information that the user is currently in a match
@@ -329,5 +330,34 @@ public class GameService {
         }
 
         return new JokerResponsePacket("Joker", "true", requestPacket.getUsername(), requestPacket.getJokerType());
+    }
+
+    /**
+     * Gets leaderboard from given player's match
+     * @param username the player
+     * @return the leaderboard
+     */
+    public List<LeaderboardEntry> getScoresByUser(String username) {
+        return playerMatchMap.get(username).getScores();
+    }
+
+    /**
+     * Adds given points to the given player's score
+     * @param player the player whose score need to be updated
+     * @param score the points to add
+     */
+    public void addScore(String player, int score) {
+        playerMatchMap.get(player).addScore(player,score);
+    }
+
+    /**
+     * Gets the player who's making requests from Spring
+     * @return the player
+     */
+    public String getPlayerInSession() {
+        Authentication auth = SecurityContextHolder
+                .getContext()
+                .getAuthentication();
+        return auth.getName();
     }
 }

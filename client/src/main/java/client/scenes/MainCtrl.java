@@ -52,7 +52,7 @@ public class MainCtrl {
     private final HashMap<Class<?>, SceneCtrl> ctrlClasses = new HashMap<>();
     private final HashMap<Class<?>, Pair<Scene, String>> scenes = new HashMap<>();
 
-    //I created this to be able to access the stage from AdminPanelCtrl when opening the file dialog.
+    //I created this to be able to access the stage from AdminPanelCtrl when opening the file dialog. -Kristof
     public Stage getPrimaryStage() {
         return primaryStage;
     }
@@ -65,7 +65,6 @@ public class MainCtrl {
     public MainCtrl(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.serverUtils = new ServerUtils();
-        // this.multiplayerGame = new MultiplayerGame(this, serverUtils);
     }
 
     /**
@@ -95,6 +94,13 @@ public class MainCtrl {
      */
     public void quitSingleplayer() {
         this.singleplayerGame = null;
+    }
+
+    /**
+     * Called when Multiplayer game is quit
+     */
+    public void quitMultiplayer() {
+        this.multiplayerGame = null;
     }
 
 
@@ -138,7 +144,7 @@ public class MainCtrl {
             return null;
         }
     }
-
+    
     /**
      * Loads and initializes a scene
      *
@@ -209,7 +215,6 @@ public class MainCtrl {
                 }
             }
         } catch (IllegalAccessException | InvocationTargetException ignored) {
-
         }
     }
 

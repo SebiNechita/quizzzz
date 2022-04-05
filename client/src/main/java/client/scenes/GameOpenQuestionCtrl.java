@@ -186,12 +186,6 @@ public class GameOpenQuestionCtrl extends GameCtrl {
         }
     }
 
-    protected void onWaitTimerEnd() {
-        timer.setOnFinished(event -> {
-            main.getCtrl(GameOpenQuestionCtrl.class).initialiseNextQuestion();
-        });
-    }
-
     /**
      * Shows the correct answer to the user and updates the score
      *

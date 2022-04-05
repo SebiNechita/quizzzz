@@ -5,7 +5,6 @@ import client.Main;
 import client.scenes.*;
 import client.utils.ServerUtils;
 import commons.Game;
-//import commons.LeaderboardEntry;
 import commons.questions.MultipleChoiceQuestion;
 import commons.questions.OpenQuestion;
 import commons.questions.Question;
@@ -38,11 +37,14 @@ public class MultiplayerGame implements client.game.Game {
 
     private Game game;
 
+    private boolean midLeaderboardDisplayed;
+
     public MultiplayerGame(MainCtrl main, ServerUtils server) {
         this.main = main;
         this.server = server;
         this.questionHistory = new LinkedList<>();
         this.questions = new ArrayList<>();
+        this.midLeaderboardDisplayed = false;
 
         game = server.getGame();
 
@@ -69,6 +71,7 @@ public class MultiplayerGame implements client.game.Game {
         this.main = main;
         this.server = server;
         this.game = game;
+        this.midLeaderboardDisplayed = false;
         this.scoreTotal = 0;
         this.currentQuestionCount = 0;
         this.questions = new ArrayList<>();
@@ -119,13 +122,18 @@ public class MultiplayerGame implements client.game.Game {
     public void jumpToNextQuestion() {
         currentActiveJokers.clear();
 
-        if (currentQuestionCount < 20) {
-            showQuestion();
-        } else {
-//            server.postRequest("api/leaderboard", new LeaderboardEntry(this.scoreTotal, Main.USERNAME), LeaderboardResponsePacket.class);
-//            main.showScene(EndGameCtrl.class);
+        //This is after the 10th and 20th questions.
+        if (currentQuestionCount == 10  && !midLeaderboardDisplayed){
+            main.showScene(MultiplayerLeaderboardCtrl.class);
+            midLeaderboardDisplayed = true;
         }
-        currentQuestionCount++;
+        else if(currentQuestionCount == 20){
+            main.showScene(EndGameCtrl.class);
+        }
+        else if (currentQuestionCount < 20) {
+            showQuestion();
+            currentQuestionCount++;
+        }
     }
 
     /**
@@ -191,6 +199,7 @@ public class MultiplayerGame implements client.game.Game {
      */
     public void addToScore(int scoreToBeAdded) {
         this.scoreTotal += scoreToBeAdded;
+        server.postRequest("api/game/score",new LeaderboardRequestPacket(Main.USERNAME,scoreToBeAdded),GeneralResponsePacket.class);
     }
 
     /**
@@ -279,10 +288,11 @@ public class MultiplayerGame implements client.game.Game {
     }
 
     /**
-     * stops the ping thread. should be called when 'back' is clicked.
+     * Stops pinging and leaves the game
      */
-    public void stopPingThread() {
+    public void leave() {
         pingThread.cancel(false);
+        server.getRequest("api/game/leave",GeneralResponsePacket.class);
     }
 
 
