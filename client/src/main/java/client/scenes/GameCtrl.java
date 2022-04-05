@@ -371,7 +371,6 @@ public abstract class GameCtrl extends SceneCtrl {
      * The timer which counts down the amount of time left and also shows the correct answer after the time limit has run out
      */
     protected void startTimer() {
-        LoggerUtil.log("test");
         jokerContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
         notificationContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
         emoteContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
@@ -444,14 +443,11 @@ public abstract class GameCtrl extends SceneCtrl {
         int timeBonus = (int) Math.round(lastAnswerChange * 100 * (answerPoints / 100d));
         int total = (int) (answerPoints + timeBonus * (answerPoints / 100d));
 
-        if (Main.gameMode == GameMode.MULTIPLAYER) {
-            if (main.getMultiplayerGame().isJokerActive(JokerType.DOUBLE_POINTS)) {
-                total *= 2;
-            }
-
-            main.getMultiplayerGame().addToScore(total);
+        if (Main.gameMode == GameMode.MULTIPLAYER && main.getMultiplayerGame().isJokerActive(JokerType.DOUBLE_POINTS)) {
+            total *= 2;
         }
 
+        main.getGame(Main.gameMode).addToScore(total);
         setScore(main.getGame(Main.gameMode).getScoreTotal());
 
         Paint color;

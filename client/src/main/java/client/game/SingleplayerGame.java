@@ -25,10 +25,15 @@ public class SingleplayerGame implements client.game.Game {
     private List<Question> questions;
     private LinkedList<Boolean> questionHistory;
 
-    private Integer currentQuestionCount;
+    private int currentQuestionCount;
+    private int scoreTotal;
 
-    private Integer scoreTotal;
-
+    /**
+     * Creates a singleplayer game
+     *
+     * @param mainCtrl The parent class, which keeps track of all scenes
+     * @param server   The server utils, for communicating with the server
+     */
     public SingleplayerGame(MainCtrl mainCtrl, ServerUtils server) {
         this.mainCtrl = mainCtrl;
         this.server = server;
@@ -56,17 +61,9 @@ public class SingleplayerGame implements client.game.Game {
         this.scoreTotal = 0;
     }
 
-    public SingleplayerGame(MainCtrl mainCtrl, ServerUtils server, List<Question> questions) {
-        this.mainCtrl = mainCtrl;
-        this.server = server;
-        this.questions = questions;
-        this.questionHistory = new LinkedList<>();
-        this.currentQuestionCount = 0;
-        this.scoreTotal = 0;
-    }
-
     /**
      * Retrieves a list of questions and stores it.
+     *
      * @return returns the list of questions
      */
     public List<Question> getQuestions() {
@@ -100,12 +97,13 @@ public class SingleplayerGame implements client.game.Game {
 
     /**
      * Gets the current question to be displayed from the list of questions
+     *
      * @param type Class of the question type. For example, OpenQuestion.class
-     * @param <T> Should be a subclass of Question
+     * @param <T>  Should be a subclass of Question
      * @return returns a subclass of Question (OpenQuestion/MultipleChoiceQuestion)
      */
     public <T extends Question> T getCurrentQuestion(Class<T> type) {
-        if (questions.get(currentQuestionCount) != null)  {
+        if (questions.get(currentQuestionCount) != null) {
             return (T) questions.get(currentQuestionCount);
         }
         return null;
@@ -113,6 +111,7 @@ public class SingleplayerGame implements client.game.Game {
 
     /**
      * Add a number to the current score
+     *
      * @param scoreToBeAdded the number by which score must be incremented
      */
     public void addToScore(int scoreToBeAdded) {
@@ -121,6 +120,7 @@ public class SingleplayerGame implements client.game.Game {
 
     /**
      * Getter for MainCtrl
+     *
      * @return mainCtrl
      */
     public MainCtrl getMainCtrl() {
@@ -129,6 +129,7 @@ public class SingleplayerGame implements client.game.Game {
 
     /**
      * Getter for ServerUtils
+     *
      * @return the serverUtils
      */
     public ServerUtils getServer() {
@@ -137,6 +138,7 @@ public class SingleplayerGame implements client.game.Game {
 
     /**
      * Setter for the list of questions
+     *
      * @param questions the list of questions
      */
     public void setQuestions(List<Question> questions) {
@@ -146,6 +148,7 @@ public class SingleplayerGame implements client.game.Game {
     /**
      * Getter for the current question count.
      * For example, if the game is displaying the 10th question, this will be 10.
+     *
      * @return the current question count
      */
     public Integer getCurrentQuestionCount() {
@@ -155,6 +158,7 @@ public class SingleplayerGame implements client.game.Game {
     /**
      * Setter for the current question count.
      * For example, if the game is displaying the 10th question, this will be 10.
+     *
      * @param currentQuestionCount the current question count
      */
     public void setCurrentQuestionCount(Integer currentQuestionCount) {
@@ -163,6 +167,7 @@ public class SingleplayerGame implements client.game.Game {
 
     /**
      * Getter for the total score
+     *
      * @return the total score
      */
     public Integer getScoreTotal() {
@@ -171,6 +176,7 @@ public class SingleplayerGame implements client.game.Game {
 
     /**
      * Setter for the total score
+     *
      * @param scoreTotal the total score
      */
     public void setScoreTotal(Integer scoreTotal) {
@@ -182,6 +188,7 @@ public class SingleplayerGame implements client.game.Game {
      * This contains a linked list of boolean. True if the question has been answered correctly. False otherwise.
      * For open questions, it is true if the difference between the answer and the input is < 50.
      * This is used in producing the progress bar
+     *
      * @return the question history
      */
     public LinkedList<Boolean> getQuestionHistory() {
@@ -193,6 +200,7 @@ public class SingleplayerGame implements client.game.Game {
      * This contains a linked list of boolean. True if the question has been answered correctly. False otherwise.
      * For open questions, it is true if the difference between the answer and the input is < 50.
      * This is used in producing the progress bar
+     *
      * @param questionHistory the question history
      */
     public void setQuestionHistory(LinkedList<Boolean> questionHistory) {

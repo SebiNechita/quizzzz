@@ -391,8 +391,7 @@ public class MultiplayerGame implements client.game.Game {
      * @param <T>       Generic
      */
     public <T extends GameCtrl> void sendJokerClickedToAllClients(JokerType jokerType, Class<T> scene) {
-        System.out.println(scene.getName());
-        JokerResponsePacket responsePacket = server.postRequest("api/game/joker", new JokerRequestPacket(jokerType, Main.USERNAME, scene.getName()), JokerResponsePacket.class);
+        server.postRequest("api/game/joker", new JokerRequestPacket(jokerType, Main.USERNAME, scene.getName()), JokerResponsePacket.class);
     }
 
     /**

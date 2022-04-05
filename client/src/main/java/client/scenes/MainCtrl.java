@@ -222,7 +222,6 @@ public class MainCtrl {
      * @param <T>
      */
     public <T extends SceneCtrl> void showEditActivity(String path, String title, Activity item) {
-
         try {
             URL scene = getClass().getClassLoader().getResource(path);
             FXMLLoader loader = new FXMLLoader(scene, null, null, new ControllerFactory(), StandardCharsets.UTF_8);
@@ -230,13 +229,11 @@ public class MainCtrl {
             Parent parent = loader.load();
 
             EditActivityCtrl ctrl = loader.getController();
-            //initialize(ctrl, parent, title);
             ctrl.initData(item);
 
             primaryStage.setScene(new Scene(parent));
             primaryStage.setTitle(title);
             ctrl.onShowScene();
-
         } catch (Exception e) {
             System.out.println(e.getStackTrace());
         }
