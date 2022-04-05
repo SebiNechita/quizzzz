@@ -3,6 +3,8 @@ package server.api.game;
 import commons.Game;
 import commons.LeaderboardEntry;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import packets.JokerRequestPacket;
 import packets.JokerResponsePacket;
@@ -346,5 +348,16 @@ public class GameService {
      */
     public void addScore(String player, int score) {
         playerMatchMap.get(player).addScore(player,score);
+    }
+
+    /**
+     * Gets the player who's making requests from Spring
+     * @return the player
+     */
+    public String getPlayerInSession() {
+        Authentication auth = SecurityContextHolder
+                .getContext()
+                .getAuthentication();
+        return auth.getName();
     }
 }

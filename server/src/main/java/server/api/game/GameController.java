@@ -2,8 +2,6 @@ package server.api.game;
 
 import commons.Game;
 import commons.utils.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 import packets.*;
@@ -40,7 +38,7 @@ public class GameController {
     @GetMapping("/lobbyEventListener")
     public DeferredResult<LobbyResponsePacket> playersInLobby() {
         DeferredResult<LobbyResponsePacket> output = new DeferredResult<>();
-        EventCaller<LobbyResponsePacket> eventCaller = new EventCaller(output, getPlayerInSession());
+        EventCaller<LobbyResponsePacket> eventCaller = new EventCaller(output, gameService.getPlayerInSession());
         gameService.waitForPlayerEvent(eventCaller);
         return output;
     }
@@ -64,19 +62,8 @@ public class GameController {
      */
     @GetMapping("/leave")
     public GeneralResponsePacket leave() {
-        gameService.removePlayer(getPlayerInSession());
+        gameService.removePlayer(gameService.getPlayerInSession());
         return new GeneralResponsePacket(HttpStatus.OK);
-    }
-
-    /**
-     * Gets the player who's making requests from Spring
-     * @return the player
-     */
-    private String getPlayerInSession() {
-        Authentication auth = SecurityContextHolder
-                .getContext()
-                .getAuthentication();
-        return (String) auth.getPrincipal();
     }
 
     /**
@@ -85,12 +72,7 @@ public class GameController {
      */
     @GetMapping("/multiplayerleaderboard")
     public LeaderboardResponsePacket getMultiplayerLeaderboard (){
-        Authentication auth = SecurityContextHolder
-                .getContext()
-                .getAuthentication();
-
-        String username = (String) auth.getPrincipal();
-        return new LeaderboardResponsePacket(HttpStatus.OK,gameService.getScoresByUser(username));
+        return new LeaderboardResponsePacket(HttpStatus.OK,gameService.getScoresByUser(gameService.getPlayerInSession()));
     }
 
     /**

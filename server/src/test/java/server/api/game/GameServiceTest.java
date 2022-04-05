@@ -9,6 +9,7 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.context.request.async.DeferredResult;
 import packets.GameResponsePacket;
@@ -237,5 +238,11 @@ public class GameServiceTest {
 
         Match spyMatch = spy.getCurrentMatch();
         assertEquals(expectedMap,spyMatch.trimPlayerList());
+    }
+
+    @Test
+    @WithMockUser(username = "someone")
+    void getPlayerInSession() throws Exception {
+        assertEquals("someone",gameService.getPlayerInSession());
     }
 }
