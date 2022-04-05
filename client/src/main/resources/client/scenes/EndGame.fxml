@@ -41,7 +41,7 @@
             </Button>
          </children>
       </HBox>
-      <HBox fx:id="hboxText" layoutX="2.0" layoutY="167.0" prefHeight="100.0" prefWidth="1280.0" spacing="20.0">
+      <HBox fx:id="hboxText" alignment="CENTER" layoutX="2.0" layoutY="167.0" prefHeight="100.0" prefWidth="1280.0" spacing="20.0">
          <children>
             <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text=" You have obtained:" wrappingWidth="452.07110595703125">
                <font>
