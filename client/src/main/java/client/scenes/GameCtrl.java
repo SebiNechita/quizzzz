@@ -379,7 +379,6 @@ public abstract class GameCtrl extends SceneCtrl {
         timer = AnimationUtil.timerAnim(timeLeftSlider, timeLeft, 10000, timeMultiplier, timeLeftText, "Time left:");
 
         timeLeftSlider.setBackground(new Background(new BackgroundFill(ColorPresets.timer_bar_regular, new CornerRadii(50), Insets.EMPTY)));
-        timeLeftSlider.setBackground(new Background(new BackgroundFill(new Color(0.160, 0.729, 0.901, 1), new CornerRadii(50), Insets.EMPTY)));
         timer.playFromStart();
         onTimerEnd();
     }
