@@ -18,11 +18,20 @@ public class LeaderboardController {
         this.repo = repo;
     }
 
+    /**
+     * Sends all leaderboard entries
+     * @return the list of leaderboard entries
+     */
     @GetMapping(path = {"/leaderboard"})
     public LeaderboardResponsePacket getAll() {
         return new LeaderboardResponsePacket(HttpStatus.OK, repo.findAll());
     }
 
+    /**
+     * Sends the score for given user
+     * @param username the user to get the score of
+     * @return the leaderboard entry of the user
+     */
     @GetMapping(path = {"/leaderboard/{username}"})
     public LeaderboardEntry getScoreForUser(@PathVariable("username") String username) {
         return repo.findByUsername(username);
@@ -49,6 +58,11 @@ public class LeaderboardController {
         return new GeneralResponsePacket(HttpStatus.OK, Integer.toString(numberOfBetterScores + 1));
     }
 
+    /**
+     * Save the score of a user in the database
+     * @param leaderboardEntry contains user and score to save
+     * @return the leaderboard
+     */
     @PostMapping(path = {"/leaderboard"})
     public LeaderboardResponsePacket add(@RequestBody LeaderboardEntry leaderboardEntry) {
         if (leaderboardEntry.points < 0 || isNullOrEmpty(leaderboardEntry.username)) {
@@ -85,6 +99,11 @@ public class LeaderboardController {
         }
     }
 
+    /**
+     * Checks if a string is null or empty
+     * @param s the string to check
+     * @return true iff the string is null or empty
+     */
     private static boolean isNullOrEmpty(String s) {
         return s == null || s.isEmpty();
     }

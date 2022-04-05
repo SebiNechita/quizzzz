@@ -1,15 +1,17 @@
 package client.scenes;
 
 import client.Main;
+import client.utils.AnimationUtil;
+import client.utils.ColorPresets;
+import client.utils.NotificationRenderer;
 import client.utils.ServerUtils;
+import com.google.common.util.concurrent.AtomicDouble;
 import commons.utils.Emote;
 import commons.utils.GameMode;
 import commons.utils.JokerType;
 import commons.utils.LoggerUtil;
 import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
-import javafx.animation.Interpolator;
-import javafx.animation.Transition;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -32,14 +34,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
-import javax.inject.Inject;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.Iterator;
+import java.util.Objects;
 
 import static client.utils.EmoteUtility.emoteHoverAnim;
 import static client.utils.EmoteUtility.emoteUsed;
@@ -69,18 +69,13 @@ public abstract class GameCtrl extends SceneCtrl {
 
     @FXML
     protected VBox jokers;
-
     @FXML
     private AnchorPane jokerContainer;
-
-    protected static List<AnchorPane> disabledJokers;
-    private List<AnchorPane> touchNotUsedJokers;
 
     @FXML
     protected Text timeLeftText;
     @FXML
     protected AnchorPane timeLeftBar;
-
     @FXML
     private AnchorPane timeLeftSlider;
 
@@ -92,23 +87,10 @@ public abstract class GameCtrl extends SceneCtrl {
     @FXML
     protected HBox emoteContainer;
 
-    // Static because it has to be common between both the GameOpenQuestionCtrl and GameMultiChoiceCtrl
-    protected static int numberOfQuestions = -1;
-    protected double timeLeft = 0;
+    protected AtomicDouble timeLeft = new AtomicDouble(0);
     protected double lastAnswerChange = 0;
     protected double timeMultiplier = 1d;
-    protected static boolean doublePoints;
-    protected static boolean doublePointsUsed;
-    protected static boolean halfTime;
-    protected static boolean halfTimeUsed;
-    protected static boolean removeAnswer;
-    protected static boolean removeAnswerUsed;
 
-    protected static boolean jokerClicked;
-
-    public static Map<JokerType, Boolean> jokersUsed;
-
-    // static because the state has to be the same between both the question types
     protected static boolean mute = false;
 
     /**
@@ -125,33 +107,21 @@ public abstract class GameCtrl extends SceneCtrl {
      * @param mainCtrl    The parent class, which keeps track of all scenes
      * @param serverUtils The server utils, for communicating with the server
      */
-    @Inject
     public GameCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
         super(mainCtrl, serverUtils);
-        disabledJokers = new LinkedList<>();
-        jokersUsed = new HashMap<>();
-        jokersUsed.put(JokerType.DOUBLE_POINTS, false);
-        jokersUsed.put(JokerType.REMOVE_ANSWER, false);
-        jokersUsed.put(JokerType.HALF_TIME, false);
     }
 
     /**
      * Gets called after scene has finished loading
      */
     protected void initialize() {
-        doublePoints = false;
-        doublePointsUsed = false;
-        halfTime = false;
-        halfTimeUsed = false;
-        removeAnswer = false;
-        removeAnswerUsed = false;
     }
 
     /**
      * This method is called from its subclasses when that scene is displayed
      */
-    public void onShowScene() {
-        notificationRenderer = new NotificationRenderer();
+    protected void onShowScene() {
+        notificationRenderer = new NotificationRenderer(notificationContainer);
 
         timeLeftSlider = (AnchorPane) timeLeftBar.getChildren().get(0);
 
@@ -159,9 +129,7 @@ public abstract class GameCtrl extends SceneCtrl {
         answerBonusText.setVisible(false);
         timeBonusText.setVisible(false);
 
-        if (Main.gameMode == GameMode.SINGLEPLAYER)
-            setScore(main.getSingleplayerGame().getScoreTotal());
-        else setScore(main.getMultiplayerGame().getScoreTotal());
+        setScore(main.getGame(Main.gameMode).getScoreTotal());
 
         nextQuestion.setVisible(false);
 
@@ -176,9 +144,9 @@ public abstract class GameCtrl extends SceneCtrl {
 
         notificationContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
 
-        for (Map.Entry<JokerType, Boolean> joker : jokersUsed.entrySet()) {
-            if (joker.getValue()) {
-                disableJoker(joker.getKey());
+        if (Main.gameMode == GameMode.MULTIPLAYER) {
+            for (JokerType joker : main.getMultiplayerGame().getDisabledJokers()) {
+                disableJoker(joker);
             }
         }
 
@@ -186,7 +154,6 @@ public abstract class GameCtrl extends SceneCtrl {
         generateProgressDots();
         enableListeners();
         startTimer();
-
     }
 
     /**
@@ -195,82 +162,62 @@ public abstract class GameCtrl extends SceneCtrl {
     private void enableListeners() {
         for (Node node : jokers.getChildren()) {
             AnchorPane joker = (AnchorPane) node;
+            JokerType jokerType = JokerType.valueOf(joker.getId().toUpperCase());
+
             ImageView jokerImage = (ImageView) joker.getChildren().get(0);
             AnchorPane tooltip = (AnchorPane) joker.getChildren().get(1);
 
             jokerImage.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-                if (disabledJokers.contains(joker)) {
-                    return;
-                } else {
-                    jokerUsed(JokerType.valueOf(joker.getId().toUpperCase()));
-                    if (node == jokers.getChildren().get(0)) {
-                        disableJoker(JokerType.DOUBLE_POINTS);
-                        jokersUsed.replace(JokerType.DOUBLE_POINTS, true);
-                        hideJokerTooltip(tooltip);
-                        doublePoints = true;
-                        main.getMultiplayerGame().sendJokerNotification(Main.USERNAME, JokerType.DOUBLE_POINTS);
-                    } else if (node == jokers.getChildren().get(1)) {
-                        disableJoker(JokerType.HALF_TIME);
-                        jokersUsed.replace(JokerType.HALF_TIME, true);
-                        hideJokerTooltip(tooltip);
-                        halfTime = true;
-                        main.getMultiplayerGame().sendJokerClickedToAllClients(JokerType.HALF_TIME, this.getClass());
-                        main.getMultiplayerGame().sendJokerNotification(Main.USERNAME, JokerType.HALF_TIME);
-                    } else if (node == jokers.getChildren().get(2)) {
-                        disableJoker(JokerType.REMOVE_ANSWER);
-                        jokersUsed.replace(JokerType.REMOVE_ANSWER, true);
-                        hideJokerTooltip(tooltip);
-                        removeAnswer = true;
-                        main.getMultiplayerGame().sendJokerNotification(Main.USERNAME, JokerType.REMOVE_ANSWER);
-                    }
+                if (!main.getMultiplayerGame().getDisabledJokers().contains(jokerType)) {
+                    jokerUsed(jokerType, tooltip);
 
-                    jokerClicked = true;
+                    if (joker.getId().equalsIgnoreCase(JokerType.HALF_TIME.toString())) {
+                        main.getMultiplayerGame().sendJokerClickedToAllClients(JokerType.HALF_TIME, this.getClass());
+                    } else if (joker.getId().equalsIgnoreCase(JokerType.REMOVE_ANSWER.toString())) {
+                        if (this instanceof GameMultiChoiceCtrl) {
+                            ((GameMultiChoiceCtrl) this).removeWrongAnswer();
+                        }
+                    }
                 }
             });
 
             jokerImage.setOnMouseExited(event -> {
-                if (!jokerClicked && jokersUsed.get(JokerType.valueOf(joker.getId().toUpperCase())))
+                if (main.getMultiplayerGame().getDisabledJokers().contains(jokerType))
                     return;
 
-                hoverAnim(joker, new Color(1, 1, 1, 1), new Color(0.266, 0.266, 0.266, 1)).play();
+                AnimationUtil.fadeAnim(joker, ColorPresets.white, ColorPresets.gray, 200, 10).play();
                 hideJokerTooltip(tooltip);
-                jokerClicked = false;
             });
 
             jokerImage.setOnMouseEntered(event -> {
-                if (jokersUsed.get(JokerType.valueOf(joker.getId().toUpperCase())))
+                if (main.getMultiplayerGame().getDisabledJokers().contains(jokerType))
                     return;
 
-                hoverAnim(joker,  new Color(0.266, 0.266, 0.266, 1), new Color(1, 1, 1, 1)).play();
+                AnimationUtil.fadeAnim(joker, ColorPresets.gray, ColorPresets.white, 200, 10).play();
                 showJokerTooltip(tooltip);
-
             });
         }
 
         for (Node node : emoteContainer.getChildren()) {
             ImageView emote = (ImageView) node;
 
-            emote.setOnMouseEntered(event -> {
-                emoteHoverAnim(emote, false).play();
-            });
-
-            emote.setOnMouseExited(event -> {
-                emoteHoverAnim(emote, true).play();
-            });
-
-            emote.setOnMouseClicked(event -> {
-                emoteUsed(Emote.valueOf(emote.getId()));
-            });
+            emote.setOnMouseEntered(event -> emoteHoverAnim(emote, false).play());
+            emote.setOnMouseExited(event -> emoteHoverAnim(emote, true).play());
+            emote.setOnMouseClicked(event -> emoteUsed(Emote.valueOf(emote.getId())));
         }
     }
 
     /**
      * Gets called when a joker is used
      *
-     * @param type What type of joker has been used
+     * @param type    What type of joker has been used
+     * @param tooltip The tooltip of the joker
      */
-    protected void jokerUsed(JokerType type) {
-        LoggerUtil.infoInline("Clicked on the " + type + " joker.");
+    protected void jokerUsed(JokerType type, AnchorPane tooltip) {
+        disableJoker(type);
+        main.getMultiplayerGame().addJokerUsed(type);
+        hideJokerTooltip(tooltip);
+        main.getMultiplayerGame().sendJokerNotification(Main.USERNAME, type);
     }
 
     /**
@@ -279,23 +226,34 @@ public abstract class GameCtrl extends SceneCtrl {
      * @param type The joker to disable
      */
     protected void disableJoker(JokerType type) {
+        disableJoker(type, false);
+    }
+
+    /**
+     * Can be used to disallow a user form using a specific joker
+     *
+     * @param type      The joker to disable
+     * @param temporary If the joker only needs to be disabled temporarily, not adding it to the jokersUsed list
+     */
+    protected void disableJoker(JokerType type, boolean temporary) {
         jokers.getChildren().stream()
-            .filter(joker -> joker.getId().equalsIgnoreCase(type.toString()))
-            .map(joker -> (AnchorPane) joker)
-            .forEach(joker -> {
-                LoggerUtil.log(joker.getId());
-                ImageView image = (ImageView) joker.getChildren().get(0);
+                .filter(joker -> joker.getId().equalsIgnoreCase(type.toString()))
+                .map(joker -> (AnchorPane) joker)
+                .forEach(joker -> {
+                    ImageView image = (ImageView) joker.getChildren().get(0);
 
-                ColorAdjust effect = new ColorAdjust();
-                effect.setBrightness(-0.5);
-                effect.setContrast(-0.5);
-                effect.setSaturation(-1);
+                    AnimationUtil.fadeAnim(joker, ColorPresets.white, ColorPresets.gray, 200, 10).play();
+                    ColorAdjust effect = new ColorAdjust();
+                    effect.setBrightness(-0.5);
+                    effect.setContrast(-0.5);
+                    effect.setSaturation(-1);
 
-                image.setEffect(effect);
+                    image.setEffect(effect);
 
-                disabledJokers.add(joker);
-            }
-        );
+                    if (!temporary) {
+                        main.getMultiplayerGame().addJokerUsed(type);
+                    }
+                });
     }
 
     /**
@@ -339,35 +297,24 @@ public abstract class GameCtrl extends SceneCtrl {
         dropShadow.setOffsetX(3.0);
         dropShadow.setOffsetY(3.0);
 
-        Iterator<Boolean> history;
-        if (Main.gameMode == GameMode.MULTIPLAYER)
-            history = main.getMultiplayerGame().getQuestionHistory().iterator();
-        else history = main.getSingleplayerGame().getQuestionHistory().iterator();
+        Iterator<Boolean> history = main.getGame(Main.gameMode).getQuestionHistory().iterator();
 
-        if (numberOfQuestions == -1) {
-            for (int i = 0; i < 20; i++) {
-                Circle circle = generateCircle(Paint.valueOf("#2b2b2b"), dropShadow);
-                children.add(circle);
-            }
-        } else {
+        for (int i = 0; i < 20; i++) {
             Circle circle;
-            for (int i = numberOfQuestions; i < 20 + numberOfQuestions; i++) {
-                if (history.hasNext()) {
-                    if (history.next()) {
-                        circle = generateCircle(Paint.valueOf("#1ce319"), dropShadow);
-                    } else {
-                        circle = generateCircle(Paint.valueOf("#e84343"), dropShadow);
-                    }
+            if (history.hasNext()) {
+                if (history.next()) {
+                    circle = generateCircle(ColorPresets.green, dropShadow);
                 } else {
-                    circle = generateCircle(Paint.valueOf("#2b2b2b"), dropShadow);
+                    circle = generateCircle(ColorPresets.red, dropShadow);
                 }
-                children.add(circle);
+            } else {
+                circle = generateCircle(ColorPresets.dark_gray, dropShadow);
             }
-        }
 
-        numberOfQuestions++;
-        //if(numberofQuestions  == 10)    main.showScene(MultiLeaderboardCtrl.class);
+            children.add(circle);
+        }
     }
+
     /**
      * Helper method for {@link #generateProgressDots}, which generates the dots itself
      *
@@ -378,18 +325,12 @@ public abstract class GameCtrl extends SceneCtrl {
     private Circle generateCircle(Paint color, Effect effect) {
         Circle circle = new Circle();
         circle.setEffect(effect);
-        circle.setStroke(Paint.valueOf("#000"));
+        circle.setStroke(ColorPresets.black);
         circle.setRadius(11);
         circle.setCache(true);
         circle.setFill(color);
 
         return circle;
-    }
-
-    /**
-     * Resets everything and loads the next question
-     */
-    protected void goToNextQuestion() {
     }
 
     /**
@@ -411,22 +352,41 @@ public abstract class GameCtrl extends SceneCtrl {
     }
 
     /**
+     * Resets the scene so that it is ready to show the next question
+     */
+    protected void initialiseNextQuestion() {
+        nextQuestion.setVisible(false);
+        hidePointsGained();
+
+        if (Main.gameMode == GameMode.MULTIPLAYER) {
+            for (JokerType joker : main.getMultiplayerGame().getDisabledJokers()) {
+                disableJoker(joker);
+            }
+        }
+
+        main.getGame(Main.gameMode).jumpToNextQuestion();
+    }
+
+    /**
      * The timer which counts down the amount of time left and also shows the correct answer after the time limit has run out
      */
     protected void startTimer() {
         jokerContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
         notificationContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
-       // emoteContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
+        emoteContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
 
         timeMultiplier = 1d;
-        timer = timerAnim(timeLeftSlider);
+        timer = AnimationUtil.timerAnim(timeLeftSlider, timeLeft, 10000, timeMultiplier, timeLeftText, "Time left:");
 
+        timeLeftSlider.setBackground(new Background(new BackgroundFill(ColorPresets.timer_bar_regular, new CornerRadii(50), Insets.EMPTY)));
         timeLeftSlider.setBackground(new Background(new BackgroundFill(new Color(0.160, 0.729, 0.901, 1), new CornerRadii(50), Insets.EMPTY)));
-//        timeMultiplier = 1d;
         timer.playFromStart();
         onTimerEnd();
     }
 
+    /**
+     * Called when the wait timer ends
+     */
     protected abstract void onWaitTimerEnd();
 
     /**
@@ -434,16 +394,15 @@ public abstract class GameCtrl extends SceneCtrl {
      */
     protected void startWaitTimer() {
         jokerContainer.setVisible(false);
-        notificationContainer.setVisible(true);
-        //emoteContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
+        notificationContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
+        emoteContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
 
-        timer = waitTimerAnim(timeLeftSlider);
+        timer = AnimationUtil.timerAnim(timeLeftSlider, timeLeft, 5000, timeMultiplier, timeLeftText, "Next question in:");
 
         timeLeftSlider.setBackground(new Background(new BackgroundFill(new Color(0.160, 0.729, 0.901, 1), new CornerRadii(50), Insets.EMPTY)));
         timer.playFromStart();
         onWaitTimerEnd();
     }
-
 
     /**
      * Reduces the total amount of time left of the timer
@@ -452,12 +411,12 @@ public abstract class GameCtrl extends SceneCtrl {
      */
     public void reduceTimer(double multiplier) {
         timeMultiplier *= multiplier;
-        double timeLeft = timer.getCurrentTime().toMillis();
+        timeLeft.set(timer.getCurrentTime().toMillis());
         timer.stop();
-        timer = timerAnim(timeLeftSlider);
+        timer = AnimationUtil.timerAnim(timeLeftSlider, timeLeft, 10000, timeMultiplier, timeLeftText, "Next question in:");
 
-        timeLeftSlider.setBackground(new Background(new BackgroundFill(new Color(0.925, 0.552, 0.035, 1), new CornerRadii(6), Insets.EMPTY)));
-        timer.playFrom(Duration.millis(timeLeft * multiplier));
+        timeLeftSlider.setBackground(new Background(new BackgroundFill(ColorPresets.timer_bar_rushed, new CornerRadii(6), Insets.EMPTY)));
+        timer.playFrom(Duration.millis(timeLeft.get() * multiplier));
 
         onTimerEnd();
     }
@@ -483,25 +442,21 @@ public abstract class GameCtrl extends SceneCtrl {
         answerPoints = Math.min(Math.max(answerPoints, 0), 100);
         int timeBonus = (int) Math.round(lastAnswerChange * 100 * (answerPoints / 100d));
         int total = (int) (answerPoints + timeBonus * (answerPoints / 100d));
-        if (doublePoints == true && doublePointsUsed == false && !disabledJokers.contains(JokerType.DOUBLE_POINTS)) {
+
+        if (Main.gameMode == GameMode.MULTIPLAYER && main.getMultiplayerGame().isJokerActive(JokerType.DOUBLE_POINTS)) {
             total *= 2;
-            doublePointsUsed = true;
-            disableJoker(JokerType.DOUBLE_POINTS);
         }
-        if (Main.gameMode == GameMode.MULTIPLAYER) {
-            main.getMultiplayerGame().addToScore(total);
-            setScore(main.getMultiplayerGame().getScoreTotal());
-        } else {
-            main.getSingleplayerGame().addToScore(total);
-            setScore(main.getSingleplayerGame().getScoreTotal());
-        }
+
+        main.getGame(Main.gameMode).addToScore(total);
+        setScore(main.getGame(Main.gameMode).getScoreTotal());
+
         Paint color;
         if (answerPoints >= 90) {
-            color = Paint.valueOf("#6cf06a");
+            color = ColorPresets.soft_green;
         } else if (answerPoints >= 20) {
-            color = Paint.valueOf("#ffde61");
+            color = ColorPresets.soft_yellow;
         } else {
-            color = Paint.valueOf("#f26c64");
+            color = ColorPresets.soft_red;
         }
 
         pointsGainedText.setText("You gained " + "0".repeat(Integer.toString(total).length()) + " points");
@@ -516,7 +471,7 @@ public abstract class GameCtrl extends SceneCtrl {
         timeBonusText.setFill(color);
         timeBonusText.setVisible(true);
 
-        Animation pointsAnim = pointsAnim(total, answerPoints, timeBonus);
+        Animation pointsAnim = AnimationUtil.pointsAnim(total, answerPoints, timeBonus, pointsGainedText, answerBonusText, timeBonusText);
         pointsAnim.playFromStart();
     }
 
@@ -530,195 +485,29 @@ public abstract class GameCtrl extends SceneCtrl {
     }
 
     /**
-     * Transitions from white to the target color
-     *
-     * @param anchorPane The pane which to change the color of
-     * @param target     The color to go to
-     * @param inverted   If the transition needs to be inverted or not
-     * @return The animation object which can be played
-     */
-    protected Animation hoverAnim(AnchorPane anchorPane, Color target, boolean inverted) {
-        return new Transition() {
-            {
-                setCycleDuration(Duration.millis(200));
-                setInterpolator(Interpolator.EASE_BOTH);
-            }
-
-            @Override
-            protected void interpolate(double frac) {
-                anchorPane.setBackground(new Background(new BackgroundFill(lerp(target.getRed(), target.getGreen(), target.getBlue(), inverted ? 1 - frac : frac), new CornerRadii(40), Insets.EMPTY)));
-            }
-        };
-    }
-
-    /**
-     * Transitions from a specified start color to a specified end color
-     *
-     * @param anchorPane The pane which to change the color of
-     * @param start      The color to start from
-     * @param end        The color to go to
-     * @return The animation object which can be played
-     */
-    protected Animation hoverAnim(AnchorPane anchorPane, Color start, Color end) {
-        return new Transition() {
-            {
-                setCycleDuration(Duration.millis(200));
-                setInterpolator(Interpolator.EASE_BOTH);
-            }
-
-            @Override
-            protected void interpolate(double frac) {
-                anchorPane.setBackground(new Background(new BackgroundFill(lerp(start.getRed(), start.getGreen(), start.getBlue(), end.getRed(), end.getGreen(), end.getBlue(), frac), new CornerRadii(10), Insets.EMPTY)));
-            }
-        };
-    }
-
-    /**
-     * Animates the timer to fill up its bar
-     *
-     * @param anchorPane The pane which to scroll
-     * @return The animation object which can be played
-     */
-    private Animation timerAnim(AnchorPane anchorPane) {
-        return new Transition() {
-            {
-                setCycleDuration(Duration.millis(10000 * timeMultiplier));
-                setInterpolator(Interpolator.LINEAR);
-            }
-
-            @Override
-            protected void interpolate(double frac) {
-                anchorPane.setPrefWidth(25 + 475 * frac);
-                timeLeft = timeMultiplier * (1 - frac);
-                timeLeftText.setText("Time left: " + (Math.round(100 * timeLeft) / 10d) + "s");
-            }
-        };
-    }
-
-    /**
-     * Animates the timer to fill up its bar
-     *
-     * @param anchorPane The pane which to scroll
-     * @return The animation object which can be played
-     */
-    private Animation waitTimerAnim(AnchorPane anchorPane) {
-        return new Transition() {
-            {
-                setCycleDuration(Duration.millis(5000));
-                setInterpolator(Interpolator.LINEAR);
-            }
-
-            @Override
-            protected void interpolate(double frac) {
-                anchorPane.setPrefWidth(25 + 475 * frac);
-                timeLeft = timeMultiplier * (1 - frac) / 2;
-                timeLeftText.setText("Next Question in: " + (Math.round(100 * timeLeft) / 10d) + "s");
-            }
-        };
-    }
-
-    /**
-     * Animates the text to count up when the player is displayed their points
-     *
-     * @param totalPoints  The amount of points to show for the total text
-     * @param answerPoints The amount of points to show for the answer text
-     * @param timePoints   The amount of points to show for the timer text
-     * @return The animation object which can be played
-     */
-    private Animation pointsAnim(int totalPoints, int answerPoints, int timePoints) {
-        return new Transition() {
-            {
-                setCycleDuration(Duration.millis(1000));
-                setInterpolator(new Interpolator() {
-                    @Override
-                    protected double curve(double t) {
-                        return t == 1 ? 1 : 1 - Math.pow(2, -10 * t);
-                    }
-                });
-            }
-
-            @Override
-            protected void interpolate(double frac) {
-                pointsGainedText.setText("You gained " + lerp(0, totalPoints, frac) + " points");
-                answerBonusText.setText("+" + lerp(0, answerPoints, frac) + " for answering");
-                timeBonusText.setText("+" + lerp(0, timePoints, frac) + " time bonus");
-            }
-        };
-    }
-
-    /**
-     * Lerps color from white to the given color
-     *
-     * @param r    The normalized red to go to
-     * @param g    The normalized green to go to
-     * @param b    The normalized blue to go to
-     * @param frac The time of the lerp
-     * @return An interpolated color
-     */
-    protected Color lerp(double r, double g, double b, double frac) {
-        frac = 1 - frac;
-        return new Color(r + ((1 - r) * frac), g + ((1 - g) * frac), b + ((1 - b) * frac), 1);
-    }
-
-    /**
-     * Lerps color from a given color to a given color
-     *
-     * @param r1   The normalized red to start from
-     * @param g1   The normalized green to start from
-     * @param b1   The normalized blue to start from
-     * @param r2   The normalized red to go to
-     * @param g2   The normalized green to go to
-     * @param b2   The normalized  blue to go to
-     * @param frac The time of the lerp
-     * @return An interpolated color
-     */
-    protected Color lerp(double r1, double g1, double b1, double r2, double g2, double b2, double frac) {
-        frac = 1 - frac;
-        return new Color(r2 + ((r1 - r2) * frac), g2 + ((g1 - g2) * frac), b2 + ((b1 - b2) * frac), 1);
-    }
-
-    /**
-     * Lerps an integer from a given value to a given value
-     *
-     * @param start The integer to start form
-     * @param end   The integer to end at
-     * @param time  The time of the lerp
-     * @return An interpolated integer
-     */
-    private int lerp(int start, int end, double time) {
-        return (int) Math.round(start + (end - start) * time);
-    }
-
-
-    /**
      * Rounds the image
      * Source: https://stackoverflow.com/a/56303884/9957954
      *
      * @param imageView imageView in which the image will be viewed
      */
     public void setRoundedImage(ImageView imageView) {
-        Rectangle clip = new Rectangle(
-                imageView.getFitWidth(), imageView.getFitHeight()
-        );
+        Rectangle clip = new Rectangle(imageView.getFitWidth(), imageView.getFitHeight());
         clip.setArcWidth(40);
         clip.setArcHeight(40);
         imageView.setClip(clip);
 
-        // snapshot the rounded image.
         SnapshotParameters parameters = new SnapshotParameters();
         parameters.setFill(Color.TRANSPARENT);
         WritableImage image = imageView.snapshot(parameters, null);
 
-        // remove the rounding clip so that our effect can show through.
         imageView.setClip(null);
-
-        // apply a shadow effect.
         imageView.setEffect(new DropShadow(40, Color.BLACK));
-
-        // store the rounded image in the imageView.
         imageView.setImage(image);
     }
 
+    /**
+     * Gets called when the mute button is pressed
+     */
     @FXML
     protected void onMute() {
         String imagePath = mute ? "img/unmute.png" : "img/mute.png";
@@ -735,17 +524,17 @@ public abstract class GameCtrl extends SceneCtrl {
     protected void quitGame() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Leave Game");
-        alert.setHeaderText("You're about to leave this game!");
+        alert.setHeaderText("You are about to leave this game!");
         alert.setContentText("Are you sure you want to leave?");
 
         if (alert.showAndWait().get() == ButtonType.OK) {
             LoggerUtil.infoInline(Main.USERNAME + " quit the singleplayer game!");
             main.showScene(MainMenuCtrl.class);
-            timer.setOnFinished(event -> {});
+            timer.setOnFinished(event -> {
+            });
             timer = null;
             main.quitSingleplayer();
         }
-
     }
 
     /**
@@ -757,179 +546,23 @@ public abstract class GameCtrl extends SceneCtrl {
         icon.setImage(new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(imagePath))));
     }
 
+    /**
+     * Plays a sound to the user when the answer is revealed
+     *
+     * @param isCorrect If the answer was correct or not
+     */
     protected void playSound(boolean isCorrect) {
-
         if (mute) return;
 
-        Media media;
-        MediaPlayer mediaPlayer;
         String soundFilePath = "";
-        if (isCorrect) {
-            try {
-                soundFilePath = getClass().getResource("/sounds/correct.wav").toURI().toString();
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
-        } else {
-            try {
-                soundFilePath = getClass().getResource("/sounds/wrong.mp3").toURI().toString();
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
+        try {
+            soundFilePath = Objects.requireNonNull(getClass().getResource(isCorrect ? "/sounds/correct.wav" : "/sounds/wrong.mp3")).toURI().toString();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
         }
-        media = new Media(soundFilePath);
-        mediaPlayer = new MediaPlayer(media);
+
+        Media media = new Media(soundFilePath);
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
         mediaPlayer.play();
-    }
-
-    /**
-     * Utility class for rendering the notifications during the game.
-     */
-    public class NotificationRenderer {
-        private final Queue<AnchorPane> notifications = new LinkedList<>();
-        private Animation fadingOut = null;
-
-        /**
-         * Constructs an object and automatically clears out the notification panel.
-         */
-        private NotificationRenderer() {
-            notificationContainer.getChildren().clear();
-        }
-
-        /**
-         * Adds a notification for when a user uses an emote
-         *
-         * @param username The username who sent the emote
-         * @param emote    The emote which was sent
-         */
-        public void addEmoteNotification(String username, Emote emote) {
-            renderNotification(generateNotification(username + " reacted with:", new Color(1, 1, 1, 1), false, emote));
-        }
-
-        /**
-         * Adds a notification for when a user disconnects
-         *
-         * @param username The username who disconnected
-         */
-        public void addDisconnectNotification(String username) {
-            renderNotification(generateNotification(username + " has disconnected", new Color(0.949, 0.423, 0.392, 1), false));
-        }
-
-        /**
-         * Adds a notification for when a user uses a joker
-         *
-         * @param username The username who used the joker
-         * @param type     The type of joker used
-         */
-        public void addJokerNotification(String username, JokerType type) {
-            renderNotification(generateNotification(username + " has used a " + type.getName() + " joker!", new Color(0.541, 0.929, 1, 1), true));
-        }
-
-        /**
-         * Generates a notification
-         *
-         * @param text      The text to show in the notification
-         * @param textColor The color which the text should be
-         * @param bold      If the text should be bold or not
-         * @return The generated AnchorPane which contains the notification
-         */
-        private AnchorPane generateNotification(String text, Paint textColor, boolean bold) {
-            return generateNotification(text, textColor, bold, null);
-        }
-
-        /**
-         * Generates a notification
-         *
-         * @param text      The text to show in the notification
-         * @param textColor The color which the text should be
-         * @param bold      If the text should be bold or not
-         * @param emote     The emote that can be shown
-         * @return The generated AnchorPane which contains the notification
-         */
-        private AnchorPane generateNotification(String text, Paint textColor, boolean bold, Emote emote) {
-            AnchorPane anchorPane = new AnchorPane();
-            anchorPane.setPrefWidth(200);
-            anchorPane.setPrefHeight(80);
-            anchorPane.setBackground(new Background(new BackgroundFill(new Color(0.231, 0.231, 0.231, 0.8), new CornerRadii(8), Insets.EMPTY)));
-
-            Text title = new Text();
-            title.setLayoutX(6);
-            title.setLayoutY(22);
-            title.setWrappingWidth(200);
-
-            title.setText(text);
-            title.setFill(textColor);
-
-            title.setFont(Font.font("Comic Sans MS", bold ? FontWeight.BOLD : FontWeight.NORMAL, 18));
-
-            anchorPane.getChildren().add(title);
-
-            if (emote != null) {
-                ImageView image = new ImageView("@../../img/emojis/" + emote.toString().toLowerCase() + ".png");
-                image.setFitHeight(45);
-                image.setFitWidth(45);
-                image.setLayoutX(140);
-                image.setLayoutY(30);
-
-                ColorAdjust colorAdjust = new ColorAdjust();
-                colorAdjust.setBrightness(0);
-                image.setEffect(colorAdjust);
-
-                anchorPane.getChildren().add(image);
-            }
-
-            return anchorPane;
-        }
-
-        /**
-         * Renders a given notification in the form of an AnchorPane
-         *
-         * @param notification The AnchorPane to render
-         */
-        private void renderNotification(AnchorPane notification) {
-            ObservableList<Node> children = notificationContainer.getChildren();
-            children.add(notification);
-            notifications.add(notification);
-
-            if (notifications.size() > 3) {
-                if (fadingOut != null) {
-                    fadingOut.jumpTo(Duration.millis(600));
-                }
-
-                AnchorPane target = notifications.poll();
-                if (target != null) {
-                    fadingOut = fadeOut(target);
-                    fadingOut.setOnFinished(event -> {
-                        children.remove(target);
-                    });
-                    fadingOut.playFromStart();
-                }
-            }
-        }
-
-        /**
-         * Animates the notification to fade out
-         *
-         * @param anchorPane The AnchorPane to apply the animation to
-         * @return The animation object which can be played
-         */
-        private Animation fadeOut(AnchorPane anchorPane) {
-            return new Transition() {
-                {
-                    setCycleDuration(Duration.millis(600));
-                    setInterpolator(Interpolator.EASE_BOTH);
-                }
-
-                final Color color = (Color) anchorPane.getBackground().getFills().get(0).getFill();
-                final Text text = (Text) anchorPane.getChildren().get(0);
-                final Color textColor = (Color) text.getFill();
-
-                @Override
-                protected void interpolate(double frac) {
-                    anchorPane.setBackground(new Background(new BackgroundFill(new Color(color.getRed(), color.getGreen(), color.getBlue(), 1 - frac), new CornerRadii(10), Insets.EMPTY)));
-                    text.setFill(new Color(textColor.getRed(), textColor.getGreen(), textColor.getBlue(), 1 - frac));
-                }
-            };
-        }
     }
 }

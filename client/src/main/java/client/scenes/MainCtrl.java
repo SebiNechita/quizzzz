@@ -15,12 +15,12 @@
  */
 package client.scenes;
 
+import client.game.Game;
 import client.game.MultiplayerGame;
 import client.game.SingleplayerGame;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
-//import commons.utils.GameMode;
-//import commons.utils.HttpStatus;
+import commons.utils.GameMode;
 import commons.questions.Activity;
 import commons.utils.LoggerUtil;
 import javafx.application.Platform;
@@ -117,6 +117,16 @@ public class MainCtrl {
     }
 
     /**
+     * Getter for game
+     * @param gameMode mode of the game. Singleplayer/Multiplayer
+     * @return the instance of the Game
+     */
+    public Game getGame(GameMode gameMode) {
+        if (gameMode == GameMode.MULTIPLAYER) return getMultiplayerGame();
+        else return getSingleplayerGame();
+    }
+
+    /**
      * Returns the active GameCtrl
      *
      * @return The game ctrl
@@ -199,6 +209,7 @@ public class MainCtrl {
                 }
             }
         } catch (IllegalAccessException | InvocationTargetException ignored) {
+
         }
     }
 
@@ -211,7 +222,6 @@ public class MainCtrl {
      * @param <T>
      */
     public <T extends SceneCtrl> void showEditActivity(String path, String title, Activity item) {
-
         try {
             URL scene = getClass().getClassLoader().getResource(path);
             FXMLLoader loader = new FXMLLoader(scene, null, null, new ControllerFactory(), StandardCharsets.UTF_8);
@@ -219,13 +229,11 @@ public class MainCtrl {
             Parent parent = loader.load();
 
             EditActivityCtrl ctrl = loader.getController();
-            //initialize(ctrl, parent, title);
             ctrl.initData(item);
 
             primaryStage.setScene(new Scene(parent));
             primaryStage.setTitle(title);
             ctrl.onShowScene();
-
         } catch (Exception e) {
             System.out.println(e.getStackTrace());
         }

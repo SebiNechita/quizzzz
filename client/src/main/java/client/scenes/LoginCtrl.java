@@ -1,6 +1,7 @@
 package client.scenes;
 
 import client.Main;
+import client.utils.ColorPresets;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import javafx.animation.Animation;
@@ -62,8 +63,8 @@ public class LoginCtrl extends SceneCtrl {
             Main.TOKEN = result;
             //if the result string is not empty this means that userName.getText() is valid
             Main.USERNAME = username;
-            userName.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 50");
-            password.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 50");
+            userName.setStyle("-fx-background-color: " + ColorPresets.toHex(ColorPresets.white) + "; -fx-background-radius: 50");
+            password.setStyle("-fx-background-color: " + ColorPresets.toHex(ColorPresets.white) + "; -fx-background-radius: 50");
             error.setText("");
             main.showScene(MainMenuCtrl.class);
             userName.setText("");
@@ -74,14 +75,11 @@ public class LoginCtrl extends SceneCtrl {
             userNameShake.play();
             passwordShake.play();
 
-            userName.setStyle("-fx-background-color: #fc6363; -fx-background-radius: 50");
-            password.setStyle("-fx-background-color: #fc6363; -fx-background-radius: 50");
+            userName.setStyle("-fx-background-color: " + ColorPresets.toHex(ColorPresets.soft_red) + "; -fx-background-radius: 50");
+            password.setStyle("-fx-background-color: " + ColorPresets.toHex(ColorPresets.soft_red) + "; -fx-background-radius: 50");
             error.setText("Could not log in");
-
-
         }
     }
-
 
     /**
      * This method is run when the Login scene is displayed
@@ -116,7 +114,6 @@ public class LoginCtrl extends SceneCtrl {
      * @return shaking Animation
      */
     protected Animation shake(TextField node) {
-
         TranslateTransition transition = new TranslateTransition(Duration.millis(50), node);
         transition.setFromX(0f);
         transition.setByX(10f);

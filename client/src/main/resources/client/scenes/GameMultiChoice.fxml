@@ -288,7 +288,7 @@
             <Insets right="15.0" />
          </padding>
       </HBox>
-      <AnchorPane layoutX="15.0" layoutY="24.0" prefHeight="28.0" prefWidth="115.0" style="-fx-background-color: #bfbcbb#bfbcbb; -fx-background-radius: 50; -fx-opacity: 0.5;">
+      <AnchorPane prefHeight="28.0" prefWidth="115.0" style="-fx-background-color: #aaa; -fx-background-radius: 50;" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
          <children>
             <HBox prefHeight="43.0" prefWidth="115.0">
                <children>
