@@ -371,15 +371,15 @@ public abstract class GameCtrl extends SceneCtrl {
      * The timer which counts down the amount of time left and also shows the correct answer after the time limit has run out
      */
     protected void startTimer() {
-        LoggerUtil.log("test");
         jokerContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
         notificationContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
-//        emoteContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
+        emoteContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
 
-        timer = AnimationUtil.timerAnim(timeLeftSlider, timeLeft, timeMultiplier, timeLeftText, "Time left: ");
+        timeMultiplier = 1d;
+        timer = AnimationUtil.timerAnim(timeLeftSlider, timeLeft, 10000, timeMultiplier, timeLeftText, "Time left:");
 
         timeLeftSlider.setBackground(new Background(new BackgroundFill(ColorPresets.timer_bar_regular, new CornerRadii(50), Insets.EMPTY)));
-        timeMultiplier = 1d;
+        timeLeftSlider.setBackground(new Background(new BackgroundFill(new Color(0.160, 0.729, 0.901, 1), new CornerRadii(50), Insets.EMPTY)));
         timer.playFromStart();
         onTimerEnd();
     }
@@ -442,14 +442,11 @@ public abstract class GameCtrl extends SceneCtrl {
         int timeBonus = (int) Math.round(lastAnswerChange * 100 * (answerPoints / 100d));
         int total = (int) (answerPoints + timeBonus * (answerPoints / 100d));
 
-        if (Main.gameMode == GameMode.MULTIPLAYER) {
-            if (main.getMultiplayerGame().isJokerActive(JokerType.DOUBLE_POINTS)) {
-                total *= 2;
-            }
-
-            main.getMultiplayerGame().addToScore(total);
+        if (Main.gameMode == GameMode.MULTIPLAYER && main.getMultiplayerGame().isJokerActive(JokerType.DOUBLE_POINTS)) {
+            total *= 2;
         }
 
+        main.getGame(Main.gameMode).addToScore(total);
         setScore(main.getGame(Main.gameMode).getScoreTotal());
 
         Paint color;

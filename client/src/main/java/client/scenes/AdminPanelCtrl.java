@@ -1,11 +1,11 @@
 package client.scenes;
 
 import client.Main;
+import client.utils.ColorPresets;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import commons.utils.HttpStatus;
 import javafx.fxml.FXML;
-import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import packets.ResponsePacket;
@@ -74,7 +74,7 @@ public class AdminPanelCtrl extends SceneCtrl {
      * Notifies user about successful upload
      */
     private void changeUIUploadSuccess() {
-        infoText.setFill(Paint.valueOf("WHITE"));
+        infoText.setFill(ColorPresets.white);
         infoText.setText("Uploaded the activities.");
     }
 
@@ -82,7 +82,7 @@ public class AdminPanelCtrl extends SceneCtrl {
      * Notifies user about failed upload
      */
     private void changeUIUploadFail() {
-        infoText.setFill(Paint.valueOf("#fc6363"));
+        infoText.setFill(ColorPresets.soft_red);
         infoText.setText("Failed to upload the activities.");
     }
 

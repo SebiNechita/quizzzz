@@ -8,6 +8,7 @@ import client.utils.ServerUtils;
 import commons.questions.OpenQuestion;
 import commons.utils.GameMode;
 import commons.utils.JokerType;
+import commons.utils.LoggerUtil;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
@@ -112,12 +113,11 @@ public class GameOpenQuestionCtrl extends GameCtrl {
     public void onShowScene() {
         super.onShowScene();
 
-        disableJoker(JokerType.REMOVE_ANSWER);
-
         userInput.setDisable(false);
 
         displayQuestion();
 
+        disableJoker(JokerType.REMOVE_ANSWER, true);
         enableListeners();
     }
 
@@ -125,13 +125,13 @@ public class GameOpenQuestionCtrl extends GameCtrl {
      * Gets the current question and displays it.
      */
     private void displayQuestion() {
-
         oq = main.getGame(Main.gameMode).getCurrentQuestion(OpenQuestion.class);
 
         setQuestion(oq.getQuestion());
         correctAnswer.setVisible(false);
         setActivityImage(oq.getAnswer().getImage_path());
-        System.out.println(oq.getAnswerInWH());
+
+        LoggerUtil.infoInline("Answer: " + oq.getAnswerInWH());
     }
 
     /**
@@ -177,6 +177,7 @@ public class GameOpenQuestionCtrl extends GameCtrl {
                 showCorrectAnswer((int) oq.getAnswerInWH());
                 startWaitTimer();
             });
+
         } else {
             timer.setOnFinished(event -> {
                 showCorrectAnswer((int) oq.getAnswerInWH());
@@ -193,13 +194,17 @@ public class GameOpenQuestionCtrl extends GameCtrl {
     @Override
     protected void showCorrectAnswer(int answer) {
         userInput.setDisable(true);
+
+        double difference = 0.5;
+        if (!userInput.getText().isEmpty()) {
+            BigInteger rawInput = new BigInteger(userInput.getText());
+            double convertedInput = rawInput.compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) > 0 ? Integer.MAX_VALUE : rawInput.intValue();
+            difference = Math.abs(1d - convertedInput / answer);
+        }
+
         correctAnswer.setVisible(true);
         correctAnswer.setText("Answer: " + answer);
 
-        //Check for whether the user entered anything at all
-        BigInteger rawInput = (userInput.getText().isEmpty()) ? new BigInteger("0") : new BigInteger(userInput.getText());
-        int convertedInput = rawInput.compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) > 0 ? Integer.MAX_VALUE : rawInput.intValue();
-        double difference = userInput.getText().equals("") ? 0.5 : Math.abs(1-convertedInput / answer);
         Color current = (Color) userInput.getBackground().getFills().get(0).getFill();
         if (difference <= 0.1) {
             AnimationUtil.fadeTextField(userInput, current, ColorPresets.soft_green).play();
@@ -214,7 +219,6 @@ public class GameOpenQuestionCtrl extends GameCtrl {
 
         main.getGame(Main.gameMode).getQuestionHistory().add(difference <= 0.3);
         playSound(difference <= 0.3);
-        
 
         generateProgressDots();
     }
@@ -223,6 +227,6 @@ public class GameOpenQuestionCtrl extends GameCtrl {
      * Resets the color of the text input field for the next question
      */
     private void resetTextInputColor() {
-        userInput.setBackground(new Background(new BackgroundFill(Color.color(1, 1, 1, 1), new CornerRadii(10), Insets.EMPTY)));
+        userInput.setBackground(new Background(new BackgroundFill(ColorPresets.white, new CornerRadii(10), Insets.EMPTY)));
     }
 }
