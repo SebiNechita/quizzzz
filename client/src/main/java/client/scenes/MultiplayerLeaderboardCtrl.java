@@ -113,9 +113,7 @@ public class MultiplayerLeaderboardCtrl extends SceneCtrl {
         });
         refresh();
 
-        System.out.println(main.getMultiplayerGame().getCurrentQuestionCount());
-        //This is after jumpToNextQuestion has been run after the 20th question.
-        if (main.getMultiplayerGame().getCurrentQuestionCount() == 21){
+        if (main.getMultiplayerGame().getCurrentQuestionCount() == 20){
             timeLeftBar.setVisible(false);
             timeLeftText.setVisible(false);
             backbutton.setVisible(true);
@@ -127,7 +125,6 @@ public class MultiplayerLeaderboardCtrl extends SceneCtrl {
             startTimer();
         }
     }
-
 
     /**
      * Starts the timer slider animation
@@ -149,7 +146,7 @@ public class MultiplayerLeaderboardCtrl extends SceneCtrl {
      */
     protected void onTimerEnd(){
         timer.setOnFinished(event -> {
-            main.getMultiplayerGame().showQuestion();
+            main.getMultiplayerGame().jumpToNextQuestion();
         });
     }
 
