@@ -134,11 +134,11 @@ public class MultiplayerLeaderboardCtrl extends SceneCtrl {
     protected void onTimerEnd(){
         timer.setOnFinished(event -> {
             //This is after jumpToNextQuestion has been run after the 20th question.
-            if (main.getMultiplayerGame().getCurrentQuestionCount() == 21){
+            if (main.getMultiplayerGame().getCurrentQuestionCount() == 20){
                 main.showScene(EndGameCtrl.class);
             }
-            else{
-                main.getMultiplayerGame().showQuestion();
+            else {
+                main.getMultiplayerGame().jumpToNextQuestion();
             }
         });
     }
