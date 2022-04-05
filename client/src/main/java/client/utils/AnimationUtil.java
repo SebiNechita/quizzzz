@@ -45,14 +45,16 @@ public class AnimationUtil {
      *
      * @param anchorPane     The pane which to scroll
      * @param timeLeft       The amount of time left
+     * @param totalTime      The total amount of time the timer should take
      * @param timeMultiplier The multiplier of the time
      * @param timeLeftText   The text field which displays the time
+     * @param textPrefix     The prefix of the text that will be shown when counting down
      * @return The animation object which can be played
      */
-    public static Animation timerAnim(AnchorPane anchorPane, AtomicDouble timeLeft, double timeMultiplier, Text timeLeftText) {
+    public static Animation timerAnim(AnchorPane anchorPane, AtomicDouble timeLeft, double totalTime, double timeMultiplier, Text timeLeftText, String textPrefix) {
         return new Transition() {
             {
-                setCycleDuration(Duration.millis(10000 * timeMultiplier));
+                setCycleDuration(Duration.millis(totalTime * timeMultiplier));
                 setInterpolator(Interpolator.LINEAR);
             }
 
@@ -60,7 +62,7 @@ public class AnimationUtil {
             protected void interpolate(double frac) {
                 anchorPane.setPrefWidth(25 + 475 * frac);
                 timeLeft.set(timeMultiplier * (1 - frac));
-                timeLeftText.setText("Time left: " + (Math.round(100 * timeLeft.get()) / 10d) + "s");
+                timeLeftText.setText(textPrefix + " " + (Math.round(100 * timeLeft.get()) / 10d) + "s");
             }
         };
     }

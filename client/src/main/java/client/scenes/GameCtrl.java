@@ -313,10 +313,8 @@ public abstract class GameCtrl extends SceneCtrl {
 
             children.add(circle);
         }
-//FIXME:
-        numberOfQuestions++;
-        //if(numberofQuestions  == 10)    main.showScene(MultiLeaderboardCtrl.class);
     }
+
     /**
      * Helper method for {@link #generateProgressDots}, which generates the dots itself
      *
@@ -376,20 +374,20 @@ public abstract class GameCtrl extends SceneCtrl {
         LoggerUtil.log("test");
         jokerContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
         notificationContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
-//        emoteContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
-// FIXME:
-        timer = AnimationUtil.timerAnim(timeLeftSlider, timeLeft, timeMultiplier, timeLeftText);
+        emoteContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
+
         timeMultiplier = 1d;
-        timer = timerAnim(timeLeftSlider);
+        timer = AnimationUtil.timerAnim(timeLeftSlider, timeLeft, 10000, timeMultiplier, timeLeftText, "Time left:");
 
         timeLeftSlider.setBackground(new Background(new BackgroundFill(ColorPresets.timer_bar_regular, new CornerRadii(50), Insets.EMPTY)));
-        timeMultiplier = 1d;
         timeLeftSlider.setBackground(new Background(new BackgroundFill(new Color(0.160, 0.729, 0.901, 1), new CornerRadii(50), Insets.EMPTY)));
-//        timeMultiplier = 1d;
         timer.playFromStart();
         onTimerEnd();
     }
 
+    /**
+     * Called when the wait timer ends
+     */
     protected abstract void onWaitTimerEnd();
 
     /**
@@ -397,16 +395,15 @@ public abstract class GameCtrl extends SceneCtrl {
      */
     protected void startWaitTimer() {
         jokerContainer.setVisible(false);
-        notificationContainer.setVisible(true);
-        //emoteContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
+        notificationContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
+        emoteContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
 
-        timer = waitTimerAnim(timeLeftSlider);
+        timer = AnimationUtil.timerAnim(timeLeftSlider, timeLeft, 5000, timeMultiplier, timeLeftText, "Next question in:");
 
         timeLeftSlider.setBackground(new Background(new BackgroundFill(new Color(0.160, 0.729, 0.901, 1), new CornerRadii(50), Insets.EMPTY)));
         timer.playFromStart();
         onWaitTimerEnd();
     }
-
 
     /**
      * Reduces the total amount of time left of the timer
@@ -417,7 +414,7 @@ public abstract class GameCtrl extends SceneCtrl {
         timeMultiplier *= multiplier;
         timeLeft.set(timer.getCurrentTime().toMillis());
         timer.stop();
-        timer = AnimationUtil.timerAnim(timeLeftSlider, timeLeft, timeMultiplier, timeLeftText);
+        timer = AnimationUtil.timerAnim(timeLeftSlider, timeLeft, 10000, timeMultiplier, timeLeftText, "Next question in:");
 
         timeLeftSlider.setBackground(new Background(new BackgroundFill(ColorPresets.timer_bar_rushed, new CornerRadii(6), Insets.EMPTY)));
         timer.playFrom(Duration.millis(timeLeft.get() * multiplier));
@@ -490,167 +487,6 @@ public abstract class GameCtrl extends SceneCtrl {
         answerBonusText.setVisible(false);
         timeBonusText.setVisible(false);
     }
-//FIXME:
-    /**
-     * Transitions from white to the target color
-     *
-     * @param anchorPane The pane which to change the color of
-     * @param target     The color to go to
-     * @param inverted   If the transition needs to be inverted or not
-     * @return The animation object which can be played
-     */
-    protected Animation hoverAnim(AnchorPane anchorPane, Color target, boolean inverted) {
-        return new Transition() {
-            {
-                setCycleDuration(Duration.millis(200));
-                setInterpolator(Interpolator.EASE_BOTH);
-            }
-
-            @Override
-            protected void interpolate(double frac) {
-                anchorPane.setBackground(new Background(new BackgroundFill(lerp(target.getRed(), target.getGreen(), target.getBlue(), inverted ? 1 - frac : frac), new CornerRadii(40), Insets.EMPTY)));
-            }
-        };
-    }
-
-    /**
-     * Transitions from a specified start color to a specified end color
-     *
-     * @param anchorPane The pane which to change the color of
-     * @param start      The color to start from
-     * @param end        The color to go to
-     * @return The animation object which can be played
-     */
-    protected Animation hoverAnim(AnchorPane anchorPane, Color start, Color end) {
-        return new Transition() {
-            {
-                setCycleDuration(Duration.millis(200));
-                setInterpolator(Interpolator.EASE_BOTH);
-            }
-
-            @Override
-            protected void interpolate(double frac) {
-                anchorPane.setBackground(new Background(new BackgroundFill(lerp(start.getRed(), start.getGreen(), start.getBlue(), end.getRed(), end.getGreen(), end.getBlue(), frac), new CornerRadii(10), Insets.EMPTY)));
-            }
-        };
-    }
-
-    /**
-     * Animates the timer to fill up its bar
-     *
-     * @param anchorPane The pane which to scroll
-     * @return The animation object which can be played
-     */
-    private Animation timerAnim(AnchorPane anchorPane) {
-        return new Transition() {
-            {
-                setCycleDuration(Duration.millis(10000 * timeMultiplier));
-                setInterpolator(Interpolator.LINEAR);
-            }
-
-            @Override
-            protected void interpolate(double frac) {
-                anchorPane.setPrefWidth(25 + 475 * frac);
-                timeLeft = timeMultiplier * (1 - frac);
-                timeLeftText.setText("Time left: " + (Math.round(100 * timeLeft) / 10d) + "s");
-            }
-        };
-    }
-
-    /**
-     * Animates the timer to fill up its bar
-     *
-     * @param anchorPane The pane which to scroll
-     * @return The animation object which can be played
-     */
-    private Animation waitTimerAnim(AnchorPane anchorPane) {
-        return new Transition() {
-            {
-                setCycleDuration(Duration.millis(5000));
-                setInterpolator(Interpolator.LINEAR);
-            }
-
-            @Override
-            protected void interpolate(double frac) {
-                anchorPane.setPrefWidth(25 + 475 * frac);
-                timeLeft = timeMultiplier * (1 - frac) / 2;
-                timeLeftText.setText("Next Question in: " + (Math.round(100 * timeLeft) / 10d) + "s");
-            }
-        };
-    }
-
-    /**
-     * Animates the text to count up when the player is displayed their points
-     *
-     * @param totalPoints  The amount of points to show for the total text
-     * @param answerPoints The amount of points to show for the answer text
-     * @param timePoints   The amount of points to show for the timer text
-     * @return The animation object which can be played
-     */
-    private Animation pointsAnim(int totalPoints, int answerPoints, int timePoints) {
-        return new Transition() {
-            {
-                setCycleDuration(Duration.millis(1000));
-                setInterpolator(new Interpolator() {
-                    @Override
-                    protected double curve(double t) {
-                        return t == 1 ? 1 : 1 - Math.pow(2, -10 * t);
-                    }
-                });
-            }
-
-            @Override
-            protected void interpolate(double frac) {
-                pointsGainedText.setText("You gained " + lerp(0, totalPoints, frac) + " points");
-                answerBonusText.setText("+" + lerp(0, answerPoints, frac) + " for answering");
-                timeBonusText.setText("+" + lerp(0, timePoints, frac) + " time bonus");
-            }
-        };
-    }
-
-    /**
-     * Lerps color from white to the given color
-     *
-     * @param r    The normalized red to go to
-     * @param g    The normalized green to go to
-     * @param b    The normalized blue to go to
-     * @param frac The time of the lerp
-     * @return An interpolated color
-     */
-    protected Color lerp(double r, double g, double b, double frac) {
-        frac = 1 - frac;
-        return new Color(r + ((1 - r) * frac), g + ((1 - g) * frac), b + ((1 - b) * frac), 1);
-    }
-
-    /**
-     * Lerps color from a given color to a given color
-     *
-     * @param r1   The normalized red to start from
-     * @param g1   The normalized green to start from
-     * @param b1   The normalized blue to start from
-     * @param r2   The normalized red to go to
-     * @param g2   The normalized green to go to
-     * @param b2   The normalized  blue to go to
-     * @param frac The time of the lerp
-     * @return An interpolated color
-     */
-    protected Color lerp(double r1, double g1, double b1, double r2, double g2, double b2, double frac) {
-        frac = 1 - frac;
-        return new Color(r2 + ((r1 - r2) * frac), g2 + ((g1 - g2) * frac), b2 + ((b1 - b2) * frac), 1);
-    }
-
-    /**
-     * Lerps an integer from a given value to a given value
-     *
-     * @param start The integer to start form
-     * @param end   The integer to end at
-     * @param time  The time of the lerp
-     * @return An interpolated integer
-     */
-    private int lerp(int start, int end, double time) {
-        return (int) Math.round(start + (end - start) * time);
-    }
-
 
     /**
      * Rounds the image

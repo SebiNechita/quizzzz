@@ -199,14 +199,12 @@ public class GameOpenQuestionCtrl extends GameCtrl {
     @Override
     protected void showCorrectAnswer(int answer) {
         userInput.setDisable(true);
-        //FIXME:
         BigInteger rawInput = new BigInteger(userInput.getText());
         int convertedInput = rawInput.compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) > 0 ? Integer.MAX_VALUE : rawInput.intValue();
-        double difference = userInput.getText().equals("") ? 0.5 : Math.abs(1-convertedInput / answer);
+        double difference = userInput.getText().equals("") ? 0.5 : Math.abs(1 - convertedInput / answer);
         correctAnswer.setVisible(true);
         correctAnswer.setText("Answer: " + answer);
 
-        double difference = userInput.getText().equals("") ? 0.5 : Math.abs(1-Integer.parseInt(userInput.getText()) / answer);
         Color current = (Color) userInput.getBackground().getFills().get(0).getFill();
         if (difference <= 0.1) {
             AnimationUtil.fadeTextField(userInput, current, ColorPresets.soft_green).play();
