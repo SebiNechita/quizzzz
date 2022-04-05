@@ -195,6 +195,7 @@ public class MultiplayerGame implements client.game.Game {
      */
     public void addToScore(int scoreToBeAdded) {
         this.scoreTotal += scoreToBeAdded;
+        server.postRequest("api/game/score",new LeaderboardRequestPacket(Main.USERNAME,scoreToBeAdded),GeneralResponsePacket.class);
     }
 
     /**
