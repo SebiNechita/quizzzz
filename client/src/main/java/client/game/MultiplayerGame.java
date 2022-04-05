@@ -119,7 +119,11 @@ public class MultiplayerGame implements client.game.Game {
     public void jumpToNextQuestion() {
         currentActiveJokers.clear();
 
-        if (currentQuestionCount < 20) {
+        //This is after the 10th and 20th questions.
+        if (currentQuestionCount == 10 || currentQuestionCount == 20){
+            main.showScene(MultiplayerLeaderboardCtrl.class);
+        }
+        else if (currentQuestionCount < 20) {
             showQuestion();
         } else {
 //            server.postRequest("api/leaderboard", new LeaderboardEntry(this.scoreTotal, Main.USERNAME), LeaderboardResponsePacket.class);
@@ -185,14 +189,12 @@ public class MultiplayerGame implements client.game.Game {
     }
 
     /**
-     * Add a number to the current score.
-     * Sends the score to add to the server.
+     * Add a number to the current score
      *
      * @param scoreToBeAdded the number by which score must be incremented
      */
     public void addToScore(int scoreToBeAdded) {
         this.scoreTotal += scoreToBeAdded;
-        server.postRequest("api/game/score",new LeaderboardRequestPacket(Main.USERNAME,scoreToBeAdded),GeneralResponsePacket.class);
     }
 
     /**

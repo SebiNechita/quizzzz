@@ -379,27 +379,16 @@ public abstract class GameCtrl extends SceneCtrl {
         timer = AnimationUtil.timerAnim(timeLeftSlider, timeLeft, 10000, timeMultiplier, timeLeftText, "Time left:");
 
         timeLeftSlider.setBackground(new Background(new BackgroundFill(ColorPresets.timer_bar_regular, new CornerRadii(50), Insets.EMPTY)));
-        timeLeftSlider.setBackground(new Background(new BackgroundFill(new Color(0.160, 0.729, 0.901, 1), new CornerRadii(50), Insets.EMPTY)));
         timer.playFromStart();
         onTimerEnd();
     }
 
     /**
-     * Called when the wait timer ends
+     * Start the timer when showing the answer (multiplayer)
      */
-    protected abstract void onWaitTimerEnd();
-
-    /**
-     * The timer which counts down the amount of time left and also shows the correct answer after the time limit has run out
-     */
-    protected void startWaitTimer() {
+    protected void startWaitTimer(){
         jokerContainer.setVisible(false);
-        notificationContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
-        emoteContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
-
-        timer = AnimationUtil.timerAnim(timeLeftSlider, timeLeft, 5000, timeMultiplier, timeLeftText, "Next question in:");
-
-        timeLeftSlider.setBackground(new Background(new BackgroundFill(new Color(0.160, 0.729, 0.901, 1), new CornerRadii(50), Insets.EMPTY)));
+        timer = AnimationUtil.timerAnim(timeLeftSlider, new AtomicDouble(0), 5000, 1d, timeLeftText, "Next question in: ");
         timer.playFromStart();
         onWaitTimerEnd();
     }
@@ -413,7 +402,7 @@ public abstract class GameCtrl extends SceneCtrl {
         timeMultiplier *= multiplier;
         timeLeft.set(timer.getCurrentTime().toMillis());
         timer.stop();
-        timer = AnimationUtil.timerAnim(timeLeftSlider, timeLeft, 10000, timeMultiplier, timeLeftText, "Next question in:");
+        timer = AnimationUtil.timerAnim(timeLeftSlider, timeLeft, 10000, timeMultiplier, timeLeftText, "Time left: ");
 
         timeLeftSlider.setBackground(new Background(new BackgroundFill(ColorPresets.timer_bar_rushed, new CornerRadii(6), Insets.EMPTY)));
         timer.playFrom(Duration.millis(timeLeft.get() * multiplier));
@@ -422,9 +411,18 @@ public abstract class GameCtrl extends SceneCtrl {
     }
 
     /**
-     * Sets up the events for when the timer runs out
+     * Sets up the events for when the question timer runs out
      */
     protected abstract void onTimerEnd();
+
+    /**
+     * Sets up the events for when the answer timer runs out
+     */
+    protected void onWaitTimerEnd(){
+        timer.setOnFinished(event -> {
+            initialiseNextQuestion();
+        });
+    }
 
     /**
      * Shows the correct answer to the user

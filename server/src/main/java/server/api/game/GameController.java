@@ -66,6 +66,20 @@ public class GameController {
     }
 
     /**
+     * Sends the multiplayer leaderboard
+     * @return the packet containing the leaderboard.
+     */
+    @GetMapping("/multiplayerleaderboard")
+    public LeaderboardResponsePacket getMultiplayerLeaderboard (){
+        Authentication auth = SecurityContextHolder
+                .getContext()
+                .getAuthentication();
+
+        String username = (String) auth.getPrincipal();
+        return new LeaderboardResponsePacket(HttpStatus.OK,gameService.getScoresByUser(username));
+    }
+
+    /**
      * Update the score of a user
      * @param request contains the user and the points to add
      * @return a response with 200
@@ -75,12 +89,6 @@ public class GameController {
         gameService.addScore(request.getPlayer(), request.getScore());
         return new GeneralResponsePacket(HttpStatus.OK);
     }
-
-   /* @GetMapping("/multiplayer")
-    public MultiplayerResponsePacket start(@RequestMapping MultiplayerRequestPacket request){
-         Game x = new MultiplayerResponsePacket()
-         request.getLobby().getPlayerList();
-    }*/
 
     /**
      * client sends emote to server, server then send it to other players

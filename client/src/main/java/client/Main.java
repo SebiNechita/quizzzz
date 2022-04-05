@@ -67,7 +67,7 @@ public class Main extends Application {
         mainCtrl.load("client/scenes/DeleteActivity.fxml","Delete Activity Screen");
         mainCtrl.load("client/scenes/ListActivity.fxml","List Activities Screen");
         mainCtrl.load("client/scenes/EndGame.fxml", "End Game Screen");
-        mainCtrl.load("client/scenes/MultiLeaderboard.fxml","Multiplayer Leaderboard");
+        mainCtrl.load("client/scenes/MultiplayerLeaderboard.fxml", "Match leaderboard");
 
         //For testing, I skipped the Connection and Login screens
         if (debug) {

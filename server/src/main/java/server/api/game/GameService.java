@@ -330,4 +330,22 @@ public class GameService {
 
         return new JokerResponsePacket("Joker", "true", requestPacket.getUsername(), requestPacket.getJokerType());
     }
+
+    /**
+     * Gets leaderboard from given player's match
+     * @param username the player
+     * @return the leaderboard
+     */
+    public List<LeaderboardEntry> getScoresByUser(String username) {
+        return playerMatchMap.get(username).getScores();
+    }
+
+    /**
+     * Adds given points to the given player's score
+     * @param player the player whose score need to be updated
+     * @param score the points to add
+     */
+    public void addScore(String player, int score) {
+        playerMatchMap.get(player).addScore(player,score);
+    }
 }
