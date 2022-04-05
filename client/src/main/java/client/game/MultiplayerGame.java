@@ -118,16 +118,17 @@ public class MultiplayerGame implements client.game.Game {
      */
     public void jumpToNextQuestion() {
         currentActiveJokers.clear();
+        System.out.println(currentQuestionCount);
 
         //This is after the 10th and 20th questions.
-        if (currentQuestionCount == 10 || currentQuestionCount == 20){
+        if (currentQuestionCount == 10){
             main.showScene(MultiplayerLeaderboardCtrl.class);
+        }
+        else if(currentQuestionCount == 20){
+            main.showScene(EndGameCtrl.class);
         }
         else if (currentQuestionCount < 20) {
             showQuestion();
-        } else {
-//            server.postRequest("api/leaderboard", new LeaderboardEntry(this.scoreTotal, Main.USERNAME), LeaderboardResponsePacket.class);
-//            main.showScene(EndGameCtrl.class);
         }
         currentQuestionCount++;
     }

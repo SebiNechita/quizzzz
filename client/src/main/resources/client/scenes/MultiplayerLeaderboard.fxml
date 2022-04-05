@@ -50,7 +50,7 @@
          </BarChart>
       </children>
    </AnchorPane>
-   <Button fx:id="barChartButton" layoutX="1216.0" layoutY="663.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="36.0" style="-fx-background-radius: 50;">
+   <Button fx:id="barChartButton" layoutX="1216.0" layoutY="663.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="36.0" style="-fx-background-radius: 50; -fx-background-color: white;">
       <graphic>
          <ImageView fitHeight="22.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
             <image>
@@ -69,4 +69,9 @@
          <Font name="Comic Sans MS Bold" size="24.0" />
       </font>
    </Text>
+   <Button fx:id="backbutton" layoutX="568.0" layoutY="625.0" mnemonicParsing="false" prefHeight="56.0" prefWidth="158.0" style="-fx-background-radius: 40; -fx-background-color: white;" text="Back" visible="false">
+      <font>
+         <Font name="Comic Sans MS" size="30.0" />
+      </font>
+   </Button>
 </AnchorPane>

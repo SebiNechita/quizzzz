@@ -70,6 +70,8 @@ public class MultiplayerLeaderboardCtrl extends SceneCtrl {
     protected AnchorPane timeLeftBar;
     @FXML
     private AnchorPane timeLeftSlider;
+    @FXML
+    private Button backbutton;
 
     protected static boolean fromMainMenu = false;
 
@@ -110,8 +112,22 @@ public class MultiplayerLeaderboardCtrl extends SceneCtrl {
             smoothTransition(barChartContainer, false);
         });
         refresh();
-        startTimer();
+
+        System.out.println(main.getMultiplayerGame().getCurrentQuestionCount());
+        //This is after jumpToNextQuestion has been run after the 20th question.
+        if (main.getMultiplayerGame().getCurrentQuestionCount() == 21){
+            timeLeftBar.setVisible(false);
+            timeLeftText.setVisible(false);
+            backbutton.setVisible(true);
+            backbutton.setOnAction(event -> {
+                main.showScene(EndGameCtrl.class);
+            });
+        }
+        else{
+            startTimer();
+        }
     }
+
 
     /**
      * Starts the timer slider animation
@@ -133,16 +149,14 @@ public class MultiplayerLeaderboardCtrl extends SceneCtrl {
      */
     protected void onTimerEnd(){
         timer.setOnFinished(event -> {
-            //This is after jumpToNextQuestion has been run after the 20th question.
-            if (main.getMultiplayerGame().getCurrentQuestionCount() == 21){
-                main.showScene(EndGameCtrl.class);
-            }
-            else{
-                main.getMultiplayerGame().showQuestion();
-            }
+            main.getMultiplayerGame().showQuestion();
         });
     }
 
+    /**
+     * Sets up the score graph
+     * @param packet contains usernames and their scores
+     */
     private void initializeBarChart(LeaderboardResponsePacket packet) {
         // We have to clear it so that the same data points don't appear twice when we click on Refresh
         barChart.getData().clear();

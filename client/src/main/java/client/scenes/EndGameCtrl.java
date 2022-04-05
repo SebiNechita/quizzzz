@@ -25,6 +25,8 @@ public class EndGameCtrl extends SceneCtrl {
     private Button restartButton;
     @FXML
     private Button LeaderboardButton;
+    @FXML
+    private Button mainmenuButton;
 
     /**
      * Constructor for this Ctrl
@@ -75,13 +77,19 @@ public class EndGameCtrl extends SceneCtrl {
      * Leaves the game and tailors the scene for multiplayer
      */
     private void onShowSceneMultiplayer() {
-        main.getMultiplayerGame().leave();
 
         restartButton.setText("Rejoin lobby");
         restartButton.setOnAction(event->{
+            main.getMultiplayerGame().leave();
             main.showScene(LobbyCtrl.class);
         });
-        LeaderboardButton.setVisible(false);
+        LeaderboardButton.setOnAction(event->{
+            main.showScene(MultiplayerLeaderboardCtrl.class);
+        });
+        mainmenuButton.setOnAction(event -> {
+            main.getMultiplayerGame().leave();
+            main.quitMultiplayer();
+        });
     }
 
     /**
