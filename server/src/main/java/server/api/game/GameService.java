@@ -52,11 +52,16 @@ public class GameService {
     public void removeOldPlayers(Map<String, Map.Entry<String, LocalDateTime>> playerMatchMap){
         var now = LocalDateTime.now();
         var iter = playerMatchMap.entrySet().iterator();
+        // System.out.println("working...");
         while (iter.hasNext()) {
             var entry = iter.next();
+            // for testing
+//            System.out.println(Duration.between(entry.getValue().getValue(), now).toMillis() > 2000);
             if (Duration.between(entry.getValue().getValue(), now).toMillis() > 2000) {
                 String username = entry.getKey();
                 removePlayer(username);
+                // for testing
+//                System.out.println("removed: " + username);
             }
         }
     }
