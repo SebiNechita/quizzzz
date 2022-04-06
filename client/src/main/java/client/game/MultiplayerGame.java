@@ -24,49 +24,20 @@ public class MultiplayerGame implements client.game.Game {
     private final ServerUtils server;
 
     private ScheduledFuture<?> pingThread;
-    private ServerUtils.LongPollingRequest longPollingRequest;
+    private ServerUtils.LongPollingRequest<LobbyResponsePacket> longPollingRequest;
 
     private List<Question> questions;
     private LinkedList<Boolean> questionHistory;
 
-    private final List<JokerType> usedJokers = new LinkedList<>();
-    private final List<JokerType> currentActiveJokers = new LinkedList<>();
+    private final List<JokerType> usedJokers;
+    private final List<JokerType> currentActiveJokers;
 
-    private Integer currentQuestionCount;
+    private int currentQuestionCount;
+    private int scoreTotal;
 
-    private Integer scoreTotal;
-
-    private Game game;
+    private final Game game;
 
     private boolean midLeaderboardDisplayed;
-
-    public MultiplayerGame(MainCtrl main, ServerUtils server) {
-        this.main = main;
-        this.server = server;
-        this.questionHistory = new LinkedList<>();
-        this.questions = new ArrayList<>();
-        this.midLeaderboardDisplayed = false;
-
-        game = server.getGame();
-
-        List<OpenQuestion> openQuestions = game.getOpenQuestions();
-        List<MultipleChoiceQuestion> multipleChoiceQuestions = game.getMultipleChoiceQuestions();
-
-        int totalQuestions = 20;
-        int currentOQ = 0;
-        int currentMCQ = 0;
-
-        for (int i = 0; i < totalQuestions; i++) {
-            if (i % 5 == 0) {
-                questions.add(openQuestions.get(currentOQ++));
-            } else {
-                questions.add(multipleChoiceQuestions.get(currentMCQ++));
-            }
-        }
-
-        this.currentQuestionCount = 0;
-        this.scoreTotal = 0;
-    }
 
     public MultiplayerGame(MainCtrl main, ServerUtils server, Game game) {
         this.main = main;
@@ -77,6 +48,8 @@ public class MultiplayerGame implements client.game.Game {
         this.currentQuestionCount = 0;
         this.questions = new ArrayList<>();
         this.questionHistory = new LinkedList<>();
+        this.usedJokers = new LinkedList<>();
+        this.currentActiveJokers = new LinkedList<>();
 
         List<OpenQuestion> openQuestions = game.getOpenQuestions();
         List<MultipleChoiceQuestion> multipleChoiceQuestions = game.getMultipleChoiceQuestions();
@@ -96,15 +69,6 @@ public class MultiplayerGame implements client.game.Game {
 
     public Game getGame() {
         return game;
-    }
-
-    public MultiplayerGame(MainCtrl mainCtrl, ServerUtils server, List<Question> questions) {
-        this.main = mainCtrl;
-        this.server = server;
-        this.questions = questions;
-        this.questionHistory = new LinkedList<>();
-        this.currentQuestionCount = 0;
-        this.scoreTotal = 0;
     }
 
     /**

@@ -17,6 +17,7 @@ package client.scenes;
 
 import client.Main;
 import client.utils.AnimationUtil;
+import client.utils.ColorPresets;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import com.google.common.util.concurrent.AtomicDouble;
@@ -129,9 +130,9 @@ public class MultiplayerLeaderboardCtrl extends SceneCtrl {
      * Starts the timer slider animation
      */
     protected void startTimer() {
-
         timeLeftSlider = (AnchorPane) timeLeftBar.getChildren().get(0);
-        timer = AnimationUtil.timerAnim(timeLeftSlider, new AtomicDouble(0), 5000, 1d, timeLeftText, "Time left: ");
+        timeLeftSlider.setBackground(new Background(new BackgroundFill(ColorPresets.timer_bar_regular, new CornerRadii(50), Insets.EMPTY)));
+        timer = AnimationUtil.timerAnim(timeLeftSlider, new AtomicDouble(0), 5000, 1d, timeLeftText, "Time left:");
 
         onTimerEnd();
 

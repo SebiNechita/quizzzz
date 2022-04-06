@@ -91,6 +91,7 @@ public abstract class GameCtrl extends SceneCtrl {
 
     protected AtomicDouble timeLeft = new AtomicDouble(0);
     protected double lastAnswerChange = 0;
+    protected long questionStartTime;
     protected double timeMultiplier = 1d;
 
     protected static boolean mute = false;
@@ -146,6 +147,7 @@ public abstract class GameCtrl extends SceneCtrl {
 
         notificationContainer.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
 
+        enableJokers();
         if (Main.gameMode == GameMode.MULTIPLAYER) {
             for (JokerType joker : main.getMultiplayerGame().getDisabledJokers()) {
                 disableJoker(joker);
@@ -258,6 +260,25 @@ public abstract class GameCtrl extends SceneCtrl {
                     if (!temporary) {
                         main.getMultiplayerGame().addJokerUsed(type);
                     }
+                });
+    }
+
+    /**
+     * (Re-)enables all jokers
+     */
+    private void enableJokers() {
+        jokers.getChildren().stream()
+                .map(joker -> (AnchorPane) joker)
+                .forEach(joker -> {
+                    ImageView image = (ImageView) joker.getChildren().get(0);
+
+                    joker.setBackground(new Background(new BackgroundFill(ColorPresets.gray, new CornerRadii(10), Insets.EMPTY)));
+                    ColorAdjust effect = new ColorAdjust();
+                    effect.setBrightness(0);
+                    effect.setContrast(0);
+                    effect.setSaturation(0);
+
+                    image.setEffect(effect);
                 });
     }
 
@@ -385,19 +406,24 @@ public abstract class GameCtrl extends SceneCtrl {
 
         timeLeftSlider.setBackground(new Background(new BackgroundFill(ColorPresets.timer_bar_regular, new CornerRadii(50), Insets.EMPTY)));
         timer.playFromStart();
+
+        questionStartTime = System.currentTimeMillis();
+
         onTimerEnd();
     }
 
     /**
      * Start the timer when showing the answer (multiplayer)
      */
-    protected void startWaitTimer(){
+    protected void startWaitTimer() {
         jokerContainer.setVisible(false);
-        String textPrefix = "Next question in: ";
+        String textPrefix = "Next question in:";
         if (main.getGame(Main.gameMode).getCurrentQuestionCount() == 10) {
-            textPrefix = "Leaderboard in: ";
+            textPrefix = "Leaderboard in:";
         }
-        timer = AnimationUtil.timerAnim(timeLeftSlider, new AtomicDouble(0), 5000, 1d, timeLeftText, textPrefix);
+
+        timeLeftSlider.setBackground(new Background(new BackgroundFill(ColorPresets.timer_bar_regular, new CornerRadii(50), Insets.EMPTY)));
+        timer = AnimationUtil.timerAnim(timeLeftSlider, new AtomicDouble(0), (questionStartTime + 15000) - System.currentTimeMillis(), 1d, timeLeftText, textPrefix);
         timer.playFromStart();
         onWaitTimerEnd();
     }
@@ -411,9 +437,9 @@ public abstract class GameCtrl extends SceneCtrl {
         timeMultiplier *= multiplier;
         timeLeft.set(timer.getCurrentTime().toMillis());
         timer.stop();
-        timer = AnimationUtil.timerAnim(timeLeftSlider, timeLeft, 10000, timeMultiplier, timeLeftText, "Time left: ");
 
-        timeLeftSlider.setBackground(new Background(new BackgroundFill(ColorPresets.timer_bar_rushed, new CornerRadii(6), Insets.EMPTY)));
+        timeLeftSlider.setBackground(new Background(new BackgroundFill(ColorPresets.timer_bar_rushed, new CornerRadii(50), Insets.EMPTY)));
+        timer = AnimationUtil.timerAnim(timeLeftSlider, timeLeft, 10000, timeMultiplier, timeLeftText, "Time left:");
         timer.playFrom(Duration.millis(timeLeft.get() * multiplier));
 
         onTimerEnd();
@@ -427,7 +453,7 @@ public abstract class GameCtrl extends SceneCtrl {
     /**
      * Sets up the events for when the answer timer runs out
      */
-    protected void onWaitTimerEnd(){
+    protected void onWaitTimerEnd() {
         timer.setOnFinished(event -> {
             initialiseNextQuestion();
         });
@@ -535,10 +561,9 @@ public abstract class GameCtrl extends SceneCtrl {
         alert.setContentText("Are you sure you want to leave?");
 
         if (alert.showAndWait().get() == ButtonType.OK) {
-            if (Main.gameMode == GameMode.MULTIPLAYER){
+            if (Main.gameMode == GameMode.MULTIPLAYER) {
                 quitMultiplayer();
-            }
-            else{
+            } else {
                 quitSingleplayer();
             }
             main.showScene(MainMenuCtrl.class);
@@ -554,7 +579,7 @@ public abstract class GameCtrl extends SceneCtrl {
         main.getMultiplayerGame().leave();
     }
 
-    protected void quitSingleplayer(){
+    protected void quitSingleplayer() {
         LoggerUtil.infoInline(Main.USERNAME + " quit the singleplayer game!");
         main.quitSingleplayer();
     }
