@@ -80,11 +80,11 @@ public class LobbyCtrl extends SceneCtrl {
     @OnShowScene
     public void onShowScene() {
         Main.gameMode = GameMode.MULTIPLAYER;
-
         buttonStart.setVisible(false);
         buttonReady.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
         ready = false;
 
+        chattextflow.getChildren().clear();
         // Ensures that the chat text scrolls automatically
         scrollPane.vvalueProperty().bind(chattextflow.heightProperty());
 
