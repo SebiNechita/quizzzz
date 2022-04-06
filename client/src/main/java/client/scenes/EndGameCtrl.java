@@ -89,6 +89,7 @@ public class EndGameCtrl extends SceneCtrl {
         mainmenuButton.setOnAction(event -> {
             main.getMultiplayerGame().leave();
             main.quitMultiplayer();
+            main.showScene(MainMenuCtrl.class);
         });
     }
 
