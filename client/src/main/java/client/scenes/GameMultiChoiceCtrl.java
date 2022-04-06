@@ -170,6 +170,10 @@ public class GameMultiChoiceCtrl extends GameCtrl {
         if (Main.gameMode == GameMode.MULTIPLAYER) {
             timer.setOnFinished(event -> {
                 showCorrectAnswer(answerOptionNumber);
+                if (main.getGame(Main.gameMode).getCurrentQuestionCount() == 20) {
+                    main.getGame(Main.gameMode).jumpToNextQuestion();
+                    return;
+                }
                 startWaitTimer();
             });
         } else {

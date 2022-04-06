@@ -96,7 +96,8 @@ public class GameController {
     public GeneralResponsePacket sendEmote(@RequestBody EmoteRequestPacket request) {
         gameService.onEmoteReceived("Emote",
                 request.getEmoteStr(),
-                request.getUsername());
+                request.getUsername(),
+                request.getFromScene());
         return new GeneralResponsePacket(HttpStatus.OK);
     }
 

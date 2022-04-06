@@ -1,13 +1,18 @@
 package client.scenes;
 
 import client.Main;
+import client.utils.AnimationUtil;
 import client.utils.ColorPresets;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import commons.utils.HttpStatus;
+import commons.utils.LoggerUtil;
+import javafx.animation.Animation;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
+import javafx.util.Duration;
 import packets.ResponsePacket;
 import packets.ZipRequestPacket;
 
@@ -19,11 +24,15 @@ import java.util.ResourceBundle;
 
 public class AdminPanelCtrl extends SceneCtrl {
     final FileChooser fileChooser;
+    private Animation uploadingAnim;
     @FXML
     private Text noOfActivities;
 
     @FXML
     private Text infoText;
+
+    @FXML
+    private Button sendZipButton;
 
     /**
      * Constructor for this Ctrl
@@ -52,22 +61,44 @@ public class AdminPanelCtrl extends SceneCtrl {
     }
 
     /**
+     * Listener for the Import Zip button
+     */
+    public void onClickZip() {
+        uploadingAnim = AnimationUtil.connectingAnimation(sendZipButton);
+        uploadingAnim.play();
+        sendZip();
+    }
+
+    /**
      * Lets the user choose a ZIP and sends it to the server to import.
      * Handles the UI changes while uploading.
      */
-    public void sendZip() throws IOException {
+    public void sendZip() {
+
         File file = fileChooser.showOpenDialog(main.getPrimaryStage());
-        if (file != null) {
-            byte[] bytes = Files.readAllBytes(file.toPath());
-            ResponsePacket responsePacket = server.postRequest("zip/",new ZipRequestPacket(bytes), ResponsePacket.class);
-            if (responsePacket.getResponseStatus() == HttpStatus.Created){
-                changeUIUploadSuccess();
+        new Thread(() -> {
+            if (file != null) {
+                infoText.setText("Hang Tight! We're uploading your file...");
+                byte[] bytes = new byte[0];
+                try {
+                    bytes = Files.readAllBytes(file.toPath());
+                } catch (IOException e) {
+                    LoggerUtil.warnInline("Failed to read the zip at: " + file.getAbsolutePath());
+                }
+                ResponsePacket responsePacket = server.postRequest("zip/",new ZipRequestPacket(bytes), ResponsePacket.class);
+                if (responsePacket.getResponseStatus() == HttpStatus.Created){
+                    changeUIUploadSuccess();
+                } else {
+                    AnimationUtil.shake(sendZipButton).play();
+                    changeUIUploadFail();
+                }
+                updateActivitiesCount();
             }
-            else {
-                changeUIUploadFail();
-            }
-            updateActivitiesCount();
-        }
+            uploadingAnim.jumpTo(Duration.ZERO); // To reset the styling of the button
+            uploadingAnim.stop();
+            sendZipButton.styleProperty().unbind();
+            sendZipButton.setStyle("-fx-background-color: " + ColorPresets.toHex(ColorPresets.white) + "; -fx-background-radius: 50");
+        }).start();
     }
 
     /**
@@ -122,6 +153,7 @@ public class AdminPanelCtrl extends SceneCtrl {
     @OnShowScene
     public void onShowScene() {
         updateActivitiesCount();
+        sendZipButton.setStyle("-fx-background-color: " + ColorPresets.toHex(ColorPresets.white) + "; -fx-background-radius: 50");
         infoText.setText("");
     }
 

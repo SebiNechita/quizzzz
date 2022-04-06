@@ -64,7 +64,7 @@
                 <Font name="Comic Sans MS" size="26.0" />
             </font>
         </Text>
-      <Text fx:id="error" fill="RED" layoutX="473.0" layoutY="583.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="390.8033752441406">
+      <Text fx:id="error" fill="#f26c64" layoutX="473.0" layoutY="583.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="390.8033752441406">
          <font>
             <Font name="Comic Sans MS" size="24.0" />
          </font>

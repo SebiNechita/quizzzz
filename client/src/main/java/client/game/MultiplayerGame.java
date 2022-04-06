@@ -8,6 +8,7 @@ import commons.Game;
 import commons.questions.MultipleChoiceQuestion;
 import commons.questions.OpenQuestion;
 import commons.questions.Question;
+import commons.utils.Emote;
 import commons.utils.JokerType;
 import javafx.application.Platform;
 import packets.*;
@@ -126,11 +127,9 @@ public class MultiplayerGame implements client.game.Game {
         if (currentQuestionCount == 10  && !midLeaderboardDisplayed){
             main.showScene(MultiplayerLeaderboardCtrl.class);
             midLeaderboardDisplayed = true;
-        }
-        else if(currentQuestionCount == 20){
+        } else if (currentQuestionCount == 20){
             main.showScene(EndGameCtrl.class);
-        }
-        else if (currentQuestionCount < 20) {
+        } else if (currentQuestionCount < 20) {
             showQuestion();
             currentQuestionCount++;
         }
@@ -316,11 +315,12 @@ public class MultiplayerGame implements client.game.Game {
      *
      * @param username this client's username
      * @param emoteStr emote name
+     * @param fromScene scene from which the emote is being sent. Could be the Lobby/Game
      * @return GeneralResponsePacket
      */
-    public GeneralResponsePacket sendEmote(String username, String emoteStr) {
+    public GeneralResponsePacket sendEmote(String username, String emoteStr, String fromScene) {
         return server.postRequest("api/game/emote",
-                new EmoteRequestPacket(username, emoteStr),
+                new EmoteRequestPacket(username, emoteStr, fromScene),
                 GeneralResponsePacket.class);
     }
 
@@ -342,11 +342,19 @@ public class MultiplayerGame implements client.game.Game {
      *
      * @param from  sender of the emote
      * @param emote emote name
+     * @param inGame true if the emote as to be updated in game; false otherwise
      */
-    private void updateEmote(String from, String emote) {
-        Platform.runLater(() ->
-                main.getCtrl(LobbyCtrl.class)
-                        .updateEmoji(from, emote));
+    private void updateEmote(boolean inGame, String from, String emote) {
+        if (inGame) {
+            Platform.runLater(() ->
+                    main.getGame().notificationRenderer.addEmoteNotification(from, Emote.valueOf(emote)));
+
+        } else {
+            Platform.runLater(() ->
+                    main.getCtrl(LobbyCtrl.class)
+                            .updateEmoji(from, emote));
+        }
+
 
     }
 
@@ -431,7 +439,8 @@ public class MultiplayerGame implements client.game.Game {
         @Override
         public void run(LobbyResponsePacket responsePacket) {
             switch (responsePacket.getType()) {
-                case "Emote" -> updateEmote(responsePacket.getFrom(), responsePacket.getContent());
+                case "EmoteInLobby" -> updateEmote(false, responsePacket.getFrom(), responsePacket.getContent());
+                case "EmoteInGame" -> updateEmote(true, responsePacket.getFrom(), responsePacket.getContent());
                 case "Join", "Leave" -> Platform.runLater(() -> {
                     main.getCtrl(LobbyCtrl.class).updatePlayerList(responsePacket.getPlayerList());
                 });
