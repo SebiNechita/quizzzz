@@ -14,4 +14,6 @@ public interface Game {
     <T extends Question> T getCurrentQuestion(Class<T> questionType);
 
     void addToScore(int total);
+
+    Integer getCurrentQuestionCount();
 }

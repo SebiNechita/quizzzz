@@ -93,7 +93,7 @@ public class LobbyCtrl extends SceneCtrl {
         chattext.setFill(Color.BLUE);
         chattextflow.getChildren().add(chattext);
 
-        // retreives player list and joins player to the game
+        // retrieves player list and joins player to the game
         main.createNewMultiplayerGame(main.joinGame(Main.USERNAME));
         //starts pinging the server to sign to the server that the client is active
         main.getMultiplayerGame().startPingThread(Main.USERNAME);
@@ -196,7 +196,7 @@ public class LobbyCtrl extends SceneCtrl {
         iv.setFitHeight(40);
         iv.setFitWidth(40);
         chattextflow.getChildren().addAll(text, iv, text2);
-        main.getMultiplayerGame().sendEmote(Main.USERNAME, emote.toString().toLowerCase());
+        main.getMultiplayerGame().sendEmote(Main.USERNAME, emote.toString().toLowerCase(), "Lobby");
     }
 
     /**

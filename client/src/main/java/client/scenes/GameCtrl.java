@@ -36,6 +36,8 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+import packets.EmoteRequestPacket;
+import packets.GeneralResponsePacket;
 
 import java.net.URISyntaxException;
 import java.util.Iterator;
@@ -203,7 +205,10 @@ public abstract class GameCtrl extends SceneCtrl {
 
             emote.setOnMouseEntered(event -> emoteHoverAnim(emote, false).play());
             emote.setOnMouseExited(event -> emoteHoverAnim(emote, true).play());
-            emote.setOnMouseClicked(event -> emoteUsed(Emote.valueOf(emote.getId())));
+            emote.setOnMouseClicked(event -> {
+                emoteUsed(Emote.valueOf(emote.getId()));
+                server.postRequest("api/game/emote", new EmoteRequestPacket(Main.USERNAME, emote.getId(), "Game"), GeneralResponsePacket.class);
+            });
         }
     }
 
@@ -388,7 +393,11 @@ public abstract class GameCtrl extends SceneCtrl {
      */
     protected void startWaitTimer(){
         jokerContainer.setVisible(false);
-        timer = AnimationUtil.timerAnim(timeLeftSlider, new AtomicDouble(0), 5000, 1d, timeLeftText, "Next question in: ");
+        String textPrefix = "Next question in: ";
+        if (main.getGame(Main.gameMode).getCurrentQuestionCount() == 10) {
+            textPrefix = "Leaderboard in: ";
+        }
+        timer = AnimationUtil.timerAnim(timeLeftSlider, new AtomicDouble(0), 5000, 1d, timeLeftText, textPrefix);
         timer.playFromStart();
         onWaitTimerEnd();
     }

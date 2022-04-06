@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.utils.ColorPresets;
 import client.utils.ServerUtils;
 import commons.questions.Activity;
 import commons.utils.HttpStatus;
@@ -18,7 +19,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -185,11 +185,11 @@ public class EditActivityCtrl extends SceneCtrl {
         if (description.getText() == null || description.getText().equals("") ||
                 consumption.getText() == null || consumption.getText().equals("") ||
                 source.getText() == null || source.getText().equals("")) {
-            description.setStyle("-fx-background-color: #fc6363; -fx-background-radius: 50");
-            consumption.setStyle("-fx-background-color: #fc6363; -fx-background-radius: 50");
-            source.setStyle("-fx-background-color: #fc6363; -fx-background-radius: 50");
+            description.setStyle("-fx-background-color: " + ColorPresets.toHex(ColorPresets.soft_red) + "; -fx-background-radius: 50");
+            consumption.setStyle("-fx-background-color: " + ColorPresets.toHex(ColorPresets.soft_red) + "; -fx-background-radius: 50");
+            source.setStyle("-fx-background-color: " + ColorPresets.toHex(ColorPresets.soft_red) + "; -fx-background-radius: 50");
             error.setText("All fields are mandatory!");
-            upload.setBackground(new Background(new BackgroundFill(Color.web("#fc6363"), new CornerRadii(40), Insets.EMPTY)));
+            upload.setBackground(new Background(new BackgroundFill(ColorPresets.soft_red, new CornerRadii(40), Insets.EMPTY)));
         } else {
 
             ActivityRequestPacket packet = new ActivityRequestPacket(
@@ -226,6 +226,7 @@ public class EditActivityCtrl extends SceneCtrl {
         File file = fileChooser.showOpenDialog(stage);
         String path = "";
 
+        // Probably should be fixed because there are chances of it throwing NullPointerException
         String mimetype = Files.probeContentType(file.toPath());
 
         if (file != null && mimetype.split("/")[0].equals("image")) {

@@ -126,7 +126,7 @@ public class GameServiceTest {
         spy.waitForPlayerEvent(eventCaller2);
 
         // calls the method
-        spy.onEmoteReceived("Emote", "angry", "Joe");
+        spy.onEmoteReceived("Emote", "angry", "Joe", "Game");
 
         assertTrue(spy.getCurrentMatch().getPlayerEventList().size() == 1);
         assertEquals(eventCaller1, spy.getCurrentMatch().getPlayerEventList().get(0));

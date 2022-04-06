@@ -74,7 +74,7 @@
                                     <Font name="Comic Sans MS Bold" size="25.0" />
                                  </font>
                               </Text>
-                              <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Jokers are special cards that can be used once per game and they help you any various ways" wrappingWidth="1178.7163066864014">
+                              <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Jokers are special cards that can be used once per game in multiplayer mode and they help you any various ways" wrappingWidth="1178.7163066864014">
                                  <font>
                                     <Font name="Comic Sans MS" size="25.0" />
                                  </font>
@@ -130,12 +130,12 @@
                                     <Font name="Comic Sans MS" size="25.0" />
                                  </font>
                               </Text>
-                              <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Reduce Time: You can reduce the time for another user. This joker is available only in Multiplayer mode. " wrappingWidth="1185.7163066864014">
+                              <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Reduce Time: You can reduce the time for all the other users in your game." wrappingWidth="1185.7163066864014">
                                  <font>
                                     <Font name="Comic Sans MS" size="25.0" />
                                  </font>
                               </Text>
-                              <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Remove Option: You can remove a wrong option. This leaves you with two other option." wrappingWidth="1184.7163066864014">
+                              <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Remove Option: You can remove a wrong option. This leaves you with two other option. This is only available in Multiple Choice Question types" wrappingWidth="1184.7163066864014">
                                  <font>
                                     <Font name="Comic Sans MS" size="25.0" />
                                  </font>

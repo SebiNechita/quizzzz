@@ -1,19 +1,17 @@
 package client.scenes;
 
+import client.utils.ColorPresets;
+import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import commons.utils.LoggerUtil;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -49,6 +47,71 @@ public class AddActivityCtrl extends SceneCtrl {
     public String filePath = null;
 
     /**
+     * Constructor for this Ctrl
+     *
+     * @param mainCtrl    The parent class, which keeps track of all scenes
+     * @param serverUtils The server utils, for communicating with the server
+     */
+    public AddActivityCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
+        super(mainCtrl, serverUtils);
+    }
+
+    /**
+     * Called to initialize a controller after its root element has been
+     * completely processed.
+     *
+     * @param location  The location used to resolve relative paths for the root object, or
+     *                  {@code null} if the location is not known.
+     * @param resources The resources used to localize the root object, or {@code null} if
+     *                  the root object was not localized.
+     */
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        limitToNumbers();
+
+        description.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.ENTER) {
+                clickAdd();
+            }
+            if (e.getCode() == KeyCode.DOWN) {
+                consumption.requestFocus();
+            }
+        });
+        consumption.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.ENTER) {
+                clickAdd();
+            }
+            if (e.getCode() == KeyCode.UP) {
+                description.requestFocus();
+            }
+            if (e.getCode() == KeyCode.DOWN) {
+                source.requestFocus();
+            }
+        });
+        source.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.ENTER) {
+                clickAdd();
+            }
+            if (e.getCode() == KeyCode.UP) {
+                consumption.requestFocus();
+            }
+        });
+    }
+
+    /**
+     * This method is run when this scene is displayed
+     */
+    @OnShowScene
+    public void onShowScene() {
+        description.requestFocus();
+        description.setStyle("-fx-background-color: " + ColorPresets.toHex(ColorPresets.white) + "; -fx-background-radius: 50");
+        consumption.setStyle("-fx-background-color: " + ColorPresets.toHex(ColorPresets.white) + "; -fx-background-radius: 50");
+        source.setStyle("-fx-background-color: " + ColorPresets.toHex(ColorPresets.white) + "; -fx-background-radius: 50");
+        uploadAnImage.setStyle("-fx-background-color: " + ColorPresets.toHex(ColorPresets.white) + "; -fx-background-radius: 50");
+        error.setText("");
+    }
+
+    /**
      * Requests an image from the user and returns the path to the image
      *
      * @param actionEvent Action event
@@ -58,22 +121,22 @@ public class AddActivityCtrl extends SceneCtrl {
     @FXML
     public String singleFilePathChooser(javafx.event.ActionEvent actionEvent) throws IOException {
         FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter imageFilter = new FileChooser.ExtensionFilter("Image", "*.png", "*.jpg", "*.jpeg");
+        fileChooser.setSelectedExtensionFilter(imageFilter);
         fileChooser.setTitle("Open File Dialog");
         Stage stage = (Stage) anchorPane.getScene().getWindow();
 
         File file = fileChooser.showOpenDialog(stage);
         String path = "";
 
-        String mimetype = Files.probeContentType(file.toPath());
-
-        if (file != null && mimetype.split("/")[0].equals("image")) {
-//            Desktop desktop = Desktop.getDesktop();
-//            desktop.open(file);
-
-            path = file.getAbsolutePath();
-            return path;
+        if (file != null) {
+            String mimetype = Files.probeContentType(file.toPath());
+            if (mimetype.split("/")[0].equals("image")) {
+                path = file.getAbsolutePath();
+                uploadAnImage.setStyle("-fx-background-color: " + ColorPresets.toHex(ColorPresets.soft_green) + "; -fx-background-radius: 50;");
+                return path;
+            }
         }
-
         return null;
     }
 
@@ -96,9 +159,6 @@ public class AddActivityCtrl extends SceneCtrl {
         String mimetype = Files.probeContentType(file.toPath());
 
         if (file != null && mimetype.split("/")[0].equals("image")) {
-//            Desktop desktop = Desktop.getDesktop();
-//            desktop.open(file);
-
             filePath = file.getAbsolutePath();
             // put request, post mapping
             LoggerUtil.infoInline(path);
@@ -143,30 +203,6 @@ public class AddActivityCtrl extends SceneCtrl {
     }
 
     /**
-     * Constructor for this Ctrl
-     *
-     * @param mainCtrl    The parent class, which keeps track of all scenes
-     * @param serverUtils The server utils, for communicating with the server
-     */
-    public AddActivityCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
-        super(mainCtrl, serverUtils);
-    }
-
-    /**
-     * Called to initialize a controller after its root element has been
-     * completely processed.
-     *
-     * @param location  The location used to resolve relative paths for the root object, or
-     *                  {@code null} if the location is not known.
-     * @param resources The resources used to localize the root object, or {@code null} if
-     *                  the root object was not localized.
-     */
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        limitToNumbers();
-    }
-
-    /**
      * Show the admin panel screen.
      */
     public void showAdminPanel() {
@@ -189,14 +225,19 @@ public class AddActivityCtrl extends SceneCtrl {
      * Method for clicking the add activity button
      */
     public void clickAdd() {
-        if (description.getText() == null || consumption.getText() == null || source.getText() == null
-                || filePath == null) {
-            description.setStyle("-fx-background-color: #FF0000FF; -fx-background-radius: 50");
-            consumption.setStyle("-fx-background-color: #FF0000FF; -fx-background-radius: 50");
-            source.setStyle("-fx-background-color: #FF0000FF; -fx-background-radius: 50");
+
+        if (filePath == null) {
+            uploadAnImage.setStyle("-fx-background-color: " + ColorPresets.toHex(ColorPresets.soft_red) + "; -fx-background-radius: 50");
             error.setText("All fields are mandatory!");
-            uploadAnImage.setBackground(new Background(new BackgroundFill(Color.RED, new CornerRadii(40), Insets.EMPTY)));
-            //error.setStyle("-fx-background-color: #FF0000FF; -fx-background-radius: 50");
+        }
+        if (description.getText() == null || description.getText().equals("")
+                || consumption.getText() == null || consumption.getText().equals("")
+                || source.getText() == null || source.getText().equals("")) {
+            description.setStyle("-fx-background-color: " + ColorPresets.toHex(ColorPresets.soft_red) + "; -fx-background-radius: 50");
+            consumption.setStyle("-fx-background-color: " + ColorPresets.toHex(ColorPresets.soft_red) + "; -fx-background-radius: 50");
+            source.setStyle("-fx-background-color: " + ColorPresets.toHex(ColorPresets.soft_red) + "; -fx-background-radius: 50");
+            error.setText("All fields are mandatory!");
+
         } else {
             byte[] imageByteArray = null;
             try {

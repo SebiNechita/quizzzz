@@ -1,10 +1,12 @@
 package client.utils;
 
 import com.google.common.util.concurrent.AtomicDouble;
-import javafx.animation.Animation;
-import javafx.animation.Interpolator;
-import javafx.animation.Transition;
+import javafx.animation.*;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
@@ -119,6 +121,43 @@ public class AnimationUtil {
                 textField.setBackground(new Background(new BackgroundFill(lerp(start.getRed(), start.getGreen(), start.getBlue(), target.getRed(), target.getGreen(), target.getBlue(), frac), new CornerRadii(50), Insets.EMPTY)));
             }
         };
+    }
+
+    /**
+     * create a returns a 'connecting' animation
+     * @param node the node to which the animation is ot be applied
+     * @return 'connecting' animation
+     */
+    public static Animation connectingAnimation(Node node) {
+        DoubleProperty startFade = new SimpleDoubleProperty(0);
+        node.styleProperty().bind(Bindings.createStringBinding(() -> String.format(
+                "-fx-background-color: linear-gradient(to right, #7FFFD4, #F0FFFF %f%%, #7FFFD4 ); -fx-background-radius: 50;",
+                startFade.get() * 100
+        ), startFade));
+
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.ZERO, new KeyValue(startFade, 0)),
+                new KeyFrame(Duration.seconds(0.5), new KeyValue(startFade, 1)),
+                new KeyFrame(Duration.seconds(1), new KeyValue(startFade, 0)));
+        timeline.setCycleCount(Timeline.INDEFINITE);
+
+        return timeline;
+    }
+
+    /**
+     * Create and returns a shaking Animation for a given node
+     *
+     * @param node to node to apply shaking animation
+     * @return shaking Animation
+     */
+    public static Animation shake(Node node) {
+        TranslateTransition transition = new TranslateTransition(Duration.millis(50), node);
+        transition.setFromX(0f);
+        transition.setByX(10f);
+        transition.setCycleCount(2);
+        transition.setAutoReverse(true);
+
+        return transition;
     }
 
     /**

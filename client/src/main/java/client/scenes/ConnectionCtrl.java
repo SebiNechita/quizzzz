@@ -1,19 +1,16 @@
 package client.scenes;
 
+import client.utils.AnimationUtil;
 import client.utils.ColorPresets;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import javafx.animation.*;
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
-import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -71,7 +68,7 @@ public class ConnectionCtrl extends SceneCtrl {
      * Should set up and play the connecting animation(for this demo)
      */
     public void connectClicked() {
-        connectingAnimation = getConnectingAnimation();
+        connectingAnimation = AnimationUtil.connectingAnimation(url);
         connectingAnimation.play();
         connect();
     }
@@ -97,18 +94,18 @@ public class ConnectionCtrl extends SceneCtrl {
                     case "URL" -> {
                         message.setText("The URL is invalid");
                         url.setStyle("-fx-background-color: " + ColorPresets.toHex(ColorPresets.soft_red) + "; -fx-background-radius: 50");
-                        shake(url).play();
+                        AnimationUtil.shake(url).play();
                         connectButton.setDisable(true);
                     }
                     case "Server" -> {
                         message.setText("Cannot connect to this server");
                         url.setStyle("-fx-background-color: " + ColorPresets.toHex(ColorPresets.soft_red) + "; -fx-background-radius: 50");
-                        shake(url).play();
+                        AnimationUtil.shake(url).play();
                     }
                     default -> {
                         message.setText("This is not a game server");
                         url.setStyle("-fx-background-color: " + ColorPresets.toHex(ColorPresets.soft_red) + "; -fx-background-radius: 50");
-                        shake(url).play();
+                        AnimationUtil.shake(url).play();
                     }
                 }
             });
@@ -131,43 +128,6 @@ public class ConnectionCtrl extends SceneCtrl {
             url.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 50");
         };
         url.textProperty().addListener(listener);
-    }
-
-    /**
-     * create a returns a 'connecting' animation
-     *
-     * @return 'connecting' animation
-     */
-    public Animation getConnectingAnimation() {
-        DoubleProperty startFade = new SimpleDoubleProperty(0);
-        url.styleProperty().bind(Bindings.createStringBinding(() -> String.format(
-                "-fx-background-color: linear-gradient(to right, #7FFFD4, #F0FFFF %f%%, #7FFFD4 ); -fx-background-radius: 50;",
-                startFade.get() * 100
-        ), startFade));
-
-        Timeline timeline = new Timeline(
-                new KeyFrame(Duration.ZERO, new KeyValue(startFade, 0)),
-                new KeyFrame(Duration.seconds(0.5), new KeyValue(startFade, 1)),
-                new KeyFrame(Duration.seconds(1), new KeyValue(startFade, 0)));
-        timeline.setCycleCount(Timeline.INDEFINITE);
-
-        return timeline;
-    }
-
-    /**
-     * Create and returns a shaking Animation for a given node
-     *
-     * @param node to node to apply shaking animation
-     * @return shaking Animation
-     */
-    protected Animation shake(TextField node) {
-        TranslateTransition transition = new TranslateTransition(Duration.millis(50), node);
-        transition.setFromX(0f);
-        transition.setByX(10f);
-        transition.setCycleCount(2);
-        transition.setAutoReverse(true);
-
-        return transition;
     }
 
 }

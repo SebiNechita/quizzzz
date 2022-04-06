@@ -120,8 +120,7 @@ public class MultiplayerLeaderboardCtrl extends SceneCtrl {
             backbutton.setOnAction(event -> {
                 main.showScene(EndGameCtrl.class);
             });
-        }
-        else{
+        } else {
             startTimer();
         }
     }

@@ -130,7 +130,7 @@ public class GameControllerTest {
         ObjectMapper objectMapper = new ObjectMapper();
         mvc.perform(post("/api/game/emote")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new EmoteRequestPacket("Joe", "angry")))
+                        .content(objectMapper.writeValueAsString(new EmoteRequestPacket("Joe", "angry", "Game")))
                         .secure(true)
                 )
                 .andExpect(status().isOk())
@@ -139,7 +139,7 @@ public class GameControllerTest {
                         .value(HttpStatus.OK.getCode()));
 
         verify(gameService, times(1))
-                .onEmoteReceived("Emote", "angry", "Joe");
+                .onEmoteReceived("Emote", "angry", "Joe", "Game");
     }
 
     /**

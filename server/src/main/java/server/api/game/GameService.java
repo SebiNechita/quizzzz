@@ -126,14 +126,19 @@ public class GameService {
      * @param type     should be "Emote"
      * @param emoteStr emote name
      * @param from     sender of the emote
+     * @param fromScene the scene from which the emote was being sent
      */
-    public void onEmoteReceived(String type, String emoteStr, String from) {
+    public void onEmoteReceived(String type, String emoteStr, String from, String fromScene) {
         //find the long polling contacts of the game the player takes part in
         for (GameController.EventCaller<LobbyResponsePacket> thread :
                 playerMatchMap.get(from).getPlayerEventList()) {
             // if the user in the list is different from the emote sender
             if (type.equals("Emote") && !thread.getUsername().equals(from)) {
-                thread.run(new LobbyResponsePacket("Emote", emoteStr, from));
+                if (fromScene.equals("Game")) {
+                    thread.run(new LobbyResponsePacket("EmoteInGame", emoteStr, from));
+                } else if (fromScene.equals("Lobby")) {
+                    thread.run(new LobbyResponsePacket("EmoteInLobby", emoteStr, from));
+                }
             }
         }
         clearEventList(from);
