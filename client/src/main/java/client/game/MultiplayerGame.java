@@ -416,12 +416,14 @@ public class MultiplayerGame implements client.game.Game {
                 case "AllReady" -> Platform.runLater(() -> {
                     LobbyCtrl lobbyCtrl = main.getCtrl(LobbyCtrl.class);
                     lobbyCtrl.updatePlayerList(responsePacket.getPlayerList());
+                    lobbyCtrl.updateReady(responsePacket.getFrom(), responsePacket.getContent());
                     lobbyCtrl.showStartButton();
                 });
                 case "CancelAllReady" -> {
                     Platform.runLater(() -> {
                         LobbyCtrl lobbyCtrl = main.getCtrl(LobbyCtrl.class);
                         lobbyCtrl.updatePlayerList(responsePacket.getPlayerList());
+                        lobbyCtrl.updateReady(responsePacket.getFrom(), responsePacket.getContent());
                         lobbyCtrl.hideStartButton();
                     });
                 }

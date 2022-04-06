@@ -80,11 +80,11 @@ public class LobbyCtrl extends SceneCtrl {
     @OnShowScene
     public void onShowScene() {
         Main.gameMode = GameMode.MULTIPLAYER;
-
         buttonStart.setVisible(false);
         buttonReady.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
         ready = false;
 
+        chattextflow.getChildren().clear();
         // Ensures that the chat text scrolls automatically
         scrollPane.vvalueProperty().bind(chattextflow.heightProperty());
 
@@ -238,11 +238,15 @@ public class LobbyCtrl extends SceneCtrl {
         if (!ready) {
             buttonReady.setBackground(new Background(new BackgroundFill(Color.GREEN, null, null)));
             ready = true;
+            chattext = new Text(Main.USERNAME + " is ready" + "\n");
 
         } else {
             buttonReady.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
             ready = false;
+            chattext = new Text(Main.USERNAME + " canceled ready" + "\n");
         }
+        chattext.setFont(Font.font("Comic Sans MS", 30));
+        chattextflow.getChildren().add(chattext);
 
         // send ready message to server
         main.getMultiplayerGame().sendReadyMsg(Main.USERNAME, ready);
