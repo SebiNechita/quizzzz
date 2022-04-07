@@ -1,6 +1,6 @@
 ## Description of project
 
-We have created a Game called **_Quizzzz_**. The main goal of this game it improve the user's _energy awareness_. We also have a Multiplayer mode so that you can have fun with friends while learning about the energy usages of various activities you see in a day-to-day basis.
+We have created a Game called **_Quizzzz_**. The main goal of this game is to improve the user's _energy awareness_. We also have a Multiplayer mode so that you can have fun with friends while learning about the energy usages of various activities you see in a day-to-day basis.
 There is also a Single Player Mode for more serious users. There is a global leaderboard that contains best-scores of other users.  
 
 We used the **[Spring Framework](https://spring.io)** to build the application. We also used **[JavaFX](https://openjfx.io)** for the GUI.
