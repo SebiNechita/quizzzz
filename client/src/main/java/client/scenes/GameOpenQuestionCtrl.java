@@ -1,16 +1,14 @@
 package client.scenes;
 
 import client.Main;
-//import client.game.MultiplayerGame;
-//import client.game.SingleplayerGame;
+import client.utils.AnimationUtil;
+import client.utils.ColorPresets;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
 import commons.questions.OpenQuestion;
 import commons.utils.GameMode;
 import commons.utils.JokerType;
-import javafx.animation.Animation;
-import javafx.animation.Interpolator;
-import javafx.animation.Transition;
+import commons.utils.LoggerUtil;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
@@ -19,8 +17,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import javafx.util.Duration;
 
+import java.math.BigInteger;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -31,6 +29,8 @@ public class GameOpenQuestionCtrl extends GameCtrl {
     private Text score;
     @FXML
     private Text question;
+    @FXML
+    private Text correctAnswer;
     @FXML
     private ImageView image;
 
@@ -62,7 +62,6 @@ public class GameOpenQuestionCtrl extends GameCtrl {
     private HBox emoteContainer;
 
     private OpenQuestion oq;
-    protected static int doublepoints;
 
 
     /**
@@ -114,12 +113,13 @@ public class GameOpenQuestionCtrl extends GameCtrl {
     public void onShowScene() {
         super.onShowScene();
 
-        disableJoker(JokerType.REMOVE_ANSWER);
-
+        userInput.clear();
+        userInput.requestFocus();
         userInput.setDisable(false);
 
         displayQuestion();
 
+        disableJoker(JokerType.REMOVE_ANSWER, true);
         enableListeners();
     }
 
@@ -127,15 +127,13 @@ public class GameOpenQuestionCtrl extends GameCtrl {
      * Gets the current question and displays it.
      */
     private void displayQuestion() {
-        if (Main.gameMode == GameMode.MULTIPLAYER) {
-            oq = main.getMultiplayerGame().getCurrentQuestion(OpenQuestion.class);
-        } else {
-            oq = main.getSingleplayerGame().getCurrentQuestion(OpenQuestion.class);
-        }
+        oq = main.getGame(Main.gameMode).getCurrentQuestion(OpenQuestion.class);
 
         setQuestion(oq.getQuestion());
+        correctAnswer.setVisible(false);
         setActivityImage(oq.getAnswer().getImage_path());
-        System.out.println(oq.getAnswerInWH());
+
+        LoggerUtil.infoInline("Answer: " + oq.getAnswerInWH());
     }
 
     /**
@@ -152,21 +150,11 @@ public class GameOpenQuestionCtrl extends GameCtrl {
      * Hides Next button and point info and jumps to next question
      */
     @FXML
-    //initialising includes loading the next question, but also cleaning up the screen
-    //TODO: Create a super method for this, because the first three lines are the same
-    // for both types of questions.
     protected void initialiseNextQuestion() {
+        super.initialiseNextQuestion();
+
         userInput.clear();
         resetTextInputColor();
-        nextQuestion.setVisible(false);
-        hidePointsGained();
-
-        if (Main.gameMode == GameMode.MULTIPLAYER) {
-            main.getMultiplayerGame().jumpToNextQuestion();
-        } else {
-            main.getSingleplayerGame().jumpToNextQuestion();
-        }
-
     }
 
     /**
@@ -177,7 +165,7 @@ public class GameOpenQuestionCtrl extends GameCtrl {
             if (!newValue.matches("\\d*")) {
                 userInput.setText(newValue.replaceAll("\\D", ""));
             } else {
-                lastAnswerChange = timeLeft;
+                lastAnswerChange = timeLeft.get();
             }
         });
     }
@@ -189,8 +177,13 @@ public class GameOpenQuestionCtrl extends GameCtrl {
         if (Main.gameMode == GameMode.MULTIPLAYER) {
             timer.setOnFinished(event -> {
                 showCorrectAnswer((int) oq.getAnswerInWH());
-                nextQuestion.setVisible(Main.gameMode == GameMode.MULTIPLAYER);
+                if (main.getGame(Main.gameMode).getCurrentQuestionCount() == 20) {
+                    main.getGame(Main.gameMode).jumpToNextQuestion();
+                    return;
+                }
+                startWaitTimer();
             });
+
         } else {
             timer.setOnFinished(event -> {
                 showCorrectAnswer((int) oq.getAnswerInWH());
@@ -200,32 +193,38 @@ public class GameOpenQuestionCtrl extends GameCtrl {
     }
 
     /**
-     * Shows the correct answer to the user
+     * Shows the correct answer to the user and updates the score
      *
      * @param answer The correct answer (in case of multi-choice, the index of which of the options that is)
      */
     @Override
     protected void showCorrectAnswer(int answer) {
         userInput.setDisable(true);
-        int difference = userInput.getText().equals("") ? 100 : Math.abs(Integer.parseInt(userInput.getText()) - answer);
+
+        double difference = 0.5;
+        if (!userInput.getText().isEmpty()) {
+            BigInteger rawInput = new BigInteger(userInput.getText());
+            double convertedInput = rawInput.compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) > 0 ? Integer.MAX_VALUE : rawInput.intValue();
+            difference = Math.abs(1d - convertedInput / answer);
+        }
+
+        correctAnswer.setVisible(true);
+        correctAnswer.setText("Answer: " + answer);
+
         Color current = (Color) userInput.getBackground().getFills().get(0).getFill();
-        if (difference <= 10) {
-            fadeTextField(userInput, current, new Color(0.423, 0.941, 0.415, 1)).play();
-        } else if (difference <= 80) {
-            fadeTextField(userInput, current, new Color(1, 0.870, 0.380, 1)).play();
+        if (difference <= 0.1) {
+            AnimationUtil.fadeTextField(userInput, current, ColorPresets.soft_green).play();
+        } else if (difference <= 0.3) {
+            AnimationUtil.fadeTextField(userInput, current, ColorPresets.soft_yellow).play();
         } else {
-            fadeTextField(userInput, current, new Color(0.949, 0.423, 0.392, 1)).play();
+            AnimationUtil.fadeTextField(userInput, current, ColorPresets.soft_red).play();
         }
 
-        showPointsGained(100 - difference);
+        int points = (difference <= 0.3) ? (int) (100.0 * (1.0 - difference)) : 0;
+        showPointsGained(points);
 
-        if (Main.gameMode == GameMode.MULTIPLAYER) {
-            main.getMultiplayerGame().getQuestionHistory().add(difference <= 50);
-        } else {
-            main.getSingleplayerGame().getQuestionHistory().add(difference <= 50);
-        }
-        playSound(difference <= 50);
-        
+        main.getGame(Main.gameMode).getQuestionHistory().add(difference <= 0.3);
+        playSound(difference <= 0.3);
 
         generateProgressDots();
     }
@@ -234,28 +233,6 @@ public class GameOpenQuestionCtrl extends GameCtrl {
      * Resets the color of the text input field for the next question
      */
     private void resetTextInputColor() {
-        userInput.setBackground(new Background(new BackgroundFill(Color.color(1, 1, 1, 1), new CornerRadii(10), Insets.EMPTY)));
-    }
-
-    /**
-     * Animates the input field of the user
-     *
-     * @param textField The input field to animate
-     * @param start     The color to start from
-     * @param target    The color to end with
-     * @return The animation object which can be played
-     */
-    private Animation fadeTextField(TextField textField, Color start, Color target) {
-        return new Transition() {
-            {
-                setCycleDuration(Duration.millis(350));
-                setInterpolator(Interpolator.EASE_BOTH);
-            }
-
-            @Override
-            protected void interpolate(double frac) {
-                textField.setBackground(new Background(new BackgroundFill(lerp(start.getRed(), start.getGreen(), start.getBlue(), target.getRed(), target.getGreen(), target.getBlue(), frac), new CornerRadii(50), Insets.EMPTY)));
-            }
-        };
+        userInput.setBackground(new Background(new BackgroundFill(ColorPresets.white, new CornerRadii(10), Insets.EMPTY)));
     }
 }

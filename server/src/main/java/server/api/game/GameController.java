@@ -2,8 +2,6 @@ package server.api.game;
 
 import commons.Game;
 import commons.utils.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 import packets.*;
@@ -28,7 +26,6 @@ public class GameController {
      */
     @PostMapping("/ping")
     public GeneralResponsePacket onPing(@RequestBody PingRequestPacket request) {
-        request.getUsername();
         gameService.updatePlayerTime(request.getUsername());
         return new GeneralResponsePacket(HttpStatus.OK);
     }
@@ -40,14 +37,8 @@ public class GameController {
      */
     @GetMapping("/lobbyEventListener")
     public DeferredResult<LobbyResponsePacket> playersInLobby() {
-        Authentication auth = SecurityContextHolder
-                .getContext()
-                .getAuthentication();
-
-        String username = (String) auth.getPrincipal();
-
         DeferredResult<LobbyResponsePacket> output = new DeferredResult<>();
-        EventCaller<LobbyResponsePacket> eventCaller = new EventCaller(output, username);
+        EventCaller<LobbyResponsePacket> eventCaller = new EventCaller(output, gameService.getPlayerInSession());
         gameService.waitForPlayerEvent(eventCaller);
         return output;
     }
@@ -60,17 +51,40 @@ public class GameController {
      */
     @PostMapping("/join")
     public JoinResponsePacket join(@RequestBody JoinRequestPacket request) {
-        gameService.addPlayer(request.getUsername());
-        Game game = gameService.getGameIfExists();
+        Game game = gameService.addPlayer(request.getUsername());
         Map<String, String> playerMap = gameService.onPlayerJoin(request.getUsername());
         return new JoinResponsePacket(HttpStatus.OK, playerMap, game);
     }
 
-   /* @GetMapping("/multiplayer")
-    public MultiplayerResponsePacket start(@RequestMapping MultiplayerRequestPacket request){
-         Game x = new MultiplayerResponsePacket()
-         request.getLobby().getPlayerList();
-    }*/
+    /**
+     * Removes the player from the game they're in
+     * @return OK status
+     */
+    @GetMapping("/leave")
+    public GeneralResponsePacket leave() {
+        gameService.removePlayer(gameService.getPlayerInSession());
+        return new GeneralResponsePacket(HttpStatus.OK);
+    }
+
+    /**
+     * Sends the multiplayer leaderboard
+     * @return the packet containing the leaderboard.
+     */
+    @GetMapping("/multiplayerleaderboard")
+    public LeaderboardResponsePacket getMultiplayerLeaderboard (){
+        return new LeaderboardResponsePacket(HttpStatus.OK,gameService.getScoresByUser(gameService.getPlayerInSession()));
+    }
+
+    /**
+     * Update the score of a user
+     * @param request contains the user and the points to add
+     * @return a response with 200
+     */
+    @PostMapping("/score")
+    public GeneralResponsePacket updateScore(@RequestBody LeaderboardRequestPacket request) {
+        gameService.addScore(request.getPlayer(), request.getScore());
+        return new GeneralResponsePacket(HttpStatus.OK);
+    }
 
     /**
      * client sends emote to server, server then send it to other players
@@ -82,6 +96,21 @@ public class GameController {
     public GeneralResponsePacket sendEmote(@RequestBody EmoteRequestPacket request) {
         gameService.onEmoteReceived("Emote",
                 request.getEmoteStr(),
+                request.getUsername(),
+                request.getFromScene());
+        return new GeneralResponsePacket(HttpStatus.OK);
+    }
+
+    /**
+     * client sends joker notification to server, server then send it to other players
+     *
+     * @param request request for sending joker notification
+     * @return LobbyResponsePacket
+     */
+    @PostMapping("/jokerNotification")
+    public GeneralResponsePacket sendJokerNotification(@RequestBody JokerNotificationRequestPacket request) {
+        gameService.onJokerNotificationReceived("JokerNotification",
+                request.getJokerType().toString(),
                 request.getUsername());
         return new GeneralResponsePacket(HttpStatus.OK);
     }
@@ -120,8 +149,23 @@ public class GameController {
         }
     }
 
+    /**
+     * receives start from a player and sends it to other players
+     * @param requestPacket The request packet
+     * @return LobbyResponsePacket
+     */
     @PostMapping("/start")
     public LobbyResponsePacket onStart(@RequestBody StartGameRequestPacket requestPacket) {
         return gameService.onStartGame(requestPacket);
+    }
+
+    /**
+     * receives a joker from a player and sends it to other players
+     * @param requestPacket The request packet
+     * @return LobbyResponsePacket
+     */
+    @PostMapping("/joker")
+    public JokerResponsePacket onJoker(@RequestBody JokerRequestPacket requestPacket) {
+        return gameService.onJokerGame(requestPacket);
     }
 }

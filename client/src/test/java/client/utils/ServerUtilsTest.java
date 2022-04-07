@@ -59,7 +59,7 @@ public class ServerUtilsTest {
                 .respond(new HttpResponse().withStatusCode(HttpStatus.OK.getCode()).withBody("Pong"));
 
         ServerUtils serverUtils = new ServerUtils();
-        assertTrue(serverUtils.testConnection("https://localhost:" + port).equals("true"));
+        assertEquals("valid", serverUtils.testConnection("https://localhost:" + port));
 
         mockClientServer.verify(HttpRequest.request("/ping"), VerificationTimes.once());
     }

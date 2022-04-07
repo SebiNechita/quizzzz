@@ -38,8 +38,6 @@ import java.util.regex.Pattern;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 public class ServerUtils {
-    private static final String SERVER = "http://localhost:8080/";
-
     private Client client;
 
     public ServerUtils() {
@@ -229,9 +227,9 @@ public class ServerUtils {
         }
 
         if (response.equals("Pong")) {
-            return "true";
+            return "valid";
         } else {
-            return "false";
+            return "invalid";
         }
     }
 
@@ -300,6 +298,7 @@ public class ServerUtils {
         longPollingRequest.setCallback(onResponse);
         return longPollingRequest;
     }
+
 
     /**
      * Class which  handles a long polling request

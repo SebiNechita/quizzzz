@@ -1,13 +1,15 @@
 package client.game;
 
 
+import client.Main;
 import client.scenes.*;
 import client.utils.ServerUtils;
 import commons.Game;
-//import commons.LeaderboardEntry;
 import commons.questions.MultipleChoiceQuestion;
 import commons.questions.OpenQuestion;
 import commons.questions.Question;
+import commons.utils.Emote;
+import commons.utils.JokerType;
 import javafx.application.Platform;
 import packets.*;
 
@@ -22,54 +24,32 @@ public class MultiplayerGame implements client.game.Game {
     private final ServerUtils server;
 
     private ScheduledFuture<?> pingThread;
-    private ServerUtils.LongPollingRequest longPollingRequest;
+    private ServerUtils.LongPollingRequest<LobbyResponsePacket> longPollingRequest;
 
     private List<Question> questions;
     private LinkedList<Boolean> questionHistory;
 
-    private Integer currentQuestionCount;
+    private final List<JokerType> usedJokers;
+    private final List<JokerType> currentActiveJokers;
 
-    private Integer scoreTotal;
+    private int currentQuestionCount;
+    private int scoreTotal;
 
-    private Game game;
+    private final Game game;
 
-
-    public MultiplayerGame(MainCtrl main, ServerUtils server) {
-        this.main = main;
-        this.server = server;
-        this.questionHistory = new LinkedList<>();
-        this.questions = new ArrayList<>();
-
-        game = server.getGame();
-
-        List<OpenQuestion> openQuestions = game.getOpenQuestions();
-        List<MultipleChoiceQuestion> multipleChoiceQuestions = game.getMultipleChoiceQuestions();
-
-        int totalQuestions = 20;
-        int currentOQ = 0;
-        int currentMCQ = 0;
-
-        for (int i = 0; i < totalQuestions; i++) {
-            if (i % 5 == 0) {
-                questions.add(openQuestions.get(currentOQ++));
-            } else {
-                questions.add(multipleChoiceQuestions.get(currentMCQ++));
-            }
-        }
-
-        this.currentQuestionCount = 0;
-        this.scoreTotal = 0;
-    }
-
+    private boolean midLeaderboardDisplayed;
 
     public MultiplayerGame(MainCtrl main, ServerUtils server, Game game) {
         this.main = main;
         this.server = server;
         this.game = game;
+        this.midLeaderboardDisplayed = false;
         this.scoreTotal = 0;
         this.currentQuestionCount = 0;
         this.questions = new ArrayList<>();
         this.questionHistory = new LinkedList<>();
+        this.usedJokers = new LinkedList<>();
+        this.currentActiveJokers = new LinkedList<>();
 
         List<OpenQuestion> openQuestions = game.getOpenQuestions();
         List<MultipleChoiceQuestion> multipleChoiceQuestions = game.getMultipleChoiceQuestions();
@@ -91,15 +71,6 @@ public class MultiplayerGame implements client.game.Game {
         return game;
     }
 
-    public MultiplayerGame(MainCtrl mainCtrl, ServerUtils server, List<Question> questions) {
-        this.main = mainCtrl;
-        this.server = server;
-        this.questions = questions;
-        this.questionHistory = new LinkedList<>();
-        this.currentQuestionCount = 0;
-        this.scoreTotal = 0;
-    }
-
     /**
      * Retrieves a list of questions and stores it.
      *
@@ -114,15 +85,19 @@ public class MultiplayerGame implements client.game.Game {
      * Or exits if the game is over.
      */
     public void jumpToNextQuestion() {
-        if (currentQuestionCount < 20) {
-            showQuestion();
-        } else {
-//            server.postRequest("api/leaderboard", new LeaderboardEntry(this.scoreTotal, Main.USERNAME), LeaderboardResponsePacket.class);
-//            main.showScene(EndGameCtrl.class);
-        }
-        currentQuestionCount++;
-    }
+        currentActiveJokers.clear();
 
+        //This is after the 10th and 20th questions.
+        if (currentQuestionCount == 10  && !midLeaderboardDisplayed){
+            main.showScene(MultiplayerLeaderboardCtrl.class);
+            midLeaderboardDisplayed = true;
+        } else if (currentQuestionCount == 20){
+            main.showScene(EndGameCtrl.class);
+        } else if (currentQuestionCount < 20) {
+            showQuestion();
+            currentQuestionCount++;
+        }
+    }
 
     /**
      * Decides which type of question to display.
@@ -133,6 +108,37 @@ public class MultiplayerGame implements client.game.Game {
         } else {
             main.showScene(GameMultiChoiceCtrl.class);
         }
+    }
+
+    /**
+     * Adds a joker to the used list
+     *
+     * @param joker The tpye of joker
+     */
+    public void addJokerUsed(JokerType joker) {
+        if (!usedJokers.contains(joker)) {
+            usedJokers.add(joker);
+            currentActiveJokers.add(joker);
+        }
+    }
+
+    /**
+     * If a joker is active or not
+     *
+     * @param type The type of joker
+     * @return If the joker is active or not
+     */
+    public boolean isJokerActive(JokerType type) {
+        return currentActiveJokers.contains(type);
+    }
+
+    /**
+     * Gets a list of disabled jokers
+     *
+     * @return The list of disabled jokers
+     */
+    public List<JokerType> getDisabledJokers() {
+        return usedJokers;
     }
 
     /**
@@ -156,24 +162,7 @@ public class MultiplayerGame implements client.game.Game {
      */
     public void addToScore(int scoreToBeAdded) {
         this.scoreTotal += scoreToBeAdded;
-    }
-
-    /**
-     * Getter for MainCtrl
-     *
-     * @return mainCtrl
-     */
-    public MainCtrl getMainCtrl() {
-        return main;
-    }
-
-    /**
-     * Getter for ServerUtils
-     *
-     * @return the serverUtils
-     */
-    public ServerUtils getServer() {
-        return server;
+        server.postRequest("api/game/score",new LeaderboardRequestPacket(Main.USERNAME,scoreToBeAdded),GeneralResponsePacket.class);
     }
 
     /**
@@ -262,10 +251,11 @@ public class MultiplayerGame implements client.game.Game {
     }
 
     /**
-     * stops the ping thread. should be called when 'back' is clicked.
+     * Stops pinging and leaves the game
      */
-    public void stopPingThread() {
+    public void leave() {
         pingThread.cancel(false);
+        server.getRequest("api/game/leave",GeneralResponsePacket.class);
     }
 
 
@@ -275,33 +265,39 @@ public class MultiplayerGame implements client.game.Game {
      * @param username this client's username
      */
     public void join(String username) {
-
         JoinResponsePacket responsePacket = server.postRequest("api/game/join",
                 new JoinRequestPacket(username),
                 JoinResponsePacket.class);
+
         Platform.runLater(() ->
-                main.getCtrl(LobbyCtrl.class)
-                        .updatePlayerList(responsePacket.getPlayerList()));
+                main.getCtrl(LobbyCtrl.class).updatePlayerList(responsePacket.getPlayerList())
+        );
     }
-
-    /*public void sameMatch(){
-
-    }*/
-   /* public void start(){
-
-        //MultiplayerRequestPacket responsePacket = server.postRequest("api/game/multiplayer", new MultiplayerRequestPacket() )
-    }*/
 
     /**
      * send clicked Emote to the server
      *
      * @param username this client's username
      * @param emoteStr emote name
+     * @param fromScene scene from which the emote is being sent. Could be the Lobby/Game
      * @return GeneralResponsePacket
      */
-    public GeneralResponsePacket sendEmote(String username, String emoteStr) {
+    public GeneralResponsePacket sendEmote(String username, String emoteStr, String fromScene) {
         return server.postRequest("api/game/emote",
-                new EmoteRequestPacket(username, emoteStr),
+                new EmoteRequestPacket(username, emoteStr, fromScene),
+                GeneralResponsePacket.class);
+    }
+
+    /**
+     * send clicked Joker notification to the server
+     *
+     * @param username  this client's username
+     * @param jokerType emote name
+     * @return GeneralResponsePacket
+     */
+    public GeneralResponsePacket sendJokerNotification(String username, JokerType jokerType) {
+        return server.postRequest("api/game/jokerNotification",
+                new JokerNotificationRequestPacket(username, jokerType),
                 GeneralResponsePacket.class);
     }
 
@@ -310,11 +306,19 @@ public class MultiplayerGame implements client.game.Game {
      *
      * @param from  sender of the emote
      * @param emote emote name
+     * @param inGame true if the emote as to be updated in game; false otherwise
      */
-    private void updateEmote(String from, String emote) {
-        Platform.runLater(() ->
-                main.getCtrl(LobbyCtrl.class)
-                        .updateEmoji(from, emote));
+    private void updateEmote(boolean inGame, String from, String emote) {
+        if (inGame) {
+            Platform.runLater(() ->
+                    main.getGame().notificationRenderer.addEmoteNotification(from, Emote.valueOf(emote)));
+
+        } else {
+            Platform.runLater(() ->
+                    main.getCtrl(LobbyCtrl.class)
+                            .updateEmoji(from, emote));
+        }
+
 
     }
 
@@ -348,13 +352,28 @@ public class MultiplayerGame implements client.game.Game {
                     main.getCtrl(LobbyCtrl.class)
                             .hideStartButton());
         }
-
     }
 
+    /**
+     * Sends start to all clients when starting a game
+     *
+     * @param username Username of the player
+     */
     public void sendStartToAllClients(String username) {
         LobbyResponsePacket responsePacket = server.postRequest("api/game/start",
                 new StartGameRequestPacket(true, username),
                 LobbyResponsePacket.class);
+    }
+
+    /**
+     * Sends a post request to the server when a player uses a joker
+     *
+     * @param jokerType The type of the joker
+     * @param scene     The current scene depending on the type of question
+     * @param <T>       Generic
+     */
+    public <T extends GameCtrl> void sendJokerClickedToAllClients(JokerType jokerType, Class<T> scene) {
+        server.postRequest("api/game/joker", new JokerRequestPacket(jokerType, Main.USERNAME, scene.getName()), JokerResponsePacket.class);
     }
 
     /**
@@ -377,64 +396,52 @@ public class MultiplayerGame implements client.game.Game {
         this.longPollingRequest.stop();
     }
 
-    private class MultiplayerOnResponse implements ServerUtils.ServerResponse<MultiplayerResponsePacket> {
-
-        /**
-         * Will be called when the server response with data to a long polling request
-         *
-         * @param responsePacket The packet which the server returned
-         */
-        @Override
-        public void run(MultiplayerResponsePacket responsePacket) {
-
-        }
-    }
-
     /**
      * callback method when the client gets update from the server via the long polling request.
      */
     private class LobbyOnResponse implements ServerUtils.ServerResponse<LobbyResponsePacket> {
         @Override
         public void run(LobbyResponsePacket responsePacket) {
-            if (responsePacket.getType().equals("Emote")) {
-                updateEmote(responsePacket.getFrom(), responsePacket.getContent());
-            } else if (responsePacket.getType().equals("Join")) {
-                Platform.runLater(() ->
-                        main.getCtrl(LobbyCtrl.class)
-                                .updatePlayerList(responsePacket.getPlayerList()));
-            } else if (responsePacket.getType().equals("Ready")) {
-                Platform.runLater(() ->
-                        main.getCtrl(LobbyCtrl.class)
-                                .updatePlayerList(responsePacket.getPlayerList()));
-                Platform.runLater(() ->
-                        main.getCtrl(LobbyCtrl.class)
-                                .updateReady(responsePacket.getFrom()
-                                        , responsePacket.getContent()));
-            } else if (responsePacket.getType().equals("AllReady")) {
-                Platform.runLater(() ->
-                        main.getCtrl(LobbyCtrl.class)
-                                .updatePlayerList(responsePacket.getPlayerList()));
-                Platform.runLater(() ->
-                        main.getCtrl(LobbyCtrl.class)
-                                .showStartButton());
-            } else if (responsePacket.getType().equals("CancelAllReady")) {
-                Platform.runLater(() ->
-                        main.getCtrl(LobbyCtrl.class)
-                                .updatePlayerList(responsePacket.getPlayerList()));
-                Platform.runLater(() ->
-                        main.getCtrl(LobbyCtrl.class)
-                                .hideStartButton());
-            } else if (responsePacket.getType().equals("Leave")) {
-                Platform.runLater(() ->
-                        main.getCtrl(LobbyCtrl.class)
-                                .updatePlayerList(responsePacket.getPlayerList()));
-            } else if (responsePacket.getType().equals("Start")) {
-                Platform.runLater(() -> {
+            switch (responsePacket.getType()) {
+                case "EmoteInLobby" -> updateEmote(false, responsePacket.getFrom(), responsePacket.getContent());
+                case "EmoteInGame" -> updateEmote(true, responsePacket.getFrom(), responsePacket.getContent());
+                case "Join", "Leave" -> Platform.runLater(() -> {
+                    main.getCtrl(LobbyCtrl.class).updatePlayerList(responsePacket.getPlayerList());
+                });
+                case "Ready" -> Platform.runLater(() -> {
+                    LobbyCtrl lobbyCtrl = main.getCtrl(LobbyCtrl.class);
+                    lobbyCtrl.updatePlayerList(responsePacket.getPlayerList());
+                    lobbyCtrl.updateReady(responsePacket.getFrom(), responsePacket.getContent());
+                });
+                case "AllReady" -> Platform.runLater(() -> {
+                    LobbyCtrl lobbyCtrl = main.getCtrl(LobbyCtrl.class);
+                    lobbyCtrl.updatePlayerList(responsePacket.getPlayerList());
+                    lobbyCtrl.updateReady(responsePacket.getFrom(), responsePacket.getContent());
+                    lobbyCtrl.showStartButton();
+                });
+                case "CancelAllReady" -> {
+                    Platform.runLater(() -> {
+                        LobbyCtrl lobbyCtrl = main.getCtrl(LobbyCtrl.class);
+                        lobbyCtrl.updatePlayerList(responsePacket.getPlayerList());
+                        lobbyCtrl.updateReady(responsePacket.getFrom(), responsePacket.getContent());
+                        lobbyCtrl.hideStartButton();
+                    });
+                }
+                case "Start" -> Platform.runLater(() -> {
                     main.getCtrl(LobbyCtrl.class).startGame();
+                });
+                case "JokerMultiChoice" -> Platform.runLater(() -> {
+                    if (((JokerResponsePacket) responsePacket).getJokerType().equals(JokerType.HALF_TIME) && !responsePacket.getFrom().equals(Main.USERNAME))
+                        main.getCtrl(GameMultiChoiceCtrl.class).reduceTimer(0.5);
+                });
+                case "JokerOpenQuestion" -> Platform.runLater(() -> {
+                    if (((JokerResponsePacket) responsePacket).getJokerType().equals(JokerType.HALF_TIME) && !responsePacket.getFrom().equals(Main.USERNAME))
+                        main.getCtrl(GameOpenQuestionCtrl.class).reduceTimer(0.5);
+                });
+                case "JokerNotification" -> Platform.runLater(() -> {
+                    main.getGame().notificationRenderer.addJokerNotification(responsePacket.getFrom(), JokerType.valueOf(responsePacket.getContent()));
                 });
             }
         }
-
     }
-
 }

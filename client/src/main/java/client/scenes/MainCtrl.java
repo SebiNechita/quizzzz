@@ -16,12 +16,12 @@
 package client.scenes;
 
 import client.game.Game;
-import client.game.SingleplayerGame;
 import client.game.MultiplayerGame;
+import client.game.SingleplayerGame;
 import client.utils.OnShowScene;
 import client.utils.ServerUtils;
-//import commons.utils.GameMode;
-//import commons.utils.HttpStatus;
+import commons.utils.GameMode;
+import commons.questions.Activity;
 import commons.utils.LoggerUtil;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -32,7 +32,6 @@ import javafx.util.Callback;
 import javafx.util.Pair;
 import packets.JoinRequestPacket;
 import packets.JoinResponsePacket;
-//import packets.MultiplayerResponsePacket;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -48,9 +47,15 @@ public class MainCtrl {
     private SingleplayerGame singleplayerGame;
     private MultiplayerGame multiplayerGame;
 
-//    private MultiplayerResponsePacket resp;
+    private SceneCtrl currentlyShowing;
+
     private final HashMap<Class<?>, SceneCtrl> ctrlClasses = new HashMap<>();
     private final HashMap<Class<?>, Pair<Scene, String>> scenes = new HashMap<>();
+
+    //I created this to be able to access the stage from AdminPanelCtrl when opening the file dialog. -Kristof
+    public Stage getPrimaryStage() {
+        return primaryStage;
+    }
 
     /**
      * Constructs a new MainCtrl instance
@@ -60,7 +65,6 @@ public class MainCtrl {
     public MainCtrl(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.serverUtils = new ServerUtils();
-      // this.multiplayerGame = new MultiplayerGame(this, serverUtils);
     }
 
     /**
@@ -71,8 +75,8 @@ public class MainCtrl {
     }
 
     /**
-
      * Creates a new MultiplayerGame
+     *
      * @param game
      */
     public void createNewMultiplayerGame(commons.Game game) {
@@ -90,6 +94,13 @@ public class MainCtrl {
      */
     public void quitSingleplayer() {
         this.singleplayerGame = null;
+    }
+
+    /**
+     * Called when Multiplayer game is quit
+     */
+    public void quitMultiplayer() {
+        this.multiplayerGame = null;
     }
 
 
@@ -111,9 +122,29 @@ public class MainCtrl {
         return multiplayerGame;
     }
 
-    public <T extends Game> T getGame(Class<T> gameModeClass) {
-        return gameModeClass.equals(MultiplayerGame.class) ? (T) this.multiplayerGame : (T) this.singleplayerGame;
+    /**
+     * Getter for game
+     * @param gameMode mode of the game. Singleplayer/Multiplayer
+     * @return the instance of the Game
+     */
+    public Game getGame(GameMode gameMode) {
+        if (gameMode == GameMode.MULTIPLAYER) return getMultiplayerGame();
+        else return getSingleplayerGame();
     }
+
+    /**
+     * Returns the active GameCtrl
+     *
+     * @return The game ctrl
+     */
+    public GameCtrl getGame() {
+        if (currentlyShowing != null && currentlyShowing instanceof GameCtrl) {
+            return (GameCtrl) currentlyShowing;
+        } else {
+            return null;
+        }
+    }
+    
     /**
      * Loads and initializes a scene
      *
@@ -174,6 +205,7 @@ public class MainCtrl {
         Pair<Scene, String> pair = scenes.get(c);
         primaryStage.setScene(pair.getKey());
         primaryStage.setTitle(pair.getValue());
+        currentlyShowing = ctrlClasses.get(c);
 
         try {
             // Runs every method in the SceneCtrl with the "OnShowScene" annotation
@@ -186,6 +218,37 @@ public class MainCtrl {
         }
     }
 
+    /**
+     * method for showing EditActivity Scene and passing an Activity object to it's controller.
+     *
+     * @param path  path of the EditActivity scene
+     * @param title title of the scene
+     * @param item  Activity object to be edited
+     * @param <T>
+     */
+    public <T extends SceneCtrl> void showEditActivity(String path, String title, Activity item) {
+        try {
+            URL scene = getClass().getClassLoader().getResource(path);
+            FXMLLoader loader = new FXMLLoader(scene, null, null, new ControllerFactory(), StandardCharsets.UTF_8);
+
+            Parent parent = loader.load();
+
+            EditActivityCtrl ctrl = loader.getController();
+            ctrl.initData(item);
+
+            primaryStage.setScene(new Scene(parent));
+            primaryStage.setTitle(title);
+            ctrl.onShowScene();
+        } catch (Exception e) {
+            System.out.println(e.getStackTrace());
+        }
+    }
+
+    /**
+     * Joins the player to a match and retrieves the game and player list of the match
+     * @param username the player's username
+     * @return the game the user has joined
+     */
     public commons.Game joinGame(String username) {
         JoinResponsePacket responsePacket = serverUtils.postRequest("api/game/join",
                 new JoinRequestPacket(username),

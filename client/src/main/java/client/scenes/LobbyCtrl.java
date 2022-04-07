@@ -80,13 +80,11 @@ public class LobbyCtrl extends SceneCtrl {
     @OnShowScene
     public void onShowScene() {
         Main.gameMode = GameMode.MULTIPLAYER;
-
-//        main.createNewMultiplayerGame();
-
         buttonStart.setVisible(false);
         buttonReady.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
         ready = false;
 
+        chattextflow.getChildren().clear();
         // Ensures that the chat text scrolls automatically
         scrollPane.vvalueProperty().bind(chattextflow.heightProperty());
 
@@ -95,10 +93,11 @@ public class LobbyCtrl extends SceneCtrl {
         chattext.setFill(Color.BLUE);
         chattextflow.getChildren().add(chattext);
 
-        // the order of below methods matters!
+        // retrieves player list and joins player to the game
         main.createNewMultiplayerGame(main.joinGame(Main.USERNAME));
-//        main.getMultiplayerGame().join(Main.USERNAME);
+        //starts pinging the server to sign to the server that the client is active
         main.getMultiplayerGame().startPingThread(Main.USERNAME);
+        //starts long polling
         main.getMultiplayerGame().getLobbyUpdate();
 
         enableListeners();
@@ -197,7 +196,7 @@ public class LobbyCtrl extends SceneCtrl {
         iv.setFitHeight(40);
         iv.setFitWidth(40);
         chattextflow.getChildren().addAll(text, iv, text2);
-        main.getMultiplayerGame().sendEmote(Main.USERNAME, emote.toString().toLowerCase());
+        main.getMultiplayerGame().sendEmote(Main.USERNAME, emote.toString().toLowerCase(), "Lobby");
     }
 
     /**
@@ -226,7 +225,7 @@ public class LobbyCtrl extends SceneCtrl {
         chattext.setFont(Font.font("Comic Sans MS", 30));
         textflow.getChildren().remove(playertext);
         chattextflow.getChildren().add(chattext);
-        main.getMultiplayerGame().stopPingThread();
+        main.getMultiplayerGame().leave();
         main.getMultiplayerGame().stopLobbyUpdate();
         main.showScene(MainMenuCtrl.class);
     }
@@ -239,11 +238,15 @@ public class LobbyCtrl extends SceneCtrl {
         if (!ready) {
             buttonReady.setBackground(new Background(new BackgroundFill(Color.GREEN, null, null)));
             ready = true;
+            chattext = new Text(Main.USERNAME + " is ready" + "\n");
 
         } else {
             buttonReady.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
             ready = false;
+            chattext = new Text(Main.USERNAME + " canceled ready" + "\n");
         }
+        chattext.setFont(Font.font("Comic Sans MS", 30));
+        chattextflow.getChildren().add(chattext);
 
         // send ready message to server
         main.getMultiplayerGame().sendReadyMsg(Main.USERNAME, ready);

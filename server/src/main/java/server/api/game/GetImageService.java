@@ -1,5 +1,6 @@
 package server.api.game;
 
+import commons.utils.LoggerUtil;
 import org.springframework.stereotype.Service;
 import packets.ImageResponsePacket;
 
@@ -20,6 +21,8 @@ public class GetImageService {
             return new ImageResponsePacket(Objects.requireNonNull(getClass().getResourceAsStream(path)).readAllBytes());
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (NullPointerException e) {
+            LoggerUtil.warnInline("Image not found!");
         }
         return null;
     }
