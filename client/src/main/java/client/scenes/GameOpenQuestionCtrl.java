@@ -113,6 +113,8 @@ public class GameOpenQuestionCtrl extends GameCtrl {
     public void onShowScene() {
         super.onShowScene();
 
+        userInput.clear();
+        userInput.requestFocus();
         userInput.setDisable(false);
 
         displayQuestion();
